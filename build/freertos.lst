@@ -1,0 +1,387 @@
+ARM GAS  /tmp/ccuk3V95.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"freertos.c"
+  16              		.section	.rodata.str1.4,"aMS",%progbits,1
+  17              		.align	2
+  18              	.LC0:
+  19 0000 64656661 		.ascii	"defaultTask\000"
+  19      756C7454 
+  19      61736B00 
+  20              		.text
+  21              	.Ltext0:
+  22              		.cfi_sections	.debug_frame
+  23              		.section	.text.StartDefaultTask,"ax",%progbits
+  24              		.align	1
+  25              		.global	StartDefaultTask
+  26              		.syntax unified
+  27              		.thumb
+  28              		.thumb_func
+  30              	StartDefaultTask:
+  31              	.LVL0:
+  32              	.LFB141:
+  33              		.file 1 "Board/v3/Src/freertos.c"
+   1:Board/v3/Src/freertos.c **** /* USER CODE BEGIN Header */
+   2:Board/v3/Src/freertos.c **** /**
+   3:Board/v3/Src/freertos.c ****   ******************************************************************************
+   4:Board/v3/Src/freertos.c ****   * File Name          : freertos.c
+   5:Board/v3/Src/freertos.c ****   * Description        : Code for freertos applications
+   6:Board/v3/Src/freertos.c ****   ******************************************************************************
+   7:Board/v3/Src/freertos.c ****   * This notice applies to any and all portions of this file
+   8:Board/v3/Src/freertos.c ****   * that are not between comment pairs USER CODE BEGIN and
+   9:Board/v3/Src/freertos.c ****   * USER CODE END. Other portions of this file, whether 
+  10:Board/v3/Src/freertos.c ****   * inserted by the user or by software development tools
+  11:Board/v3/Src/freertos.c ****   * are owned by their respective copyright owners.
+  12:Board/v3/Src/freertos.c ****   *
+  13:Board/v3/Src/freertos.c ****   * Copyright (c) 2018 STMicroelectronics International N.V. 
+  14:Board/v3/Src/freertos.c ****   * All rights reserved.
+  15:Board/v3/Src/freertos.c ****   *
+  16:Board/v3/Src/freertos.c ****   * Redistribution and use in source and binary forms, with or without 
+  17:Board/v3/Src/freertos.c ****   * modification, are permitted, provided that the following conditions are met:
+  18:Board/v3/Src/freertos.c ****   *
+  19:Board/v3/Src/freertos.c ****   * 1. Redistribution of source code must retain the above copyright notice, 
+  20:Board/v3/Src/freertos.c ****   *    this list of conditions and the following disclaimer.
+  21:Board/v3/Src/freertos.c ****   * 2. Redistributions in binary form must reproduce the above copyright notice,
+  22:Board/v3/Src/freertos.c ****   *    this list of conditions and the following disclaimer in the documentation
+  23:Board/v3/Src/freertos.c ****   *    and/or other materials provided with the distribution.
+ARM GAS  /tmp/ccuk3V95.s 			page 2
+
+
+  24:Board/v3/Src/freertos.c ****   * 3. Neither the name of STMicroelectronics nor the names of other 
+  25:Board/v3/Src/freertos.c ****   *    contributors to this software may be used to endorse or promote products 
+  26:Board/v3/Src/freertos.c ****   *    derived from this software without specific written permission.
+  27:Board/v3/Src/freertos.c ****   * 4. This software, including modifications and/or derivative works of this 
+  28:Board/v3/Src/freertos.c ****   *    software, must execute solely and exclusively on microcontroller or
+  29:Board/v3/Src/freertos.c ****   *    microprocessor devices manufactured by or for STMicroelectronics.
+  30:Board/v3/Src/freertos.c ****   * 5. Redistribution and use of this software other than as permitted under 
+  31:Board/v3/Src/freertos.c ****   *    this license is void and will automatically terminate your rights under 
+  32:Board/v3/Src/freertos.c ****   *    this license. 
+  33:Board/v3/Src/freertos.c ****   *
+  34:Board/v3/Src/freertos.c ****   * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS" 
+  35:Board/v3/Src/freertos.c ****   * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT 
+  36:Board/v3/Src/freertos.c ****   * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+  37:Board/v3/Src/freertos.c ****   * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
+  38:Board/v3/Src/freertos.c ****   * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT 
+  39:Board/v3/Src/freertos.c ****   * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  40:Board/v3/Src/freertos.c ****   * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  41:Board/v3/Src/freertos.c ****   * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+  42:Board/v3/Src/freertos.c ****   * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+  43:Board/v3/Src/freertos.c ****   * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+  44:Board/v3/Src/freertos.c ****   * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+  45:Board/v3/Src/freertos.c ****   * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  46:Board/v3/Src/freertos.c ****   *
+  47:Board/v3/Src/freertos.c ****   ******************************************************************************
+  48:Board/v3/Src/freertos.c ****   */
+  49:Board/v3/Src/freertos.c **** /* USER CODE END Header */
+  50:Board/v3/Src/freertos.c **** 
+  51:Board/v3/Src/freertos.c **** /* Includes ------------------------------------------------------------------*/
+  52:Board/v3/Src/freertos.c **** #include "FreeRTOS.h"
+  53:Board/v3/Src/freertos.c **** #include "task.h"
+  54:Board/v3/Src/freertos.c **** #include "main.h"
+  55:Board/v3/Src/freertos.c **** #include "cmsis_os.h"
+  56:Board/v3/Src/freertos.c **** 
+  57:Board/v3/Src/freertos.c **** /* Private includes ----------------------------------------------------------*/
+  58:Board/v3/Src/freertos.c **** /* USER CODE BEGIN Includes */     
+  59:Board/v3/Src/freertos.c **** /* USER CODE END Includes */
+  60:Board/v3/Src/freertos.c **** 
+  61:Board/v3/Src/freertos.c **** /* Private typedef -----------------------------------------------------------*/
+  62:Board/v3/Src/freertos.c **** /* USER CODE BEGIN PTD */
+  63:Board/v3/Src/freertos.c **** 
+  64:Board/v3/Src/freertos.c **** /* USER CODE END PTD */
+  65:Board/v3/Src/freertos.c **** 
+  66:Board/v3/Src/freertos.c **** /* Private define ------------------------------------------------------------*/
+  67:Board/v3/Src/freertos.c **** /* USER CODE BEGIN PD */
+  68:Board/v3/Src/freertos.c **** 
+  69:Board/v3/Src/freertos.c **** /* USER CODE END PD */
+  70:Board/v3/Src/freertos.c **** 
+  71:Board/v3/Src/freertos.c **** /* Private macro -------------------------------------------------------------*/
+  72:Board/v3/Src/freertos.c **** /* USER CODE BEGIN PM */
+  73:Board/v3/Src/freertos.c **** 
+  74:Board/v3/Src/freertos.c **** /* USER CODE END PM */
+  75:Board/v3/Src/freertos.c **** 
+  76:Board/v3/Src/freertos.c **** /* Private variables ---------------------------------------------------------*/
+  77:Board/v3/Src/freertos.c **** /* USER CODE BEGIN Variables */
+  78:Board/v3/Src/freertos.c **** /* USER CODE END Variables */
+  79:Board/v3/Src/freertos.c **** osThreadId defaultTaskHandle;
+  80:Board/v3/Src/freertos.c **** const uint32_t stack_size_default_task = 2048; // Bytes
+ARM GAS  /tmp/ccuk3V95.s 			page 3
+
+
+  81:Board/v3/Src/freertos.c **** 
+  82:Board/v3/Src/freertos.c **** /* Private function prototypes -----------------------------------------------*/
+  83:Board/v3/Src/freertos.c **** /* USER CODE BEGIN FunctionPrototypes */
+  84:Board/v3/Src/freertos.c **** 
+  85:Board/v3/Src/freertos.c **** /* USER CODE END FunctionPrototypes */
+  86:Board/v3/Src/freertos.c **** 
+  87:Board/v3/Src/freertos.c **** void StartDefaultTask(void * argument);
+  88:Board/v3/Src/freertos.c **** 
+  89:Board/v3/Src/freertos.c **** extern void MX_USB_DEVICE_Init(void);
+  90:Board/v3/Src/freertos.c **** void MX_FREERTOS_Init(void); /* (MISRA C 2004 rule 8.1) */
+  91:Board/v3/Src/freertos.c **** 
+  92:Board/v3/Src/freertos.c **** /* Hook prototypes */
+  93:Board/v3/Src/freertos.c **** void vApplicationIdleHook(void);
+  94:Board/v3/Src/freertos.c **** void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName);
+  95:Board/v3/Src/freertos.c **** 
+  96:Board/v3/Src/freertos.c **** /* USER CODE BEGIN 2 */
+  97:Board/v3/Src/freertos.c **** __weak void vApplicationIdleHook( void )
+  98:Board/v3/Src/freertos.c **** {
+  99:Board/v3/Src/freertos.c ****    /* vApplicationIdleHook() will only be called if configUSE_IDLE_HOOK is set
+ 100:Board/v3/Src/freertos.c ****    to 1 in FreeRTOSConfig.h. It will be called on each iteration of the idle
+ 101:Board/v3/Src/freertos.c ****    task. It is essential that code added to this hook function never attempts
+ 102:Board/v3/Src/freertos.c ****    to block in any way (for example, call xQueueReceive() with a block time
+ 103:Board/v3/Src/freertos.c ****    specified, or call vTaskDelay()). If the application makes use of the
+ 104:Board/v3/Src/freertos.c ****    vTaskDelete() API function (as this demo application does) then it is also
+ 105:Board/v3/Src/freertos.c ****    important that vApplicationIdleHook() is permitted to return to its calling
+ 106:Board/v3/Src/freertos.c ****    function, because it is the responsibility of the idle task to clean up
+ 107:Board/v3/Src/freertos.c ****    memory allocated by the kernel to any task that has since been deleted. */
+ 108:Board/v3/Src/freertos.c **** }
+ 109:Board/v3/Src/freertos.c **** /* USER CODE END 2 */
+ 110:Board/v3/Src/freertos.c **** 
+ 111:Board/v3/Src/freertos.c **** /* USER CODE BEGIN 4 */
+ 112:Board/v3/Src/freertos.c **** __weak void vApplicationStackOverflowHook(xTaskHandle xTask, signed char *pcTaskName)
+ 113:Board/v3/Src/freertos.c **** {
+ 114:Board/v3/Src/freertos.c ****    /* Run time stack overflow checking is performed if
+ 115:Board/v3/Src/freertos.c ****    configCHECK_FOR_STACK_OVERFLOW is defined to 1 or 2. This hook function is
+ 116:Board/v3/Src/freertos.c ****    called if a stack overflow is detected. */
+ 117:Board/v3/Src/freertos.c **** }
+ 118:Board/v3/Src/freertos.c **** /* USER CODE END 4 */
+ 119:Board/v3/Src/freertos.c **** 
+ 120:Board/v3/Src/freertos.c **** /**
+ 121:Board/v3/Src/freertos.c ****   * @brief  FreeRTOS initialization
+ 122:Board/v3/Src/freertos.c ****   * @param  None
+ 123:Board/v3/Src/freertos.c ****   * @retval None
+ 124:Board/v3/Src/freertos.c ****   */
+ 125:Board/v3/Src/freertos.c **** void MX_FREERTOS_Init(void) {
+ 126:Board/v3/Src/freertos.c ****   /* USER CODE BEGIN Init */
+ 127:Board/v3/Src/freertos.c ****        
+ 128:Board/v3/Src/freertos.c ****   /* USER CODE END Init */
+ 129:Board/v3/Src/freertos.c **** 
+ 130:Board/v3/Src/freertos.c ****   /* USER CODE BEGIN RTOS_MUTEX */
+ 131:Board/v3/Src/freertos.c ****   /* add mutexes, ... */
+ 132:Board/v3/Src/freertos.c ****   /* USER CODE END RTOS_MUTEX */
+ 133:Board/v3/Src/freertos.c **** 
+ 134:Board/v3/Src/freertos.c ****   /* USER CODE BEGIN RTOS_SEMAPHORES */
+ 135:Board/v3/Src/freertos.c ****   /* USER CODE END RTOS_SEMAPHORES */
+ 136:Board/v3/Src/freertos.c **** 
+ 137:Board/v3/Src/freertos.c ****   /* USER CODE BEGIN RTOS_TIMERS */
+ARM GAS  /tmp/ccuk3V95.s 			page 4
+
+
+ 138:Board/v3/Src/freertos.c ****   /* start timers, add new ones, ... */
+ 139:Board/v3/Src/freertos.c ****   /* USER CODE END RTOS_TIMERS */
+ 140:Board/v3/Src/freertos.c **** 
+ 141:Board/v3/Src/freertos.c ****   /* Create the thread(s) */
+ 142:Board/v3/Src/freertos.c ****   /* definition and creation of defaultTask */
+ 143:Board/v3/Src/freertos.c ****   osThreadDef(defaultTask, StartDefaultTask, osPriorityNormal, 0, stack_size_default_task / sizeof(
+ 144:Board/v3/Src/freertos.c ****   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+ 145:Board/v3/Src/freertos.c **** 
+ 146:Board/v3/Src/freertos.c ****   /* USER CODE BEGIN RTOS_THREADS */
+ 147:Board/v3/Src/freertos.c **** 
+ 148:Board/v3/Src/freertos.c ****   /* USER CODE END RTOS_THREADS */
+ 149:Board/v3/Src/freertos.c **** 
+ 150:Board/v3/Src/freertos.c ****   /* USER CODE BEGIN RTOS_QUEUES */
+ 151:Board/v3/Src/freertos.c ****   /* add queues, ... */
+ 152:Board/v3/Src/freertos.c ****   /* USER CODE END RTOS_QUEUES */
+ 153:Board/v3/Src/freertos.c **** }
+ 154:Board/v3/Src/freertos.c **** 
+ 155:Board/v3/Src/freertos.c **** /* USER CODE BEGIN Header_StartDefaultTask */
+ 156:Board/v3/Src/freertos.c **** /**
+ 157:Board/v3/Src/freertos.c ****   * @brief  Function implementing the defaultTask thread.
+ 158:Board/v3/Src/freertos.c ****   * @param  argument: Not used 
+ 159:Board/v3/Src/freertos.c ****   * @retval None
+ 160:Board/v3/Src/freertos.c ****   */
+ 161:Board/v3/Src/freertos.c **** /* USER CODE END Header_StartDefaultTask */
+ 162:Board/v3/Src/freertos.c **** void StartDefaultTask(void * argument)
+ 163:Board/v3/Src/freertos.c **** {
+  34              		.loc 1 163 1 view -0
+  35              		.cfi_startproc
+  36              		@ args = 0, pretend = 0, frame = 0
+  37              		@ frame_needed = 0, uses_anonymous_args = 0
+  38              		.loc 1 163 1 is_stmt 0 view .LVU1
+  39 0000 08B5     		push	{r3, lr}
+  40              	.LCFI0:
+  41              		.cfi_def_cfa_offset 8
+  42              		.cfi_offset 3, -8
+  43              		.cfi_offset 14, -4
+ 164:Board/v3/Src/freertos.c ****   /* init code for USB_DEVICE */
+ 165:Board/v3/Src/freertos.c ****   MX_USB_DEVICE_Init();
+  44              		.loc 1 165 3 is_stmt 1 view .LVU2
+  45 0002 FFF7FEFF 		bl	MX_USB_DEVICE_Init
+  46              	.LVL1:
+ 166:Board/v3/Src/freertos.c **** 
+ 167:Board/v3/Src/freertos.c ****   /* USER CODE BEGIN StartDefaultTask */
+ 168:Board/v3/Src/freertos.c **** 
+ 169:Board/v3/Src/freertos.c ****   /* USER CODE END StartDefaultTask */
+ 170:Board/v3/Src/freertos.c **** }
+  47              		.loc 1 170 1 is_stmt 0 view .LVU3
+  48 0006 08BD     		pop	{r3, pc}
+  49              		.cfi_endproc
+  50              	.LFE141:
+  52              		.section	.text.vApplicationIdleHook,"ax",%progbits
+  53              		.align	1
+  54              		.weak	vApplicationIdleHook
+  55              		.syntax unified
+  56              		.thumb
+  57              		.thumb_func
+  59              	vApplicationIdleHook:
+ARM GAS  /tmp/ccuk3V95.s 			page 5
+
+
+  60              	.LFB138:
+  98:Board/v3/Src/freertos.c ****    /* vApplicationIdleHook() will only be called if configUSE_IDLE_HOOK is set
+  61              		.loc 1 98 1 is_stmt 1 view -0
+  62              		.cfi_startproc
+  63              		@ args = 0, pretend = 0, frame = 0
+  64              		@ frame_needed = 0, uses_anonymous_args = 0
+  65              		@ link register save eliminated.
+ 108:Board/v3/Src/freertos.c **** /* USER CODE END 2 */
+  66              		.loc 1 108 1 view .LVU5
+  67 0000 7047     		bx	lr
+  68              		.cfi_endproc
+  69              	.LFE138:
+  71              		.section	.text.vApplicationStackOverflowHook,"ax",%progbits
+  72              		.align	1
+  73              		.weak	vApplicationStackOverflowHook
+  74              		.syntax unified
+  75              		.thumb
+  76              		.thumb_func
+  78              	vApplicationStackOverflowHook:
+  79              	.LVL2:
+  80              	.LFB139:
+ 113:Board/v3/Src/freertos.c ****    /* Run time stack overflow checking is performed if
+  81              		.loc 1 113 1 view -0
+  82              		.cfi_startproc
+  83              		@ args = 0, pretend = 0, frame = 0
+  84              		@ frame_needed = 0, uses_anonymous_args = 0
+  85              		@ link register save eliminated.
+ 117:Board/v3/Src/freertos.c **** /* USER CODE END 4 */
+  86              		.loc 1 117 1 view .LVU7
+  87 0000 7047     		bx	lr
+  88              		.cfi_endproc
+  89              	.LFE139:
+  91              		.section	.text.MX_FREERTOS_Init,"ax",%progbits
+  92              		.align	1
+  93              		.global	MX_FREERTOS_Init
+  94              		.syntax unified
+  95              		.thumb
+  96              		.thumb_func
+  98              	MX_FREERTOS_Init:
+  99              	.LFB140:
+ 125:Board/v3/Src/freertos.c ****   /* USER CODE BEGIN Init */
+ 100              		.loc 1 125 29 view -0
+ 101              		.cfi_startproc
+ 102              		@ args = 0, pretend = 0, frame = 24
+ 103              		@ frame_needed = 0, uses_anonymous_args = 0
+ 104 0000 10B5     		push	{r4, lr}
+ 105              	.LCFI1:
+ 106              		.cfi_def_cfa_offset 8
+ 107              		.cfi_offset 4, -8
+ 108              		.cfi_offset 14, -4
+ 109 0002 86B0     		sub	sp, sp, #24
+ 110              	.LCFI2:
+ 111              		.cfi_def_cfa_offset 32
+ 143:Board/v3/Src/freertos.c ****   defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
+ 112              		.loc 1 143 3 view .LVU9
+ 113 0004 0DF1040C 		add	ip, sp, #4
+ 114 0008 074C     		ldr	r4, .L7
+ARM GAS  /tmp/ccuk3V95.s 			page 6
+
+
+ 115 000a 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
+ 116 000c ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 117 0010 2368     		ldr	r3, [r4]
+ 118 0012 CCF80030 		str	r3, [ip]
+ 144:Board/v3/Src/freertos.c **** 
+ 119              		.loc 1 144 3 view .LVU10
+ 144:Board/v3/Src/freertos.c **** 
+ 120              		.loc 1 144 23 is_stmt 0 view .LVU11
+ 121 0016 0021     		movs	r1, #0
+ 122 0018 01A8     		add	r0, sp, #4
+ 123 001a FFF7FEFF 		bl	osThreadCreate
+ 124              	.LVL3:
+ 144:Board/v3/Src/freertos.c **** 
+ 125              		.loc 1 144 21 view .LVU12
+ 126 001e 034B     		ldr	r3, .L7+4
+ 127 0020 1860     		str	r0, [r3]
+ 153:Board/v3/Src/freertos.c **** 
+ 128              		.loc 1 153 1 view .LVU13
+ 129 0022 06B0     		add	sp, sp, #24
+ 130              	.LCFI3:
+ 131              		.cfi_def_cfa_offset 8
+ 132              		@ sp needed
+ 133 0024 10BD     		pop	{r4, pc}
+ 134              	.L8:
+ 135 0026 00BF     		.align	2
+ 136              	.L7:
+ 137 0028 00000000 		.word	.LANCHOR0
+ 138 002c 00000000 		.word	.LANCHOR1
+ 139              		.cfi_endproc
+ 140              	.LFE140:
+ 142              		.global	stack_size_default_task
+ 143              		.global	defaultTaskHandle
+ 144              		.section	.rodata
+ 145              		.align	2
+ 146              		.set	.LANCHOR0,. + 0
+ 147              	.LC2:
+ 148 0000 00000000 		.word	.LC0
+ 149 0004 00000000 		.word	StartDefaultTask
+ 150 0008 0000     		.short	0
+ 151 000a 0000     		.space	2
+ 152 000c 00000000 		.word	0
+ 153 0010 00020000 		.word	512
+ 154              		.section	.bss.defaultTaskHandle,"aw",%nobits
+ 155              		.align	2
+ 156              		.set	.LANCHOR1,. + 0
+ 159              	defaultTaskHandle:
+ 160 0000 00000000 		.space	4
+ 161              		.section	.rodata.stack_size_default_task,"a"
+ 162              		.align	2
+ 165              	stack_size_default_task:
+ 166 0000 00080000 		.word	2048
+ 167              		.text
+ 168              	.Letext0:
+ 169              		.file 2 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 170              		.file 3 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 171              		.file 4 "ThirdParty/FreeRTOS/Source/include/task.h"
+ 172              		.file 5 "ThirdParty/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
+ARM GAS  /tmp/ccuk3V95.s 			page 7
+
+
+ARM GAS  /tmp/ccuk3V95.s 			page 8
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 freertos.c
+     /tmp/ccuk3V95.s:17     .rodata.str1.4:0000000000000000 $d
+     /tmp/ccuk3V95.s:24     .text.StartDefaultTask:0000000000000000 $t
+     /tmp/ccuk3V95.s:30     .text.StartDefaultTask:0000000000000000 StartDefaultTask
+     /tmp/ccuk3V95.s:53     .text.vApplicationIdleHook:0000000000000000 $t
+     /tmp/ccuk3V95.s:59     .text.vApplicationIdleHook:0000000000000000 vApplicationIdleHook
+     /tmp/ccuk3V95.s:72     .text.vApplicationStackOverflowHook:0000000000000000 $t
+     /tmp/ccuk3V95.s:78     .text.vApplicationStackOverflowHook:0000000000000000 vApplicationStackOverflowHook
+     /tmp/ccuk3V95.s:92     .text.MX_FREERTOS_Init:0000000000000000 $t
+     /tmp/ccuk3V95.s:98     .text.MX_FREERTOS_Init:0000000000000000 MX_FREERTOS_Init
+     /tmp/ccuk3V95.s:137    .text.MX_FREERTOS_Init:0000000000000028 $d
+     /tmp/ccuk3V95.s:165    .rodata.stack_size_default_task:0000000000000000 stack_size_default_task
+     /tmp/ccuk3V95.s:159    .bss.defaultTaskHandle:0000000000000000 defaultTaskHandle
+     /tmp/ccuk3V95.s:145    .rodata:0000000000000000 $d
+     /tmp/ccuk3V95.s:155    .bss.defaultTaskHandle:0000000000000000 $d
+     /tmp/ccuk3V95.s:162    .rodata.stack_size_default_task:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+MX_USB_DEVICE_Init
+osThreadCreate

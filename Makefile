@@ -198,6 +198,7 @@ MCU = $(CPU) -mthumb $(FPU) $(FLOAT-ABI)
 AS_DEFS = 
 
 # C defines
+#! 在项目的构建过程中，这些宏定义通常会传递给编译器,这样，编译器就会知道这些宏，并且在预处理阶段自动替换它们在源代码中的引用。
 C_DEFS =  \
 -DSTM32F405xx \
 -DHW_VERSION_MAJOR=3 \
@@ -289,7 +290,7 @@ LDFLAGS += -mthumb -mfloat-abi=hard -u _printf_float -u _scanf_float -Wl,--cref 
 LDFLAGS += -Wl,--undefined=uxTopUsedPriority
 
 # default action: build all
-all: AUTOHEADERS $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin TESTBIN_HEX_ASM
+all: AUTOHEADERS $(BUILD_DIR)/$(TARGET).elf $(BUILD_DIR)/$(TARGET).hex $(BUILD_DIR)/$(TARGET).bin 
 
 AUTOHEADERS:
 	@echo $(PY_CMD)

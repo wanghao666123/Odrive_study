@@ -1,0 +1,2388 @@
+ARM GAS  /tmp/ccXJwns6.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"drv8301.cpp"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text._ZN7Drv830111set_enabledEb,"axG",%progbits,_ZN7Drv830111set_enabledEb,comdat
+  20              		.align	1
+  21              		.weak	_ZN7Drv830111set_enabledEb
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	_ZN7Drv830111set_enabledEb:
+  27              		.fnstart
+  28              	.LVL0:
+  29              	.LFB153:
+  30              		.file 1 "Drivers/DRV8301/drv8301.hpp"
+   1:Drivers/DRV8301/drv8301.hpp **** #ifndef __DRV8301_HPP
+   2:Drivers/DRV8301/drv8301.hpp **** #define __DRV8301_HPP
+   3:Drivers/DRV8301/drv8301.hpp **** 
+   4:Drivers/DRV8301/drv8301.hpp **** #include "stdbool.h"
+   5:Drivers/DRV8301/drv8301.hpp **** #include "stdint.h"
+   6:Drivers/DRV8301/drv8301.hpp **** 
+   7:Drivers/DRV8301/drv8301.hpp **** #include <Drivers/gate_driver.hpp>
+   8:Drivers/DRV8301/drv8301.hpp **** #include <Drivers/STM32/stm32_spi_arbiter.hpp>
+   9:Drivers/DRV8301/drv8301.hpp **** #include <Drivers/STM32/stm32_gpio.hpp>
+  10:Drivers/DRV8301/drv8301.hpp **** 
+  11:Drivers/DRV8301/drv8301.hpp **** 
+  12:Drivers/DRV8301/drv8301.hpp **** class Drv8301 : public GateDriverBase, public OpAmpBase {
+  13:Drivers/DRV8301/drv8301.hpp **** public:
+  14:Drivers/DRV8301/drv8301.hpp ****     typedef enum : uint32_t {
+  15:Drivers/DRV8301/drv8301.hpp ****         FaultType_NoFault  = (0 << 0),  //!< No fault
+  16:Drivers/DRV8301/drv8301.hpp **** 
+  17:Drivers/DRV8301/drv8301.hpp ****         // Status Register 1
+  18:Drivers/DRV8301/drv8301.hpp ****         FaultType_FETLC_OC = (1 << 0),  //!< FET Low side, Phase C Over Current fault
+  19:Drivers/DRV8301/drv8301.hpp ****         FaultType_FETHC_OC = (1 << 1),  //!< FET High side, Phase C Over Current fault
+  20:Drivers/DRV8301/drv8301.hpp ****         FaultType_FETLB_OC = (1 << 2),  //!< FET Low side, Phase B Over Current fault
+  21:Drivers/DRV8301/drv8301.hpp ****         FaultType_FETHB_OC = (1 << 3),  //!< FET High side, Phase B Over Current fault
+  22:Drivers/DRV8301/drv8301.hpp ****         FaultType_FETLA_OC = (1 << 4),  //!< FET Low side, Phase A Over Current fault
+  23:Drivers/DRV8301/drv8301.hpp ****         FaultType_FETHA_OC = (1 << 5),  //!< FET High side, Phase A Over Current fault
+  24:Drivers/DRV8301/drv8301.hpp ****         FaultType_OTW      = (1 << 6),  //!< Over Temperature Warning fault
+  25:Drivers/DRV8301/drv8301.hpp ****         FaultType_OTSD     = (1 << 7),  //!< Over Temperature Shut Down fault
+  26:Drivers/DRV8301/drv8301.hpp ****         FaultType_PVDD_UV  = (1 << 8),  //!< Power supply Vdd Under Voltage fault
+  27:Drivers/DRV8301/drv8301.hpp ****         FaultType_GVDD_UV  = (1 << 9),  //!< DRV8301 Vdd Under Voltage fault
+  28:Drivers/DRV8301/drv8301.hpp ****         FaultType_FAULT    = (1 << 10),
+ARM GAS  /tmp/ccXJwns6.s 			page 2
+
+
+  29:Drivers/DRV8301/drv8301.hpp **** 
+  30:Drivers/DRV8301/drv8301.hpp ****         // Status Register 2
+  31:Drivers/DRV8301/drv8301.hpp ****         FaultType_GVDD_OV  = (1 << 23)  //!< DRV8301 Vdd Over Voltage fault
+  32:Drivers/DRV8301/drv8301.hpp ****     } FaultType_e;
+  33:Drivers/DRV8301/drv8301.hpp **** 
+  34:Drivers/DRV8301/drv8301.hpp ****     Drv8301(Stm32SpiArbiter* spi_arbiter, Stm32Gpio ncs_gpio,
+  35:Drivers/DRV8301/drv8301.hpp ****             Stm32Gpio enable_gpio, Stm32Gpio nfault_gpio)
+  36:Drivers/DRV8301/drv8301.hpp ****             : spi_arbiter_(spi_arbiter), ncs_gpio_(ncs_gpio),
+  37:Drivers/DRV8301/drv8301.hpp ****               enable_gpio_(enable_gpio), nfault_gpio_(nfault_gpio) {}
+  38:Drivers/DRV8301/drv8301.hpp **** 
+  39:Drivers/DRV8301/drv8301.hpp ****     /**
+  40:Drivers/DRV8301/drv8301.hpp ****      * @brief Prepares the gate driver's configuration.
+  41:Drivers/DRV8301/drv8301.hpp ****      *
+  42:Drivers/DRV8301/drv8301.hpp ****      * If the gate driver was in ready state and the new configuration is
+  43:Drivers/DRV8301/drv8301.hpp ****      * different from the old one then the gate driver will exit ready state.
+  44:Drivers/DRV8301/drv8301.hpp ****      *
+  45:Drivers/DRV8301/drv8301.hpp ****      * In any case changes to the configuration only take effect with a call to
+  46:Drivers/DRV8301/drv8301.hpp ****      * init().
+  47:Drivers/DRV8301/drv8301.hpp ****      */
+  48:Drivers/DRV8301/drv8301.hpp ****     bool config(float requested_gain, float* actual_gain);
+  49:Drivers/DRV8301/drv8301.hpp ****     
+  50:Drivers/DRV8301/drv8301.hpp ****     /**
+  51:Drivers/DRV8301/drv8301.hpp ****      * @brief Initializes the gate driver to the configuration prepared with
+  52:Drivers/DRV8301/drv8301.hpp ****      * config().
+  53:Drivers/DRV8301/drv8301.hpp ****      *
+  54:Drivers/DRV8301/drv8301.hpp ****      * Returns true on success or false otherwise (e.g. if the gate driver is
+  55:Drivers/DRV8301/drv8301.hpp ****      * not connected or not powered or if config() was not yet called).
+  56:Drivers/DRV8301/drv8301.hpp ****      */
+  57:Drivers/DRV8301/drv8301.hpp ****     bool init();
+  58:Drivers/DRV8301/drv8301.hpp **** 
+  59:Drivers/DRV8301/drv8301.hpp ****     /**
+  60:Drivers/DRV8301/drv8301.hpp ****      * @brief Monitors the nFAULT pin.
+  61:Drivers/DRV8301/drv8301.hpp ****      *
+  62:Drivers/DRV8301/drv8301.hpp ****      * This must be run at an interval of <8ms from the moment the init()
+  63:Drivers/DRV8301/drv8301.hpp ****      * functions starts to run, otherwise it's possible that a temporary power
+  64:Drivers/DRV8301/drv8301.hpp ****      * loss is missed, leading to unwanted register values.
+  65:Drivers/DRV8301/drv8301.hpp ****      * In case of power loss the nFAULT pin can be low for as little as 8ms.
+  66:Drivers/DRV8301/drv8301.hpp ****      */
+  67:Drivers/DRV8301/drv8301.hpp ****     void do_checks();
+  68:Drivers/DRV8301/drv8301.hpp **** 
+  69:Drivers/DRV8301/drv8301.hpp ****     /**
+  70:Drivers/DRV8301/drv8301.hpp ****      * @brief Returns true if and only if the DRV8301 chip is in an initialized
+  71:Drivers/DRV8301/drv8301.hpp ****      * state and ready to do switching and current sensor opamp operation.
+  72:Drivers/DRV8301/drv8301.hpp ****      */
+  73:Drivers/DRV8301/drv8301.hpp ****     bool is_ready() final;
+  74:Drivers/DRV8301/drv8301.hpp **** 
+  75:Drivers/DRV8301/drv8301.hpp ****     /**
+  76:Drivers/DRV8301/drv8301.hpp ****      * @brief This has no effect on this driver chip because the drive stages are
+  77:Drivers/DRV8301/drv8301.hpp ****      * always enabled while the chip is initialized
+  78:Drivers/DRV8301/drv8301.hpp ****      */
+  79:Drivers/DRV8301/drv8301.hpp ****     bool set_enabled(bool enabled) final { return true; }
+  31              		.loc 1 79 10 view -0
+  32              		.cfi_startproc
+  33              		@ args = 0, pretend = 0, frame = 0
+  34              		@ frame_needed = 0, uses_anonymous_args = 0
+  35              		@ link register save eliminated.
+  36              		.loc 1 79 44 view .LVU1
+ARM GAS  /tmp/ccXJwns6.s 			page 3
+
+
+  37              		.loc 1 79 57 is_stmt 0 view .LVU2
+  38 0000 0120     		movs	r0, #1
+  39              	.LVL1:
+  40              		.loc 1 79 57 view .LVU3
+  41 0002 7047     		bx	lr
+  42              		.cfi_endproc
+  43              	.LFE153:
+  44              		.cantunwind
+  45              		.fnend
+  47              		.section	.text._ZN7Drv830112get_midpointEv,"axG",%progbits,_ZN7Drv830112get_midpointEv,comdat
+  48              		.align	1
+  49              		.weak	_ZN7Drv830112get_midpointEv
+  50              		.syntax unified
+  51              		.thumb
+  52              		.thumb_func
+  54              	_ZN7Drv830112get_midpointEv:
+  55              		.fnstart
+  56              	.LVL2:
+  57              	.LFB154:
+  80:Drivers/DRV8301/drv8301.hpp **** 
+  81:Drivers/DRV8301/drv8301.hpp ****     FaultType_e get_error();
+  82:Drivers/DRV8301/drv8301.hpp **** 
+  83:Drivers/DRV8301/drv8301.hpp ****     float get_midpoint() final {
+  58              		.loc 1 83 11 is_stmt 1 view -0
+  59              		.cfi_startproc
+  60              		@ args = 0, pretend = 0, frame = 0
+  61              		@ frame_needed = 0, uses_anonymous_args = 0
+  62              		@ link register save eliminated.
+  84:Drivers/DRV8301/drv8301.hpp ****         return 0.5f; // [V]
+  63              		.loc 1 84 9 view .LVU5
+  85:Drivers/DRV8301/drv8301.hpp ****     }
+  64              		.loc 1 85 5 is_stmt 0 view .LVU6
+  65 0000 B6EE000A 		vmov.f32	s0, #5.0e-1
+  66 0004 7047     		bx	lr
+  67              		.cfi_endproc
+  68              	.LFE154:
+  69              		.cantunwind
+  70              		.fnend
+  72              		.section	.text._ZN7Drv830120get_max_output_swingEv,"axG",%progbits,_ZN7Drv830120get_max_output_swi
+  73              		.align	1
+  74              		.weak	_ZN7Drv830120get_max_output_swingEv
+  75              		.syntax unified
+  76              		.thumb
+  77              		.thumb_func
+  79              	_ZN7Drv830120get_max_output_swingEv:
+  80              		.fnstart
+  81              	.LVL3:
+  82              	.LFB155:
+  86:Drivers/DRV8301/drv8301.hpp **** 
+  87:Drivers/DRV8301/drv8301.hpp ****     float get_max_output_swing() final {
+  83              		.loc 1 87 11 is_stmt 1 view -0
+  84              		.cfi_startproc
+  85              		@ args = 0, pretend = 0, frame = 0
+  86              		@ frame_needed = 0, uses_anonymous_args = 0
+  87              		@ link register save eliminated.
+  88:Drivers/DRV8301/drv8301.hpp ****         return 1.35f / 1.65f; // +-1.35V, normalized from a scale of +-1.65V to +-0.5
+  88              		.loc 1 88 9 view .LVU8
+ARM GAS  /tmp/ccXJwns6.s 			page 4
+
+
+  89:Drivers/DRV8301/drv8301.hpp ****     }
+  89              		.loc 1 89 5 is_stmt 0 view .LVU9
+  90 0000 9FED010A 		vldr.32	s0, .L4
+  91 0004 7047     		bx	lr
+  92              	.L5:
+  93 0006 00BF     		.align	2
+  94              	.L4:
+  95 0008 5E74513F 		.word	1062302814
+  96              		.cfi_endproc
+  97              	.LFE155:
+  98              		.cantunwind
+  99              		.fnend
+ 101              		.section	.text._ZN7Drv83018is_readyEv,"ax",%progbits
+ 102              		.align	1
+ 103              		.global	_ZN7Drv83018is_readyEv
+ 104              		.syntax unified
+ 105              		.thumb
+ 106              		.thumb_func
+ 108              	_ZN7Drv83018is_readyEv:
+ 109              		.fnstart
+ 110              	.LVL4:
+ 111              	.LFB4271:
+ 112              		.file 2 "Drivers/DRV8301/drv8301.cpp"
+   1:Drivers/DRV8301/drv8301.cpp **** 
+   2:Drivers/DRV8301/drv8301.cpp **** #include "drv8301.hpp"
+   3:Drivers/DRV8301/drv8301.cpp **** #include "utils.hpp"
+   4:Drivers/DRV8301/drv8301.cpp **** #include "cmsis_os.h"
+   5:Drivers/DRV8301/drv8301.cpp **** #include "board.h"
+   6:Drivers/DRV8301/drv8301.cpp **** 
+   7:Drivers/DRV8301/drv8301.cpp **** const SPI_InitTypeDef Drv8301::spi_config_ = {
+   8:Drivers/DRV8301/drv8301.cpp ****     .Mode = SPI_MODE_MASTER,
+   9:Drivers/DRV8301/drv8301.cpp ****     .Direction = SPI_DIRECTION_2LINES,
+  10:Drivers/DRV8301/drv8301.cpp ****     .DataSize = SPI_DATASIZE_16BIT,
+  11:Drivers/DRV8301/drv8301.cpp ****     .CLKPolarity = SPI_POLARITY_LOW,
+  12:Drivers/DRV8301/drv8301.cpp ****     .CLKPhase = SPI_PHASE_2EDGE,
+  13:Drivers/DRV8301/drv8301.cpp ****     .NSS = SPI_NSS_SOFT,
+  14:Drivers/DRV8301/drv8301.cpp ****     .BaudRatePrescaler = SPI_BAUDRATEPRESCALER_16,
+  15:Drivers/DRV8301/drv8301.cpp ****     .FirstBit = SPI_FIRSTBIT_MSB,
+  16:Drivers/DRV8301/drv8301.cpp ****     .TIMode = SPI_TIMODE_DISABLE,
+  17:Drivers/DRV8301/drv8301.cpp ****     .CRCCalculation = SPI_CRCCALCULATION_DISABLE,
+  18:Drivers/DRV8301/drv8301.cpp ****     .CRCPolynomial = 10,
+  19:Drivers/DRV8301/drv8301.cpp **** };
+  20:Drivers/DRV8301/drv8301.cpp **** 
+  21:Drivers/DRV8301/drv8301.cpp **** bool Drv8301::config(float requested_gain, float* actual_gain) {
+  22:Drivers/DRV8301/drv8301.cpp ****     // Calculate gain setting: Snap down to have equal or larger range as
+  23:Drivers/DRV8301/drv8301.cpp ****     // requested or largest possible range otherwise
+  24:Drivers/DRV8301/drv8301.cpp **** 
+  25:Drivers/DRV8301/drv8301.cpp ****     // for reference:
+  26:Drivers/DRV8301/drv8301.cpp ****     // 20V/V on 500uOhm gives a range of +/- 150A
+  27:Drivers/DRV8301/drv8301.cpp ****     // 40V/V on 500uOhm gives a range of +/- 75A
+  28:Drivers/DRV8301/drv8301.cpp ****     // 20V/V on 666uOhm gives a range of +/- 110A
+  29:Drivers/DRV8301/drv8301.cpp ****     // 40V/V on 666uOhm gives a range of +/- 55A
+  30:Drivers/DRV8301/drv8301.cpp **** 
+  31:Drivers/DRV8301/drv8301.cpp ****     uint16_t gain_setting = 3;
+  32:Drivers/DRV8301/drv8301.cpp ****     float gain_choices[] = {10.0f, 20.0f, 40.0f, 80.0f};
+  33:Drivers/DRV8301/drv8301.cpp ****     while (gain_setting && (gain_choices[gain_setting] > requested_gain)) {
+  34:Drivers/DRV8301/drv8301.cpp ****         gain_setting--;
+ARM GAS  /tmp/ccXJwns6.s 			page 5
+
+
+  35:Drivers/DRV8301/drv8301.cpp ****     }
+  36:Drivers/DRV8301/drv8301.cpp **** 
+  37:Drivers/DRV8301/drv8301.cpp ****     if (actual_gain) {
+  38:Drivers/DRV8301/drv8301.cpp ****         *actual_gain = gain_choices[gain_setting];
+  39:Drivers/DRV8301/drv8301.cpp ****     }
+  40:Drivers/DRV8301/drv8301.cpp **** 
+  41:Drivers/DRV8301/drv8301.cpp ****     RegisterFile new_config;
+  42:Drivers/DRV8301/drv8301.cpp **** 
+  43:Drivers/DRV8301/drv8301.cpp ****     new_config.control_register_1 =
+  44:Drivers/DRV8301/drv8301.cpp ****           (21 << 6) // Overcurrent set to approximately 150A at 100degC. This may need tweaking.
+  45:Drivers/DRV8301/drv8301.cpp ****         | (0b01 << 4) // OCP_MODE: latch shut down
+  46:Drivers/DRV8301/drv8301.cpp ****         | (0b0 << 3) // 6x PWM mode
+  47:Drivers/DRV8301/drv8301.cpp ****         | (0b0 << 2) // don't reset latched faults
+  48:Drivers/DRV8301/drv8301.cpp ****         | (0b00 << 0); // gate-drive peak current: 1.7A
+  49:Drivers/DRV8301/drv8301.cpp **** 
+  50:Drivers/DRV8301/drv8301.cpp ****     new_config.control_register_2 =
+  51:Drivers/DRV8301/drv8301.cpp ****           (0b0 << 6) // OC_TOFF: cycle by cycle
+  52:Drivers/DRV8301/drv8301.cpp ****         | (0b00 << 4) // calibration off (normal operation)
+  53:Drivers/DRV8301/drv8301.cpp ****         | (gain_setting << 2) // select gain
+  54:Drivers/DRV8301/drv8301.cpp ****         | (0b00 << 0); // report both over temperature and over current on nOCTW pin
+  55:Drivers/DRV8301/drv8301.cpp **** 
+  56:Drivers/DRV8301/drv8301.cpp ****     bool regs_equal = (regs_.control_register_1 == new_config.control_register_1)
+  57:Drivers/DRV8301/drv8301.cpp ****                    && (regs_.control_register_2 == new_config.control_register_2);
+  58:Drivers/DRV8301/drv8301.cpp **** 
+  59:Drivers/DRV8301/drv8301.cpp ****     if (!regs_equal) {
+  60:Drivers/DRV8301/drv8301.cpp ****         regs_ = new_config;
+  61:Drivers/DRV8301/drv8301.cpp ****         state_ = kStateUninitialized;
+  62:Drivers/DRV8301/drv8301.cpp ****         enable_gpio_.write(false);
+  63:Drivers/DRV8301/drv8301.cpp ****     }
+  64:Drivers/DRV8301/drv8301.cpp **** 
+  65:Drivers/DRV8301/drv8301.cpp ****     return true;
+  66:Drivers/DRV8301/drv8301.cpp **** }
+  67:Drivers/DRV8301/drv8301.cpp **** 
+  68:Drivers/DRV8301/drv8301.cpp **** bool Drv8301::init() {
+  69:Drivers/DRV8301/drv8301.cpp ****     uint16_t val;
+  70:Drivers/DRV8301/drv8301.cpp **** 
+  71:Drivers/DRV8301/drv8301.cpp ****     if (state_ == kStateReady) {
+  72:Drivers/DRV8301/drv8301.cpp ****         return true;
+  73:Drivers/DRV8301/drv8301.cpp ****     }
+  74:Drivers/DRV8301/drv8301.cpp **** 
+  75:Drivers/DRV8301/drv8301.cpp ****     // Reset DRV chip. The enable pin also controls the SPI interface, not only
+  76:Drivers/DRV8301/drv8301.cpp ****     // the driver stages.
+  77:Drivers/DRV8301/drv8301.cpp ****     enable_gpio_.write(false);
+  78:Drivers/DRV8301/drv8301.cpp ****     delay_us(40); // mimumum pull-down time for full reset: 20us
+  79:Drivers/DRV8301/drv8301.cpp ****     state_ = kStateUninitialized; // make is_ready() ignore transient errors before registers are s
+  80:Drivers/DRV8301/drv8301.cpp ****     enable_gpio_.write(true);
+  81:Drivers/DRV8301/drv8301.cpp ****     osDelay(20); // t_spi_ready, max = 10ms
+  82:Drivers/DRV8301/drv8301.cpp **** 
+  83:Drivers/DRV8301/drv8301.cpp ****     // Write current configuration
+  84:Drivers/DRV8301/drv8301.cpp ****     bool wrote_regs = write_reg(kRegNameControl1, regs_.control_register_1)
+  85:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl1, regs_.control_register_1)
+  86:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl1, regs_.control_register_1)
+  87:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl1, regs_.control_register_1)
+  88:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl1, regs_.control_register_1) // the write operat
+  89:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl2, regs_.control_register_2);
+  90:Drivers/DRV8301/drv8301.cpp ****     if (!wrote_regs) {
+  91:Drivers/DRV8301/drv8301.cpp ****         return false;
+ARM GAS  /tmp/ccXJwns6.s 			page 6
+
+
+  92:Drivers/DRV8301/drv8301.cpp ****     }
+  93:Drivers/DRV8301/drv8301.cpp **** 
+  94:Drivers/DRV8301/drv8301.cpp ****     // Wait for configuration to be applied
+  95:Drivers/DRV8301/drv8301.cpp ****     delay_us(100);
+  96:Drivers/DRV8301/drv8301.cpp ****     state_ = kStateStartupChecks;
+  97:Drivers/DRV8301/drv8301.cpp **** 
+  98:Drivers/DRV8301/drv8301.cpp ****     bool is_read_regs = read_reg(kRegNameControl1, &val) && (val == regs_.control_register_1)
+  99:Drivers/DRV8301/drv8301.cpp ****                       && read_reg(kRegNameControl2, &val) && (val == regs_.control_register_2);
+ 100:Drivers/DRV8301/drv8301.cpp ****     if (!is_read_regs) {
+ 101:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 102:Drivers/DRV8301/drv8301.cpp ****     }
+ 103:Drivers/DRV8301/drv8301.cpp **** 
+ 104:Drivers/DRV8301/drv8301.cpp ****     if (get_error() != FaultType_NoFault) {
+ 105:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 106:Drivers/DRV8301/drv8301.cpp ****     }
+ 107:Drivers/DRV8301/drv8301.cpp **** 
+ 108:Drivers/DRV8301/drv8301.cpp ****     // There could have been an nFAULT edge meanwhile. In this case we shouldn't
+ 109:Drivers/DRV8301/drv8301.cpp ****     // consider the driver ready.
+ 110:Drivers/DRV8301/drv8301.cpp ****     CRITICAL_SECTION() {
+ 111:Drivers/DRV8301/drv8301.cpp ****         if (state_ == kStateStartupChecks) {
+ 112:Drivers/DRV8301/drv8301.cpp ****             state_ = kStateReady;
+ 113:Drivers/DRV8301/drv8301.cpp ****         }
+ 114:Drivers/DRV8301/drv8301.cpp ****     }
+ 115:Drivers/DRV8301/drv8301.cpp **** 
+ 116:Drivers/DRV8301/drv8301.cpp ****     return state_ == kStateReady;
+ 117:Drivers/DRV8301/drv8301.cpp **** }
+ 118:Drivers/DRV8301/drv8301.cpp **** 
+ 119:Drivers/DRV8301/drv8301.cpp **** void Drv8301::do_checks() {
+ 120:Drivers/DRV8301/drv8301.cpp ****     if (state_ != kStateUninitialized && !nfault_gpio_.read()) {
+ 121:Drivers/DRV8301/drv8301.cpp ****         state_ = kStateUninitialized;
+ 122:Drivers/DRV8301/drv8301.cpp ****     }
+ 123:Drivers/DRV8301/drv8301.cpp **** }
+ 124:Drivers/DRV8301/drv8301.cpp **** 
+ 125:Drivers/DRV8301/drv8301.cpp **** bool Drv8301::is_ready() {
+ 113              		.loc 2 125 26 is_stmt 1 view -0
+ 114              		.cfi_startproc
+ 115              		@ args = 0, pretend = 0, frame = 0
+ 116              		@ frame_needed = 0, uses_anonymous_args = 0
+ 117              		@ link register save eliminated.
+ 126:Drivers/DRV8301/drv8301.cpp ****     return state_ == kStateReady;
+ 118              		.loc 2 126 5 view .LVU11
+ 119              		.loc 2 126 12 is_stmt 0 view .LVU12
+ 120 0000 90F82C00 		ldrb	r0, [r0, #44]	@ zero_extendqisi2
+ 121              	.LVL5:
+ 127:Drivers/DRV8301/drv8301.cpp **** }
+ 122              		.loc 2 127 1 view .LVU13
+ 123 0004 0228     		cmp	r0, #2
+ 124 0006 14BF     		ite	ne
+ 125 0008 0020     		movne	r0, #0
+ 126 000a 0120     		moveq	r0, #1
+ 127 000c 7047     		bx	lr
+ 128              		.cfi_endproc
+ 129              	.LFE4271:
+ 130              		.cantunwind
+ 131              		.fnend
+ 133              		.thumb_set .LTHUNK2,_ZN7Drv83018is_readyEv
+ 134              		.section	.text._ZThn4_N7Drv83018is_readyEv,"ax",%progbits
+ARM GAS  /tmp/ccXJwns6.s 			page 7
+
+
+ 135              		.align	1
+ 136              		.global	_ZThn4_N7Drv83018is_readyEv
+ 137              		.syntax unified
+ 138              		.thumb
+ 139              		.thumb_func
+ 141              	_ZThn4_N7Drv83018is_readyEv:
+ 142              		.fnstart
+ 143              	.LFB4785:
+  73:Drivers/DRV8301/drv8301.hpp **** 
+ 144              		.loc 1 73 10 is_stmt 1 view -0
+ 145              		.cfi_startproc
+ 146              		@ args = 0, pretend = 0, frame = 0
+ 147              		@ frame_needed = 0, uses_anonymous_args = 0
+ 148 0000 A0F10400 		sub	r0, r0, #4
+ 149 0004 FFF7FEBF 		b	.LTHUNK2
+ 150              		.cfi_endproc
+ 151              	.LFE4785:
+ 152              		.cantunwind
+ 153              		.fnend
+ 155              		.section	.text._ZN7Drv830120get_max_output_swingEv,"axG",%progbits,_ZN7Drv830120get_max_output_swi
+ 156              		.align	1
+ 157              		.weak	_ZThn4_N7Drv830120get_max_output_swingEv
+ 158              		.syntax unified
+ 159              		.thumb
+ 160              		.thumb_func
+ 162              	_ZThn4_N7Drv830120get_max_output_swingEv:
+ 163              		.fnstart
+ 164              	.LFB4781:
+ 165              		.cfi_startproc
+ 166              		@ args = 0, pretend = 0, frame = 0
+ 167              		@ frame_needed = 0, uses_anonymous_args = 0
+ 168              		@ link register save eliminated.
+ 169 000c 9FED010A 		vldr.32	s0, .L8
+ 170 0010 7047     		bx	lr
+ 171              	.L9:
+ 172 0012 00BF     		.align	2
+ 173              	.L8:
+ 174 0014 5E74513F 		.word	1062302814
+ 175              		.cfi_endproc
+ 176              	.LFE4781:
+ 177              		.cantunwind
+ 178              		.fnend
+ 180              		.section	.text._ZN7Drv830112get_midpointEv,"axG",%progbits,_ZN7Drv830112get_midpointEv,comdat
+ 181              		.align	1
+ 182              		.weak	_ZThn4_N7Drv830112get_midpointEv
+ 183              		.syntax unified
+ 184              		.thumb
+ 185              		.thumb_func
+ 187              	_ZThn4_N7Drv830112get_midpointEv:
+ 188              		.fnstart
+ 189              	.LFB4782:
+ 190              		.cfi_startproc
+ 191              		@ args = 0, pretend = 0, frame = 0
+ 192              		@ frame_needed = 0, uses_anonymous_args = 0
+ 193              		@ link register save eliminated.
+ 194 0006 B6EE000A 		vmov.f32	s0, #5.0e-1
+ 195 000a 7047     		bx	lr
+ARM GAS  /tmp/ccXJwns6.s 			page 8
+
+
+ 196              		.cfi_endproc
+ 197              	.LFE4782:
+ 198              		.cantunwind
+ 199              		.fnend
+ 201              		.section	.text._ZN7Drv83016configEfPf,"ax",%progbits
+ 202              		.align	1
+ 203              		.global	_ZN7Drv83016configEfPf
+ 204              		.syntax unified
+ 205              		.thumb
+ 206              		.thumb_func
+ 208              	_ZN7Drv83016configEfPf:
+ 209              		.fnstart
+ 210              	.LVL6:
+ 211              	.LFB4268:
+  21:Drivers/DRV8301/drv8301.cpp ****     // Calculate gain setting: Snap down to have equal or larger range as
+ 212              		.loc 2 21 64 view -0
+ 213              		.cfi_startproc
+ 214              		@ args = 0, pretend = 0, frame = 24
+ 215              		@ frame_needed = 0, uses_anonymous_args = 0
+  21:Drivers/DRV8301/drv8301.cpp ****     // Calculate gain setting: Snap down to have equal or larger range as
+ 216              		.loc 2 21 64 is_stmt 0 view .LVU16
+ 217 0000 10B5     		push	{r4, lr}
+ 218              		.save {r4, lr}
+ 219              	.LCFI0:
+ 220              		.cfi_def_cfa_offset 8
+ 221              		.cfi_offset 4, -8
+ 222              		.cfi_offset 14, -4
+ 223              		.pad #24
+ 224 0002 86B0     		sub	sp, sp, #24
+ 225              	.LCFI1:
+ 226              		.cfi_def_cfa_offset 32
+ 227 0004 8446     		mov	ip, r0
+ 228 0006 0C46     		mov	r4, r1
+  31:Drivers/DRV8301/drv8301.cpp ****     float gain_choices[] = {10.0f, 20.0f, 40.0f, 80.0f};
+ 229              		.loc 2 31 5 is_stmt 1 view .LVU17
+ 230              	.LVL7:
+  32:Drivers/DRV8301/drv8301.cpp ****     while (gain_setting && (gain_choices[gain_setting] > requested_gain)) {
+ 231              		.loc 2 32 5 view .LVU18
+  32:Drivers/DRV8301/drv8301.cpp ****     while (gain_setting && (gain_choices[gain_setting] > requested_gain)) {
+ 232              		.loc 2 32 11 is_stmt 0 view .LVU19
+ 233 0008 1E4B     		ldr	r3, .L22
+ 234 000a 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 235              	.LVL8:
+  32:Drivers/DRV8301/drv8301.cpp ****     while (gain_setting && (gain_choices[gain_setting] > requested_gain)) {
+ 236              		.loc 2 32 11 view .LVU20
+ 237 000c 0DF1180E 		add	lr, sp, #24
+ 238 0010 0EE90F00 		stmdb	lr, {r0, r1, r2, r3}
+  31:Drivers/DRV8301/drv8301.cpp ****     float gain_choices[] = {10.0f, 20.0f, 40.0f, 80.0f};
+ 239              		.loc 2 31 14 view .LVU21
+ 240 0014 0323     		movs	r3, #3
+ 241 0016 01E0     		b	.L14
+ 242              	.LVL9:
+ 243              	.L21:
+  34:Drivers/DRV8301/drv8301.cpp ****     }
+ 244              		.loc 2 34 9 is_stmt 1 view .LVU22
+  34:Drivers/DRV8301/drv8301.cpp ****     }
+ 245              		.loc 2 34 21 is_stmt 0 view .LVU23
+ARM GAS  /tmp/ccXJwns6.s 			page 9
+
+
+ 246 0018 013B     		subs	r3, r3, #1
+ 247              	.LVL10:
+  34:Drivers/DRV8301/drv8301.cpp ****     }
+ 248              		.loc 2 34 21 view .LVU24
+ 249 001a 9BB2     		uxth	r3, r3
+ 250              	.LVL11:
+ 251              	.L14:
+  33:Drivers/DRV8301/drv8301.cpp ****         gain_setting--;
+ 252              		.loc 2 33 5 is_stmt 1 view .LVU25
+  33:Drivers/DRV8301/drv8301.cpp ****         gain_setting--;
+ 253              		.loc 2 33 25 view .LVU26
+ 254 001c 4BB1     		cbz	r3, .L12
+  33:Drivers/DRV8301/drv8301.cpp ****         gain_setting--;
+ 255              		.loc 2 33 54 is_stmt 0 discriminator 1 view .LVU27
+ 256 001e 06AA     		add	r2, sp, #24
+ 257 0020 02EB8302 		add	r2, r2, r3, lsl #2
+ 258 0024 52ED047A 		vldr.32	s15, [r2, #-16]
+  33:Drivers/DRV8301/drv8301.cpp ****         gain_setting--;
+ 259              		.loc 2 33 25 discriminator 1 view .LVU28
+ 260 0028 F4EEC07A 		vcmpe.f32	s15, s0
+ 261 002c F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 262 0030 F2DC     		bgt	.L21
+ 263              	.L12:
+  37:Drivers/DRV8301/drv8301.cpp ****         *actual_gain = gain_choices[gain_setting];
+ 264              		.loc 2 37 5 is_stmt 1 view .LVU29
+ 265 0032 2CB1     		cbz	r4, .L15
+  38:Drivers/DRV8301/drv8301.cpp ****     }
+ 266              		.loc 2 38 9 view .LVU30
+  38:Drivers/DRV8301/drv8301.cpp ****     }
+ 267              		.loc 2 38 49 is_stmt 0 view .LVU31
+ 268 0034 06AA     		add	r2, sp, #24
+ 269 0036 02EB8302 		add	r2, r2, r3, lsl #2
+ 270 003a 52F8102C 		ldr	r2, [r2, #-16]	@ float
+  38:Drivers/DRV8301/drv8301.cpp ****     }
+ 271              		.loc 2 38 22 view .LVU32
+ 272 003e 2260     		str	r2, [r4]	@ float
+ 273              	.L15:
+  41:Drivers/DRV8301/drv8301.cpp **** 
+ 274              		.loc 2 41 5 is_stmt 1 view .LVU33
+  43:Drivers/DRV8301/drv8301.cpp ****           (21 << 6) // Overcurrent set to approximately 150A at 100degC. This may need tweaking.
+ 275              		.loc 2 43 5 view .LVU34
+  43:Drivers/DRV8301/drv8301.cpp ****           (21 << 6) // Overcurrent set to approximately 150A at 100degC. This may need tweaking.
+ 276              		.loc 2 43 35 is_stmt 0 view .LVU35
+ 277 0040 4FF4AA62 		mov	r2, #1360
+ 278 0044 ADF80420 		strh	r2, [sp, #4]	@ movhi
+  50:Drivers/DRV8301/drv8301.cpp ****           (0b0 << 6) // OC_TOFF: cycle by cycle
+ 279              		.loc 2 50 5 is_stmt 1 view .LVU36
+  53:Drivers/DRV8301/drv8301.cpp ****         | (0b00 << 0); // report both over temperature and over current on nOCTW pin
+ 280              		.loc 2 53 25 is_stmt 0 view .LVU37
+ 281 0048 9B00     		lsls	r3, r3, #2
+ 282              	.LVL12:
+  53:Drivers/DRV8301/drv8301.cpp ****         | (0b00 << 0); // report both over temperature and over current on nOCTW pin
+ 283              		.loc 2 53 25 view .LVU38
+ 284 004a 9BB2     		uxth	r3, r3
+  50:Drivers/DRV8301/drv8301.cpp ****           (0b0 << 6) // OC_TOFF: cycle by cycle
+ 285              		.loc 2 50 35 view .LVU39
+ 286 004c ADF80630 		strh	r3, [sp, #6]	@ movhi
+ARM GAS  /tmp/ccXJwns6.s 			page 10
+
+
+  56:Drivers/DRV8301/drv8301.cpp ****                    && (regs_.control_register_2 == new_config.control_register_2);
+ 287              		.loc 2 56 5 is_stmt 1 view .LVU40
+  56:Drivers/DRV8301/drv8301.cpp ****                    && (regs_.control_register_2 == new_config.control_register_2);
+ 288              		.loc 2 56 30 is_stmt 0 view .LVU41
+ 289 0050 BCF82420 		ldrh	r2, [ip, #36]
+  57:Drivers/DRV8301/drv8301.cpp **** 
+ 290              		.loc 2 57 20 view .LVU42
+ 291 0054 B2F5AA6F 		cmp	r2, #1360
+ 292 0058 03D1     		bne	.L16
+  57:Drivers/DRV8301/drv8301.cpp **** 
+ 293              		.loc 2 57 30 discriminator 1 view .LVU43
+ 294 005a BCF82620 		ldrh	r2, [ip, #38]
+  57:Drivers/DRV8301/drv8301.cpp **** 
+ 295              		.loc 2 57 20 discriminator 1 view .LVU44
+ 296 005e 9342     		cmp	r3, r2
+ 297 0060 0DD0     		beq	.L17
+ 298              	.L16:
+ 299              	.LVL13:
+  59:Drivers/DRV8301/drv8301.cpp ****         regs_ = new_config;
+ 300              		.loc 2 59 5 is_stmt 1 view .LVU45
+  60:Drivers/DRV8301/drv8301.cpp ****         state_ = kStateUninitialized;
+ 301              		.loc 2 60 9 view .LVU46
+  60:Drivers/DRV8301/drv8301.cpp ****         state_ = kStateUninitialized;
+ 302              		.loc 2 60 15 is_stmt 0 view .LVU47
+ 303 0062 019B     		ldr	r3, [sp, #4]
+ 304 0064 CCF82430 		str	r3, [ip, #36]
+  61:Drivers/DRV8301/drv8301.cpp ****         enable_gpio_.write(false);
+ 305              		.loc 2 61 9 is_stmt 1 view .LVU48
+  61:Drivers/DRV8301/drv8301.cpp ****         enable_gpio_.write(false);
+ 306              		.loc 2 61 16 is_stmt 0 view .LVU49
+ 307 0068 0023     		movs	r3, #0
+ 308 006a 8CF82C30 		strb	r3, [ip, #44]
+  62:Drivers/DRV8301/drv8301.cpp ****     }
+ 309              		.loc 2 62 9 is_stmt 1 view .LVU50
+ 310              	.LVL14:
+ 311              	.LBB48:
+ 312              	.LBI48:
+ 313              		.file 3 "./Drivers/STM32/stm32_gpio.hpp"
+   1:./Drivers/STM32/stm32_gpio.hpp **** #ifndef __STM32_GPIO_HPP
+   2:./Drivers/STM32/stm32_gpio.hpp **** #define __STM32_GPIO_HPP
+   3:./Drivers/STM32/stm32_gpio.hpp **** 
+   4:./Drivers/STM32/stm32_gpio.hpp **** #include <gpio.h>
+   5:./Drivers/STM32/stm32_gpio.hpp **** 
+   6:./Drivers/STM32/stm32_gpio.hpp **** class Stm32Gpio {
+   7:./Drivers/STM32/stm32_gpio.hpp **** public:
+   8:./Drivers/STM32/stm32_gpio.hpp ****     static const Stm32Gpio none;
+   9:./Drivers/STM32/stm32_gpio.hpp **** 
+  10:./Drivers/STM32/stm32_gpio.hpp ****     Stm32Gpio() : port_(nullptr), pin_mask_(0) {}
+  11:./Drivers/STM32/stm32_gpio.hpp ****     Stm32Gpio(GPIO_TypeDef* port, uint16_t pin) : port_(port), pin_mask_(pin) {}
+  12:./Drivers/STM32/stm32_gpio.hpp **** 
+  13:./Drivers/STM32/stm32_gpio.hpp ****     operator bool() const { return port_ && pin_mask_; }
+  14:./Drivers/STM32/stm32_gpio.hpp **** 
+  15:./Drivers/STM32/stm32_gpio.hpp ****     /**
+  16:./Drivers/STM32/stm32_gpio.hpp ****      * @brief Configures the GPIO with the specified parameters.
+  17:./Drivers/STM32/stm32_gpio.hpp ****      * 
+  18:./Drivers/STM32/stm32_gpio.hpp ****      * This can be done regardless of the current state of the GPIO.
+  19:./Drivers/STM32/stm32_gpio.hpp ****      * 
+ARM GAS  /tmp/ccXJwns6.s 			page 11
+
+
+  20:./Drivers/STM32/stm32_gpio.hpp ****      * If any subscription is in place, it is not disabled by this function.
+  21:./Drivers/STM32/stm32_gpio.hpp ****      */
+  22:./Drivers/STM32/stm32_gpio.hpp ****     bool config(uint32_t mode, uint32_t pull, uint32_t speed = GPIO_SPEED_FREQ_LOW);
+  23:./Drivers/STM32/stm32_gpio.hpp **** 
+  24:./Drivers/STM32/stm32_gpio.hpp ****     void write(bool state) {
+ 314              		.loc 3 24 10 view .LVU51
+ 315              	.LBB49:
+  25:./Drivers/STM32/stm32_gpio.hpp ****         if (port_) {
+ 316              		.loc 3 25 9 view .LVU52
+ 317              		.loc 3 25 13 is_stmt 0 view .LVU53
+ 318 006e DCF81400 		ldr	r0, [ip, #20]
+ 319              		.loc 3 25 9 view .LVU54
+ 320 0072 20B1     		cbz	r0, .L17
+  26:./Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 321              		.loc 3 26 13 is_stmt 1 view .LVU55
+ 322              		.loc 3 26 30 is_stmt 0 view .LVU56
+ 323 0074 0022     		movs	r2, #0
+ 324 0076 BCF81810 		ldrh	r1, [ip, #24]
+ 325 007a FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 326              	.LVL15:
+ 327              	.L17:
+ 328              		.loc 3 26 30 view .LVU57
+ 329              	.LBE49:
+ 330              	.LBE48:
+  65:Drivers/DRV8301/drv8301.cpp **** }
+ 331              		.loc 2 65 5 is_stmt 1 view .LVU58
+  66:Drivers/DRV8301/drv8301.cpp **** 
+ 332              		.loc 2 66 1 is_stmt 0 view .LVU59
+ 333 007e 0120     		movs	r0, #1
+ 334 0080 06B0     		add	sp, sp, #24
+ 335              	.LCFI2:
+ 336              		.cfi_def_cfa_offset 8
+ 337              		@ sp needed
+ 338 0082 10BD     		pop	{r4, pc}
+ 339              	.LVL16:
+ 340              	.L23:
+  66:Drivers/DRV8301/drv8301.cpp **** 
+ 341              		.loc 2 66 1 view .LVU60
+ 342              		.align	2
+ 343              	.L22:
+ 344 0084 00000000 		.word	.LANCHOR0
+ 345              		.cfi_endproc
+ 346              	.LFE4268:
+ 347              		.fnend
+ 349              		.section	.text._ZN7Drv83019do_checksEv,"ax",%progbits
+ 350              		.align	1
+ 351              		.global	_ZN7Drv83019do_checksEv
+ 352              		.syntax unified
+ 353              		.thumb
+ 354              		.thumb_func
+ 356              	_ZN7Drv83019do_checksEv:
+ 357              		.fnstart
+ 358              	.LVL17:
+ 359              	.LFB4270:
+ 119:Drivers/DRV8301/drv8301.cpp ****     if (state_ != kStateUninitialized && !nfault_gpio_.read()) {
+ 360              		.loc 2 119 27 is_stmt 1 view -0
+ 361              		.cfi_startproc
+ARM GAS  /tmp/ccXJwns6.s 			page 12
+
+
+ 362              		@ args = 0, pretend = 0, frame = 0
+ 363              		@ frame_needed = 0, uses_anonymous_args = 0
+ 364              		@ link register save eliminated.
+ 120:Drivers/DRV8301/drv8301.cpp ****         state_ = kStateUninitialized;
+ 365              		.loc 2 120 5 view .LVU62
+ 120:Drivers/DRV8301/drv8301.cpp ****         state_ = kStateUninitialized;
+ 366              		.loc 2 120 9 is_stmt 0 view .LVU63
+ 367 0000 90F82C30 		ldrb	r3, [r0, #44]	@ zero_extendqisi2
+ 120:Drivers/DRV8301/drv8301.cpp ****         state_ = kStateUninitialized;
+ 368              		.loc 2 120 39 view .LVU64
+ 369 0004 43B1     		cbz	r3, .L24
+ 370              	.LVL18:
+ 371              	.LBB50:
+ 372              	.LBI50:
+  27:./Drivers/STM32/stm32_gpio.hpp ****         }
+  28:./Drivers/STM32/stm32_gpio.hpp ****     }
+  29:./Drivers/STM32/stm32_gpio.hpp **** 
+  30:./Drivers/STM32/stm32_gpio.hpp ****     bool read() {
+ 373              		.loc 3 30 10 is_stmt 1 discriminator 1 view .LVU65
+ 374              	.LBB51:
+  31:./Drivers/STM32/stm32_gpio.hpp ****         return port_ && (port_->IDR & pin_mask_);
+ 375              		.loc 3 31 9 discriminator 1 view .LVU66
+ 376              		.loc 3 31 16 is_stmt 0 discriminator 1 view .LVU67
+ 377 0006 C369     		ldr	r3, [r0, #28]
+ 378              		.loc 3 31 22 discriminator 1 view .LVU68
+ 379 0008 1BB1     		cbz	r3, .L26
+ 380              		.loc 3 31 33 view .LVU69
+ 381 000a 1A69     		ldr	r2, [r3, #16]
+ 382              		.loc 3 31 39 view .LVU70
+ 383 000c 038C     		ldrh	r3, [r0, #32]
+ 384              		.loc 3 31 22 view .LVU71
+ 385 000e 1A42     		tst	r2, r3
+ 386 0010 02D1     		bne	.L24
+ 387              	.L26:
+ 388              	.LVL19:
+ 389              		.loc 3 31 22 view .LVU72
+ 390              	.LBE51:
+ 391              	.LBE50:
+ 121:Drivers/DRV8301/drv8301.cpp ****     }
+ 392              		.loc 2 121 9 is_stmt 1 view .LVU73
+ 121:Drivers/DRV8301/drv8301.cpp ****     }
+ 393              		.loc 2 121 16 is_stmt 0 view .LVU74
+ 394 0012 0023     		movs	r3, #0
+ 395 0014 80F82C30 		strb	r3, [r0, #44]
+ 396              	.L24:
+ 123:Drivers/DRV8301/drv8301.cpp **** 
+ 397              		.loc 2 123 1 view .LVU75
+ 398 0018 7047     		bx	lr
+ 399              		.cfi_endproc
+ 400              	.LFE4270:
+ 401              		.cantunwind
+ 402              		.fnend
+ 404              		.section	.text._ZN7Drv83018read_regENS_9RegName_eEPt,"ax",%progbits
+ 405              		.align	1
+ 406              		.global	_ZN7Drv83018read_regENS_9RegName_eEPt
+ 407              		.syntax unified
+ 408              		.thumb
+ARM GAS  /tmp/ccXJwns6.s 			page 13
+
+
+ 409              		.thumb_func
+ 411              	_ZN7Drv83018read_regENS_9RegName_eEPt:
+ 412              		.fnstart
+ 413              	.LVL20:
+ 414              	.LFB4273:
+ 128:Drivers/DRV8301/drv8301.cpp **** 
+ 129:Drivers/DRV8301/drv8301.cpp **** Drv8301::FaultType_e Drv8301::get_error() {
+ 130:Drivers/DRV8301/drv8301.cpp ****     uint16_t fault1, fault2;
+ 131:Drivers/DRV8301/drv8301.cpp **** 
+ 132:Drivers/DRV8301/drv8301.cpp ****     if (!read_reg(kRegNameStatus1, &fault1) ||
+ 133:Drivers/DRV8301/drv8301.cpp ****         !read_reg(kRegNameStatus2, &fault2)) {
+ 134:Drivers/DRV8301/drv8301.cpp ****         return (FaultType_e)0xffffffff;
+ 135:Drivers/DRV8301/drv8301.cpp ****     }
+ 136:Drivers/DRV8301/drv8301.cpp **** 
+ 137:Drivers/DRV8301/drv8301.cpp ****     return (FaultType_e)((uint32_t)fault1 | ((uint32_t)(fault2 & 0x0080) << 16));
+ 138:Drivers/DRV8301/drv8301.cpp **** }
+ 139:Drivers/DRV8301/drv8301.cpp **** 
+ 140:Drivers/DRV8301/drv8301.cpp **** bool Drv8301::read_reg(const RegName_e regName, uint16_t* data) {
+ 415              		.loc 2 140 65 is_stmt 1 view -0
+ 416              		.cfi_startproc
+ 417              		@ args = 0, pretend = 0, frame = 0
+ 418              		@ frame_needed = 0, uses_anonymous_args = 0
+ 419              		.loc 2 140 65 is_stmt 0 view .LVU77
+ 420 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 421              		.save {r4, r5, r6, r7, r8, lr}
+ 422              	.LCFI3:
+ 423              		.cfi_def_cfa_offset 24
+ 424              		.cfi_offset 4, -24
+ 425              		.cfi_offset 5, -20
+ 426              		.cfi_offset 6, -16
+ 427              		.cfi_offset 7, -12
+ 428              		.cfi_offset 8, -8
+ 429              		.cfi_offset 14, -4
+ 430              		.pad #56
+ 431 0004 8EB0     		sub	sp, sp, #56
+ 432              	.LCFI4:
+ 433              		.cfi_def_cfa_offset 80
+ 434 0006 0446     		mov	r4, r0
+ 435 0008 1746     		mov	r7, r2
+ 141:Drivers/DRV8301/drv8301.cpp ****     tx_buf_ = build_ctrl_word(DRV8301_CtrlMode_Read, regName, 0);
+ 436              		.loc 2 141 5 is_stmt 1 view .LVU78
+ 437              	.LVL21:
+ 438              	.LBB52:
+ 439              	.LBI52:
+  90:Drivers/DRV8301/drv8301.hpp **** 
+  91:Drivers/DRV8301/drv8301.hpp **** private:
+  92:Drivers/DRV8301/drv8301.hpp ****     enum CtrlMode_e {
+  93:Drivers/DRV8301/drv8301.hpp ****         DRV8301_CtrlMode_Read = 1 << 15,   //!< Read Mode
+  94:Drivers/DRV8301/drv8301.hpp ****         DRV8301_CtrlMode_Write = 0 << 15   //!< Write Mode
+  95:Drivers/DRV8301/drv8301.hpp ****     };
+  96:Drivers/DRV8301/drv8301.hpp **** 
+  97:Drivers/DRV8301/drv8301.hpp ****     enum RegName_e {
+  98:Drivers/DRV8301/drv8301.hpp ****         kRegNameStatus1  = 0 << 11,  //!< Status Register 1
+  99:Drivers/DRV8301/drv8301.hpp ****         kRegNameStatus2  = 1 << 11,  //!< Status Register 2
+ 100:Drivers/DRV8301/drv8301.hpp ****         kRegNameControl1 = 2 << 11,  //!< Control Register 1
+ 101:Drivers/DRV8301/drv8301.hpp ****         kRegNameControl2 = 3 << 11   //!< Control Register 2
+ 102:Drivers/DRV8301/drv8301.hpp ****     };
+ARM GAS  /tmp/ccXJwns6.s 			page 14
+
+
+ 103:Drivers/DRV8301/drv8301.hpp **** 
+ 104:Drivers/DRV8301/drv8301.hpp ****     struct RegisterFile {
+ 105:Drivers/DRV8301/drv8301.hpp ****         uint16_t control_register_1;
+ 106:Drivers/DRV8301/drv8301.hpp ****         uint16_t control_register_2;
+ 107:Drivers/DRV8301/drv8301.hpp ****     };
+ 108:Drivers/DRV8301/drv8301.hpp **** 
+ 109:Drivers/DRV8301/drv8301.hpp ****     static inline uint16_t build_ctrl_word(const CtrlMode_e ctrlMode,
+ 440              		.loc 1 109 28 view .LVU79
+ 441              	.LBB53:
+ 110:Drivers/DRV8301/drv8301.hpp ****                                            const RegName_e regName,
+ 111:Drivers/DRV8301/drv8301.hpp ****                                            const uint16_t data) {
+ 112:Drivers/DRV8301/drv8301.hpp ****         return ctrlMode | regName | (data & 0x07FF);
+ 442              		.loc 1 112 9 view .LVU80
+ 443              		.loc 1 112 25 is_stmt 0 view .LVU81
+ 444 000a 41F40046 		orr	r6, r1, #32768
+ 445              	.LVL22:
+ 446              		.loc 1 112 25 view .LVU82
+ 447              	.LBE53:
+ 448              	.LBE52:
+ 449              		.loc 2 141 13 view .LVU83
+ 450 000e 0685     		strh	r6, [r0, #40]	@ movhi
+ 142:Drivers/DRV8301/drv8301.cpp ****     if (!spi_arbiter_->transfer(spi_config_, ncs_gpio_, (uint8_t *)(&tx_buf_), nullptr, 1, 1000)) {
+ 451              		.loc 2 142 5 is_stmt 1 view .LVU84
+ 452              		.loc 2 142 69 is_stmt 0 view .LVU85
+ 453 0010 00F12808 		add	r8, r0, #40
+ 454              		.loc 2 142 32 view .LVU86
+ 455 0014 314D     		ldr	r5, .L32
+ 456 0016 4FF47A73 		mov	r3, #1000
+ 457 001a 0D93     		str	r3, [sp, #52]
+ 458 001c 0123     		movs	r3, #1
+ 459 001e 0C93     		str	r3, [sp, #48]
+ 460 0020 0023     		movs	r3, #0
+ 461 0022 0B93     		str	r3, [sp, #44]
+ 462 0024 CDF82880 		str	r8, [sp, #40]
+ 463 0028 08AB     		add	r3, sp, #32
+ 464 002a 00F10C02 		add	r2, r0, #12
+ 465              	.LVL23:
+ 466              		.loc 2 142 32 view .LVU87
+ 467 002e 92E80300 		ldm	r2, {r0, r1}
+ 468              	.LVL24:
+ 469              		.loc 2 142 32 view .LVU88
+ 470 0032 83E80300 		stm	r3, {r0, r1}
+ 471 0036 EC46     		mov	ip, sp
+ 472 0038 05F10C0E 		add	lr, r5, #12
+ 473 003c BEE80F00 		ldmia	lr!, {r0, r1, r2, r3}
+ 474 0040 ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 475 0044 9EE80F00 		ldm	lr, {r0, r1, r2, r3}
+ 476 0048 8CE80F00 		stm	ip, {r0, r1, r2, r3}
+ 477 004c 95E80E00 		ldm	r5, {r1, r2, r3}
+ 478 0050 A068     		ldr	r0, [r4, #8]
+ 479 0052 FFF7FEFF 		bl	_ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm
+ 480              	.LVL25:
+ 481              		.loc 2 142 5 view .LVU89
+ 482 0056 0546     		mov	r5, r0
+ 483 0058 18B9     		cbnz	r0, .L31
+ 484              	.L28:
+ 143:Drivers/DRV8301/drv8301.cpp ****         return false;
+ARM GAS  /tmp/ccXJwns6.s 			page 15
+
+
+ 144:Drivers/DRV8301/drv8301.cpp ****     }
+ 145:Drivers/DRV8301/drv8301.cpp ****     
+ 146:Drivers/DRV8301/drv8301.cpp ****     delay_us(1);
+ 147:Drivers/DRV8301/drv8301.cpp **** 
+ 148:Drivers/DRV8301/drv8301.cpp ****     tx_buf_ = build_ctrl_word(DRV8301_CtrlMode_Read, regName, 0);
+ 149:Drivers/DRV8301/drv8301.cpp ****     rx_buf_ = 0xffff;
+ 150:Drivers/DRV8301/drv8301.cpp ****     if (!spi_arbiter_->transfer(spi_config_, ncs_gpio_, (uint8_t *)(&tx_buf_), (uint8_t *)(&rx_buf_
+ 151:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 152:Drivers/DRV8301/drv8301.cpp ****     }
+ 153:Drivers/DRV8301/drv8301.cpp **** 
+ 154:Drivers/DRV8301/drv8301.cpp ****     delay_us(1);
+ 155:Drivers/DRV8301/drv8301.cpp **** 
+ 156:Drivers/DRV8301/drv8301.cpp ****     if (rx_buf_ == 0xbeef) {
+ 157:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 158:Drivers/DRV8301/drv8301.cpp ****     }
+ 159:Drivers/DRV8301/drv8301.cpp **** 
+ 160:Drivers/DRV8301/drv8301.cpp ****     if (data) {
+ 161:Drivers/DRV8301/drv8301.cpp ****         *data = rx_buf_ & 0x07FF;
+ 162:Drivers/DRV8301/drv8301.cpp ****     }
+ 163:Drivers/DRV8301/drv8301.cpp ****     
+ 164:Drivers/DRV8301/drv8301.cpp ****     return true;
+ 165:Drivers/DRV8301/drv8301.cpp **** }
+ 485              		.loc 2 165 1 view .LVU90
+ 486 005a 2846     		mov	r0, r5
+ 487 005c 0EB0     		add	sp, sp, #56
+ 488              	.LCFI5:
+ 489              		.cfi_remember_state
+ 490              		.cfi_def_cfa_offset 24
+ 491              		@ sp needed
+ 492 005e BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 493              	.LVL26:
+ 494              	.L31:
+ 495              	.LCFI6:
+ 496              		.cfi_restore_state
+ 146:Drivers/DRV8301/drv8301.cpp **** 
+ 497              		.loc 2 146 5 is_stmt 1 view .LVU91
+ 146:Drivers/DRV8301/drv8301.cpp **** 
+ 498              		.loc 2 146 13 is_stmt 0 view .LVU92
+ 499 0062 0120     		movs	r0, #1
+ 500 0064 FFF7FEFF 		bl	_Z8delay_usm
+ 501              	.LVL27:
+ 148:Drivers/DRV8301/drv8301.cpp ****     rx_buf_ = 0xffff;
+ 502              		.loc 2 148 5 is_stmt 1 view .LVU93
+ 503              		.loc 1 112 9 view .LVU94
+ 148:Drivers/DRV8301/drv8301.cpp ****     rx_buf_ = 0xffff;
+ 504              		.loc 2 148 13 is_stmt 0 view .LVU95
+ 505 0068 2685     		strh	r6, [r4, #40]	@ movhi
+ 149:Drivers/DRV8301/drv8301.cpp ****     if (!spi_arbiter_->transfer(spi_config_, ncs_gpio_, (uint8_t *)(&tx_buf_), (uint8_t *)(&rx_buf_
+ 506              		.loc 2 149 5 is_stmt 1 view .LVU96
+ 149:Drivers/DRV8301/drv8301.cpp ****     if (!spi_arbiter_->transfer(spi_config_, ncs_gpio_, (uint8_t *)(&tx_buf_), (uint8_t *)(&rx_buf_
+ 507              		.loc 2 149 13 is_stmt 0 view .LVU97
+ 508 006a 4FF6FF73 		movw	r3, #65535
+ 509 006e 6385     		strh	r3, [r4, #42]	@ movhi
+ 150:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 510              		.loc 2 150 5 is_stmt 1 view .LVU98
+ 150:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 511              		.loc 2 150 92 is_stmt 0 view .LVU99
+ARM GAS  /tmp/ccXJwns6.s 			page 16
+
+
+ 512 0070 04F12A03 		add	r3, r4, #42
+ 150:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 513              		.loc 2 150 32 view .LVU100
+ 514 0074 194D     		ldr	r5, .L32
+ 515 0076 4FF47A72 		mov	r2, #1000
+ 516 007a 0D92     		str	r2, [sp, #52]
+ 517 007c 0122     		movs	r2, #1
+ 518 007e 0C92     		str	r2, [sp, #48]
+ 519 0080 0B93     		str	r3, [sp, #44]
+ 520 0082 CDF82880 		str	r8, [sp, #40]
+ 521 0086 08AB     		add	r3, sp, #32
+ 522 0088 04F10C02 		add	r2, r4, #12
+ 523 008c 92E80300 		ldm	r2, {r0, r1}
+ 524 0090 83E80300 		stm	r3, {r0, r1}
+ 525 0094 EC46     		mov	ip, sp
+ 526 0096 05F10C0E 		add	lr, r5, #12
+ 527 009a BEE80F00 		ldmia	lr!, {r0, r1, r2, r3}
+ 528 009e ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 529 00a2 9EE80F00 		ldm	lr, {r0, r1, r2, r3}
+ 530 00a6 8CE80F00 		stm	ip, {r0, r1, r2, r3}
+ 531 00aa 95E80E00 		ldm	r5, {r1, r2, r3}
+ 532 00ae A068     		ldr	r0, [r4, #8]
+ 533 00b0 FFF7FEFF 		bl	_ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm
+ 534              	.LVL28:
+ 150:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 535              		.loc 2 150 5 view .LVU101
+ 536 00b4 0546     		mov	r5, r0
+ 537 00b6 0028     		cmp	r0, #0
+ 538 00b8 CFD0     		beq	.L28
+ 154:Drivers/DRV8301/drv8301.cpp **** 
+ 539              		.loc 2 154 5 is_stmt 1 view .LVU102
+ 154:Drivers/DRV8301/drv8301.cpp **** 
+ 540              		.loc 2 154 13 is_stmt 0 view .LVU103
+ 541 00ba 0120     		movs	r0, #1
+ 542 00bc FFF7FEFF 		bl	_Z8delay_usm
+ 543              	.LVL29:
+ 156:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 544              		.loc 2 156 5 is_stmt 1 view .LVU104
+ 156:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 545              		.loc 2 156 9 is_stmt 0 view .LVU105
+ 546 00c0 638D     		ldrh	r3, [r4, #42]
+ 156:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 547              		.loc 2 156 5 view .LVU106
+ 548 00c2 4BF6EF62 		movw	r2, #48879
+ 549 00c6 9342     		cmp	r3, r2
+ 550 00c8 05D0     		beq	.L29
+ 160:Drivers/DRV8301/drv8301.cpp ****         *data = rx_buf_ & 0x07FF;
+ 551              		.loc 2 160 5 is_stmt 1 view .LVU107
+ 552 00ca 002F     		cmp	r7, #0
+ 553 00cc C5D0     		beq	.L28
+ 161:Drivers/DRV8301/drv8301.cpp ****     }
+ 554              		.loc 2 161 9 view .LVU108
+ 161:Drivers/DRV8301/drv8301.cpp ****     }
+ 555              		.loc 2 161 25 is_stmt 0 view .LVU109
+ 556 00ce C3F30A03 		ubfx	r3, r3, #0, #11
+ 161:Drivers/DRV8301/drv8301.cpp ****     }
+ 557              		.loc 2 161 15 view .LVU110
+ARM GAS  /tmp/ccXJwns6.s 			page 17
+
+
+ 558 00d2 3B80     		strh	r3, [r7]	@ movhi
+ 559 00d4 C1E7     		b	.L28
+ 560              	.L29:
+ 157:Drivers/DRV8301/drv8301.cpp ****     }
+ 561              		.loc 2 157 16 view .LVU111
+ 562 00d6 0025     		movs	r5, #0
+ 563 00d8 BFE7     		b	.L28
+ 564              	.L33:
+ 565 00da 00BF     		.align	2
+ 566              	.L32:
+ 567 00dc 00000000 		.word	.LANCHOR1
+ 568              		.cfi_endproc
+ 569              	.LFE4273:
+ 570              		.fnend
+ 572              		.section	.text._ZN7Drv83019get_errorEv,"ax",%progbits
+ 573              		.align	1
+ 574              		.global	_ZN7Drv83019get_errorEv
+ 575              		.syntax unified
+ 576              		.thumb
+ 577              		.thumb_func
+ 579              	_ZN7Drv83019get_errorEv:
+ 580              		.fnstart
+ 581              	.LVL30:
+ 582              	.LFB4272:
+ 129:Drivers/DRV8301/drv8301.cpp ****     uint16_t fault1, fault2;
+ 583              		.loc 2 129 43 is_stmt 1 view -0
+ 584              		.cfi_startproc
+ 585              		@ args = 0, pretend = 0, frame = 8
+ 586              		@ frame_needed = 0, uses_anonymous_args = 0
+ 129:Drivers/DRV8301/drv8301.cpp ****     uint16_t fault1, fault2;
+ 587              		.loc 2 129 43 is_stmt 0 view .LVU113
+ 588 0000 10B5     		push	{r4, lr}
+ 589              		.save {r4, lr}
+ 590              	.LCFI7:
+ 591              		.cfi_def_cfa_offset 8
+ 592              		.cfi_offset 4, -8
+ 593              		.cfi_offset 14, -4
+ 594              		.pad #8
+ 595 0002 82B0     		sub	sp, sp, #8
+ 596              	.LCFI8:
+ 597              		.cfi_def_cfa_offset 16
+ 598 0004 0446     		mov	r4, r0
+ 130:Drivers/DRV8301/drv8301.cpp **** 
+ 599              		.loc 2 130 5 is_stmt 1 view .LVU114
+ 132:Drivers/DRV8301/drv8301.cpp ****         !read_reg(kRegNameStatus2, &fault2)) {
+ 600              		.loc 2 132 5 view .LVU115
+ 132:Drivers/DRV8301/drv8301.cpp ****         !read_reg(kRegNameStatus2, &fault2)) {
+ 601              		.loc 2 132 18 is_stmt 0 view .LVU116
+ 602 0006 0DF10602 		add	r2, sp, #6
+ 603 000a 0021     		movs	r1, #0
+ 604 000c FFF7FEFF 		bl	_ZN7Drv83018read_regENS_9RegName_eEPt
+ 605              	.LVL31:
+ 132:Drivers/DRV8301/drv8301.cpp ****         !read_reg(kRegNameStatus2, &fault2)) {
+ 606              		.loc 2 132 45 view .LVU117
+ 607 0010 80B1     		cbz	r0, .L35
+ 133:Drivers/DRV8301/drv8301.cpp ****         return (FaultType_e)0xffffffff;
+ 608              		.loc 2 133 18 view .LVU118
+ARM GAS  /tmp/ccXJwns6.s 			page 18
+
+
+ 609 0012 01AA     		add	r2, sp, #4
+ 610 0014 4FF40061 		mov	r1, #2048
+ 611 0018 2046     		mov	r0, r4
+ 612 001a FFF7FEFF 		bl	_ZN7Drv83018read_regENS_9RegName_eEPt
+ 613              	.LVL32:
+ 132:Drivers/DRV8301/drv8301.cpp ****         !read_reg(kRegNameStatus2, &fault2)) {
+ 614              		.loc 2 132 45 view .LVU119
+ 615 001e 48B1     		cbz	r0, .L35
+ 137:Drivers/DRV8301/drv8301.cpp **** }
+ 616              		.loc 2 137 5 is_stmt 1 view .LVU120
+ 137:Drivers/DRV8301/drv8301.cpp **** }
+ 617              		.loc 2 137 26 is_stmt 0 view .LVU121
+ 618 0020 BDF80630 		ldrh	r3, [sp, #6]
+ 137:Drivers/DRV8301/drv8301.cpp **** }
+ 619              		.loc 2 137 46 view .LVU122
+ 620 0024 BDF80400 		ldrh	r0, [sp, #4]
+ 137:Drivers/DRV8301/drv8301.cpp **** }
+ 621              		.loc 2 137 74 view .LVU123
+ 622 0028 0004     		lsls	r0, r0, #16
+ 623 002a 00F40000 		and	r0, r0, #8388608
+ 137:Drivers/DRV8301/drv8301.cpp **** }
+ 624              		.loc 2 137 80 view .LVU124
+ 625 002e 1843     		orrs	r0, r0, r3
+ 626              	.L34:
+ 138:Drivers/DRV8301/drv8301.cpp **** 
+ 627              		.loc 2 138 1 view .LVU125
+ 628 0030 02B0     		add	sp, sp, #8
+ 629              	.LCFI9:
+ 630              		.cfi_remember_state
+ 631              		.cfi_def_cfa_offset 8
+ 632              		@ sp needed
+ 633 0032 10BD     		pop	{r4, pc}
+ 634              	.LVL33:
+ 635              	.L35:
+ 636              	.LCFI10:
+ 637              		.cfi_restore_state
+ 134:Drivers/DRV8301/drv8301.cpp ****     }
+ 638              		.loc 2 134 9 is_stmt 1 discriminator 3 view .LVU126
+ 134:Drivers/DRV8301/drv8301.cpp ****     }
+ 639              		.loc 2 134 29 is_stmt 0 discriminator 3 view .LVU127
+ 640 0034 4FF0FF30 		mov	r0, #-1
+ 641 0038 FAE7     		b	.L34
+ 642              		.cfi_endproc
+ 643              	.LFE4272:
+ 644              		.fnend
+ 646              		.section	.text._ZN7Drv83019write_regENS_9RegName_eEt,"ax",%progbits
+ 647              		.align	1
+ 648              		.global	_ZN7Drv83019write_regENS_9RegName_eEt
+ 649              		.syntax unified
+ 650              		.thumb
+ 651              		.thumb_func
+ 653              	_ZN7Drv83019write_regENS_9RegName_eEt:
+ 654              		.fnstart
+ 655              	.LVL34:
+ 656              	.LFB4274:
+ 166:Drivers/DRV8301/drv8301.cpp **** 
+ 167:Drivers/DRV8301/drv8301.cpp **** bool Drv8301::write_reg(const RegName_e regName, const uint16_t data) {
+ARM GAS  /tmp/ccXJwns6.s 			page 19
+
+
+ 657              		.loc 2 167 71 is_stmt 1 view -0
+ 658              		.cfi_startproc
+ 659              		@ args = 0, pretend = 0, frame = 0
+ 660              		@ frame_needed = 0, uses_anonymous_args = 0
+ 661              		.loc 2 167 71 is_stmt 0 view .LVU129
+ 662 0000 30B5     		push	{r4, r5, lr}
+ 663              		.save {r4, r5, lr}
+ 664              	.LCFI11:
+ 665              		.cfi_def_cfa_offset 12
+ 666              		.cfi_offset 4, -12
+ 667              		.cfi_offset 5, -8
+ 668              		.cfi_offset 14, -4
+ 669              		.pad #60
+ 670 0002 8FB0     		sub	sp, sp, #60
+ 671              	.LCFI12:
+ 672              		.cfi_def_cfa_offset 72
+ 673 0004 0446     		mov	r4, r0
+ 168:Drivers/DRV8301/drv8301.cpp ****     // Do blocking write
+ 169:Drivers/DRV8301/drv8301.cpp ****     tx_buf_ = build_ctrl_word(DRV8301_CtrlMode_Write, regName, data);
+ 674              		.loc 2 169 5 is_stmt 1 view .LVU130
+ 675              	.LVL35:
+ 676              	.LBB54:
+ 677              	.LBI54:
+ 109:Drivers/DRV8301/drv8301.hpp ****                                            const RegName_e regName,
+ 678              		.loc 1 109 28 view .LVU131
+ 679              	.LBB55:
+ 680              		.loc 1 112 9 view .LVU132
+ 681              		.loc 1 112 43 is_stmt 0 view .LVU133
+ 682 0006 C2F30A02 		ubfx	r2, r2, #0, #11
+ 683              	.LVL36:
+ 684              		.loc 1 112 51 view .LVU134
+ 685 000a 1143     		orrs	r1, r1, r2
+ 686              	.LVL37:
+ 687              		.loc 1 112 51 view .LVU135
+ 688              	.LBE55:
+ 689              	.LBE54:
+ 690              		.loc 2 169 13 view .LVU136
+ 691 000c 0185     		strh	r1, [r0, #40]	@ movhi
+ 170:Drivers/DRV8301/drv8301.cpp ****     if (!spi_arbiter_->transfer(spi_config_, ncs_gpio_, (uint8_t *)(&tx_buf_), nullptr, 1, 1000)) {
+ 692              		.loc 2 170 5 is_stmt 1 view .LVU137
+ 693              		.loc 2 170 69 is_stmt 0 view .LVU138
+ 694 000e 00F12803 		add	r3, r0, #40
+ 695              		.loc 2 170 32 view .LVU139
+ 696 0012 144D     		ldr	r5, .L43
+ 697 0014 4FF47A72 		mov	r2, #1000
+ 698 0018 0D92     		str	r2, [sp, #52]
+ 699 001a 0122     		movs	r2, #1
+ 700 001c 0C92     		str	r2, [sp, #48]
+ 701 001e 0022     		movs	r2, #0
+ 702 0020 0B92     		str	r2, [sp, #44]
+ 703 0022 0A93     		str	r3, [sp, #40]
+ 704 0024 08AB     		add	r3, sp, #32
+ 705 0026 00F10C02 		add	r2, r0, #12
+ 706 002a 92E80300 		ldm	r2, {r0, r1}
+ 707              	.LVL38:
+ 708              		.loc 2 170 32 view .LVU140
+ 709 002e 83E80300 		stm	r3, {r0, r1}
+ARM GAS  /tmp/ccXJwns6.s 			page 20
+
+
+ 710 0032 EC46     		mov	ip, sp
+ 711 0034 05F10C0E 		add	lr, r5, #12
+ 712 0038 BEE80F00 		ldmia	lr!, {r0, r1, r2, r3}
+ 713 003c ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 714 0040 9EE80F00 		ldm	lr, {r0, r1, r2, r3}
+ 715 0044 8CE80F00 		stm	ip, {r0, r1, r2, r3}
+ 716 0048 95E80E00 		ldm	r5, {r1, r2, r3}
+ 717 004c A068     		ldr	r0, [r4, #8]
+ 718 004e FFF7FEFF 		bl	_ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm
+ 719              	.LVL39:
+ 720              		.loc 2 170 5 view .LVU141
+ 721 0052 0446     		mov	r4, r0
+ 722              	.LVL40:
+ 723              		.loc 2 170 5 view .LVU142
+ 724 0054 10B9     		cbnz	r0, .L42
+ 725              	.L40:
+ 171:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 172:Drivers/DRV8301/drv8301.cpp ****     }
+ 173:Drivers/DRV8301/drv8301.cpp ****     delay_us(1);
+ 174:Drivers/DRV8301/drv8301.cpp **** 
+ 175:Drivers/DRV8301/drv8301.cpp ****     return true;
+ 176:Drivers/DRV8301/drv8301.cpp **** }
+ 726              		.loc 2 176 1 view .LVU143
+ 727 0056 2046     		mov	r0, r4
+ 728 0058 0FB0     		add	sp, sp, #60
+ 729              	.LCFI13:
+ 730              		.cfi_remember_state
+ 731              		.cfi_def_cfa_offset 12
+ 732              		@ sp needed
+ 733 005a 30BD     		pop	{r4, r5, pc}
+ 734              	.L42:
+ 735              	.LCFI14:
+ 736              		.cfi_restore_state
+ 173:Drivers/DRV8301/drv8301.cpp **** 
+ 737              		.loc 2 173 5 is_stmt 1 view .LVU144
+ 173:Drivers/DRV8301/drv8301.cpp **** 
+ 738              		.loc 2 173 13 is_stmt 0 view .LVU145
+ 739 005c 0120     		movs	r0, #1
+ 740 005e FFF7FEFF 		bl	_Z8delay_usm
+ 741              	.LVL41:
+ 175:Drivers/DRV8301/drv8301.cpp **** }
+ 742              		.loc 2 175 5 is_stmt 1 view .LVU146
+ 175:Drivers/DRV8301/drv8301.cpp **** }
+ 743              		.loc 2 175 12 is_stmt 0 view .LVU147
+ 744 0062 F8E7     		b	.L40
+ 745              	.L44:
+ 746              		.align	2
+ 747              	.L43:
+ 748 0064 00000000 		.word	.LANCHOR1
+ 749              		.cfi_endproc
+ 750              	.LFE4274:
+ 751              		.fnend
+ 753              		.section	.text._ZN7Drv83014initEv,"ax",%progbits
+ 754              		.align	1
+ 755              		.global	_ZN7Drv83014initEv
+ 756              		.syntax unified
+ 757              		.thumb
+ARM GAS  /tmp/ccXJwns6.s 			page 21
+
+
+ 758              		.thumb_func
+ 760              	_ZN7Drv83014initEv:
+ 761              		.fnstart
+ 762              	.LVL42:
+ 763              	.LFB4269:
+  68:Drivers/DRV8301/drv8301.cpp ****     uint16_t val;
+ 764              		.loc 2 68 22 is_stmt 1 view -0
+ 765              		.cfi_startproc
+ 766              		@ args = 0, pretend = 0, frame = 16
+ 767              		@ frame_needed = 0, uses_anonymous_args = 0
+  69:Drivers/DRV8301/drv8301.cpp **** 
+ 768              		.loc 2 69 5 view .LVU149
+  71:Drivers/DRV8301/drv8301.cpp ****         return true;
+ 769              		.loc 2 71 5 view .LVU150
+  71:Drivers/DRV8301/drv8301.cpp ****         return true;
+ 770              		.loc 2 71 9 is_stmt 0 view .LVU151
+ 771 0000 90F82C30 		ldrb	r3, [r0, #44]	@ zero_extendqisi2
+  71:Drivers/DRV8301/drv8301.cpp ****         return true;
+ 772              		.loc 2 71 5 view .LVU152
+ 773 0004 022B     		cmp	r3, #2
+ 774 0006 00F08B80 		beq	.L54
+  68:Drivers/DRV8301/drv8301.cpp ****     uint16_t val;
+ 775              		.loc 2 68 22 view .LVU153
+ 776 000a 30B5     		push	{r4, r5, lr}
+ 777              		.save {r4, r5, lr}
+ 778              	.LCFI15:
+ 779              		.cfi_def_cfa_offset 12
+ 780              		.cfi_offset 4, -12
+ 781              		.cfi_offset 5, -8
+ 782              		.cfi_offset 14, -4
+ 783              		.pad #20
+ 784 000c 85B0     		sub	sp, sp, #20
+ 785              	.LCFI16:
+ 786              		.cfi_def_cfa_offset 32
+ 787 000e 0446     		mov	r4, r0
+  77:Drivers/DRV8301/drv8301.cpp ****     delay_us(40); // mimumum pull-down time for full reset: 20us
+ 788              		.loc 2 77 5 is_stmt 1 view .LVU154
+  77:Drivers/DRV8301/drv8301.cpp ****     delay_us(40); // mimumum pull-down time for full reset: 20us
+ 789              		.loc 2 77 23 is_stmt 0 view .LVU155
+ 790 0010 00F11405 		add	r5, r0, #20
+ 791              	.LVL43:
+ 792              	.LBB75:
+ 793              	.LBI75:
+  24:./Drivers/STM32/stm32_gpio.hpp ****         if (port_) {
+ 794              		.loc 3 24 10 is_stmt 1 view .LVU156
+ 795              	.LBB76:
+  25:./Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 796              		.loc 3 25 9 view .LVU157
+  25:./Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 797              		.loc 3 25 13 is_stmt 0 view .LVU158
+ 798 0014 4069     		ldr	r0, [r0, #20]
+ 799              	.LVL44:
+  25:./Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 800              		.loc 3 25 9 view .LVU159
+ 801 0016 18B1     		cbz	r0, .L47
+  26:./Drivers/STM32/stm32_gpio.hpp ****         }
+ 802              		.loc 3 26 13 is_stmt 1 view .LVU160
+ARM GAS  /tmp/ccXJwns6.s 			page 22
+
+
+  26:./Drivers/STM32/stm32_gpio.hpp ****         }
+ 803              		.loc 3 26 30 is_stmt 0 view .LVU161
+ 804 0018 0022     		movs	r2, #0
+ 805 001a A988     		ldrh	r1, [r5, #4]
+ 806 001c FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 807              	.LVL45:
+ 808              	.L47:
+  26:./Drivers/STM32/stm32_gpio.hpp ****         }
+ 809              		.loc 3 26 30 view .LVU162
+ 810              	.LBE76:
+ 811              	.LBE75:
+  78:Drivers/DRV8301/drv8301.cpp ****     state_ = kStateUninitialized; // make is_ready() ignore transient errors before registers are s
+ 812              		.loc 2 78 5 is_stmt 1 view .LVU163
+  78:Drivers/DRV8301/drv8301.cpp ****     state_ = kStateUninitialized; // make is_ready() ignore transient errors before registers are s
+ 813              		.loc 2 78 13 is_stmt 0 view .LVU164
+ 814 0020 2820     		movs	r0, #40
+ 815 0022 FFF7FEFF 		bl	_Z8delay_usm
+ 816              	.LVL46:
+  79:Drivers/DRV8301/drv8301.cpp ****     enable_gpio_.write(true);
+ 817              		.loc 2 79 5 is_stmt 1 view .LVU165
+  79:Drivers/DRV8301/drv8301.cpp ****     enable_gpio_.write(true);
+ 818              		.loc 2 79 12 is_stmt 0 view .LVU166
+ 819 0026 0023     		movs	r3, #0
+ 820 0028 84F82C30 		strb	r3, [r4, #44]
+  80:Drivers/DRV8301/drv8301.cpp ****     osDelay(20); // t_spi_ready, max = 10ms
+ 821              		.loc 2 80 5 is_stmt 1 view .LVU167
+ 822              	.LVL47:
+ 823              	.LBB77:
+ 824              	.LBI77:
+  24:./Drivers/STM32/stm32_gpio.hpp ****         if (port_) {
+ 825              		.loc 3 24 10 view .LVU168
+ 826              	.LBB78:
+  25:./Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 827              		.loc 3 25 9 view .LVU169
+  25:./Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 828              		.loc 3 25 13 is_stmt 0 view .LVU170
+ 829 002c 6069     		ldr	r0, [r4, #20]
+  25:./Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 830              		.loc 3 25 9 view .LVU171
+ 831 002e 18B1     		cbz	r0, .L48
+  26:./Drivers/STM32/stm32_gpio.hpp ****         }
+ 832              		.loc 3 26 13 is_stmt 1 view .LVU172
+  26:./Drivers/STM32/stm32_gpio.hpp ****         }
+ 833              		.loc 3 26 30 is_stmt 0 view .LVU173
+ 834 0030 0122     		movs	r2, #1
+ 835 0032 A988     		ldrh	r1, [r5, #4]
+ 836 0034 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 837              	.LVL48:
+ 838              	.L48:
+  26:./Drivers/STM32/stm32_gpio.hpp ****         }
+ 839              		.loc 3 26 30 view .LVU174
+ 840              	.LBE78:
+ 841              	.LBE77:
+  81:Drivers/DRV8301/drv8301.cpp **** 
+ 842              		.loc 2 81 5 is_stmt 1 view .LVU175
+  81:Drivers/DRV8301/drv8301.cpp **** 
+ 843              		.loc 2 81 12 is_stmt 0 view .LVU176
+ARM GAS  /tmp/ccXJwns6.s 			page 23
+
+
+ 844 0038 1420     		movs	r0, #20
+ 845 003a FFF7FEFF 		bl	osDelay
+ 846              	.LVL49:
+  84:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl1, regs_.control_register_1)
+ 847              		.loc 2 84 5 is_stmt 1 view .LVU177
+  84:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl1, regs_.control_register_1)
+ 848              		.loc 2 84 32 is_stmt 0 view .LVU178
+ 849 003e A28C     		ldrh	r2, [r4, #36]
+ 850 0040 4FF48051 		mov	r1, #4096
+ 851 0044 2046     		mov	r0, r4
+ 852 0046 FFF7FEFF 		bl	_ZN7Drv83019write_regENS_9RegName_eEt
+ 853              	.LVL50:
+  89:Drivers/DRV8301/drv8301.cpp ****     if (!wrote_regs) {
+ 854              		.loc 2 89 24 view .LVU179
+ 855 004a 10B9     		cbnz	r0, .L60
+ 856              	.L49:
+ 857              	.LVL51:
+  90:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 858              		.loc 2 90 5 is_stmt 1 discriminator 4 view .LVU180
+  91:Drivers/DRV8301/drv8301.cpp ****     }
+ 859              		.loc 2 91 9 discriminator 4 view .LVU181
+  91:Drivers/DRV8301/drv8301.cpp ****     }
+ 860              		.loc 2 91 16 is_stmt 0 discriminator 4 view .LVU182
+ 861 004c 0020     		movs	r0, #0
+ 862              	.LVL52:
+ 863              	.L46:
+ 117:Drivers/DRV8301/drv8301.cpp **** 
+ 864              		.loc 2 117 1 view .LVU183
+ 865 004e 05B0     		add	sp, sp, #20
+ 866              	.LCFI17:
+ 867              		.cfi_remember_state
+ 868              		.cfi_def_cfa_offset 12
+ 869              		@ sp needed
+ 870 0050 30BD     		pop	{r4, r5, pc}
+ 871              	.LVL53:
+ 872              	.L60:
+ 873              	.LCFI18:
+ 874              		.cfi_restore_state
+  85:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl1, regs_.control_register_1)
+ 875              		.loc 2 85 36 view .LVU184
+ 876 0052 A28C     		ldrh	r2, [r4, #36]
+ 877 0054 4FF48051 		mov	r1, #4096
+ 878 0058 2046     		mov	r0, r4
+ 879 005a FFF7FEFF 		bl	_ZN7Drv83019write_regENS_9RegName_eEt
+ 880              	.LVL54:
+  85:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl1, regs_.control_register_1)
+ 881              		.loc 2 85 24 view .LVU185
+ 882 005e 0028     		cmp	r0, #0
+ 883 0060 F4D0     		beq	.L49
+  86:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl1, regs_.control_register_1)
+ 884              		.loc 2 86 36 view .LVU186
+ 885 0062 A28C     		ldrh	r2, [r4, #36]
+ 886 0064 4FF48051 		mov	r1, #4096
+ 887 0068 2046     		mov	r0, r4
+ 888 006a FFF7FEFF 		bl	_ZN7Drv83019write_regENS_9RegName_eEt
+ 889              	.LVL55:
+  86:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl1, regs_.control_register_1)
+ARM GAS  /tmp/ccXJwns6.s 			page 24
+
+
+ 890              		.loc 2 86 24 view .LVU187
+ 891 006e 0028     		cmp	r0, #0
+ 892 0070 ECD0     		beq	.L49
+  87:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl1, regs_.control_register_1) // the write operat
+ 893              		.loc 2 87 36 view .LVU188
+ 894 0072 A28C     		ldrh	r2, [r4, #36]
+ 895 0074 4FF48051 		mov	r1, #4096
+ 896 0078 2046     		mov	r0, r4
+ 897 007a FFF7FEFF 		bl	_ZN7Drv83019write_regENS_9RegName_eEt
+ 898              	.LVL56:
+  87:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl1, regs_.control_register_1) // the write operat
+ 899              		.loc 2 87 24 view .LVU189
+ 900 007e 0028     		cmp	r0, #0
+ 901 0080 E4D0     		beq	.L49
+  88:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl2, regs_.control_register_2);
+ 902              		.loc 2 88 36 view .LVU190
+ 903 0082 A28C     		ldrh	r2, [r4, #36]
+ 904 0084 4FF48051 		mov	r1, #4096
+ 905 0088 2046     		mov	r0, r4
+ 906 008a FFF7FEFF 		bl	_ZN7Drv83019write_regENS_9RegName_eEt
+ 907              	.LVL57:
+  88:Drivers/DRV8301/drv8301.cpp ****                        && write_reg(kRegNameControl2, regs_.control_register_2);
+ 908              		.loc 2 88 24 view .LVU191
+ 909 008e 0028     		cmp	r0, #0
+ 910 0090 DCD0     		beq	.L49
+  89:Drivers/DRV8301/drv8301.cpp ****     if (!wrote_regs) {
+ 911              		.loc 2 89 36 view .LVU192
+ 912 0092 E28C     		ldrh	r2, [r4, #38]
+ 913 0094 4FF4C051 		mov	r1, #6144
+ 914 0098 2046     		mov	r0, r4
+ 915 009a FFF7FEFF 		bl	_ZN7Drv83019write_regENS_9RegName_eEt
+ 916              	.LVL58:
+  89:Drivers/DRV8301/drv8301.cpp ****     if (!wrote_regs) {
+ 917              		.loc 2 89 24 view .LVU193
+ 918 009e 0028     		cmp	r0, #0
+ 919 00a0 D4D0     		beq	.L49
+ 920              	.LVL59:
+  90:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 921              		.loc 2 90 5 is_stmt 1 view .LVU194
+  95:Drivers/DRV8301/drv8301.cpp ****     state_ = kStateStartupChecks;
+ 922              		.loc 2 95 5 view .LVU195
+  95:Drivers/DRV8301/drv8301.cpp ****     state_ = kStateStartupChecks;
+ 923              		.loc 2 95 13 is_stmt 0 view .LVU196
+ 924 00a2 6420     		movs	r0, #100
+ 925 00a4 FFF7FEFF 		bl	_Z8delay_usm
+ 926              	.LVL60:
+  96:Drivers/DRV8301/drv8301.cpp **** 
+ 927              		.loc 2 96 5 is_stmt 1 view .LVU197
+  96:Drivers/DRV8301/drv8301.cpp **** 
+ 928              		.loc 2 96 12 is_stmt 0 view .LVU198
+ 929 00a8 0123     		movs	r3, #1
+ 930 00aa 84F82C30 		strb	r3, [r4, #44]
+  98:Drivers/DRV8301/drv8301.cpp ****                       && read_reg(kRegNameControl2, &val) && (val == regs_.control_register_2);
+ 931              		.loc 2 98 5 is_stmt 1 view .LVU199
+  98:Drivers/DRV8301/drv8301.cpp ****                       && read_reg(kRegNameControl2, &val) && (val == regs_.control_register_2);
+ 932              		.loc 2 98 33 is_stmt 0 view .LVU200
+ 933 00ae 0DF10E02 		add	r2, sp, #14
+ARM GAS  /tmp/ccXJwns6.s 			page 25
+
+
+ 934 00b2 4FF48051 		mov	r1, #4096
+ 935 00b6 2046     		mov	r0, r4
+ 936 00b8 FFF7FEFF 		bl	_ZN7Drv83018read_regENS_9RegName_eEPt
+ 937              	.LVL61:
+  99:Drivers/DRV8301/drv8301.cpp ****     if (!is_read_regs) {
+ 938              		.loc 2 99 59 view .LVU201
+ 939 00bc 20B1     		cbz	r0, .L51
+  98:Drivers/DRV8301/drv8301.cpp ****                       && read_reg(kRegNameControl2, &val) && (val == regs_.control_register_2);
+ 940              		.loc 2 98 75 view .LVU202
+ 941 00be A28C     		ldrh	r2, [r4, #36]
+  98:Drivers/DRV8301/drv8301.cpp ****                       && read_reg(kRegNameControl2, &val) && (val == regs_.control_register_2);
+ 942              		.loc 2 98 66 view .LVU203
+ 943 00c0 BDF80E30 		ldrh	r3, [sp, #14]
+  98:Drivers/DRV8301/drv8301.cpp ****                       && read_reg(kRegNameControl2, &val) && (val == regs_.control_register_2);
+ 944              		.loc 2 98 58 view .LVU204
+ 945 00c4 9A42     		cmp	r2, r3
+ 946 00c6 01D0     		beq	.L61
+ 947              	.L51:
+ 948              	.LVL62:
+ 100:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 949              		.loc 2 100 5 is_stmt 1 discriminator 6 view .LVU205
+ 101:Drivers/DRV8301/drv8301.cpp ****     }
+ 950              		.loc 2 101 9 discriminator 6 view .LVU206
+ 101:Drivers/DRV8301/drv8301.cpp ****     }
+ 951              		.loc 2 101 16 is_stmt 0 discriminator 6 view .LVU207
+ 952 00c8 0020     		movs	r0, #0
+ 953 00ca C0E7     		b	.L46
+ 954              	.LVL63:
+ 955              	.L61:
+  99:Drivers/DRV8301/drv8301.cpp ****     if (!is_read_regs) {
+ 956              		.loc 2 99 34 view .LVU208
+ 957 00cc 0DF10E02 		add	r2, sp, #14
+ 958 00d0 4FF4C051 		mov	r1, #6144
+ 959 00d4 2046     		mov	r0, r4
+ 960 00d6 FFF7FEFF 		bl	_ZN7Drv83018read_regENS_9RegName_eEPt
+ 961              	.LVL64:
+  99:Drivers/DRV8301/drv8301.cpp ****     if (!is_read_regs) {
+ 962              		.loc 2 99 23 view .LVU209
+ 963 00da 0028     		cmp	r0, #0
+ 964 00dc F4D0     		beq	.L51
+  99:Drivers/DRV8301/drv8301.cpp ****     if (!is_read_regs) {
+ 965              		.loc 2 99 76 discriminator 3 view .LVU210
+ 966 00de E28C     		ldrh	r2, [r4, #38]
+  99:Drivers/DRV8301/drv8301.cpp ****     if (!is_read_regs) {
+ 967              		.loc 2 99 67 discriminator 3 view .LVU211
+ 968 00e0 BDF80E30 		ldrh	r3, [sp, #14]
+  99:Drivers/DRV8301/drv8301.cpp ****     if (!is_read_regs) {
+ 969              		.loc 2 99 59 discriminator 3 view .LVU212
+ 970 00e4 9A42     		cmp	r2, r3
+ 971 00e6 EFD1     		bne	.L51
+ 972              	.LVL65:
+ 100:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 973              		.loc 2 100 5 is_stmt 1 view .LVU213
+ 104:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 974              		.loc 2 104 5 view .LVU214
+ 104:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 975              		.loc 2 104 18 is_stmt 0 view .LVU215
+ARM GAS  /tmp/ccXJwns6.s 			page 26
+
+
+ 976 00e8 2046     		mov	r0, r4
+ 977 00ea FFF7FEFF 		bl	_ZN7Drv83019get_errorEv
+ 978              	.LVL66:
+ 104:Drivers/DRV8301/drv8301.cpp ****         return false;
+ 979              		.loc 2 104 5 view .LVU216
+ 980 00ee C8B9     		cbnz	r0, .L55
+ 110:Drivers/DRV8301/drv8301.cpp ****         if (state_ == kStateStartupChecks) {
+ 981              		.loc 2 110 5 is_stmt 1 view .LVU217
+ 982              	.LVL67:
+ 983              	.LBB79:
+ 984              	.LBB80:
+ 985              	.LBI80:
+ 986              		.file 4 "./Drivers/STM32/stm32_system.h"
+   1:./Drivers/STM32/stm32_system.h **** #ifndef __STM32_SYSTEM_H
+   2:./Drivers/STM32/stm32_system.h **** #define __STM32_SYSTEM_H
+   3:./Drivers/STM32/stm32_system.h **** 
+   4:./Drivers/STM32/stm32_system.h **** #if defined(STM32F405xx)
+   5:./Drivers/STM32/stm32_system.h **** #include <stm32f405xx.h>
+   6:./Drivers/STM32/stm32_system.h **** #elif defined(STM32F722xx)
+   7:./Drivers/STM32/stm32_system.h **** #include <stm32f722xx.h>
+   8:./Drivers/STM32/stm32_system.h **** #else
+   9:./Drivers/STM32/stm32_system.h **** #error "unknown STM32 microcontroller"
+  10:./Drivers/STM32/stm32_system.h **** #endif
+  11:./Drivers/STM32/stm32_system.h **** 
+  12:./Drivers/STM32/stm32_system.h **** // C/C++ definitions
+  13:./Drivers/STM32/stm32_system.h **** 
+  14:./Drivers/STM32/stm32_system.h **** #ifdef __cplusplus
+  15:./Drivers/STM32/stm32_system.h **** extern "C" {
+  16:./Drivers/STM32/stm32_system.h **** #endif
+  17:./Drivers/STM32/stm32_system.h **** 
+  18:./Drivers/STM32/stm32_system.h **** // Uncomment the following line to sacrifice 1kB of RAM for the ability to
+  19:./Drivers/STM32/stm32_system.h **** // monitor the number of times each interrupt fires.
+  20:./Drivers/STM32/stm32_system.h **** //#define ENABLE_IRQ_COUNTER
+  21:./Drivers/STM32/stm32_system.h **** 
+  22:./Drivers/STM32/stm32_system.h **** #ifdef ENABLE_IRQ_COUNTER
+  23:./Drivers/STM32/stm32_system.h **** extern uint32_t irq_counters[];
+  24:./Drivers/STM32/stm32_system.h **** #define COUNT_IRQ(irqn) (++irq_counters[irqn + 14])
+  25:./Drivers/STM32/stm32_system.h **** #define GET_IRQ_COUNTER(irqn) irq_counters[irqn + 14]
+  26:./Drivers/STM32/stm32_system.h **** #else
+  27:./Drivers/STM32/stm32_system.h **** #define COUNT_IRQ(irqn) ((void)0)
+  28:./Drivers/STM32/stm32_system.h **** #define GET_IRQ_COUNTER(irqn) 0
+  29:./Drivers/STM32/stm32_system.h **** #endif
+  30:./Drivers/STM32/stm32_system.h **** 
+  31:./Drivers/STM32/stm32_system.h **** static inline uint32_t cpu_enter_critical() {
+  32:./Drivers/STM32/stm32_system.h ****     uint32_t primask = __get_PRIMASK();
+  33:./Drivers/STM32/stm32_system.h ****     __disable_irq();
+  34:./Drivers/STM32/stm32_system.h ****     return primask;
+  35:./Drivers/STM32/stm32_system.h **** }
+  36:./Drivers/STM32/stm32_system.h **** 
+  37:./Drivers/STM32/stm32_system.h **** static inline void cpu_exit_critical(uint32_t priority_mask) {
+  38:./Drivers/STM32/stm32_system.h ****     __set_PRIMASK(priority_mask);
+  39:./Drivers/STM32/stm32_system.h **** }
+  40:./Drivers/STM32/stm32_system.h **** 
+  41:./Drivers/STM32/stm32_system.h **** #ifdef __cplusplus
+  42:./Drivers/STM32/stm32_system.h **** }
+  43:./Drivers/STM32/stm32_system.h **** #endif
+  44:./Drivers/STM32/stm32_system.h **** 
+ARM GAS  /tmp/ccXJwns6.s 			page 27
+
+
+  45:./Drivers/STM32/stm32_system.h **** 
+  46:./Drivers/STM32/stm32_system.h **** // C++ only definitions
+  47:./Drivers/STM32/stm32_system.h **** 
+  48:./Drivers/STM32/stm32_system.h **** #ifdef __cplusplus
+  49:./Drivers/STM32/stm32_system.h **** 
+  50:./Drivers/STM32/stm32_system.h **** struct CriticalSectionContext {
+  51:./Drivers/STM32/stm32_system.h ****     CriticalSectionContext(const CriticalSectionContext&) = delete;
+  52:./Drivers/STM32/stm32_system.h ****     CriticalSectionContext(const CriticalSectionContext&&) = delete;
+  53:./Drivers/STM32/stm32_system.h ****     void operator=(const CriticalSectionContext&) = delete;
+  54:./Drivers/STM32/stm32_system.h ****     void operator=(const CriticalSectionContext&&) = delete;
+  55:./Drivers/STM32/stm32_system.h ****     operator bool() { return true; };
+  56:./Drivers/STM32/stm32_system.h ****     CriticalSectionContext() : mask_(cpu_enter_critical()) {}
+ 987              		.loc 4 56 5 view .LVU218
+ 988              	.LBB81:
+ 989              	.LBB82:
+ 990              	.LBB83:
+ 991              	.LBI83:
+  31:./Drivers/STM32/stm32_system.h ****     uint32_t primask = __get_PRIMASK();
+ 992              		.loc 4 31 24 view .LVU219
+ 993              	.LBB84:
+  32:./Drivers/STM32/stm32_system.h ****     __disable_irq();
+ 994              		.loc 4 32 5 view .LVU220
+ 995              	.LBB85:
+ 996              	.LBI85:
+ 997              		.file 5 "ThirdParty/CMSIS/Include/cmsis_gcc.h"
+   1:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**************************************************************************//**
+   2:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * @version  V5.0.4
+   5:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * @date     09. April 2018
+   6:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  ******************************************************************************/
+   7:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /*
+   8:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * Copyright (c) 2009-2018 Arm Limited. All rights reserved.
+   9:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  *
+  10:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  *
+  12:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  *
+  16:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  *
+  18:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * limitations under the License.
+  23:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+  24:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+  25:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+  28:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /* ignore some GCC warnings */
+  29:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic push
+  30:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  31:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+ARM GAS  /tmp/ccXJwns6.s 			page 28
+
+
+  33:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+  34:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef __has_builtin
+  36:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  38:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+  39:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ASM
+  41:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  43:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __INLINE
+  44:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  46:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  48:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  49:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_FORCEINLINE                 
+  50:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  51:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif                                           
+  52:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  53:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
+  54:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  55:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __USED
+  56:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  57:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  58:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __WEAK
+  59:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  60:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  61:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED
+  62:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  63:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  64:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  65:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  66:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  67:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  68:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  69:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  70:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  71:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  72:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  73:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  74:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  75:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  76:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  77:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  78:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  79:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  80:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  81:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  82:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  83:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  84:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  85:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  86:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  87:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  88:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  89:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ARM GAS  /tmp/ccXJwns6.s 			page 29
+
+
+  90:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  91:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  92:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  93:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  94:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  95:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  96:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  97:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  98:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  99:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 100:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+ 101:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 102:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 103:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 104:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ 105:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 106:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 107:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 108:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 109:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 110:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 111:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 112:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 113:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 114:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 115:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 116:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 117:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 118:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 119:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 120:ThirdParty/CMSIS/Include/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 121:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   @{
+ 122:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 123:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 124:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 125:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 126:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 127:ThirdParty/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 128:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 129:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_irq(void)
+ 130:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 131:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 132:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 133:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 134:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 135:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 136:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+ 137:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+ 138:ThirdParty/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 139:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 140:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_irq(void)
+ 141:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 142:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+ 143:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 144:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 145:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 146:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ARM GAS  /tmp/ccXJwns6.s 			page 30
+
+
+ 147:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Control Register
+ 148:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the Control Register.
+ 149:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               Control Register value
+ 150:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 151:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_CONTROL(void)
+ 152:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 153:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 154:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 155:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+ 156:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 157:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 158:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 159:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 160:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 161:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 162:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Control Register (non-secure)
+ 163:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the non-secure Control Register when in secure mode.
+ 164:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               non-secure Control Register value
+ 165:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 166:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
+ 167:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 168:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 169:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 170:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control_ns" : "=r" (result) );
+ 171:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 172:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 173:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 174:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 175:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 176:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 177:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Control Register
+ 178:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Writes the given value to the Control Register.
+ 179:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 180:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 181:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_CONTROL(uint32_t control)
+ 182:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 183:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR control, %0" : : "r" (control) : "memory");
+ 184:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 185:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 186:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 187:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 188:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 189:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Control Register (non-secure)
+ 190:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Writes the given value to the non-secure Control Register when in secure state.
+ 191:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 192:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 193:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_CONTROL_NS(uint32_t control)
+ 194:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 195:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR control_ns, %0" : : "r" (control) : "memory");
+ 196:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 197:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 198:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 199:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 200:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 201:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get IPSR Register
+ 202:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the IPSR Register.
+ 203:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               IPSR Register value
+ARM GAS  /tmp/ccXJwns6.s 			page 31
+
+
+ 204:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 205:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_IPSR(void)
+ 206:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 207:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 208:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 209:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
+ 210:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 211:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 212:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 213:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 214:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 215:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get APSR Register
+ 216:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the APSR Register.
+ 217:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               APSR Register value
+ 218:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 219:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_APSR(void)
+ 220:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 221:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 222:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 223:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
+ 224:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 225:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 226:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 227:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 228:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 229:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get xPSR Register
+ 230:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the xPSR Register.
+ 231:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               xPSR Register value
+ 232:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 233:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_xPSR(void)
+ 234:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 235:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 236:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 237:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, xpsr" : "=r" (result) );
+ 238:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 239:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 240:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 241:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 242:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 243:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Process Stack Pointer
+ 244:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer (PSP).
+ 245:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               PSP Register value
+ 246:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 247:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PSP(void)
+ 248:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 249:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 250:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 251:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp"  : "=r" (result) );
+ 252:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 253:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 254:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 255:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 256:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 257:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 258:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Process Stack Pointer (non-secure)
+ 259:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Process Stack Pointer (PSP) when in secure s
+ 260:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               PSP Register value
+ARM GAS  /tmp/ccXJwns6.s 			page 32
+
+
+ 261:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 262:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PSP_NS(void)
+ 263:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 264:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 265:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 266:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp_ns"  : "=r" (result) );
+ 267:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 268:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 269:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 270:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 271:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 272:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 273:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Process Stack Pointer
+ 274:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer (PSP).
+ 275:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 276:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 277:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PSP(uint32_t topOfProcStack)
+ 278:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 279:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR psp, %0" : : "r" (topOfProcStack) : );
+ 280:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 281:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 282:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 283:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 284:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 285:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Process Stack Pointer (non-secure)
+ 286:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Process Stack Pointer (PSP) when in secure sta
+ 287:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 288:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 289:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PSP_NS(uint32_t topOfProcStack)
+ 290:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 291:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR psp_ns, %0" : : "r" (topOfProcStack) : );
+ 292:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 293:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 294:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 295:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 296:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 297:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Main Stack Pointer
+ 298:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer (MSP).
+ 299:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               MSP Register value
+ 300:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 301:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_MSP(void)
+ 302:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 303:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 304:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 305:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp" : "=r" (result) );
+ 306:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 307:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 308:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 309:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 310:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 311:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 312:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Main Stack Pointer (non-secure)
+ 313:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Main Stack Pointer (MSP) when in secure stat
+ 314:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               MSP Register value
+ 315:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 316:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_MSP_NS(void)
+ 317:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ARM GAS  /tmp/ccXJwns6.s 			page 33
+
+
+ 318:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 319:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 320:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp_ns" : "=r" (result) );
+ 321:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 322:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 323:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 324:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 325:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 326:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 327:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Main Stack Pointer
+ 328:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer (MSP).
+ 329:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 330:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 331:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_MSP(uint32_t topOfMainStack)
+ 332:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 333:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR msp, %0" : : "r" (topOfMainStack) : );
+ 334:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 335:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 336:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 337:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 338:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 339:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Main Stack Pointer (non-secure)
+ 340:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Main Stack Pointer (MSP) when in secure state.
+ 341:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 342:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 343:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_MSP_NS(uint32_t topOfMainStack)
+ 344:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 345:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR msp_ns, %0" : : "r" (topOfMainStack) : );
+ 346:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 347:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 348:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 349:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 350:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 351:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 352:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Stack Pointer (non-secure)
+ 353:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Stack Pointer (SP) when in secure state.
+ 354:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               SP Register value
+ 355:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 356:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_SP_NS(void)
+ 357:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 358:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 359:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 360:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, sp_ns" : "=r" (result) );
+ 361:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 362:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 363:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 364:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 365:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 366:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Stack Pointer (non-secure)
+ 367:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Stack Pointer (SP) when in secure state.
+ 368:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfStack  Stack Pointer value to set
+ 369:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 370:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_SP_NS(uint32_t topOfStack)
+ 371:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 372:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR sp_ns, %0" : : "r" (topOfStack) : );
+ 373:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 374:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ARM GAS  /tmp/ccXJwns6.s 			page 34
+
+
+ 375:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 376:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 377:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 378:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Priority Mask
+ 379:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current state of the priority mask bit from the Priority Mask Register.
+ 380:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               Priority Mask value
+ 381:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 382:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PRIMASK(void)
+ 998              		.loc 5 382 31 view .LVU221
+ 999              	.LBB86:
+ 383:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 384:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 1000              		.loc 5 384 3 view .LVU222
+ 385:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 386:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) :: "memory");
+ 1001              		.loc 5 386 3 view .LVU223
+ 1002              		.syntax unified
+ 1003              	@ 386 "ThirdParty/CMSIS/Include/cmsis_gcc.h" 1
+ 1004 00f0 EFF31083 		MRS r3, primask
+ 1005              	@ 0 "" 2
+ 1006              	.LVL68:
+ 387:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 1007              		.loc 5 387 3 view .LVU224
+ 1008              		.loc 5 387 3 is_stmt 0 view .LVU225
+ 1009              		.thumb
+ 1010              		.syntax unified
+ 1011              	.LBE86:
+ 1012              	.LBE85:
+  33:./Drivers/STM32/stm32_system.h ****     return primask;
+ 1013              		.loc 4 33 5 is_stmt 1 view .LVU226
+ 1014              	.LBB87:
+ 1015              	.LBI87:
+ 140:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 1016              		.loc 5 140 27 view .LVU227
+ 1017              	.LBB88:
+ 142:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 1018              		.loc 5 142 3 view .LVU228
+ 1019              		.syntax unified
+ 1020              	@ 142 "ThirdParty/CMSIS/Include/cmsis_gcc.h" 1
+ 1021 00f4 72B6     		cpsid i
+ 1022              	@ 0 "" 2
+ 1023              		.thumb
+ 1024              		.syntax unified
+ 1025              	.LBE88:
+ 1026              	.LBE87:
+  34:./Drivers/STM32/stm32_system.h **** }
+ 1027              		.loc 4 34 5 view .LVU229
+ 1028              	.LBE84:
+ 1029              	.LBE83:
+ 1030              		.loc 4 56 58 is_stmt 0 view .LVU230
+ 1031 00f6 0193     		str	r3, [sp, #4]
+ 1032 00f8 0022     		movs	r2, #0
+ 1033 00fa 8DF80820 		strb	r2, [sp, #8]
+ 1034              	.LVL69:
+ 1035              		.loc 4 56 58 view .LVU231
+ 1036              	.LBE82:
+ 1037              	.LBE81:
+ARM GAS  /tmp/ccXJwns6.s 			page 35
+
+
+ 1038              	.LBE80:
+ 1039              	.LBE79:
+  55:./Drivers/STM32/stm32_system.h ****     CriticalSectionContext() : mask_(cpu_enter_critical()) {}
+ 1040              		.loc 4 55 23 is_stmt 1 view .LVU232
+ 1041              	.LBB97:
+ 111:Drivers/DRV8301/drv8301.cpp ****             state_ = kStateReady;
+ 1042              		.loc 2 111 9 view .LVU233
+ 111:Drivers/DRV8301/drv8301.cpp ****             state_ = kStateReady;
+ 1043              		.loc 2 111 13 is_stmt 0 view .LVU234
+ 1044 00fe 94F82C20 		ldrb	r2, [r4, #44]	@ zero_extendqisi2
+ 111:Drivers/DRV8301/drv8301.cpp ****             state_ = kStateReady;
+ 1045              		.loc 2 111 9 view .LVU235
+ 1046 0102 012A     		cmp	r2, #1
+ 1047 0104 08D0     		beq	.L62
+ 1048              	.L53:
+ 1049              	.LVL70:
+ 1050              	.LBB89:
+ 1051              	.LBI89:
+  57:./Drivers/STM32/stm32_system.h ****     ~CriticalSectionContext() { cpu_exit_critical(mask_); }
+ 1052              		.loc 4 57 5 is_stmt 1 discriminator 1 view .LVU236
+ 1053              	.LBB90:
+ 1054              		.loc 4 57 33 discriminator 1 view .LVU237
+ 1055              	.LBB91:
+ 1056              	.LBI91:
+  37:./Drivers/STM32/stm32_system.h ****     __set_PRIMASK(priority_mask);
+ 1057              		.loc 4 37 20 discriminator 1 view .LVU238
+ 1058              	.LBE91:
+ 1059              	.LBE90:
+ 1060              	.LBE89:
+ 1061              	.LBE97:
+  38:./Drivers/STM32/stm32_system.h **** }
+ 1062              		.loc 4 38 5 discriminator 1 view .LVU239
+ 1063              	.LBB98:
+ 1064              	.LBB96:
+ 1065              	.LBB95:
+ 1066              	.LBB94:
+ 1067              	.LBB92:
+ 1068              	.LBI92:
+ 388:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 389:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 390:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 391:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 392:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 393:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Priority Mask (non-secure)
+ 394:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current state of the non-secure priority mask bit from the Priority Mask Reg
+ 395:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               Priority Mask value
+ 396:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 397:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PRIMASK_NS(void)
+ 398:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 399:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 400:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 401:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask_ns" : "=r" (result) :: "memory");
+ 402:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 403:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 404:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 405:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 406:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ARM GAS  /tmp/ccXJwns6.s 			page 36
+
+
+ 407:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 408:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Priority Mask
+ 409:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Priority Mask Register.
+ 410:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 411:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 412:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PRIMASK(uint32_t priMask)
+ 1069              		.loc 5 412 27 discriminator 1 view .LVU240
+ 1070              	.LBB93:
+ 413:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 414:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
+ 1071              		.loc 5 414 3 discriminator 1 view .LVU241
+ 1072              		.syntax unified
+ 1073              	@ 414 "ThirdParty/CMSIS/Include/cmsis_gcc.h" 1
+ 1074 0106 83F31088 		MSR primask, r3
+ 1075              	@ 0 "" 2
+ 1076              	.LVL71:
+ 1077              		.loc 5 414 3 is_stmt 0 discriminator 1 view .LVU242
+ 1078              		.thumb
+ 1079              		.syntax unified
+ 1080              	.LBE93:
+ 1081              	.LBE92:
+ 1082              	.LBE94:
+ 1083              	.LBE95:
+ 1084              	.LBE96:
+ 1085              	.LBE98:
+ 116:Drivers/DRV8301/drv8301.cpp **** }
+ 1086              		.loc 2 116 5 is_stmt 1 discriminator 1 view .LVU243
+ 116:Drivers/DRV8301/drv8301.cpp **** }
+ 1087              		.loc 2 116 12 is_stmt 0 discriminator 1 view .LVU244
+ 1088 010a 94F82C00 		ldrb	r0, [r4, #44]	@ zero_extendqisi2
+ 116:Drivers/DRV8301/drv8301.cpp **** }
+ 1089              		.loc 2 116 22 discriminator 1 view .LVU245
+ 1090 010e 0228     		cmp	r0, #2
+ 1091 0110 14BF     		ite	ne
+ 1092 0112 0020     		movne	r0, #0
+ 1093 0114 0120     		moveq	r0, #1
+ 1094 0116 9AE7     		b	.L46
+ 1095              	.L62:
+ 1096              	.LBB99:
+ 112:Drivers/DRV8301/drv8301.cpp ****         }
+ 1097              		.loc 2 112 13 is_stmt 1 view .LVU246
+ 112:Drivers/DRV8301/drv8301.cpp ****         }
+ 1098              		.loc 2 112 20 is_stmt 0 view .LVU247
+ 1099 0118 0222     		movs	r2, #2
+ 1100 011a 84F82C20 		strb	r2, [r4, #44]
+ 1101 011e F2E7     		b	.L53
+ 1102              	.LVL72:
+ 1103              	.L54:
+ 1104              	.LCFI19:
+ 1105              		.cfi_def_cfa_offset 0
+ 1106              		.cfi_restore 4
+ 1107              		.cfi_restore 5
+ 1108              		.cfi_restore 14
+ 112:Drivers/DRV8301/drv8301.cpp ****         }
+ 1109              		.loc 2 112 20 view .LVU248
+ 1110              	.LBE99:
+  72:Drivers/DRV8301/drv8301.cpp ****     }
+ARM GAS  /tmp/ccXJwns6.s 			page 37
+
+
+ 1111              		.loc 2 72 16 view .LVU249
+ 1112 0120 0120     		movs	r0, #1
+ 1113              	.LVL73:
+ 117:Drivers/DRV8301/drv8301.cpp **** 
+ 1114              		.loc 2 117 1 view .LVU250
+ 1115 0122 7047     		bx	lr
+ 1116              	.LVL74:
+ 1117              	.L55:
+ 1118              	.LCFI20:
+ 1119              		.cfi_def_cfa_offset 32
+ 1120              		.cfi_offset 4, -12
+ 1121              		.cfi_offset 5, -8
+ 1122              		.cfi_offset 14, -4
+ 105:Drivers/DRV8301/drv8301.cpp ****     }
+ 1123              		.loc 2 105 16 view .LVU251
+ 1124 0124 0020     		movs	r0, #0
+ 1125 0126 92E7     		b	.L46
+ 1126              		.cfi_endproc
+ 1127              	.LFE4269:
+ 1128              		.fnend
+ 1130              		.weak	_ZTS14GateDriverBase
+ 1131              		.section	.rodata._ZTS14GateDriverBase,"aG",%progbits,_ZTS14GateDriverBase,comdat
+ 1132              		.align	2
+ 1135              	_ZTS14GateDriverBase:
+ 1136 0000 31344761 		.ascii	"14GateDriverBase\000"
+ 1136      74654472 
+ 1136      69766572 
+ 1136      42617365 
+ 1136      00
+ 1137              		.weak	_ZTI14GateDriverBase
+ 1138              		.section	.rodata._ZTI14GateDriverBase,"aG",%progbits,_ZTI14GateDriverBase,comdat
+ 1139              		.align	2
+ 1142              	_ZTI14GateDriverBase:
+ 1143 0000 08000000 		.word	_ZTVN10__cxxabiv117__class_type_infoE+8
+ 1144 0004 00000000 		.word	_ZTS14GateDriverBase
+ 1145              		.weak	_ZTS9OpAmpBase
+ 1146              		.section	.rodata._ZTS9OpAmpBase,"aG",%progbits,_ZTS9OpAmpBase,comdat
+ 1147              		.align	2
+ 1150              	_ZTS9OpAmpBase:
+ 1151 0000 394F7041 		.ascii	"9OpAmpBase\000"
+ 1151      6D704261 
+ 1151      736500
+ 1152              		.weak	_ZTI9OpAmpBase
+ 1153              		.section	.rodata._ZTI9OpAmpBase,"aG",%progbits,_ZTI9OpAmpBase,comdat
+ 1154              		.align	2
+ 1157              	_ZTI9OpAmpBase:
+ 1158 0000 08000000 		.word	_ZTVN10__cxxabiv117__class_type_infoE+8
+ 1159 0004 00000000 		.word	_ZTS9OpAmpBase
+ 1160              		.global	_ZTS7Drv8301
+ 1161              		.global	_ZTI7Drv8301
+ 1162              		.global	_ZTV7Drv8301
+ 1163              		.global	_ZN7Drv830111spi_config_E
+ 1164              		.section	.rodata
+ 1165              		.align	2
+ 1166              		.set	.LANCHOR0,. + 0
+ 1167              	.LC0:
+ 1168 0000 00002041 		.word	1092616192
+ARM GAS  /tmp/ccXJwns6.s 			page 38
+
+
+ 1169 0004 0000A041 		.word	1101004800
+ 1170 0008 00002042 		.word	1109393408
+ 1171 000c 0000A042 		.word	1117782016
+ 1172              		.section	.rodata._ZN7Drv830111spi_config_E,"a"
+ 1173              		.align	2
+ 1174              		.set	.LANCHOR1,. + 0
+ 1177              	_ZN7Drv830111spi_config_E:
+ 1178 0000 04010000 		.word	260
+ 1179 0004 00000000 		.word	0
+ 1180 0008 00080000 		.word	2048
+ 1181 000c 00000000 		.word	0
+ 1182 0010 01000000 		.word	1
+ 1183 0014 00020000 		.word	512
+ 1184 0018 18000000 		.word	24
+ 1185 001c 00000000 		.word	0
+ 1186 0020 00000000 		.word	0
+ 1187 0024 00000000 		.word	0
+ 1188 0028 0A000000 		.word	10
+ 1189              		.section	.rodata._ZTI7Drv8301,"a"
+ 1190              		.align	2
+ 1193              	_ZTI7Drv8301:
+ 1194 0000 08000000 		.word	_ZTVN10__cxxabiv121__vmi_class_type_infoE+8
+ 1195 0004 00000000 		.word	_ZTS7Drv8301
+ 1196 0008 00000000 		.word	0
+ 1197 000c 02000000 		.word	2
+ 1198 0010 00000000 		.word	_ZTI14GateDriverBase
+ 1199 0014 02000000 		.word	2
+ 1200 0018 00000000 		.word	_ZTI9OpAmpBase
+ 1201 001c 02040000 		.word	1026
+ 1202              		.section	.rodata._ZTS7Drv8301,"a"
+ 1203              		.align	2
+ 1206              	_ZTS7Drv8301:
+ 1207 0000 37447276 		.ascii	"7Drv8301\000"
+ 1207      38333031 
+ 1207      00
+ 1208              		.section	.rodata._ZTV7Drv8301,"a"
+ 1209              		.align	2
+ 1212              	_ZTV7Drv8301:
+ 1213 0000 00000000 		.word	0
+ 1214 0004 00000000 		.word	_ZTI7Drv8301
+ 1215 0008 00000000 		.word	_ZN7Drv830111set_enabledEb
+ 1216 000c 00000000 		.word	_ZN7Drv83018is_readyEv
+ 1217 0010 00000000 		.word	_ZN7Drv830112get_midpointEv
+ 1218 0014 00000000 		.word	_ZN7Drv830120get_max_output_swingEv
+ 1219 0018 FCFFFFFF 		.word	-4
+ 1220 001c 00000000 		.word	_ZTI7Drv8301
+ 1221 0020 00000000 		.word	_ZThn4_N7Drv83018is_readyEv
+ 1222 0024 00000000 		.word	_ZThn4_N7Drv830112get_midpointEv
+ 1223 0028 00000000 		.word	_ZThn4_N7Drv830120get_max_output_swingEv
+ 1224              		.text
+ 1225              	.Letext0:
+ 1226              		.file 6 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 1227              		.file 7 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 1228              		.file 8 "ThirdParty/CMSIS/Device/ST/STM32F4xx/Include/stm32f405xx.h"
+ 1229              		.file 9 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h"
+ 1230              		.file 10 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 1231              		.file 11 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h"
+ARM GAS  /tmp/ccXJwns6.s 			page 39
+
+
+ 1232              		.file 12 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 1233              		.file 13 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h"
+ 1234              		.file 14 "./Drivers/STM32/stm32_spi_arbiter.hpp"
+ 1235              		.file 15 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/type_traits"
+ 1236              		.file 16 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/debug/debug.h"
+ 1237              		.file 17 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstdlib"
+ 1238              		.file 18 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/har
+ 1239              		.file 19 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/algorithmfwd.h"
+ 1240              		.file 20 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/exception_ptr.h"
+ 1241              		.file 21 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_iterator.h"
+ 1242              		.file 22 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_function.h"
+ 1243              		.file 23 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/functional"
+ 1244              		.file 24 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath"
+ 1245              		.file 25 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h"
+ 1246              		.file 26 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstring"
+ 1247              		.file 27 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/parse_numbers.h"
+ 1248              		.file 28 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h"
+ 1249              		.file 29 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdlib.h"
+ 1250              		.file 30 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/pstl/execution_defs.h"
+ 1251              		.file 31 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/math.h"
+ 1252              		.file 32 "MotorControl/utils.hpp"
+ 1253              		.file 33 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/stdlib.h"
+ 1254              		.file 34 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/math.h"
+ 1255              		.file 35 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/string.h"
+ 1256              		.file 36 "fibre-cpp/include/fibre/cpp_utils.hpp"
+ 1257              		.file 37 "Board/v3/Inc/board.h"
+ 1258              		.file 38 "./Drivers/gate_driver.hpp"
+ 1259              		.file 39 "ThirdParty/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
+ 1260              		.file 40 "<built-in>"
+ARM GAS  /tmp/ccXJwns6.s 			page 40
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 drv8301.cpp
+     /tmp/ccXJwns6.s:20     .text._ZN7Drv830111set_enabledEb:0000000000000000 $t
+     /tmp/ccXJwns6.s:26     .text._ZN7Drv830111set_enabledEb:0000000000000000 _ZN7Drv830111set_enabledEb
+.ARM.exidx.text._ZN7Drv830111set_enabledEb:0000000000000000 $d
+     /tmp/ccXJwns6.s:48     .text._ZN7Drv830112get_midpointEv:0000000000000000 $t
+     /tmp/ccXJwns6.s:54     .text._ZN7Drv830112get_midpointEv:0000000000000000 _ZN7Drv830112get_midpointEv
+.ARM.exidx.text._ZN7Drv830112get_midpointEv:0000000000000000 $d
+     /tmp/ccXJwns6.s:73     .text._ZN7Drv830120get_max_output_swingEv:0000000000000000 $t
+     /tmp/ccXJwns6.s:79     .text._ZN7Drv830120get_max_output_swingEv:0000000000000000 _ZN7Drv830120get_max_output_swingEv
+     /tmp/ccXJwns6.s:95     .text._ZN7Drv830120get_max_output_swingEv:0000000000000008 $d
+.ARM.exidx.text._ZN7Drv830120get_max_output_swingEv:0000000000000000 $d
+     /tmp/ccXJwns6.s:102    .text._ZN7Drv83018is_readyEv:0000000000000000 $t
+     /tmp/ccXJwns6.s:108    .text._ZN7Drv83018is_readyEv:0000000000000000 _ZN7Drv83018is_readyEv
+.ARM.exidx.text._ZN7Drv83018is_readyEv:0000000000000000 $d
+     /tmp/ccXJwns6.s:108    .text._ZN7Drv83018is_readyEv:0000000000000000 .LTHUNK2
+     /tmp/ccXJwns6.s:135    .text._ZThn4_N7Drv83018is_readyEv:0000000000000000 $t
+     /tmp/ccXJwns6.s:141    .text._ZThn4_N7Drv83018is_readyEv:0000000000000000 _ZThn4_N7Drv83018is_readyEv
+.ARM.exidx.text._ZThn4_N7Drv83018is_readyEv:0000000000000000 $d
+     /tmp/ccXJwns6.s:156    .text._ZN7Drv830120get_max_output_swingEv:000000000000000c $t
+     /tmp/ccXJwns6.s:162    .text._ZN7Drv830120get_max_output_swingEv:000000000000000c _ZThn4_N7Drv830120get_max_output_swingEv
+     /tmp/ccXJwns6.s:174    .text._ZN7Drv830120get_max_output_swingEv:0000000000000014 $d
+     /tmp/ccXJwns6.s:187    .text._ZN7Drv830112get_midpointEv:0000000000000006 _ZThn4_N7Drv830112get_midpointEv
+     /tmp/ccXJwns6.s:202    .text._ZN7Drv83016configEfPf:0000000000000000 $t
+     /tmp/ccXJwns6.s:208    .text._ZN7Drv83016configEfPf:0000000000000000 _ZN7Drv83016configEfPf
+     /tmp/ccXJwns6.s:344    .text._ZN7Drv83016configEfPf:0000000000000084 $d
+.ARM.exidx.text._ZN7Drv83016configEfPf:0000000000000000 $d
+     /tmp/ccXJwns6.s:350    .text._ZN7Drv83019do_checksEv:0000000000000000 $t
+     /tmp/ccXJwns6.s:356    .text._ZN7Drv83019do_checksEv:0000000000000000 _ZN7Drv83019do_checksEv
+.ARM.exidx.text._ZN7Drv83019do_checksEv:0000000000000000 $d
+     /tmp/ccXJwns6.s:405    .text._ZN7Drv83018read_regENS_9RegName_eEPt:0000000000000000 $t
+     /tmp/ccXJwns6.s:411    .text._ZN7Drv83018read_regENS_9RegName_eEPt:0000000000000000 _ZN7Drv83018read_regENS_9RegName_eEPt
+     /tmp/ccXJwns6.s:567    .text._ZN7Drv83018read_regENS_9RegName_eEPt:00000000000000dc $d
+.ARM.exidx.text._ZN7Drv83018read_regENS_9RegName_eEPt:0000000000000000 $d
+     /tmp/ccXJwns6.s:573    .text._ZN7Drv83019get_errorEv:0000000000000000 $t
+     /tmp/ccXJwns6.s:579    .text._ZN7Drv83019get_errorEv:0000000000000000 _ZN7Drv83019get_errorEv
+.ARM.exidx.text._ZN7Drv83019get_errorEv:0000000000000000 $d
+     /tmp/ccXJwns6.s:647    .text._ZN7Drv83019write_regENS_9RegName_eEt:0000000000000000 $t
+     /tmp/ccXJwns6.s:653    .text._ZN7Drv83019write_regENS_9RegName_eEt:0000000000000000 _ZN7Drv83019write_regENS_9RegName_eEt
+     /tmp/ccXJwns6.s:748    .text._ZN7Drv83019write_regENS_9RegName_eEt:0000000000000064 $d
+.ARM.exidx.text._ZN7Drv83019write_regENS_9RegName_eEt:0000000000000000 $d
+     /tmp/ccXJwns6.s:754    .text._ZN7Drv83014initEv:0000000000000000 $t
+     /tmp/ccXJwns6.s:760    .text._ZN7Drv83014initEv:0000000000000000 _ZN7Drv83014initEv
+.ARM.exidx.text._ZN7Drv83014initEv:0000000000000000 $d
+     /tmp/ccXJwns6.s:1135   .rodata._ZTS14GateDriverBase:0000000000000000 _ZTS14GateDriverBase
+     /tmp/ccXJwns6.s:1132   .rodata._ZTS14GateDriverBase:0000000000000000 $d
+     /tmp/ccXJwns6.s:1142   .rodata._ZTI14GateDriverBase:0000000000000000 _ZTI14GateDriverBase
+     /tmp/ccXJwns6.s:1139   .rodata._ZTI14GateDriverBase:0000000000000000 $d
+     /tmp/ccXJwns6.s:1150   .rodata._ZTS9OpAmpBase:0000000000000000 _ZTS9OpAmpBase
+     /tmp/ccXJwns6.s:1147   .rodata._ZTS9OpAmpBase:0000000000000000 $d
+     /tmp/ccXJwns6.s:1157   .rodata._ZTI9OpAmpBase:0000000000000000 _ZTI9OpAmpBase
+     /tmp/ccXJwns6.s:1154   .rodata._ZTI9OpAmpBase:0000000000000000 $d
+     /tmp/ccXJwns6.s:1206   .rodata._ZTS7Drv8301:0000000000000000 _ZTS7Drv8301
+     /tmp/ccXJwns6.s:1193   .rodata._ZTI7Drv8301:0000000000000000 _ZTI7Drv8301
+     /tmp/ccXJwns6.s:1212   .rodata._ZTV7Drv8301:0000000000000000 _ZTV7Drv8301
+     /tmp/ccXJwns6.s:1177   .rodata._ZN7Drv830111spi_config_E:0000000000000000 _ZN7Drv830111spi_config_E
+     /tmp/ccXJwns6.s:1165   .rodata:0000000000000000 $d
+ARM GAS  /tmp/ccXJwns6.s 			page 41
+
+
+     /tmp/ccXJwns6.s:1173   .rodata._ZN7Drv830111spi_config_E:0000000000000000 $d
+     /tmp/ccXJwns6.s:1190   .rodata._ZTI7Drv8301:0000000000000000 $d
+     /tmp/ccXJwns6.s:1203   .rodata._ZTS7Drv8301:0000000000000000 $d
+     /tmp/ccXJwns6.s:1209   .rodata._ZTV7Drv8301:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+HAL_GPIO_WritePin
+__aeabi_unwind_cpp_pr0
+_ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm
+_Z8delay_usm
+osDelay
+_ZTVN10__cxxabiv117__class_type_infoE
+_ZTVN10__cxxabiv121__vmi_class_type_infoE

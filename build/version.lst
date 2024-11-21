@@ -1,0 +1,52 @@
+ARM GAS  /tmp/cca7pisu.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"version.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.global	fw_version_unreleased_
+  20              		.global	fw_version_revision_
+  21              		.global	fw_version_minor_
+  22              		.global	fw_version_major_
+  23              		.section	.rodata.fw_version_major_,"a"
+  26              	fw_version_major_:
+  27 0000 00       		.space	1
+  28              		.section	.rodata.fw_version_minor_,"a"
+  31              	fw_version_minor_:
+  32 0000 05       		.byte	5
+  33              		.section	.rodata.fw_version_revision_,"a"
+  36              	fw_version_revision_:
+  37 0000 06       		.byte	6
+  38              		.section	.rodata.fw_version_unreleased_,"a"
+  41              	fw_version_unreleased_:
+  42 0000 01       		.byte	1
+  43              		.text
+  44              	.Letext0:
+  45              		.file 1 "version.c"
+ARM GAS  /tmp/cca7pisu.s 			page 2
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 version.c
+     /tmp/cca7pisu.s:41     .rodata.fw_version_unreleased_:0000000000000000 fw_version_unreleased_
+     /tmp/cca7pisu.s:36     .rodata.fw_version_revision_:0000000000000000 fw_version_revision_
+     /tmp/cca7pisu.s:31     .rodata.fw_version_minor_:0000000000000000 fw_version_minor_
+     /tmp/cca7pisu.s:26     .rodata.fw_version_major_:0000000000000000 fw_version_major_
+     /tmp/cca7pisu.s:27     .rodata.fw_version_major_:0000000000000000 $d
+
+NO UNDEFINED SYMBOLS

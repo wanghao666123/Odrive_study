@@ -1,0 +1,651 @@
+ARM GAS  /tmp/ccd5FfIv.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"mechanical_brake.cpp"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text._ZL8get_gpioj,"ax",%progbits
+  20              		.align	1
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	_ZL8get_gpioj:
+  26              		.fnstart
+  27              	.LVL0:
+  28              	.LFB5151:
+  29              		.file 1 "MotorControl/odrive_main.h"
+   1:MotorControl/odrive_main.h **** #ifndef __ODRIVE_MAIN_H
+   2:MotorControl/odrive_main.h **** #define __ODRIVE_MAIN_H
+   3:MotorControl/odrive_main.h **** 
+   4:MotorControl/odrive_main.h **** // Hardware configuration
+   5:MotorControl/odrive_main.h **** #include <board.h>
+   6:MotorControl/odrive_main.h **** 
+   7:MotorControl/odrive_main.h **** #ifdef __cplusplus
+   8:MotorControl/odrive_main.h **** #include <communication/interface_usb.h>
+   9:MotorControl/odrive_main.h **** #include <communication/interface_i2c.h>
+  10:MotorControl/odrive_main.h **** #include <communication/interface_uart.h>
+  11:MotorControl/odrive_main.h **** #include <task_timer.hpp>
+  12:MotorControl/odrive_main.h **** extern "C" {
+  13:MotorControl/odrive_main.h **** #endif
+  14:MotorControl/odrive_main.h **** 
+  15:MotorControl/odrive_main.h **** // OS includes
+  16:MotorControl/odrive_main.h **** #include <cmsis_os.h>
+  17:MotorControl/odrive_main.h **** 
+  18:MotorControl/odrive_main.h **** // extern const float elec_rad_per_enc;
+  19:MotorControl/odrive_main.h **** extern uint32_t _reboot_cookie;
+  20:MotorControl/odrive_main.h **** 
+  21:MotorControl/odrive_main.h **** extern uint64_t serial_number;
+  22:MotorControl/odrive_main.h **** extern char serial_number_str[13];
+  23:MotorControl/odrive_main.h **** 
+  24:MotorControl/odrive_main.h **** #ifdef __cplusplus
+  25:MotorControl/odrive_main.h **** }
+  26:MotorControl/odrive_main.h **** 
+  27:MotorControl/odrive_main.h **** typedef struct {
+  28:MotorControl/odrive_main.h ****     bool fully_booted;
+  29:MotorControl/odrive_main.h ****     uint32_t uptime; // [ms]
+ARM GAS  /tmp/ccd5FfIv.s 			page 2
+
+
+  30:MotorControl/odrive_main.h ****     uint32_t min_heap_space; // FreeRTOS heap [Bytes]
+  31:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_axis; // minimum remaining space since startup [Bytes]
+  32:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_usb;
+  33:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_uart;
+  34:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_startup;
+  35:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_can;
+  36:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_analog;
+  37:MotorControl/odrive_main.h **** 
+  38:MotorControl/odrive_main.h ****     uint32_t stack_size_axis;
+  39:MotorControl/odrive_main.h ****     uint32_t stack_size_usb;
+  40:MotorControl/odrive_main.h ****     uint32_t stack_size_uart;
+  41:MotorControl/odrive_main.h ****     uint32_t stack_size_startup;
+  42:MotorControl/odrive_main.h ****     uint32_t stack_size_can;
+  43:MotorControl/odrive_main.h ****     uint32_t stack_size_analog;
+  44:MotorControl/odrive_main.h **** 
+  45:MotorControl/odrive_main.h ****     int32_t prio_axis;
+  46:MotorControl/odrive_main.h ****     int32_t prio_usb;
+  47:MotorControl/odrive_main.h ****     int32_t prio_uart;
+  48:MotorControl/odrive_main.h ****     int32_t prio_startup;
+  49:MotorControl/odrive_main.h ****     int32_t prio_can;
+  50:MotorControl/odrive_main.h ****     int32_t prio_analog;
+  51:MotorControl/odrive_main.h **** 
+  52:MotorControl/odrive_main.h ****     USBStats_t& usb = usb_stats_;
+  53:MotorControl/odrive_main.h ****     I2CStats_t& i2c = i2c_stats_;
+  54:MotorControl/odrive_main.h **** } SystemStats_t;
+  55:MotorControl/odrive_main.h **** 
+  56:MotorControl/odrive_main.h **** struct PWMMapping_t {
+  57:MotorControl/odrive_main.h ****     endpoint_ref_t endpoint = {0, 0};
+  58:MotorControl/odrive_main.h ****     float min = 0;
+  59:MotorControl/odrive_main.h ****     float max = 0;
+  60:MotorControl/odrive_main.h **** };
+  61:MotorControl/odrive_main.h **** 
+  62:MotorControl/odrive_main.h **** // @brief general user configurable board configuration
+  63:MotorControl/odrive_main.h **** struct BoardConfig_t {
+  64:MotorControl/odrive_main.h ****     ODriveIntf::GpioMode gpio_modes[GPIO_COUNT] = {
+  65:MotorControl/odrive_main.h ****         DEFAULT_GPIO_MODES
+  66:MotorControl/odrive_main.h ****     };
+  67:MotorControl/odrive_main.h **** 
+  68:MotorControl/odrive_main.h ****     bool enable_uart_a = true;
+  69:MotorControl/odrive_main.h ****     bool enable_uart_b = false;
+  70:MotorControl/odrive_main.h ****     bool enable_uart_c = false;
+  71:MotorControl/odrive_main.h ****     uint32_t uart_a_baudrate = 115200;
+  72:MotorControl/odrive_main.h ****     uint32_t uart_b_baudrate = 115200;
+  73:MotorControl/odrive_main.h ****     uint32_t uart_c_baudrate = 115200;
+  74:MotorControl/odrive_main.h ****     bool enable_can_a = true;
+  75:MotorControl/odrive_main.h ****     bool enable_i2c_a = false;
+  76:MotorControl/odrive_main.h ****     ODriveIntf::StreamProtocolType uart0_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_STDO
+  77:MotorControl/odrive_main.h ****     ODriveIntf::StreamProtocolType uart1_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_STDO
+  78:MotorControl/odrive_main.h ****     ODriveIntf::StreamProtocolType uart2_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_STDO
+  79:MotorControl/odrive_main.h ****     ODriveIntf::StreamProtocolType usb_cdc_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_ST
+  80:MotorControl/odrive_main.h ****     float max_regen_current = 0.0f;
+  81:MotorControl/odrive_main.h ****     float brake_resistance = DEFAULT_BRAKE_RESISTANCE;
+  82:MotorControl/odrive_main.h ****     bool enable_brake_resistor = false;
+  83:MotorControl/odrive_main.h ****     float dc_bus_undervoltage_trip_level = DEFAULT_MIN_DC_VOLTAGE;      //<! [V] minimum voltage be
+  84:MotorControl/odrive_main.h ****     float dc_bus_overvoltage_trip_level = 1.07f * HW_VERSION_VOLTAGE;   //<! [V] maximum voltage ab
+  85:MotorControl/odrive_main.h ****                                                                         //<! This protects against 
+  86:MotorControl/odrive_main.h ****                                                                         //<! the brake power if the
+ARM GAS  /tmp/ccd5FfIv.s 			page 3
+
+
+  87:MotorControl/odrive_main.h ****                                                                         //<! The default is 26V for
+  88:MotorControl/odrive_main.h **** 
+  89:MotorControl/odrive_main.h ****     /**
+  90:MotorControl/odrive_main.h ****      * If enabled, if the measured DC voltage exceeds `dc_bus_overvoltage_ramp_start`,
+  91:MotorControl/odrive_main.h ****      * the ODrive will sink more power than usual into the the brake resistor
+  92:MotorControl/odrive_main.h ****      * in an attempt to bring the voltage down again.
+  93:MotorControl/odrive_main.h ****      * 
+  94:MotorControl/odrive_main.h ****      * The brake duty cycle is increased by the following amount:
+  95:MotorControl/odrive_main.h ****      *  vbus_voltage == dc_bus_overvoltage_ramp_start  =>  brake_duty_cycle += 0%
+  96:MotorControl/odrive_main.h ****      *  vbus_voltage == dc_bus_overvoltage_ramp_end  =>  brake_duty_cycle += 100%
+  97:MotorControl/odrive_main.h ****      * 
+  98:MotorControl/odrive_main.h ****      * Remarks:
+  99:MotorControl/odrive_main.h ****      *  - This feature is active even when all motors are disarmed.
+ 100:MotorControl/odrive_main.h ****      *  - This feature is disabled if `brake_resistance` is non-positive.
+ 101:MotorControl/odrive_main.h ****      */
+ 102:MotorControl/odrive_main.h ****     bool enable_dc_bus_overvoltage_ramp = false;
+ 103:MotorControl/odrive_main.h ****     float dc_bus_overvoltage_ramp_start = 1.07f * HW_VERSION_VOLTAGE; //!< See `enable_dc_bus_overv
+ 104:MotorControl/odrive_main.h ****                                                                       //!< Do not set this lower th
+ 105:MotorControl/odrive_main.h ****                                                                       //!< unless you like fried br
+ 106:MotorControl/odrive_main.h ****     float dc_bus_overvoltage_ramp_end = 1.07f * HW_VERSION_VOLTAGE; //!< See `enable_dc_bus_overvol
+ 107:MotorControl/odrive_main.h ****                                                                     //!< Must be larger than `dc_bu
+ 108:MotorControl/odrive_main.h ****                                                                     //!< otherwise the ramp feature
+ 109:MotorControl/odrive_main.h **** 
+ 110:MotorControl/odrive_main.h ****     float dc_max_positive_current = INFINITY; // Max current [A] the power supply can source
+ 111:MotorControl/odrive_main.h ****     float dc_max_negative_current = -0.01f; // Max current [A] the power supply can sink. You most 
+ 112:MotorControl/odrive_main.h ****     uint32_t error_gpio_pin = DEFAULT_ERROR_PIN;
+ 113:MotorControl/odrive_main.h ****     PWMMapping_t pwm_mappings[4];
+ 114:MotorControl/odrive_main.h ****     PWMMapping_t analog_mappings[GPIO_COUNT];
+ 115:MotorControl/odrive_main.h **** };
+ 116:MotorControl/odrive_main.h **** 
+ 117:MotorControl/odrive_main.h **** struct TaskTimes {
+ 118:MotorControl/odrive_main.h ****     TaskTimer sampling;
+ 119:MotorControl/odrive_main.h ****     TaskTimer control_loop_misc;
+ 120:MotorControl/odrive_main.h ****     TaskTimer control_loop_checks;
+ 121:MotorControl/odrive_main.h ****     TaskTimer dc_calib_wait;
+ 122:MotorControl/odrive_main.h **** };
+ 123:MotorControl/odrive_main.h **** 
+ 124:MotorControl/odrive_main.h **** 
+ 125:MotorControl/odrive_main.h **** // Forward Declarations
+ 126:MotorControl/odrive_main.h **** class Axis;
+ 127:MotorControl/odrive_main.h **** class Motor;
+ 128:MotorControl/odrive_main.h **** 
+ 129:MotorControl/odrive_main.h **** // TODO: move
+ 130:MotorControl/odrive_main.h **** // this is technically not thread-safe but practically it might be
+ 131:MotorControl/odrive_main.h **** #define DEFINE_ENUM_FLAG_OPERATORS(ENUMTYPE) \
+ 132:MotorControl/odrive_main.h **** inline ENUMTYPE operator | (ENUMTYPE a, ENUMTYPE b) { return static_cast<ENUMTYPE>(static_cast<std:
+ 133:MotorControl/odrive_main.h **** inline ENUMTYPE operator & (ENUMTYPE a, ENUMTYPE b) { return static_cast<ENUMTYPE>(static_cast<std:
+ 134:MotorControl/odrive_main.h **** inline ENUMTYPE operator ^ (ENUMTYPE a, ENUMTYPE b) { return static_cast<ENUMTYPE>(static_cast<std:
+ 135:MotorControl/odrive_main.h **** inline ENUMTYPE &operator |= (ENUMTYPE &a, ENUMTYPE b) { return reinterpret_cast<ENUMTYPE&>(reinter
+ 136:MotorControl/odrive_main.h **** inline ENUMTYPE &operator &= (ENUMTYPE &a, ENUMTYPE b) { return reinterpret_cast<ENUMTYPE&>(reinter
+ 137:MotorControl/odrive_main.h **** inline ENUMTYPE &operator ^= (ENUMTYPE &a, ENUMTYPE b) { return reinterpret_cast<ENUMTYPE&>(reinter
+ 138:MotorControl/odrive_main.h **** inline ENUMTYPE operator ~ (ENUMTYPE a) { return static_cast<ENUMTYPE>(~static_cast<std::underlying
+ 139:MotorControl/odrive_main.h **** 
+ 140:MotorControl/odrive_main.h **** #include "autogen/interfaces.hpp"
+ 141:MotorControl/odrive_main.h **** 
+ 142:MotorControl/odrive_main.h **** // ODrive specific includes
+ 143:MotorControl/odrive_main.h **** #include <utils.hpp>
+ARM GAS  /tmp/ccd5FfIv.s 			page 4
+
+
+ 144:MotorControl/odrive_main.h **** #include <low_level.h>
+ 145:MotorControl/odrive_main.h **** #include <encoder.hpp>
+ 146:MotorControl/odrive_main.h **** #include <sensorless_estimator.hpp>
+ 147:MotorControl/odrive_main.h **** #include <controller.hpp>
+ 148:MotorControl/odrive_main.h **** #include <current_limiter.hpp>
+ 149:MotorControl/odrive_main.h **** #include <thermistor.hpp>
+ 150:MotorControl/odrive_main.h **** #include <trapTraj.hpp>
+ 151:MotorControl/odrive_main.h **** #include <endstop.hpp>
+ 152:MotorControl/odrive_main.h **** #include <mechanical_brake.hpp>
+ 153:MotorControl/odrive_main.h **** #include <axis.hpp>
+ 154:MotorControl/odrive_main.h **** #include <oscilloscope.hpp>
+ 155:MotorControl/odrive_main.h **** #include <communication/communication.h>
+ 156:MotorControl/odrive_main.h **** #include <communication/can/odrive_can.hpp>
+ 157:MotorControl/odrive_main.h **** 
+ 158:MotorControl/odrive_main.h **** // Defined in autogen/version.c based on git-derived version numbers
+ 159:MotorControl/odrive_main.h **** extern "C" {
+ 160:MotorControl/odrive_main.h **** extern const unsigned char fw_version_major_;
+ 161:MotorControl/odrive_main.h **** extern const unsigned char fw_version_minor_;
+ 162:MotorControl/odrive_main.h **** extern const unsigned char fw_version_revision_;
+ 163:MotorControl/odrive_main.h **** extern const unsigned char fw_version_unreleased_;
+ 164:MotorControl/odrive_main.h **** }
+ 165:MotorControl/odrive_main.h **** 
+ 166:MotorControl/odrive_main.h **** static Stm32Gpio get_gpio(size_t gpio_num) {
+  30              		.loc 1 166 44 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  35              		.loc 1 166 44 is_stmt 0 view .LVU1
+  36 0000 0346     		mov	r3, r0
+ 167:MotorControl/odrive_main.h ****     return (gpio_num < GPIO_COUNT) ? gpios[gpio_num] : GPIO_COUNT ? gpios[0] : Stm32Gpio::none;
+  37              		.loc 1 167 5 is_stmt 1 view .LVU2
+  38              		.loc 1 167 36 is_stmt 0 view .LVU3
+  39 0002 1029     		cmp	r1, #16
+  40 0004 07D8     		bhi	.L3
+  41              		.loc 1 167 36 discriminator 1 view .LVU4
+  42 0006 054A     		ldr	r2, .L4
+  43 0008 02EBC101 		add	r1, r2, r1, lsl #3
+  44              	.LVL1:
+  45              	.L2:
+  46              		.loc 1 167 91 discriminator 4 view .LVU5
+  47 000c 03C9     		ldm	r1, {r0, r1}
+  48              	.LVL2:
+  49              		.loc 1 167 91 discriminator 4 view .LVU6
+  50 000e 83E80300 		stm	r3, {r0, r1}
+ 168:MotorControl/odrive_main.h **** }
+  51              		.loc 1 168 1 discriminator 4 view .LVU7
+  52 0012 1846     		mov	r0, r3
+  53 0014 7047     		bx	lr
+  54              	.LVL3:
+  55              	.L3:
+ 167:MotorControl/odrive_main.h ****     return (gpio_num < GPIO_COUNT) ? gpios[gpio_num] : GPIO_COUNT ? gpios[0] : Stm32Gpio::none;
+  56              		.loc 1 167 36 view .LVU8
+  57 0016 0149     		ldr	r1, .L4
+  58              	.LVL4:
+ 167:MotorControl/odrive_main.h ****     return (gpio_num < GPIO_COUNT) ? gpios[gpio_num] : GPIO_COUNT ? gpios[0] : Stm32Gpio::none;
+  59              		.loc 1 167 36 view .LVU9
+ARM GAS  /tmp/ccd5FfIv.s 			page 5
+
+
+  60 0018 F8E7     		b	.L2
+  61              	.L5:
+  62 001a 00BF     		.align	2
+  63              	.L4:
+  64 001c 00000000 		.word	gpios
+  65              		.cfi_endproc
+  66              	.LFE5151:
+  67              		.cantunwind
+  68              		.fnend
+  70              		.section	.text._ZN15MechanicalBrake6engageEv,"ax",%progbits
+  71              		.align	1
+  72              		.global	_ZN15MechanicalBrake6engageEv
+  73              		.syntax unified
+  74              		.thumb
+  75              		.thumb_func
+  77              	_ZN15MechanicalBrake6engageEv:
+  78              		.fnstart
+  79              	.LVL5:
+  80              	.LFB5158:
+  81              		.file 2 "MotorControl/mechanical_brake.cpp"
+   1:MotorControl/mechanical_brake.cpp **** #include <odrive_main.h>
+   2:MotorControl/mechanical_brake.cpp **** 
+   3:MotorControl/mechanical_brake.cpp **** void MechanicalBrake::engage() {
+  82              		.loc 2 3 32 is_stmt 1 view -0
+  83              		.cfi_startproc
+  84              		@ args = 0, pretend = 0, frame = 8
+  85              		@ frame_needed = 0, uses_anonymous_args = 0
+   4:MotorControl/mechanical_brake.cpp **** 	if (odrv.config_.gpio_modes[config_.gpio_num] == ODriveIntf::GPIO_MODE_MECH_BRAKE){
+  86              		.loc 2 4 2 view .LVU11
+  87              		.loc 2 4 38 is_stmt 0 view .LVU12
+  88 0000 8188     		ldrh	r1, [r0, #4]
+  89              		.loc 2 4 46 view .LVU13
+  90 0002 0F4B     		ldr	r3, .L18
+  91 0004 0B44     		add	r3, r3, r1
+  92 0006 44F27812 		movw	r2, #16760
+  93 000a 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+  94              		.loc 2 4 2 view .LVU14
+  95 000c 0E2B     		cmp	r3, #14
+  96 000e 00D0     		beq	.L17
+  97 0010 7047     		bx	lr
+  98              	.L17:
+   3:MotorControl/mechanical_brake.cpp **** 	if (odrv.config_.gpio_modes[config_.gpio_num] == ODriveIntf::GPIO_MODE_MECH_BRAKE){
+  99              		.loc 2 3 32 view .LVU15
+ 100 0012 10B5     		push	{r4, lr}
+ 101              		.save {r4, lr}
+ 102              	.LCFI0:
+ 103              		.cfi_def_cfa_offset 8
+ 104              		.cfi_offset 4, -8
+ 105              		.cfi_offset 14, -4
+ 106              		.pad #8
+ 107 0014 82B0     		sub	sp, sp, #8
+ 108              	.LCFI1:
+ 109              		.cfi_def_cfa_offset 16
+ 110 0016 0446     		mov	r4, r0
+   5:MotorControl/mechanical_brake.cpp **** 		get_gpio(config_.gpio_num).write(config_.is_active_low ? 0 : 1);
+ 111              		.loc 2 5 3 is_stmt 1 view .LVU16
+ 112              		.loc 2 5 28 is_stmt 0 view .LVU17
+ARM GAS  /tmp/ccd5FfIv.s 			page 6
+
+
+ 113 0018 6846     		mov	r0, sp
+ 114              	.LVL6:
+ 115              		.loc 2 5 28 view .LVU18
+ 116 001a FFF7FEFF 		bl	_ZL8get_gpioj
+ 117              	.LVL7:
+ 118              		.loc 2 5 44 view .LVU19
+ 119 001e A379     		ldrb	r3, [r4, #6]	@ zero_extendqisi2
+ 120              		.loc 2 5 58 view .LVU20
+ 121 0020 53B1     		cbz	r3, .L11
+ 122              		.loc 2 5 58 view .LVU21
+ 123 0022 0023     		movs	r3, #0
+ 124              	.L8:
+ 125              	.LVL8:
+ 126              	.LBB4:
+ 127              	.LBI4:
+ 128              		.file 3 "./Drivers/STM32/stm32_gpio.hpp"
+   1:./Drivers/STM32/stm32_gpio.hpp **** #ifndef __STM32_GPIO_HPP
+   2:./Drivers/STM32/stm32_gpio.hpp **** #define __STM32_GPIO_HPP
+   3:./Drivers/STM32/stm32_gpio.hpp **** 
+   4:./Drivers/STM32/stm32_gpio.hpp **** #include <gpio.h>
+   5:./Drivers/STM32/stm32_gpio.hpp **** 
+   6:./Drivers/STM32/stm32_gpio.hpp **** class Stm32Gpio {
+   7:./Drivers/STM32/stm32_gpio.hpp **** public:
+   8:./Drivers/STM32/stm32_gpio.hpp ****     static const Stm32Gpio none;
+   9:./Drivers/STM32/stm32_gpio.hpp **** 
+  10:./Drivers/STM32/stm32_gpio.hpp ****     Stm32Gpio() : port_(nullptr), pin_mask_(0) {}
+  11:./Drivers/STM32/stm32_gpio.hpp ****     Stm32Gpio(GPIO_TypeDef* port, uint16_t pin) : port_(port), pin_mask_(pin) {}
+  12:./Drivers/STM32/stm32_gpio.hpp **** 
+  13:./Drivers/STM32/stm32_gpio.hpp ****     operator bool() const { return port_ && pin_mask_; }
+  14:./Drivers/STM32/stm32_gpio.hpp **** 
+  15:./Drivers/STM32/stm32_gpio.hpp ****     /**
+  16:./Drivers/STM32/stm32_gpio.hpp ****      * @brief Configures the GPIO with the specified parameters.
+  17:./Drivers/STM32/stm32_gpio.hpp ****      * 
+  18:./Drivers/STM32/stm32_gpio.hpp ****      * This can be done regardless of the current state of the GPIO.
+  19:./Drivers/STM32/stm32_gpio.hpp ****      * 
+  20:./Drivers/STM32/stm32_gpio.hpp ****      * If any subscription is in place, it is not disabled by this function.
+  21:./Drivers/STM32/stm32_gpio.hpp ****      */
+  22:./Drivers/STM32/stm32_gpio.hpp ****     bool config(uint32_t mode, uint32_t pull, uint32_t speed = GPIO_SPEED_FREQ_LOW);
+  23:./Drivers/STM32/stm32_gpio.hpp **** 
+  24:./Drivers/STM32/stm32_gpio.hpp ****     void write(bool state) {
+ 129              		.loc 3 24 10 is_stmt 1 discriminator 4 view .LVU22
+ 130              	.LBB5:
+  25:./Drivers/STM32/stm32_gpio.hpp ****         if (port_) {
+ 131              		.loc 3 25 9 discriminator 4 view .LVU23
+ 132              		.loc 3 25 13 is_stmt 0 discriminator 4 view .LVU24
+ 133 0024 0098     		ldr	r0, [sp]
+ 134              		.loc 3 25 9 discriminator 4 view .LVU25
+ 135 0026 28B1     		cbz	r0, .L6
+  26:./Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 136              		.loc 3 26 13 is_stmt 1 view .LVU26
+ 137              		.loc 3 26 30 is_stmt 0 view .LVU27
+ 138 0028 BDF80410 		ldrh	r1, [sp, #4]
+ 139 002c 33B1     		cbz	r3, .L12
+ 140 002e 0122     		movs	r2, #1
+ 141              	.L10:
+ 142 0030 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 143              	.LVL9:
+ARM GAS  /tmp/ccd5FfIv.s 			page 7
+
+
+ 144              	.L6:
+ 145              		.loc 3 26 30 view .LVU28
+ 146              	.LBE5:
+ 147              	.LBE4:
+   6:MotorControl/mechanical_brake.cpp **** 	}
+   7:MotorControl/mechanical_brake.cpp **** }
+ 148              		.loc 2 7 1 view .LVU29
+ 149 0034 02B0     		add	sp, sp, #8
+ 150              	.LCFI2:
+ 151              		.cfi_remember_state
+ 152              		.cfi_def_cfa_offset 8
+ 153              		@ sp needed
+ 154 0036 10BD     		pop	{r4, pc}
+ 155              	.LVL10:
+ 156              	.L11:
+ 157              	.LCFI3:
+ 158              		.cfi_restore_state
+   5:MotorControl/mechanical_brake.cpp **** 	}
+ 159              		.loc 2 5 58 view .LVU30
+ 160 0038 0123     		movs	r3, #1
+ 161 003a F3E7     		b	.L8
+ 162              	.LVL11:
+ 163              	.L12:
+ 164              	.LBB7:
+ 165              	.LBB6:
+ 166              		.loc 3 26 30 view .LVU31
+ 167 003c 0022     		movs	r2, #0
+ 168 003e F7E7     		b	.L10
+ 169              	.L19:
+ 170              		.align	2
+ 171              	.L18:
+ 172 0040 00000000 		.word	odrv
+ 173              	.LBE6:
+ 174              	.LBE7:
+ 175              		.cfi_endproc
+ 176              	.LFE5158:
+ 177              		.fnend
+ 179              		.section	.text._ZN15MechanicalBrake7releaseEv,"ax",%progbits
+ 180              		.align	1
+ 181              		.global	_ZN15MechanicalBrake7releaseEv
+ 182              		.syntax unified
+ 183              		.thumb
+ 184              		.thumb_func
+ 186              	_ZN15MechanicalBrake7releaseEv:
+ 187              		.fnstart
+ 188              	.LVL12:
+ 189              	.LFB5159:
+   8:MotorControl/mechanical_brake.cpp **** 
+   9:MotorControl/mechanical_brake.cpp **** void MechanicalBrake::release() {
+ 190              		.loc 2 9 33 is_stmt 1 view -0
+ 191              		.cfi_startproc
+ 192              		@ args = 0, pretend = 0, frame = 8
+ 193              		@ frame_needed = 0, uses_anonymous_args = 0
+  10:MotorControl/mechanical_brake.cpp **** 	if (odrv.config_.gpio_modes[config_.gpio_num] == ODriveIntf::GPIO_MODE_MECH_BRAKE){
+ 194              		.loc 2 10 2 view .LVU33
+ 195              		.loc 2 10 38 is_stmt 0 view .LVU34
+ 196 0000 8188     		ldrh	r1, [r0, #4]
+ARM GAS  /tmp/ccd5FfIv.s 			page 8
+
+
+ 197              		.loc 2 10 46 view .LVU35
+ 198 0002 0F4B     		ldr	r3, .L32
+ 199 0004 0B44     		add	r3, r3, r1
+ 200 0006 44F27812 		movw	r2, #16760
+ 201 000a 9B5C     		ldrb	r3, [r3, r2]	@ zero_extendqisi2
+ 202              		.loc 2 10 2 view .LVU36
+ 203 000c 0E2B     		cmp	r3, #14
+ 204 000e 00D0     		beq	.L31
+ 205 0010 7047     		bx	lr
+ 206              	.L31:
+   9:MotorControl/mechanical_brake.cpp **** 	if (odrv.config_.gpio_modes[config_.gpio_num] == ODriveIntf::GPIO_MODE_MECH_BRAKE){
+ 207              		.loc 2 9 33 view .LVU37
+ 208 0012 10B5     		push	{r4, lr}
+ 209              		.save {r4, lr}
+ 210              	.LCFI4:
+ 211              		.cfi_def_cfa_offset 8
+ 212              		.cfi_offset 4, -8
+ 213              		.cfi_offset 14, -4
+ 214              		.pad #8
+ 215 0014 82B0     		sub	sp, sp, #8
+ 216              	.LCFI5:
+ 217              		.cfi_def_cfa_offset 16
+ 218 0016 0446     		mov	r4, r0
+  11:MotorControl/mechanical_brake.cpp **** 		get_gpio(config_.gpio_num).write(config_.is_active_low ? 1 : 0);
+ 219              		.loc 2 11 3 is_stmt 1 view .LVU38
+ 220              		.loc 2 11 28 is_stmt 0 view .LVU39
+ 221 0018 6846     		mov	r0, sp
+ 222              	.LVL13:
+ 223              		.loc 2 11 28 view .LVU40
+ 224 001a FFF7FEFF 		bl	_ZL8get_gpioj
+ 225              	.LVL14:
+ 226              		.loc 2 11 44 view .LVU41
+ 227 001e A379     		ldrb	r3, [r4, #6]	@ zero_extendqisi2
+ 228              		.loc 2 11 58 view .LVU42
+ 229 0020 53B1     		cbz	r3, .L25
+ 230              		.loc 2 11 58 view .LVU43
+ 231 0022 0123     		movs	r3, #1
+ 232              	.L22:
+ 233              	.LVL15:
+ 234              	.LBB10:
+ 235              	.LBI10:
+  24:./Drivers/STM32/stm32_gpio.hpp ****         if (port_) {
+ 236              		.loc 3 24 10 is_stmt 1 discriminator 4 view .LVU44
+ 237              	.LBB11:
+  25:./Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 238              		.loc 3 25 9 discriminator 4 view .LVU45
+  25:./Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 239              		.loc 3 25 13 is_stmt 0 discriminator 4 view .LVU46
+ 240 0024 0098     		ldr	r0, [sp]
+  25:./Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 241              		.loc 3 25 9 discriminator 4 view .LVU47
+ 242 0026 28B1     		cbz	r0, .L20
+ 243              		.loc 3 26 13 is_stmt 1 view .LVU48
+ 244              		.loc 3 26 30 is_stmt 0 view .LVU49
+ 245 0028 BDF80410 		ldrh	r1, [sp, #4]
+ 246 002c 33B1     		cbz	r3, .L26
+ 247 002e 0122     		movs	r2, #1
+ARM GAS  /tmp/ccd5FfIv.s 			page 9
+
+
+ 248              	.L24:
+ 249 0030 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 250              	.LVL16:
+ 251              	.L20:
+ 252              		.loc 3 26 30 view .LVU50
+ 253              	.LBE11:
+ 254              	.LBE10:
+  12:MotorControl/mechanical_brake.cpp **** 	}
+  13:MotorControl/mechanical_brake.cpp **** }
+ 255              		.loc 2 13 1 view .LVU51
+ 256 0034 02B0     		add	sp, sp, #8
+ 257              	.LCFI6:
+ 258              		.cfi_remember_state
+ 259              		.cfi_def_cfa_offset 8
+ 260              		@ sp needed
+ 261 0036 10BD     		pop	{r4, pc}
+ 262              	.LVL17:
+ 263              	.L25:
+ 264              	.LCFI7:
+ 265              		.cfi_restore_state
+  11:MotorControl/mechanical_brake.cpp **** 	}
+ 266              		.loc 2 11 58 view .LVU52
+ 267 0038 0023     		movs	r3, #0
+ 268 003a F3E7     		b	.L22
+ 269              	.LVL18:
+ 270              	.L26:
+ 271              	.LBB13:
+ 272              	.LBB12:
+ 273              		.loc 3 26 30 view .LVU53
+ 274 003c 0022     		movs	r2, #0
+ 275 003e F7E7     		b	.L24
+ 276              	.L33:
+ 277              		.align	2
+ 278              	.L32:
+ 279 0040 00000000 		.word	odrv
+ 280              	.LBE12:
+ 281              	.LBE13:
+ 282              		.cfi_endproc
+ 283              	.LFE5159:
+ 284              		.fnend
+ 286              		.weak	_ZTSN10ODriveIntf19MechanicalBrakeIntfE
+ 287              		.section	.rodata._ZTSN10ODriveIntf19MechanicalBrakeIntfE,"aG",%progbits,_ZTSN10ODriveIntf19Mechani
+ 288              		.align	2
+ 291              	_ZTSN10ODriveIntf19MechanicalBrakeIntfE:
+ 292 0000 4E31304F 		.ascii	"N10ODriveIntf19MechanicalBrakeIntfE\000"
+ 292      44726976 
+ 292      65496E74 
+ 292      6631394D 
+ 292      65636861 
+ 293              		.weak	_ZTIN10ODriveIntf19MechanicalBrakeIntfE
+ 294              		.section	.rodata._ZTIN10ODriveIntf19MechanicalBrakeIntfE,"aG",%progbits,_ZTIN10ODriveIntf19Mechani
+ 295              		.align	2
+ 298              	_ZTIN10ODriveIntf19MechanicalBrakeIntfE:
+ 299 0000 08000000 		.word	_ZTVN10__cxxabiv117__class_type_infoE+8
+ 300 0004 00000000 		.word	_ZTSN10ODriveIntf19MechanicalBrakeIntfE
+ 301              		.global	_ZTS15MechanicalBrake
+ 302              		.global	_ZTI15MechanicalBrake
+ARM GAS  /tmp/ccd5FfIv.s 			page 10
+
+
+ 303              		.global	_ZTV15MechanicalBrake
+ 304              		.section	.rodata._ZTI15MechanicalBrake,"a"
+ 305              		.align	2
+ 308              	_ZTI15MechanicalBrake:
+ 309 0000 08000000 		.word	_ZTVN10__cxxabiv120__si_class_type_infoE+8
+ 310 0004 00000000 		.word	_ZTS15MechanicalBrake
+ 311 0008 00000000 		.word	_ZTIN10ODriveIntf19MechanicalBrakeIntfE
+ 312              		.section	.rodata._ZTS15MechanicalBrake,"a"
+ 313              		.align	2
+ 316              	_ZTS15MechanicalBrake:
+ 317 0000 31354D65 		.ascii	"15MechanicalBrake\000"
+ 317      6368616E 
+ 317      6963616C 
+ 317      4272616B 
+ 317      6500
+ 318              		.section	.rodata._ZTV15MechanicalBrake,"a"
+ 319              		.align	2
+ 322              	_ZTV15MechanicalBrake:
+ 323 0000 00000000 		.word	0
+ 324 0004 00000000 		.word	_ZTI15MechanicalBrake
+ 325 0008 00000000 		.word	_ZN15MechanicalBrake6engageEv
+ 326 000c 00000000 		.word	_ZN15MechanicalBrake7releaseEv
+ 327              		.text
+ 328              	.Letext0:
+ 329              		.file 4 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 330              		.file 5 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 331              		.file 6 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdint.h"
+ 332              		.file 7 "ThirdParty/CMSIS/Device/ST/STM32F4xx/Include/stm32f405xx.h"
+ 333              		.file 8 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h"
+ 334              		.file 9 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stdarg.h"
+ 335              		.file 10 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_types.h"
+ 336              		.file 11 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/reent.h"
+ 337              		.file 12 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/lock.h"
+ 338              		.file 13 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdio.h"
+ 339              		.file 14 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h"
+ 340              		.file 15 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstdlib"
+ 341              		.file 16 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h"
+ 342              		.file 17 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath"
+ 343              		.file 18 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/type_traits"
+ 344              		.file 19 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/debug/debug.h"
+ 345              		.file 20 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/exception_ptr.h"
+ 346              		.file 21 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/har
+ 347              		.file 22 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_iterator.h"
+ 348              		.file 23 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_function.h"
+ 349              		.file 24 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/algorithmfwd.h"
+ 350              		.file 25 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/functional"
+ 351              		.file 26 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstring"
+ 352              		.file 27 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/parse_numbers.h"
+ 353              		.file 28 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cwchar"
+ 354              		.file 29 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/clocale"
+ 355              		.file 30 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstdint"
+ 356              		.file 31 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/string_view"
+ 357              		.file 32 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/basic_string.h"
+ 358              		.file 33 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstdio"
+ 359              		.file 34 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h"
+ 360              		.file 35 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdlib.h"
+ 361              		.file 36 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/stdlib.h"
+ARM GAS  /tmp/ccd5FfIv.s 			page 11
+
+
+ 362              		.file 37 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/math.h"
+ 363              		.file 38 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/math.h"
+ 364              		.file 39 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/string.h"
+ 365              		.file 40 "fibre-cpp/include/fibre/cpp_utils.hpp"
+ 366              		.file 41 "fibre-cpp/include/fibre/callback.hpp"
+ 367              		.file 42 "./autogen/interfaces.hpp"
+ 368              		.file 43 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/pstl/execution_defs.h"
+ 369              		.file 44 "./MotorControl/utils.hpp"
+ 370              		.file 45 "Board/v3/Inc/board.h"
+ 371              		.file 46 "MotorControl/mechanical_brake.hpp"
+ 372              		.file 47 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/wchar.h"
+ 373              		.file 48 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/locale.h"
+ 374              		.file 49 "<built-in>"
+ARM GAS  /tmp/ccd5FfIv.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 mechanical_brake.cpp
+     /tmp/ccd5FfIv.s:20     .text._ZL8get_gpioj:0000000000000000 $t
+     /tmp/ccd5FfIv.s:25     .text._ZL8get_gpioj:0000000000000000 _ZL8get_gpioj
+     /tmp/ccd5FfIv.s:64     .text._ZL8get_gpioj:000000000000001c $d
+    .ARM.exidx.text._ZL8get_gpioj:0000000000000000 $d
+     /tmp/ccd5FfIv.s:71     .text._ZN15MechanicalBrake6engageEv:0000000000000000 $t
+     /tmp/ccd5FfIv.s:77     .text._ZN15MechanicalBrake6engageEv:0000000000000000 _ZN15MechanicalBrake6engageEv
+     /tmp/ccd5FfIv.s:172    .text._ZN15MechanicalBrake6engageEv:0000000000000040 $d
+.ARM.exidx.text._ZN15MechanicalBrake6engageEv:0000000000000000 $d
+     /tmp/ccd5FfIv.s:180    .text._ZN15MechanicalBrake7releaseEv:0000000000000000 $t
+     /tmp/ccd5FfIv.s:186    .text._ZN15MechanicalBrake7releaseEv:0000000000000000 _ZN15MechanicalBrake7releaseEv
+     /tmp/ccd5FfIv.s:279    .text._ZN15MechanicalBrake7releaseEv:0000000000000040 $d
+.ARM.exidx.text._ZN15MechanicalBrake7releaseEv:0000000000000000 $d
+     /tmp/ccd5FfIv.s:291    .rodata._ZTSN10ODriveIntf19MechanicalBrakeIntfE:0000000000000000 _ZTSN10ODriveIntf19MechanicalBrakeIntfE
+     /tmp/ccd5FfIv.s:288    .rodata._ZTSN10ODriveIntf19MechanicalBrakeIntfE:0000000000000000 $d
+     /tmp/ccd5FfIv.s:298    .rodata._ZTIN10ODriveIntf19MechanicalBrakeIntfE:0000000000000000 _ZTIN10ODriveIntf19MechanicalBrakeIntfE
+     /tmp/ccd5FfIv.s:295    .rodata._ZTIN10ODriveIntf19MechanicalBrakeIntfE:0000000000000000 $d
+     /tmp/ccd5FfIv.s:316    .rodata._ZTS15MechanicalBrake:0000000000000000 _ZTS15MechanicalBrake
+     /tmp/ccd5FfIv.s:308    .rodata._ZTI15MechanicalBrake:0000000000000000 _ZTI15MechanicalBrake
+     /tmp/ccd5FfIv.s:322    .rodata._ZTV15MechanicalBrake:0000000000000000 _ZTV15MechanicalBrake
+     /tmp/ccd5FfIv.s:305    .rodata._ZTI15MechanicalBrake:0000000000000000 $d
+     /tmp/ccd5FfIv.s:313    .rodata._ZTS15MechanicalBrake:0000000000000000 $d
+     /tmp/ccd5FfIv.s:319    .rodata._ZTV15MechanicalBrake:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+gpios
+HAL_GPIO_WritePin
+odrv
+__aeabi_unwind_cpp_pr0
+_ZTVN10__cxxabiv117__class_type_infoE
+_ZTVN10__cxxabiv120__si_class_type_infoE

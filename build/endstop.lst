@@ -1,0 +1,989 @@
+ARM GAS  /tmp/ccZsoqvw.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"endstop.cpp"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text._ZL8get_gpioj,"ax",%progbits
+  20              		.align	1
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	_ZL8get_gpioj:
+  26              		.fnstart
+  27              	.LVL0:
+  28              	.LFB5151:
+  29              		.file 1 "MotorControl/odrive_main.h"
+   1:MotorControl/odrive_main.h **** #ifndef __ODRIVE_MAIN_H
+   2:MotorControl/odrive_main.h **** #define __ODRIVE_MAIN_H
+   3:MotorControl/odrive_main.h **** 
+   4:MotorControl/odrive_main.h **** // Hardware configuration
+   5:MotorControl/odrive_main.h **** #include <board.h>
+   6:MotorControl/odrive_main.h **** 
+   7:MotorControl/odrive_main.h **** #ifdef __cplusplus
+   8:MotorControl/odrive_main.h **** #include <communication/interface_usb.h>
+   9:MotorControl/odrive_main.h **** #include <communication/interface_i2c.h>
+  10:MotorControl/odrive_main.h **** #include <communication/interface_uart.h>
+  11:MotorControl/odrive_main.h **** #include <task_timer.hpp>
+  12:MotorControl/odrive_main.h **** extern "C" {
+  13:MotorControl/odrive_main.h **** #endif
+  14:MotorControl/odrive_main.h **** 
+  15:MotorControl/odrive_main.h **** // OS includes
+  16:MotorControl/odrive_main.h **** #include <cmsis_os.h>
+  17:MotorControl/odrive_main.h **** 
+  18:MotorControl/odrive_main.h **** // extern const float elec_rad_per_enc;
+  19:MotorControl/odrive_main.h **** extern uint32_t _reboot_cookie;
+  20:MotorControl/odrive_main.h **** 
+  21:MotorControl/odrive_main.h **** extern uint64_t serial_number;
+  22:MotorControl/odrive_main.h **** extern char serial_number_str[13];
+  23:MotorControl/odrive_main.h **** 
+  24:MotorControl/odrive_main.h **** #ifdef __cplusplus
+  25:MotorControl/odrive_main.h **** }
+  26:MotorControl/odrive_main.h **** 
+  27:MotorControl/odrive_main.h **** typedef struct {
+  28:MotorControl/odrive_main.h ****     bool fully_booted;
+  29:MotorControl/odrive_main.h ****     uint32_t uptime; // [ms]
+ARM GAS  /tmp/ccZsoqvw.s 			page 2
+
+
+  30:MotorControl/odrive_main.h ****     uint32_t min_heap_space; // FreeRTOS heap [Bytes]
+  31:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_axis; // minimum remaining space since startup [Bytes]
+  32:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_usb;
+  33:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_uart;
+  34:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_startup;
+  35:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_can;
+  36:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_analog;
+  37:MotorControl/odrive_main.h **** 
+  38:MotorControl/odrive_main.h ****     uint32_t stack_size_axis;
+  39:MotorControl/odrive_main.h ****     uint32_t stack_size_usb;
+  40:MotorControl/odrive_main.h ****     uint32_t stack_size_uart;
+  41:MotorControl/odrive_main.h ****     uint32_t stack_size_startup;
+  42:MotorControl/odrive_main.h ****     uint32_t stack_size_can;
+  43:MotorControl/odrive_main.h ****     uint32_t stack_size_analog;
+  44:MotorControl/odrive_main.h **** 
+  45:MotorControl/odrive_main.h ****     int32_t prio_axis;
+  46:MotorControl/odrive_main.h ****     int32_t prio_usb;
+  47:MotorControl/odrive_main.h ****     int32_t prio_uart;
+  48:MotorControl/odrive_main.h ****     int32_t prio_startup;
+  49:MotorControl/odrive_main.h ****     int32_t prio_can;
+  50:MotorControl/odrive_main.h ****     int32_t prio_analog;
+  51:MotorControl/odrive_main.h **** 
+  52:MotorControl/odrive_main.h ****     USBStats_t& usb = usb_stats_;
+  53:MotorControl/odrive_main.h ****     I2CStats_t& i2c = i2c_stats_;
+  54:MotorControl/odrive_main.h **** } SystemStats_t;
+  55:MotorControl/odrive_main.h **** 
+  56:MotorControl/odrive_main.h **** struct PWMMapping_t {
+  57:MotorControl/odrive_main.h ****     endpoint_ref_t endpoint = {0, 0};
+  58:MotorControl/odrive_main.h ****     float min = 0;
+  59:MotorControl/odrive_main.h ****     float max = 0;
+  60:MotorControl/odrive_main.h **** };
+  61:MotorControl/odrive_main.h **** 
+  62:MotorControl/odrive_main.h **** // @brief general user configurable board configuration
+  63:MotorControl/odrive_main.h **** struct BoardConfig_t {
+  64:MotorControl/odrive_main.h ****     ODriveIntf::GpioMode gpio_modes[GPIO_COUNT] = {
+  65:MotorControl/odrive_main.h ****         DEFAULT_GPIO_MODES
+  66:MotorControl/odrive_main.h ****     };
+  67:MotorControl/odrive_main.h **** 
+  68:MotorControl/odrive_main.h ****     bool enable_uart_a = true;
+  69:MotorControl/odrive_main.h ****     bool enable_uart_b = false;
+  70:MotorControl/odrive_main.h ****     bool enable_uart_c = false;
+  71:MotorControl/odrive_main.h ****     uint32_t uart_a_baudrate = 115200;
+  72:MotorControl/odrive_main.h ****     uint32_t uart_b_baudrate = 115200;
+  73:MotorControl/odrive_main.h ****     uint32_t uart_c_baudrate = 115200;
+  74:MotorControl/odrive_main.h ****     bool enable_can_a = true;
+  75:MotorControl/odrive_main.h ****     bool enable_i2c_a = false;
+  76:MotorControl/odrive_main.h ****     ODriveIntf::StreamProtocolType uart0_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_STDO
+  77:MotorControl/odrive_main.h ****     ODriveIntf::StreamProtocolType uart1_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_STDO
+  78:MotorControl/odrive_main.h ****     ODriveIntf::StreamProtocolType uart2_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_STDO
+  79:MotorControl/odrive_main.h ****     ODriveIntf::StreamProtocolType usb_cdc_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_ST
+  80:MotorControl/odrive_main.h ****     float max_regen_current = 0.0f;
+  81:MotorControl/odrive_main.h ****     float brake_resistance = DEFAULT_BRAKE_RESISTANCE;
+  82:MotorControl/odrive_main.h ****     bool enable_brake_resistor = false;
+  83:MotorControl/odrive_main.h ****     float dc_bus_undervoltage_trip_level = DEFAULT_MIN_DC_VOLTAGE;      //<! [V] minimum voltage be
+  84:MotorControl/odrive_main.h ****     float dc_bus_overvoltage_trip_level = 1.07f * HW_VERSION_VOLTAGE;   //<! [V] maximum voltage ab
+  85:MotorControl/odrive_main.h ****                                                                         //<! This protects against 
+  86:MotorControl/odrive_main.h ****                                                                         //<! the brake power if the
+ARM GAS  /tmp/ccZsoqvw.s 			page 3
+
+
+  87:MotorControl/odrive_main.h ****                                                                         //<! The default is 26V for
+  88:MotorControl/odrive_main.h **** 
+  89:MotorControl/odrive_main.h ****     /**
+  90:MotorControl/odrive_main.h ****      * If enabled, if the measured DC voltage exceeds `dc_bus_overvoltage_ramp_start`,
+  91:MotorControl/odrive_main.h ****      * the ODrive will sink more power than usual into the the brake resistor
+  92:MotorControl/odrive_main.h ****      * in an attempt to bring the voltage down again.
+  93:MotorControl/odrive_main.h ****      * 
+  94:MotorControl/odrive_main.h ****      * The brake duty cycle is increased by the following amount:
+  95:MotorControl/odrive_main.h ****      *  vbus_voltage == dc_bus_overvoltage_ramp_start  =>  brake_duty_cycle += 0%
+  96:MotorControl/odrive_main.h ****      *  vbus_voltage == dc_bus_overvoltage_ramp_end  =>  brake_duty_cycle += 100%
+  97:MotorControl/odrive_main.h ****      * 
+  98:MotorControl/odrive_main.h ****      * Remarks:
+  99:MotorControl/odrive_main.h ****      *  - This feature is active even when all motors are disarmed.
+ 100:MotorControl/odrive_main.h ****      *  - This feature is disabled if `brake_resistance` is non-positive.
+ 101:MotorControl/odrive_main.h ****      */
+ 102:MotorControl/odrive_main.h ****     bool enable_dc_bus_overvoltage_ramp = false;
+ 103:MotorControl/odrive_main.h ****     float dc_bus_overvoltage_ramp_start = 1.07f * HW_VERSION_VOLTAGE; //!< See `enable_dc_bus_overv
+ 104:MotorControl/odrive_main.h ****                                                                       //!< Do not set this lower th
+ 105:MotorControl/odrive_main.h ****                                                                       //!< unless you like fried br
+ 106:MotorControl/odrive_main.h ****     float dc_bus_overvoltage_ramp_end = 1.07f * HW_VERSION_VOLTAGE; //!< See `enable_dc_bus_overvol
+ 107:MotorControl/odrive_main.h ****                                                                     //!< Must be larger than `dc_bu
+ 108:MotorControl/odrive_main.h ****                                                                     //!< otherwise the ramp feature
+ 109:MotorControl/odrive_main.h **** 
+ 110:MotorControl/odrive_main.h ****     float dc_max_positive_current = INFINITY; // Max current [A] the power supply can source
+ 111:MotorControl/odrive_main.h ****     float dc_max_negative_current = -0.01f; // Max current [A] the power supply can sink. You most 
+ 112:MotorControl/odrive_main.h ****     uint32_t error_gpio_pin = DEFAULT_ERROR_PIN;
+ 113:MotorControl/odrive_main.h ****     PWMMapping_t pwm_mappings[4];
+ 114:MotorControl/odrive_main.h ****     PWMMapping_t analog_mappings[GPIO_COUNT];
+ 115:MotorControl/odrive_main.h **** };
+ 116:MotorControl/odrive_main.h **** 
+ 117:MotorControl/odrive_main.h **** struct TaskTimes {
+ 118:MotorControl/odrive_main.h ****     TaskTimer sampling;
+ 119:MotorControl/odrive_main.h ****     TaskTimer control_loop_misc;
+ 120:MotorControl/odrive_main.h ****     TaskTimer control_loop_checks;
+ 121:MotorControl/odrive_main.h ****     TaskTimer dc_calib_wait;
+ 122:MotorControl/odrive_main.h **** };
+ 123:MotorControl/odrive_main.h **** 
+ 124:MotorControl/odrive_main.h **** 
+ 125:MotorControl/odrive_main.h **** // Forward Declarations
+ 126:MotorControl/odrive_main.h **** class Axis;
+ 127:MotorControl/odrive_main.h **** class Motor;
+ 128:MotorControl/odrive_main.h **** 
+ 129:MotorControl/odrive_main.h **** // TODO: move
+ 130:MotorControl/odrive_main.h **** // this is technically not thread-safe but practically it might be
+ 131:MotorControl/odrive_main.h **** #define DEFINE_ENUM_FLAG_OPERATORS(ENUMTYPE) \
+ 132:MotorControl/odrive_main.h **** inline ENUMTYPE operator | (ENUMTYPE a, ENUMTYPE b) { return static_cast<ENUMTYPE>(static_cast<std:
+ 133:MotorControl/odrive_main.h **** inline ENUMTYPE operator & (ENUMTYPE a, ENUMTYPE b) { return static_cast<ENUMTYPE>(static_cast<std:
+ 134:MotorControl/odrive_main.h **** inline ENUMTYPE operator ^ (ENUMTYPE a, ENUMTYPE b) { return static_cast<ENUMTYPE>(static_cast<std:
+ 135:MotorControl/odrive_main.h **** inline ENUMTYPE &operator |= (ENUMTYPE &a, ENUMTYPE b) { return reinterpret_cast<ENUMTYPE&>(reinter
+ 136:MotorControl/odrive_main.h **** inline ENUMTYPE &operator &= (ENUMTYPE &a, ENUMTYPE b) { return reinterpret_cast<ENUMTYPE&>(reinter
+ 137:MotorControl/odrive_main.h **** inline ENUMTYPE &operator ^= (ENUMTYPE &a, ENUMTYPE b) { return reinterpret_cast<ENUMTYPE&>(reinter
+ 138:MotorControl/odrive_main.h **** inline ENUMTYPE operator ~ (ENUMTYPE a) { return static_cast<ENUMTYPE>(~static_cast<std::underlying
+ 139:MotorControl/odrive_main.h **** 
+ 140:MotorControl/odrive_main.h **** #include "autogen/interfaces.hpp"
+ 141:MotorControl/odrive_main.h **** 
+ 142:MotorControl/odrive_main.h **** // ODrive specific includes
+ 143:MotorControl/odrive_main.h **** #include <utils.hpp>
+ARM GAS  /tmp/ccZsoqvw.s 			page 4
+
+
+ 144:MotorControl/odrive_main.h **** #include <low_level.h>
+ 145:MotorControl/odrive_main.h **** #include <encoder.hpp>
+ 146:MotorControl/odrive_main.h **** #include <sensorless_estimator.hpp>
+ 147:MotorControl/odrive_main.h **** #include <controller.hpp>
+ 148:MotorControl/odrive_main.h **** #include <current_limiter.hpp>
+ 149:MotorControl/odrive_main.h **** #include <thermistor.hpp>
+ 150:MotorControl/odrive_main.h **** #include <trapTraj.hpp>
+ 151:MotorControl/odrive_main.h **** #include <endstop.hpp>
+ 152:MotorControl/odrive_main.h **** #include <mechanical_brake.hpp>
+ 153:MotorControl/odrive_main.h **** #include <axis.hpp>
+ 154:MotorControl/odrive_main.h **** #include <oscilloscope.hpp>
+ 155:MotorControl/odrive_main.h **** #include <communication/communication.h>
+ 156:MotorControl/odrive_main.h **** #include <communication/can/odrive_can.hpp>
+ 157:MotorControl/odrive_main.h **** 
+ 158:MotorControl/odrive_main.h **** // Defined in autogen/version.c based on git-derived version numbers
+ 159:MotorControl/odrive_main.h **** extern "C" {
+ 160:MotorControl/odrive_main.h **** extern const unsigned char fw_version_major_;
+ 161:MotorControl/odrive_main.h **** extern const unsigned char fw_version_minor_;
+ 162:MotorControl/odrive_main.h **** extern const unsigned char fw_version_revision_;
+ 163:MotorControl/odrive_main.h **** extern const unsigned char fw_version_unreleased_;
+ 164:MotorControl/odrive_main.h **** }
+ 165:MotorControl/odrive_main.h **** 
+ 166:MotorControl/odrive_main.h **** static Stm32Gpio get_gpio(size_t gpio_num) {
+  30              		.loc 1 166 44 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  35              		.loc 1 166 44 is_stmt 0 view .LVU1
+  36 0000 0346     		mov	r3, r0
+ 167:MotorControl/odrive_main.h ****     return (gpio_num < GPIO_COUNT) ? gpios[gpio_num] : GPIO_COUNT ? gpios[0] : Stm32Gpio::none;
+  37              		.loc 1 167 5 is_stmt 1 view .LVU2
+  38              		.loc 1 167 36 is_stmt 0 view .LVU3
+  39 0002 1029     		cmp	r1, #16
+  40 0004 07D8     		bhi	.L3
+  41              		.loc 1 167 36 discriminator 1 view .LVU4
+  42 0006 054A     		ldr	r2, .L4
+  43 0008 02EBC101 		add	r1, r2, r1, lsl #3
+  44              	.LVL1:
+  45              	.L2:
+  46              		.loc 1 167 91 discriminator 4 view .LVU5
+  47 000c 03C9     		ldm	r1, {r0, r1}
+  48              	.LVL2:
+  49              		.loc 1 167 91 discriminator 4 view .LVU6
+  50 000e 83E80300 		stm	r3, {r0, r1}
+ 168:MotorControl/odrive_main.h **** }
+  51              		.loc 1 168 1 discriminator 4 view .LVU7
+  52 0012 1846     		mov	r0, r3
+  53 0014 7047     		bx	lr
+  54              	.LVL3:
+  55              	.L3:
+ 167:MotorControl/odrive_main.h ****     return (gpio_num < GPIO_COUNT) ? gpios[gpio_num] : GPIO_COUNT ? gpios[0] : Stm32Gpio::none;
+  56              		.loc 1 167 36 view .LVU8
+  57 0016 0149     		ldr	r1, .L4
+  58              	.LVL4:
+ 167:MotorControl/odrive_main.h ****     return (gpio_num < GPIO_COUNT) ? gpios[gpio_num] : GPIO_COUNT ? gpios[0] : Stm32Gpio::none;
+  59              		.loc 1 167 36 view .LVU9
+ARM GAS  /tmp/ccZsoqvw.s 			page 5
+
+
+  60 0018 F8E7     		b	.L2
+  61              	.L5:
+  62 001a 00BF     		.align	2
+  63              	.L4:
+  64 001c 00000000 		.word	gpios
+  65              		.cfi_endproc
+  66              	.LFE5151:
+  67              		.cantunwind
+  68              		.fnend
+  70              		.section	.text._ZN7Endstop6updateEv,"ax",%progbits
+  71              		.align	1
+  72              		.global	_ZN7Endstop6updateEv
+  73              		.syntax unified
+  74              		.thumb
+  75              		.thumb_func
+  77              	_ZN7Endstop6updateEv:
+  78              		.fnstart
+  79              	.LVL5:
+  80              	.LFB5158:
+  81              		.file 2 "MotorControl/endstop.cpp"
+   1:MotorControl/endstop.cpp **** #include <odrive_main.h>
+   2:MotorControl/endstop.cpp **** 
+   3:MotorControl/endstop.cpp **** 
+   4:MotorControl/endstop.cpp **** void Endstop::update() {
+  82              		.loc 2 4 24 is_stmt 1 view -0
+  83              		.cfi_startproc
+  84              		@ args = 0, pretend = 0, frame = 16
+  85              		@ frame_needed = 0, uses_anonymous_args = 0
+  86              		.loc 2 4 24 is_stmt 0 view .LVU11
+  87 0000 70B5     		push	{r4, r5, r6, lr}
+  88              	.LCFI0:
+  89              		.cfi_def_cfa_offset 16
+  90              		.cfi_offset 4, -16
+  91              		.cfi_offset 5, -12
+  92              		.cfi_offset 6, -8
+  93              		.cfi_offset 14, -4
+  94 0002 84B0     		sub	sp, sp, #16
+  95              	.LCFI1:
+  96              		.cfi_def_cfa_offset 32
+  97 0004 0446     		mov	r4, r0
+   5:MotorControl/endstop.cpp ****     debounceTimer_.update();
+  98              		.loc 2 5 5 is_stmt 1 view .LVU12
+  99              	.LBB32:
+ 100              	.LBI32:
+ 101              		.file 3 "MotorControl/timer.hpp"
+   1:MotorControl/timer.hpp **** #pragma once
+   2:MotorControl/timer.hpp **** 
+   3:MotorControl/timer.hpp **** #include <algorithm>
+   4:MotorControl/timer.hpp **** template <class T>
+   5:MotorControl/timer.hpp **** class Timer {
+   6:MotorControl/timer.hpp ****    public:
+   7:MotorControl/timer.hpp ****     void setTimeout(const T timeout) {
+   8:MotorControl/timer.hpp ****         timeout_ = timeout;
+   9:MotorControl/timer.hpp ****     }
+  10:MotorControl/timer.hpp **** 
+  11:MotorControl/timer.hpp ****     void setIncrement(const T increment) {
+  12:MotorControl/timer.hpp ****         increment_ = increment;
+ARM GAS  /tmp/ccZsoqvw.s 			page 6
+
+
+  13:MotorControl/timer.hpp ****     }
+  14:MotorControl/timer.hpp **** 
+  15:MotorControl/timer.hpp ****     void start() {
+  16:MotorControl/timer.hpp ****         running_ = true;
+  17:MotorControl/timer.hpp ****     }
+  18:MotorControl/timer.hpp **** 
+  19:MotorControl/timer.hpp ****     void stop() {
+  20:MotorControl/timer.hpp ****         running_ = false;
+  21:MotorControl/timer.hpp ****     }
+  22:MotorControl/timer.hpp **** 
+  23:MotorControl/timer.hpp ****     // If the timer is started, increment the timer
+  24:MotorControl/timer.hpp ****     void update() {
+ 102              		.loc 3 24 10 view .LVU13
+ 103              	.LBB33:
+  25:MotorControl/timer.hpp ****         if (running_)
+ 104              		.loc 3 25 13 is_stmt 0 view .LVU14
+ 105 0006 90F82820 		ldrb	r2, [r0, #40]	@ zero_extendqisi2
+ 106              		.loc 3 25 9 view .LVU15
+ 107 000a 9AB1     		cbz	r2, .L7
+  26:MotorControl/timer.hpp ****             timer_ = std::min<T>(timer_ + increment_, timeout_);
+ 108              		.loc 3 26 34 view .LVU16
+ 109 000c D0ED077A 		vldr.32	s15, [r0, #28]
+ 110              		.loc 3 26 43 view .LVU17
+ 111 0010 90ED097A 		vldr.32	s14, [r0, #36]
+ 112              		.loc 3 26 41 view .LVU18
+ 113 0014 77EE877A 		vadd.f32	s15, s15, s14
+ 114 0018 CDED037A 		vstr.32	s15, [sp, #12]
+ 115              		.loc 3 26 55 view .LVU19
+ 116 001c 00F12002 		add	r2, r0, #32
+ 117              	.LVL6:
+ 118              	.LBB34:
+ 119              	.LBI34:
+ 120              		.file 4 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h"
+   1:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // Core algorithmic facilities -*- C++ -*-
+   2:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+   3:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // Copyright (C) 2001-2020 Free Software Foundation, Inc.
+   4:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** //
+   5:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // This file is part of the GNU ISO C++ Library.  This library is free
+   6:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // software; you can redistribute it and/or modify it under the
+   7:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // terms of the GNU General Public License as published by the
+   8:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // Free Software Foundation; either version 3, or (at your option)
+   9:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // any later version.
+  10:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  11:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // This library is distributed in the hope that it will be useful,
+  12:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // but WITHOUT ANY WARRANTY; without even the implied warranty of
+  13:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  14:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // GNU General Public License for more details.
+  15:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  16:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // Under Section 7 of GPL version 3, you are granted additional
+  17:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // permissions described in the GCC Runtime Library Exception, version
+  18:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // 3.1, as published by the Free Software Foundation.
+  19:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  20:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // You should have received a copy of the GNU General Public License and
+  21:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // a copy of the GCC Runtime Library Exception along with this program;
+  22:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+  23:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // <http://www.gnu.org/licenses/>.
+  24:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ARM GAS  /tmp/ccZsoqvw.s 			page 7
+
+
+  25:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** /*
+  26:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *
+  27:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Copyright (c) 1994
+  28:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Hewlett-Packard Company
+  29:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *
+  30:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Permission to use, copy, modify, distribute and sell this software
+  31:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * and its documentation for any purpose is hereby granted without fee,
+  32:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * provided that the above copyright notice appear in all copies and
+  33:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * that both that copyright notice and this permission notice appear
+  34:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * in supporting documentation.  Hewlett-Packard Company makes no
+  35:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * representations about the suitability of this software for any
+  36:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * purpose.  It is provided "as is" without express or implied warranty.
+  37:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *
+  38:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *
+  39:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Copyright (c) 1996-1998
+  40:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Silicon Graphics Computer Systems, Inc.
+  41:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *
+  42:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Permission to use, copy, modify, distribute and sell this software
+  43:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * and its documentation for any purpose is hereby granted without fee,
+  44:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * provided that the above copyright notice appear in all copies and
+  45:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * that both that copyright notice and this permission notice appear
+  46:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * in supporting documentation.  Silicon Graphics makes no
+  47:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * representations about the suitability of this software for any
+  48:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * purpose.  It is provided "as is" without express or implied warranty.
+  49:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  */
+  50:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  51:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** /** @file bits/stl_algobase.h
+  52:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *  This is an internal header file, included by other library headers.
+  53:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *  Do not attempt to use it directly. @headername{algorithm}
+  54:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  */
+  55:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  56:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #ifndef _STL_ALGOBASE_H
+  57:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #define _STL_ALGOBASE_H 1
+  58:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  59:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/c++config.h>
+  60:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/functexcept.h>
+  61:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/cpp_type_traits.h>
+  62:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <ext/type_traits.h>
+  63:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <ext/numeric_traits.h>
+  64:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/stl_pair.h>
+  65:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/stl_iterator_base_types.h>
+  66:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/stl_iterator_base_funcs.h>
+  67:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/stl_iterator.h>
+  68:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/concept_check.h>
+  69:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <debug/debug.h>
+  70:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/move.h> // For std::swap
+  71:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/predefined_ops.h>
+  72:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus >= 201103L
+  73:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** # include <type_traits>
+  74:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
+  75:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus > 201703L
+  76:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** # include <compare>
+  77:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
+  78:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  79:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** namespace std _GLIBCXX_VISIBILITY(default)
+  80:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** {
+  81:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** _GLIBCXX_BEGIN_NAMESPACE_VERSION
+ARM GAS  /tmp/ccZsoqvw.s 			page 8
+
+
+  82:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  83:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /*
+  84:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    * A constexpr wrapper for __builtin_memcmp.
+  85:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    * @param __num The number of elements of type _Tp (not bytes).
+  86:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    */
+  87:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _Tp, typename _Up>
+  88:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX14_CONSTEXPR
+  89:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     inline int
+  90:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     __memcmp(const _Tp* __first1, const _Up* __first2, size_t __num)
+  91:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+  92:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus >= 201103L
+  93:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       static_assert(sizeof(_Tp) == sizeof(_Up), "can be compared with memcmp");
+  94:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
+  95:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #ifdef __cpp_lib_is_constant_evaluated
+  96:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       if (std::is_constant_evaluated())
+  97:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	{
+  98:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  for(; __num > 0; ++__first1, ++__first2, --__num)
+  99:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	    if (*__first1 != *__first2)
+ 100:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	      return *__first1 < *__first2 ? -1 : 1;
+ 101:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  return 0;
+ 102:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	}
+ 103:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       else
+ 104:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
+ 105:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	return __builtin_memcmp(__first1, __first2, sizeof(_Tp) * __num);
+ 106:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
+ 107:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 108:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus < 201103L
+ 109:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // See http://gcc.gnu.org/ml/libstdc++/2004-08/msg00167.html: in a
+ 110:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // nutshell, we are partially implementing the resolution of DR 187,
+ 111:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // when it's safe, i.e., the value_types are equal.
+ 112:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<bool _BoolType>
+ 113:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     struct __iter_swap
+ 114:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ 115:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       template<typename _ForwardIterator1, typename _ForwardIterator2>
+ 116:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	static void
+ 117:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	iter_swap(_ForwardIterator1 __a, _ForwardIterator2 __b)
+ 118:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	{
+ 119:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  typedef typename iterator_traits<_ForwardIterator1>::value_type
+ 120:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	    _ValueType1;
+ 121:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  _ValueType1 __tmp = *__a;
+ 122:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  *__a = *__b;
+ 123:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  *__b = __tmp;
+ 124:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	}
+ 125:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     };
+ 126:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 127:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<>
+ 128:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     struct __iter_swap<true>
+ 129:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ 130:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       template<typename _ForwardIterator1, typename _ForwardIterator2>
+ 131:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	static void
+ 132:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	iter_swap(_ForwardIterator1 __a, _ForwardIterator2 __b)
+ 133:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	{
+ 134:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  swap(*__a, *__b);
+ 135:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	}
+ 136:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     };
+ 137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif // C++03
+ 138:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ARM GAS  /tmp/ccZsoqvw.s 			page 9
+
+
+ 139:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /**
+ 140:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @brief Swaps the contents of two iterators.
+ 141:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @ingroup mutating_algorithms
+ 142:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __a  An iterator.
+ 143:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __b  Another iterator.
+ 144:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @return   Nothing.
+ 145:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *
+ 146:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  This function swaps the values pointed to by two iterators, not the
+ 147:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  iterators themselves.
+ 148:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   */
+ 149:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _ForwardIterator1, typename _ForwardIterator2>
+ 150:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX20_CONSTEXPR
+ 151:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     inline void
+ 152:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     iter_swap(_ForwardIterator1 __a, _ForwardIterator2 __b)
+ 153:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ 154:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // concept requirements
+ 155:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_Mutable_ForwardIteratorConcept<
+ 156:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ForwardIterator1>)
+ 157:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_Mutable_ForwardIteratorConcept<
+ 158:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ForwardIterator2>)
+ 159:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 160:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus < 201103L
+ 161:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       typedef typename iterator_traits<_ForwardIterator1>::value_type
+ 162:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	_ValueType1;
+ 163:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       typedef typename iterator_traits<_ForwardIterator2>::value_type
+ 164:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	_ValueType2;
+ 165:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 166:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_ConvertibleConcept<_ValueType1,
+ 167:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ValueType2>)
+ 168:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_ConvertibleConcept<_ValueType2,
+ 169:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ValueType1>)
+ 170:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 171:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       typedef typename iterator_traits<_ForwardIterator1>::reference
+ 172:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	_ReferenceType1;
+ 173:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       typedef typename iterator_traits<_ForwardIterator2>::reference
+ 174:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	_ReferenceType2;
+ 175:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       std::__iter_swap<__are_same<_ValueType1, _ValueType2>::__value
+ 176:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	&& __are_same<_ValueType1&, _ReferenceType1>::__value
+ 177:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	&& __are_same<_ValueType2&, _ReferenceType2>::__value>::
+ 178:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	iter_swap(__a, __b);
+ 179:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #else
+ 180:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // _GLIBCXX_RESOLVE_LIB_DEFECTS
+ 181:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // 187. iter_swap underspecified
+ 182:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       swap(*__a, *__b);
+ 183:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
+ 184:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
+ 185:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 186:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /**
+ 187:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @brief Swap the elements of two sequences.
+ 188:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @ingroup mutating_algorithms
+ 189:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __first1  A forward iterator.
+ 190:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __last1   A forward iterator.
+ 191:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __first2  A forward iterator.
+ 192:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @return   An iterator equal to @p first2+(last1-first1).
+ 193:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *
+ 194:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  Swaps each element in the range @p [first1,last1) with the
+ 195:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  corresponding element in the range @p [first2,(last1-first1)).
+ARM GAS  /tmp/ccZsoqvw.s 			page 10
+
+
+ 196:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  The ranges must not overlap.
+ 197:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   */
+ 198:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _ForwardIterator1, typename _ForwardIterator2>
+ 199:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX20_CONSTEXPR
+ 200:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _ForwardIterator2
+ 201:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     swap_ranges(_ForwardIterator1 __first1, _ForwardIterator1 __last1,
+ 202:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		_ForwardIterator2 __first2)
+ 203:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ 204:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // concept requirements
+ 205:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_Mutable_ForwardIteratorConcept<
+ 206:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ForwardIterator1>)
+ 207:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_Mutable_ForwardIteratorConcept<
+ 208:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ForwardIterator2>)
+ 209:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_requires_valid_range(__first1, __last1);
+ 210:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 211:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       for (; __first1 != __last1; ++__first1, (void)++__first2)
+ 212:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	std::iter_swap(__first1, __first2);
+ 213:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __first2;
+ 214:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
+ 215:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 216:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /**
+ 217:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @brief This does what you think it does.
+ 218:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @ingroup sorting_algorithms
+ 219:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __a  A thing of arbitrary type.
+ 220:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __b  Another thing of arbitrary type.
+ 221:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @return   The lesser of the parameters.
+ 222:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *
+ 223:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  This is the simple classic generic implementation.  It will work on
+ 224:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  temporary expressions, since they are only evaluated once, unlike a
+ 225:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  preprocessor macro.
+ 226:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   */
+ 227:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _Tp>
+ 228:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX14_CONSTEXPR
+ 229:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     inline const _Tp&
+ 230:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     min(const _Tp& __a, const _Tp& __b)
+ 121              		.loc 4 230 5 is_stmt 1 view .LVU20
+ 122              	.LBB35:
+ 231:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ 232:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // concept requirements
+ 233:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_LessThanComparableConcept<_Tp>)
+ 234:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       //return __b < __a ? __b : __a;
+ 235:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       if (__b < __a)
+ 123              		.loc 4 235 15 is_stmt 0 view .LVU21
+ 124 0020 90ED087A 		vldr.32	s14, [r0, #32]
+ 125              		.loc 4 235 7 view .LVU22
+ 126 0024 F4EEC77A 		vcmpe.f32	s15, s14
+ 127 0028 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 128 002c 00DC     		bgt	.L8
+ 236:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	return __b;
+ 237:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __a;
+ 129              		.loc 4 237 14 view .LVU23
+ 130 002e 03AA     		add	r2, sp, #12
+ 131              	.LVL7:
+ 132              	.L8:
+ 133              		.loc 4 237 14 view .LVU24
+ 134              	.LBE35:
+ 135              	.LBE34:
+ARM GAS  /tmp/ccZsoqvw.s 			page 11
+
+
+ 136              		.loc 3 26 20 view .LVU25
+ 137 0030 1368     		ldr	r3, [r2]	@ float
+ 138 0032 E361     		str	r3, [r4, #28]	@ float
+ 139              	.L7:
+ 140              		.loc 3 26 20 view .LVU26
+ 141              	.LBE33:
+ 142              	.LBE32:
+   6:MotorControl/endstop.cpp ****     last_state_ = endstop_state_;
+ 143              		.loc 2 6 5 is_stmt 1 view .LVU27
+ 144              		.loc 2 6 19 is_stmt 0 view .LVU28
+ 145 0034 237D     		ldrb	r3, [r4, #20]	@ zero_extendqisi2
+ 146              		.loc 2 6 17 view .LVU29
+ 147 0036 6375     		strb	r3, [r4, #21]
+   7:MotorControl/endstop.cpp ****     if (config_.enabled) {
+ 148              		.loc 2 7 5 is_stmt 1 view .LVU30
+ 149              	.LBB36:
+ 150              		.loc 2 7 17 is_stmt 0 view .LVU31
+ 151 0038 A57A     		ldrb	r5, [r4, #10]	@ zero_extendqisi2
+ 152              		.loc 2 7 5 view .LVU32
+ 153 003a 15B3     		cbz	r5, .L9
+ 154              	.LBB37:
+   8:MotorControl/endstop.cpp ****         bool last_pin_state = pin_state_;
+ 155              		.loc 2 8 9 is_stmt 1 view .LVU33
+ 156              		.loc 2 8 14 is_stmt 0 view .LVU34
+ 157 003c A67D     		ldrb	r6, [r4, #22]	@ zero_extendqisi2
+ 158              	.LVL8:
+   9:MotorControl/endstop.cpp **** 
+  10:MotorControl/endstop.cpp ****         pin_state_ = get_gpio(config_.gpio_num).read();
+ 159              		.loc 2 10 9 is_stmt 1 view .LVU35
+ 160              		.loc 2 10 47 is_stmt 0 view .LVU36
+ 161 003e 2189     		ldrh	r1, [r4, #8]
+ 162 0040 01A8     		add	r0, sp, #4
+ 163              	.LVL9:
+ 164              		.loc 2 10 47 view .LVU37
+ 165 0042 FFF7FEFF 		bl	_ZL8get_gpioj
+ 166              	.LVL10:
+ 167              	.LBB38:
+ 168              	.LBI38:
+ 169              		.file 5 "./Drivers/STM32/stm32_gpio.hpp"
+   1:./Drivers/STM32/stm32_gpio.hpp **** #ifndef __STM32_GPIO_HPP
+   2:./Drivers/STM32/stm32_gpio.hpp **** #define __STM32_GPIO_HPP
+   3:./Drivers/STM32/stm32_gpio.hpp **** 
+   4:./Drivers/STM32/stm32_gpio.hpp **** #include <gpio.h>
+   5:./Drivers/STM32/stm32_gpio.hpp **** 
+   6:./Drivers/STM32/stm32_gpio.hpp **** class Stm32Gpio {
+   7:./Drivers/STM32/stm32_gpio.hpp **** public:
+   8:./Drivers/STM32/stm32_gpio.hpp ****     static const Stm32Gpio none;
+   9:./Drivers/STM32/stm32_gpio.hpp **** 
+  10:./Drivers/STM32/stm32_gpio.hpp ****     Stm32Gpio() : port_(nullptr), pin_mask_(0) {}
+  11:./Drivers/STM32/stm32_gpio.hpp ****     Stm32Gpio(GPIO_TypeDef* port, uint16_t pin) : port_(port), pin_mask_(pin) {}
+  12:./Drivers/STM32/stm32_gpio.hpp **** 
+  13:./Drivers/STM32/stm32_gpio.hpp ****     operator bool() const { return port_ && pin_mask_; }
+  14:./Drivers/STM32/stm32_gpio.hpp **** 
+  15:./Drivers/STM32/stm32_gpio.hpp ****     /**
+  16:./Drivers/STM32/stm32_gpio.hpp ****      * @brief Configures the GPIO with the specified parameters.
+  17:./Drivers/STM32/stm32_gpio.hpp ****      * 
+  18:./Drivers/STM32/stm32_gpio.hpp ****      * This can be done regardless of the current state of the GPIO.
+ARM GAS  /tmp/ccZsoqvw.s 			page 12
+
+
+  19:./Drivers/STM32/stm32_gpio.hpp ****      * 
+  20:./Drivers/STM32/stm32_gpio.hpp ****      * If any subscription is in place, it is not disabled by this function.
+  21:./Drivers/STM32/stm32_gpio.hpp ****      */
+  22:./Drivers/STM32/stm32_gpio.hpp ****     bool config(uint32_t mode, uint32_t pull, uint32_t speed = GPIO_SPEED_FREQ_LOW);
+  23:./Drivers/STM32/stm32_gpio.hpp **** 
+  24:./Drivers/STM32/stm32_gpio.hpp ****     void write(bool state) {
+  25:./Drivers/STM32/stm32_gpio.hpp ****         if (port_) {
+  26:./Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+  27:./Drivers/STM32/stm32_gpio.hpp ****         }
+  28:./Drivers/STM32/stm32_gpio.hpp ****     }
+  29:./Drivers/STM32/stm32_gpio.hpp **** 
+  30:./Drivers/STM32/stm32_gpio.hpp ****     bool read() {
+ 170              		.loc 5 30 10 is_stmt 1 view .LVU38
+ 171              	.LBB39:
+  31:./Drivers/STM32/stm32_gpio.hpp ****         return port_ && (port_->IDR & pin_mask_);
+ 172              		.loc 5 31 9 view .LVU39
+ 173              		.loc 5 31 16 is_stmt 0 view .LVU40
+ 174 0046 019B     		ldr	r3, [sp, #4]
+ 175              		.loc 5 31 22 view .LVU41
+ 176 0048 CBB1     		cbz	r3, .L15
+ 177              		.loc 5 31 33 view .LVU42
+ 178 004a 1A69     		ldr	r2, [r3, #16]
+ 179              		.loc 5 31 39 view .LVU43
+ 180 004c BDF80830 		ldrh	r3, [sp, #8]
+ 181              		.loc 5 31 22 view .LVU44
+ 182 0050 1A42     		tst	r2, r3
+ 183 0052 00D1     		bne	.L10
+ 184 0054 0025     		movs	r5, #0
+ 185              	.L10:
+ 186              	.LVL11:
+ 187              		.loc 5 31 22 view .LVU45
+ 188              	.LBE39:
+ 189              	.LBE38:
+ 190              		.loc 2 10 20 view .LVU46
+ 191 0056 A575     		strb	r5, [r4, #22]
+  11:MotorControl/endstop.cpp **** 
+  12:MotorControl/endstop.cpp ****         // If the pin state has changed, reset the timer
+  13:MotorControl/endstop.cpp ****         if (pin_state_ != last_pin_state)
+ 192              		.loc 2 13 9 is_stmt 1 view .LVU47
+ 193 0058 AE42     		cmp	r6, r5
+ 194 005a 01D0     		beq	.L11
+  14:MotorControl/endstop.cpp ****             debounceTimer_.reset();
+ 195              		.loc 2 14 13 view .LVU48
+ 196              	.LVL12:
+ 197              	.LBB41:
+ 198              	.LBI41:
+  27:MotorControl/timer.hpp ****     }
+  28:MotorControl/timer.hpp **** 
+  29:MotorControl/timer.hpp ****     void reset() {
+ 199              		.loc 3 29 10 view .LVU49
+ 200              	.LBB42:
+  30:MotorControl/timer.hpp ****         timer_ = static_cast<T>(0);
+ 201              		.loc 3 30 16 is_stmt 0 view .LVU50
+ 202 005c 0023     		movs	r3, #0
+ 203 005e E361     		str	r3, [r4, #28]	@ float
+ 204              	.LVL13:
+ 205              	.L11:
+ARM GAS  /tmp/ccZsoqvw.s 			page 13
+
+
+ 206              		.loc 3 30 16 view .LVU51
+ 207              	.LBE42:
+ 208              	.LBE41:
+  15:MotorControl/endstop.cpp **** 
+  16:MotorControl/endstop.cpp ****         if (debounceTimer_.expired())
+ 209              		.loc 2 16 9 is_stmt 1 view .LVU52
+ 210              	.LBB43:
+ 211              	.LBI43:
+  31:MotorControl/timer.hpp ****     }
+  32:MotorControl/timer.hpp **** 
+  33:MotorControl/timer.hpp ****     bool expired() {
+ 212              		.loc 3 33 10 view .LVU53
+ 213              	.LBB44:
+  34:MotorControl/timer.hpp ****         return timer_ >= timeout_;
+ 214              		.loc 3 34 16 is_stmt 0 view .LVU54
+ 215 0060 94ED077A 		vldr.32	s14, [r4, #28]
+ 216              		.loc 3 34 26 view .LVU55
+ 217 0064 D4ED087A 		vldr.32	s15, [r4, #32]
+ 218              	.LVL14:
+ 219              		.loc 3 34 26 view .LVU56
+ 220              	.LBE44:
+ 221              	.LBE43:
+ 222              		.loc 2 16 9 view .LVU57
+ 223 0068 B4EEE77A 		vcmpe.f32	s14, s15
+ 224 006c F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 225 0070 09DB     		blt	.L6
+  17:MotorControl/endstop.cpp ****             endstop_state_ = config_.is_active_high ? pin_state_ : !pin_state_;  // endstop_state i
+ 226              		.loc 2 17 13 is_stmt 1 view .LVU58
+ 227              		.loc 2 17 38 is_stmt 0 view .LVU59
+ 228 0072 E37A     		ldrb	r3, [r4, #11]	@ zero_extendqisi2
+ 229              		.loc 2 17 53 view .LVU60
+ 230 0074 0BB9     		cbnz	r3, .L14
+ 231              		.loc 2 17 53 discriminator 2 view .LVU61
+ 232 0076 85F00105 		eor	r5, r5, #1
+ 233              	.L14:
+ 234              		.loc 2 17 28 discriminator 4 view .LVU62
+ 235 007a 2575     		strb	r5, [r4, #20]
+ 236 007c 03E0     		b	.L6
+ 237              	.LVL15:
+ 238              	.L15:
+ 239              	.LBB45:
+ 240              	.LBB40:
+ 241              		.loc 5 31 22 view .LVU63
+ 242 007e 0025     		movs	r5, #0
+ 243 0080 E9E7     		b	.L10
+ 244              	.LVL16:
+ 245              	.L9:
+ 246              		.loc 5 31 22 view .LVU64
+ 247              	.LBE40:
+ 248              	.LBE45:
+ 249              	.LBE37:
+  18:MotorControl/endstop.cpp ****     } else {
+  19:MotorControl/endstop.cpp ****         endstop_state_ = false;
+ 250              		.loc 2 19 9 is_stmt 1 view .LVU65
+ 251              		.loc 2 19 24 is_stmt 0 view .LVU66
+ 252 0082 0023     		movs	r3, #0
+ 253 0084 2375     		strb	r3, [r4, #20]
+ARM GAS  /tmp/ccZsoqvw.s 			page 14
+
+
+ 254              	.LVL17:
+ 255              	.L6:
+ 256              		.loc 2 19 24 view .LVU67
+ 257              	.LBE36:
+  20:MotorControl/endstop.cpp ****     }
+  21:MotorControl/endstop.cpp **** }
+ 258              		.loc 2 21 1 view .LVU68
+ 259 0086 04B0     		add	sp, sp, #16
+ 260              	.LCFI2:
+ 261              		.cfi_def_cfa_offset 16
+ 262              		@ sp needed
+ 263 0088 70BD     		pop	{r4, r5, r6, pc}
+ 264              		.loc 2 21 1 view .LVU69
+ 265              		.cfi_endproc
+ 266              	.LFE5158:
+ 267              		.cantunwind
+ 268              		.fnend
+ 270              		.section	.text._ZN7Endstop12apply_configEv,"ax",%progbits
+ 271              		.align	1
+ 272              		.global	_ZN7Endstop12apply_configEv
+ 273              		.syntax unified
+ 274              		.thumb
+ 275              		.thumb_func
+ 277              	_ZN7Endstop12apply_configEv:
+ 278              		.fnstart
+ 279              	.LVL18:
+ 280              	.LFB5159:
+  22:MotorControl/endstop.cpp **** 
+  23:MotorControl/endstop.cpp **** bool Endstop::apply_config() {
+ 281              		.loc 2 23 30 is_stmt 1 view -0
+ 282              		.cfi_startproc
+ 283              		@ args = 0, pretend = 0, frame = 0
+ 284              		@ frame_needed = 0, uses_anonymous_args = 0
+ 285              		@ link register save eliminated.
+  24:MotorControl/endstop.cpp ****     debounceTimer_.reset();
+ 286              		.loc 2 24 5 view .LVU71
+ 287              	.LBB46:
+ 288              	.LBI46:
+  29:MotorControl/timer.hpp ****         timer_ = static_cast<T>(0);
+ 289              		.loc 3 29 10 view .LVU72
+ 290              	.LBB47:
+  30:MotorControl/timer.hpp ****     }
+ 291              		.loc 3 30 16 is_stmt 0 view .LVU73
+ 292 0000 0023     		movs	r3, #0
+ 293 0002 C361     		str	r3, [r0, #28]	@ float
+ 294              	.LVL19:
+  30:MotorControl/timer.hpp ****     }
+ 295              		.loc 3 30 16 view .LVU74
+ 296              	.LBE47:
+ 297              	.LBE46:
+  25:MotorControl/endstop.cpp ****     if (config_.enabled) {
+ 298              		.loc 2 25 5 is_stmt 1 view .LVU75
+ 299              		.loc 2 25 17 is_stmt 0 view .LVU76
+ 300 0004 837A     		ldrb	r3, [r0, #10]	@ zero_extendqisi2
+ 301              		.loc 2 25 5 view .LVU77
+ 302 0006 73B1     		cbz	r3, .L19
+  26:MotorControl/endstop.cpp ****         debounceTimer_.start();
+ARM GAS  /tmp/ccZsoqvw.s 			page 15
+
+
+ 303              		.loc 2 26 9 is_stmt 1 view .LVU78
+ 304              	.LVL20:
+ 305              	.LBB48:
+ 306              	.LBI48:
+  15:MotorControl/timer.hpp ****         running_ = true;
+ 307              		.loc 3 15 10 view .LVU79
+ 308              	.LBB49:
+  16:MotorControl/timer.hpp ****     }
+ 309              		.loc 3 16 18 is_stmt 0 view .LVU80
+ 310 0008 0123     		movs	r3, #1
+ 311 000a 80F82830 		strb	r3, [r0, #40]
+ 312              	.LVL21:
+ 313              	.L20:
+  16:MotorControl/timer.hpp ****     }
+ 314              		.loc 3 16 18 view .LVU81
+ 315              	.LBE49:
+ 316              	.LBE48:
+  27:MotorControl/endstop.cpp ****     } else {
+  28:MotorControl/endstop.cpp ****         debounceTimer_.stop();
+  29:MotorControl/endstop.cpp ****     }
+  30:MotorControl/endstop.cpp ****     debounceTimer_.setIncrement(config_.debounce_ms * 0.001f);
+ 317              		.loc 2 30 5 is_stmt 1 view .LVU82
+ 318              		.loc 2 30 32 is_stmt 0 view .LVU83
+ 319 000e D0ED017A 		vldr.32	s15, [r0, #4]	@ int
+ 320 0012 F8EE677A 		vcvt.f32.u32	s15, s15
+ 321 0016 9FED067A 		vldr.32	s14, .L21
+ 322 001a 67EE877A 		vmul.f32	s15, s15, s14
+ 323              	.LVL22:
+ 324              	.LBB50:
+ 325              	.LBI50:
+  11:MotorControl/timer.hpp ****         increment_ = increment;
+ 326              		.loc 3 11 10 is_stmt 1 view .LVU84
+ 327              	.LBB51:
+  12:MotorControl/timer.hpp ****     }
+ 328              		.loc 3 12 20 is_stmt 0 view .LVU85
+ 329 001e C0ED097A 		vstr.32	s15, [r0, #36]
+ 330              	.LVL23:
+  12:MotorControl/timer.hpp ****     }
+ 331              		.loc 3 12 20 view .LVU86
+ 332              	.LBE51:
+ 333              	.LBE50:
+  31:MotorControl/endstop.cpp ****     return true;
+ 334              		.loc 2 31 5 is_stmt 1 view .LVU87
+  32:MotorControl/endstop.cpp **** }
+ 335              		.loc 2 32 1 is_stmt 0 view .LVU88
+ 336 0022 0120     		movs	r0, #1
+ 337              	.LVL24:
+ 338              		.loc 2 32 1 view .LVU89
+ 339 0024 7047     		bx	lr
+ 340              	.LVL25:
+ 341              	.L19:
+  28:MotorControl/endstop.cpp ****     }
+ 342              		.loc 2 28 9 is_stmt 1 view .LVU90
+ 343              	.LBB52:
+ 344              	.LBI52:
+  19:MotorControl/timer.hpp ****         running_ = false;
+ 345              		.loc 3 19 10 view .LVU91
+ARM GAS  /tmp/ccZsoqvw.s 			page 16
+
+
+ 346              	.LBB53:
+  20:MotorControl/timer.hpp ****     }
+ 347              		.loc 3 20 18 is_stmt 0 view .LVU92
+ 348 0026 0023     		movs	r3, #0
+ 349 0028 80F82830 		strb	r3, [r0, #40]
+  21:MotorControl/timer.hpp **** 
+ 350              		.loc 3 21 5 view .LVU93
+ 351 002c EFE7     		b	.L20
+ 352              	.L22:
+ 353 002e 00BF     		.align	2
+ 354              	.L21:
+ 355 0030 6F12833A 		.word	981668463
+ 356              	.LBE53:
+ 357              	.LBE52:
+ 358              		.cfi_endproc
+ 359              	.LFE5159:
+ 360              		.cantunwind
+ 361              		.fnend
+ 363              		.text
+ 364              	.Letext0:
+ 365              		.file 6 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 366              		.file 7 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 367              		.file 8 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdint.h"
+ 368              		.file 9 "ThirdParty/CMSIS/Device/ST/STM32F4xx/Include/stm32f405xx.h"
+ 369              		.file 10 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h"
+ 370              		.file 11 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stdarg.h"
+ 371              		.file 12 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_types.h"
+ 372              		.file 13 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/reent.h"
+ 373              		.file 14 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/lock.h"
+ 374              		.file 15 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdio.h"
+ 375              		.file 16 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstdlib"
+ 376              		.file 17 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h"
+ 377              		.file 18 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath"
+ 378              		.file 19 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/type_traits"
+ 379              		.file 20 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/debug/debug.h"
+ 380              		.file 21 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/exception_ptr.h"
+ 381              		.file 22 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/har
+ 382              		.file 23 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_iterator.h"
+ 383              		.file 24 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_function.h"
+ 384              		.file 25 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/algorithmfwd.h"
+ 385              		.file 26 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/functional"
+ 386              		.file 27 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstring"
+ 387              		.file 28 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/parse_numbers.h"
+ 388              		.file 29 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cwchar"
+ 389              		.file 30 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/clocale"
+ 390              		.file 31 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstdint"
+ 391              		.file 32 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/string_view"
+ 392              		.file 33 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/basic_string.h"
+ 393              		.file 34 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstdio"
+ 394              		.file 35 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h"
+ 395              		.file 36 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdlib.h"
+ 396              		.file 37 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/stdlib.h"
+ 397              		.file 38 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/math.h"
+ 398              		.file 39 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/math.h"
+ 399              		.file 40 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/string.h"
+ 400              		.file 41 "fibre-cpp/include/fibre/cpp_utils.hpp"
+ 401              		.file 42 "fibre-cpp/include/fibre/callback.hpp"
+ARM GAS  /tmp/ccZsoqvw.s 			page 17
+
+
+ 402              		.file 43 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/pstl/execution_defs.h"
+ 403              		.file 44 "./MotorControl/utils.hpp"
+ 404              		.file 45 "Board/v3/Inc/board.h"
+ 405              		.file 46 "MotorControl/endstop.hpp"
+ 406              		.file 47 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/wchar.h"
+ 407              		.file 48 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/locale.h"
+ 408              		.file 49 "<built-in>"
+ARM GAS  /tmp/ccZsoqvw.s 			page 18
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 endstop.cpp
+     /tmp/ccZsoqvw.s:20     .text._ZL8get_gpioj:0000000000000000 $t
+     /tmp/ccZsoqvw.s:25     .text._ZL8get_gpioj:0000000000000000 _ZL8get_gpioj
+     /tmp/ccZsoqvw.s:64     .text._ZL8get_gpioj:000000000000001c $d
+    .ARM.exidx.text._ZL8get_gpioj:0000000000000000 $d
+     /tmp/ccZsoqvw.s:71     .text._ZN7Endstop6updateEv:0000000000000000 $t
+     /tmp/ccZsoqvw.s:77     .text._ZN7Endstop6updateEv:0000000000000000 _ZN7Endstop6updateEv
+.ARM.exidx.text._ZN7Endstop6updateEv:0000000000000000 $d
+     /tmp/ccZsoqvw.s:271    .text._ZN7Endstop12apply_configEv:0000000000000000 $t
+     /tmp/ccZsoqvw.s:277    .text._ZN7Endstop12apply_configEv:0000000000000000 _ZN7Endstop12apply_configEv
+     /tmp/ccZsoqvw.s:355    .text._ZN7Endstop12apply_configEv:0000000000000030 $d
+.ARM.exidx.text._ZN7Endstop12apply_configEv:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+gpios

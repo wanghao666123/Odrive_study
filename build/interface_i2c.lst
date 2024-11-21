@@ -1,0 +1,104 @@
+ARM GAS  /tmp/ccMzw7y2.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"interface_i2c.cpp"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.start_i2c_server,"ax",%progbits
+  20              		.align	1
+  21              		.global	start_i2c_server
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	start_i2c_server:
+  27              		.fnstart
+  28              	.LFB131:
+  29              		.file 1 "communication/interface_i2c.cpp"
+   1:communication/interface_i2c.cpp **** 
+   2:communication/interface_i2c.cpp **** #include "interface_i2c.h"
+   3:communication/interface_i2c.cpp **** 
+   4:communication/interface_i2c.cpp **** #include <i2c.h>
+   5:communication/interface_i2c.cpp **** 
+   6:communication/interface_i2c.cpp **** #define I2C_RX_BUFFER_SIZE 128
+   7:communication/interface_i2c.cpp **** #define I2C_RX_BUFFER_PREAMBLE_SIZE   4
+   8:communication/interface_i2c.cpp **** #define I2C_TX_BUFFER_SIZE 128
+   9:communication/interface_i2c.cpp **** 
+  10:communication/interface_i2c.cpp **** I2CStats_t i2c_stats_;
+  11:communication/interface_i2c.cpp **** /*
+  12:communication/interface_i2c.cpp **** TODO: add support back
+  13:communication/interface_i2c.cpp **** 
+  14:communication/interface_i2c.cpp **** static uint8_t i2c_rx_buffer[I2C_RX_BUFFER_PREAMBLE_SIZE + I2C_RX_BUFFER_SIZE];
+  15:communication/interface_i2c.cpp **** static uint8_t i2c_tx_buffer[I2C_TX_BUFFER_SIZE];
+  16:communication/interface_i2c.cpp **** 
+  17:communication/interface_i2c.cpp **** class I2CSender : public PacketSink {
+  18:communication/interface_i2c.cpp **** public:
+  19:communication/interface_i2c.cpp ****     int process_packet(const uint8_t* buffer, size_t length) {
+  20:communication/interface_i2c.cpp ****         if (length >= 2 && (length - 2) <= sizeof(i2c_tx_buffer))
+  21:communication/interface_i2c.cpp ****             memcpy(i2c_tx_buffer, buffer + 2, length - 2);
+  22:communication/interface_i2c.cpp ****         return 0;
+  23:communication/interface_i2c.cpp ****     }
+  24:communication/interface_i2c.cpp ****     size_t get_free_space() { return SIZE_MAX; }
+  25:communication/interface_i2c.cpp **** } i2c1_packet_output;
+  26:communication/interface_i2c.cpp **** BidirectionalPacketBasedChannel i2c1_channel(i2c1_packet_output);
+  27:communication/interface_i2c.cpp **** */
+  28:communication/interface_i2c.cpp **** void start_i2c_server() {
+  30              		.loc 1 28 25 view -0
+ARM GAS  /tmp/ccMzw7y2.s 			page 2
+
+
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  29:communication/interface_i2c.cpp ****     // CAN H = SDA
+  30:communication/interface_i2c.cpp ****     // CAN L = SCL
+  31:communication/interface_i2c.cpp ****     //HAL_I2C_EnableListen_IT(&hi2c1);
+  32:communication/interface_i2c.cpp **** }
+  35              		.loc 1 32 1 is_stmt 0 view .LVU1
+  36 0000 7047     		bx	lr
+  37              		.cfi_endproc
+  38              	.LFE131:
+  39              		.cantunwind
+  40              		.fnend
+  42              		.global	i2c_stats_
+  43              		.section	.bss.i2c_stats_,"aw",%nobits
+  44              		.align	2
+  47              	i2c_stats_:
+  48 0000 00000000 		.space	16
+  48      00000000 
+  48      00000000 
+  48      00000000 
+  49              		.text
+  50              	.Letext0:
+  51              		.file 2 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+  52              		.file 3 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+  53              		.file 4 "communication/interface_i2c.h"
+  54              		.file 5 "ThirdParty/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
+  55              		.file 6 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ARM GAS  /tmp/ccMzw7y2.s 			page 3
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 interface_i2c.cpp
+     /tmp/ccMzw7y2.s:20     .text.start_i2c_server:0000000000000000 $t
+     /tmp/ccMzw7y2.s:26     .text.start_i2c_server:0000000000000000 start_i2c_server
+ .ARM.exidx.text.start_i2c_server:0000000000000000 $d
+     /tmp/ccMzw7y2.s:47     .bss.i2c_stats_:0000000000000000 i2c_stats_
+     /tmp/ccMzw7y2.s:44     .bss.i2c_stats_:0000000000000000 $d
+
+NO UNDEFINED SYMBOLS

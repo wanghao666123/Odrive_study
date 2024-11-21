@@ -1,0 +1,1285 @@
+ARM GAS  /tmp/ccudXTmH.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"pwm_input.cpp"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text._ZL8get_gpioj,"ax",%progbits
+  20              		.align	1
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	_ZL8get_gpioj:
+  26              		.fnstart
+  27              	.LVL0:
+  28              	.LFB5151:
+  29              		.file 1 "MotorControl/odrive_main.h"
+   1:MotorControl/odrive_main.h **** #ifndef __ODRIVE_MAIN_H
+   2:MotorControl/odrive_main.h **** #define __ODRIVE_MAIN_H
+   3:MotorControl/odrive_main.h **** 
+   4:MotorControl/odrive_main.h **** // Hardware configuration
+   5:MotorControl/odrive_main.h **** #include <board.h>
+   6:MotorControl/odrive_main.h **** 
+   7:MotorControl/odrive_main.h **** #ifdef __cplusplus
+   8:MotorControl/odrive_main.h **** #include <communication/interface_usb.h>
+   9:MotorControl/odrive_main.h **** #include <communication/interface_i2c.h>
+  10:MotorControl/odrive_main.h **** #include <communication/interface_uart.h>
+  11:MotorControl/odrive_main.h **** #include <task_timer.hpp>
+  12:MotorControl/odrive_main.h **** extern "C" {
+  13:MotorControl/odrive_main.h **** #endif
+  14:MotorControl/odrive_main.h **** 
+  15:MotorControl/odrive_main.h **** // OS includes
+  16:MotorControl/odrive_main.h **** #include <cmsis_os.h>
+  17:MotorControl/odrive_main.h **** 
+  18:MotorControl/odrive_main.h **** // extern const float elec_rad_per_enc;
+  19:MotorControl/odrive_main.h **** extern uint32_t _reboot_cookie;
+  20:MotorControl/odrive_main.h **** 
+  21:MotorControl/odrive_main.h **** extern uint64_t serial_number;
+  22:MotorControl/odrive_main.h **** extern char serial_number_str[13];
+  23:MotorControl/odrive_main.h **** 
+  24:MotorControl/odrive_main.h **** #ifdef __cplusplus
+  25:MotorControl/odrive_main.h **** }
+  26:MotorControl/odrive_main.h **** 
+  27:MotorControl/odrive_main.h **** typedef struct {
+  28:MotorControl/odrive_main.h ****     bool fully_booted;
+  29:MotorControl/odrive_main.h ****     uint32_t uptime; // [ms]
+ARM GAS  /tmp/ccudXTmH.s 			page 2
+
+
+  30:MotorControl/odrive_main.h ****     uint32_t min_heap_space; // FreeRTOS heap [Bytes]
+  31:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_axis; // minimum remaining space since startup [Bytes]
+  32:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_usb;
+  33:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_uart;
+  34:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_startup;
+  35:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_can;
+  36:MotorControl/odrive_main.h ****     uint32_t max_stack_usage_analog;
+  37:MotorControl/odrive_main.h **** 
+  38:MotorControl/odrive_main.h ****     uint32_t stack_size_axis;
+  39:MotorControl/odrive_main.h ****     uint32_t stack_size_usb;
+  40:MotorControl/odrive_main.h ****     uint32_t stack_size_uart;
+  41:MotorControl/odrive_main.h ****     uint32_t stack_size_startup;
+  42:MotorControl/odrive_main.h ****     uint32_t stack_size_can;
+  43:MotorControl/odrive_main.h ****     uint32_t stack_size_analog;
+  44:MotorControl/odrive_main.h **** 
+  45:MotorControl/odrive_main.h ****     int32_t prio_axis;
+  46:MotorControl/odrive_main.h ****     int32_t prio_usb;
+  47:MotorControl/odrive_main.h ****     int32_t prio_uart;
+  48:MotorControl/odrive_main.h ****     int32_t prio_startup;
+  49:MotorControl/odrive_main.h ****     int32_t prio_can;
+  50:MotorControl/odrive_main.h ****     int32_t prio_analog;
+  51:MotorControl/odrive_main.h **** 
+  52:MotorControl/odrive_main.h ****     USBStats_t& usb = usb_stats_;
+  53:MotorControl/odrive_main.h ****     I2CStats_t& i2c = i2c_stats_;
+  54:MotorControl/odrive_main.h **** } SystemStats_t;
+  55:MotorControl/odrive_main.h **** 
+  56:MotorControl/odrive_main.h **** struct PWMMapping_t {
+  57:MotorControl/odrive_main.h ****     endpoint_ref_t endpoint = {0, 0};
+  58:MotorControl/odrive_main.h ****     float min = 0;
+  59:MotorControl/odrive_main.h ****     float max = 0;
+  60:MotorControl/odrive_main.h **** };
+  61:MotorControl/odrive_main.h **** 
+  62:MotorControl/odrive_main.h **** // @brief general user configurable board configuration
+  63:MotorControl/odrive_main.h **** struct BoardConfig_t {
+  64:MotorControl/odrive_main.h ****     ODriveIntf::GpioMode gpio_modes[GPIO_COUNT] = {
+  65:MotorControl/odrive_main.h ****         DEFAULT_GPIO_MODES
+  66:MotorControl/odrive_main.h ****     };
+  67:MotorControl/odrive_main.h **** 
+  68:MotorControl/odrive_main.h ****     bool enable_uart_a = true;
+  69:MotorControl/odrive_main.h ****     bool enable_uart_b = false;
+  70:MotorControl/odrive_main.h ****     bool enable_uart_c = false;
+  71:MotorControl/odrive_main.h ****     uint32_t uart_a_baudrate = 115200;
+  72:MotorControl/odrive_main.h ****     uint32_t uart_b_baudrate = 115200;
+  73:MotorControl/odrive_main.h ****     uint32_t uart_c_baudrate = 115200;
+  74:MotorControl/odrive_main.h ****     bool enable_can_a = true;
+  75:MotorControl/odrive_main.h ****     bool enable_i2c_a = false;
+  76:MotorControl/odrive_main.h ****     ODriveIntf::StreamProtocolType uart0_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_STDO
+  77:MotorControl/odrive_main.h ****     ODriveIntf::StreamProtocolType uart1_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_STDO
+  78:MotorControl/odrive_main.h ****     ODriveIntf::StreamProtocolType uart2_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_STDO
+  79:MotorControl/odrive_main.h ****     ODriveIntf::StreamProtocolType usb_cdc_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_ST
+  80:MotorControl/odrive_main.h ****     float max_regen_current = 0.0f;
+  81:MotorControl/odrive_main.h ****     float brake_resistance = DEFAULT_BRAKE_RESISTANCE;
+  82:MotorControl/odrive_main.h ****     bool enable_brake_resistor = false;
+  83:MotorControl/odrive_main.h ****     float dc_bus_undervoltage_trip_level = DEFAULT_MIN_DC_VOLTAGE;      //<! [V] minimum voltage be
+  84:MotorControl/odrive_main.h ****     float dc_bus_overvoltage_trip_level = 1.07f * HW_VERSION_VOLTAGE;   //<! [V] maximum voltage ab
+  85:MotorControl/odrive_main.h ****                                                                         //<! This protects against 
+  86:MotorControl/odrive_main.h ****                                                                         //<! the brake power if the
+ARM GAS  /tmp/ccudXTmH.s 			page 3
+
+
+  87:MotorControl/odrive_main.h ****                                                                         //<! The default is 26V for
+  88:MotorControl/odrive_main.h **** 
+  89:MotorControl/odrive_main.h ****     /**
+  90:MotorControl/odrive_main.h ****      * If enabled, if the measured DC voltage exceeds `dc_bus_overvoltage_ramp_start`,
+  91:MotorControl/odrive_main.h ****      * the ODrive will sink more power than usual into the the brake resistor
+  92:MotorControl/odrive_main.h ****      * in an attempt to bring the voltage down again.
+  93:MotorControl/odrive_main.h ****      * 
+  94:MotorControl/odrive_main.h ****      * The brake duty cycle is increased by the following amount:
+  95:MotorControl/odrive_main.h ****      *  vbus_voltage == dc_bus_overvoltage_ramp_start  =>  brake_duty_cycle += 0%
+  96:MotorControl/odrive_main.h ****      *  vbus_voltage == dc_bus_overvoltage_ramp_end  =>  brake_duty_cycle += 100%
+  97:MotorControl/odrive_main.h ****      * 
+  98:MotorControl/odrive_main.h ****      * Remarks:
+  99:MotorControl/odrive_main.h ****      *  - This feature is active even when all motors are disarmed.
+ 100:MotorControl/odrive_main.h ****      *  - This feature is disabled if `brake_resistance` is non-positive.
+ 101:MotorControl/odrive_main.h ****      */
+ 102:MotorControl/odrive_main.h ****     bool enable_dc_bus_overvoltage_ramp = false;
+ 103:MotorControl/odrive_main.h ****     float dc_bus_overvoltage_ramp_start = 1.07f * HW_VERSION_VOLTAGE; //!< See `enable_dc_bus_overv
+ 104:MotorControl/odrive_main.h ****                                                                       //!< Do not set this lower th
+ 105:MotorControl/odrive_main.h ****                                                                       //!< unless you like fried br
+ 106:MotorControl/odrive_main.h ****     float dc_bus_overvoltage_ramp_end = 1.07f * HW_VERSION_VOLTAGE; //!< See `enable_dc_bus_overvol
+ 107:MotorControl/odrive_main.h ****                                                                     //!< Must be larger than `dc_bu
+ 108:MotorControl/odrive_main.h ****                                                                     //!< otherwise the ramp feature
+ 109:MotorControl/odrive_main.h **** 
+ 110:MotorControl/odrive_main.h ****     float dc_max_positive_current = INFINITY; // Max current [A] the power supply can source
+ 111:MotorControl/odrive_main.h ****     float dc_max_negative_current = -0.01f; // Max current [A] the power supply can sink. You most 
+ 112:MotorControl/odrive_main.h ****     uint32_t error_gpio_pin = DEFAULT_ERROR_PIN;
+ 113:MotorControl/odrive_main.h ****     PWMMapping_t pwm_mappings[4];
+ 114:MotorControl/odrive_main.h ****     PWMMapping_t analog_mappings[GPIO_COUNT];
+ 115:MotorControl/odrive_main.h **** };
+ 116:MotorControl/odrive_main.h **** 
+ 117:MotorControl/odrive_main.h **** struct TaskTimes {
+ 118:MotorControl/odrive_main.h ****     TaskTimer sampling;
+ 119:MotorControl/odrive_main.h ****     TaskTimer control_loop_misc;
+ 120:MotorControl/odrive_main.h ****     TaskTimer control_loop_checks;
+ 121:MotorControl/odrive_main.h ****     TaskTimer dc_calib_wait;
+ 122:MotorControl/odrive_main.h **** };
+ 123:MotorControl/odrive_main.h **** 
+ 124:MotorControl/odrive_main.h **** 
+ 125:MotorControl/odrive_main.h **** // Forward Declarations
+ 126:MotorControl/odrive_main.h **** class Axis;
+ 127:MotorControl/odrive_main.h **** class Motor;
+ 128:MotorControl/odrive_main.h **** 
+ 129:MotorControl/odrive_main.h **** // TODO: move
+ 130:MotorControl/odrive_main.h **** // this is technically not thread-safe but practically it might be
+ 131:MotorControl/odrive_main.h **** #define DEFINE_ENUM_FLAG_OPERATORS(ENUMTYPE) \
+ 132:MotorControl/odrive_main.h **** inline ENUMTYPE operator | (ENUMTYPE a, ENUMTYPE b) { return static_cast<ENUMTYPE>(static_cast<std:
+ 133:MotorControl/odrive_main.h **** inline ENUMTYPE operator & (ENUMTYPE a, ENUMTYPE b) { return static_cast<ENUMTYPE>(static_cast<std:
+ 134:MotorControl/odrive_main.h **** inline ENUMTYPE operator ^ (ENUMTYPE a, ENUMTYPE b) { return static_cast<ENUMTYPE>(static_cast<std:
+ 135:MotorControl/odrive_main.h **** inline ENUMTYPE &operator |= (ENUMTYPE &a, ENUMTYPE b) { return reinterpret_cast<ENUMTYPE&>(reinter
+ 136:MotorControl/odrive_main.h **** inline ENUMTYPE &operator &= (ENUMTYPE &a, ENUMTYPE b) { return reinterpret_cast<ENUMTYPE&>(reinter
+ 137:MotorControl/odrive_main.h **** inline ENUMTYPE &operator ^= (ENUMTYPE &a, ENUMTYPE b) { return reinterpret_cast<ENUMTYPE&>(reinter
+ 138:MotorControl/odrive_main.h **** inline ENUMTYPE operator ~ (ENUMTYPE a) { return static_cast<ENUMTYPE>(~static_cast<std::underlying
+ 139:MotorControl/odrive_main.h **** 
+ 140:MotorControl/odrive_main.h **** #include "autogen/interfaces.hpp"
+ 141:MotorControl/odrive_main.h **** 
+ 142:MotorControl/odrive_main.h **** // ODrive specific includes
+ 143:MotorControl/odrive_main.h **** #include <utils.hpp>
+ARM GAS  /tmp/ccudXTmH.s 			page 4
+
+
+ 144:MotorControl/odrive_main.h **** #include <low_level.h>
+ 145:MotorControl/odrive_main.h **** #include <encoder.hpp>
+ 146:MotorControl/odrive_main.h **** #include <sensorless_estimator.hpp>
+ 147:MotorControl/odrive_main.h **** #include <controller.hpp>
+ 148:MotorControl/odrive_main.h **** #include <current_limiter.hpp>
+ 149:MotorControl/odrive_main.h **** #include <thermistor.hpp>
+ 150:MotorControl/odrive_main.h **** #include <trapTraj.hpp>
+ 151:MotorControl/odrive_main.h **** #include <endstop.hpp>
+ 152:MotorControl/odrive_main.h **** #include <mechanical_brake.hpp>
+ 153:MotorControl/odrive_main.h **** #include <axis.hpp>
+ 154:MotorControl/odrive_main.h **** #include <oscilloscope.hpp>
+ 155:MotorControl/odrive_main.h **** #include <communication/communication.h>
+ 156:MotorControl/odrive_main.h **** #include <communication/can/odrive_can.hpp>
+ 157:MotorControl/odrive_main.h **** 
+ 158:MotorControl/odrive_main.h **** // Defined in autogen/version.c based on git-derived version numbers
+ 159:MotorControl/odrive_main.h **** extern "C" {
+ 160:MotorControl/odrive_main.h **** extern const unsigned char fw_version_major_;
+ 161:MotorControl/odrive_main.h **** extern const unsigned char fw_version_minor_;
+ 162:MotorControl/odrive_main.h **** extern const unsigned char fw_version_revision_;
+ 163:MotorControl/odrive_main.h **** extern const unsigned char fw_version_unreleased_;
+ 164:MotorControl/odrive_main.h **** }
+ 165:MotorControl/odrive_main.h **** 
+ 166:MotorControl/odrive_main.h **** static Stm32Gpio get_gpio(size_t gpio_num) {
+  30              		.loc 1 166 44 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  35              		.loc 1 166 44 is_stmt 0 view .LVU1
+  36 0000 0346     		mov	r3, r0
+ 167:MotorControl/odrive_main.h ****     return (gpio_num < GPIO_COUNT) ? gpios[gpio_num] : GPIO_COUNT ? gpios[0] : Stm32Gpio::none;
+  37              		.loc 1 167 5 is_stmt 1 view .LVU2
+  38              		.loc 1 167 36 is_stmt 0 view .LVU3
+  39 0002 1029     		cmp	r1, #16
+  40 0004 07D8     		bhi	.L3
+  41              		.loc 1 167 36 discriminator 1 view .LVU4
+  42 0006 054A     		ldr	r2, .L4
+  43 0008 02EBC101 		add	r1, r2, r1, lsl #3
+  44              	.LVL1:
+  45              	.L2:
+  46              		.loc 1 167 91 discriminator 4 view .LVU5
+  47 000c 03C9     		ldm	r1, {r0, r1}
+  48              	.LVL2:
+  49              		.loc 1 167 91 discriminator 4 view .LVU6
+  50 000e 83E80300 		stm	r3, {r0, r1}
+ 168:MotorControl/odrive_main.h **** }
+  51              		.loc 1 168 1 discriminator 4 view .LVU7
+  52 0012 1846     		mov	r0, r3
+  53 0014 7047     		bx	lr
+  54              	.LVL3:
+  55              	.L3:
+ 167:MotorControl/odrive_main.h ****     return (gpio_num < GPIO_COUNT) ? gpios[gpio_num] : GPIO_COUNT ? gpios[0] : Stm32Gpio::none;
+  56              		.loc 1 167 36 view .LVU8
+  57 0016 0149     		ldr	r1, .L4
+  58              	.LVL4:
+ 167:MotorControl/odrive_main.h ****     return (gpio_num < GPIO_COUNT) ? gpios[gpio_num] : GPIO_COUNT ? gpios[0] : Stm32Gpio::none;
+  59              		.loc 1 167 36 view .LVU9
+ARM GAS  /tmp/ccudXTmH.s 			page 5
+
+
+  60 0018 F8E7     		b	.L2
+  61              	.L5:
+  62 001a 00BF     		.align	2
+  63              	.L4:
+  64 001c 00000000 		.word	gpios
+  65              		.cfi_endproc
+  66              	.LFE5151:
+  67              		.cantunwind
+  68              		.fnend
+  70              		.section	.text._ZN8PwmInput4initEv,"ax",%progbits
+  71              		.align	1
+  72              		.global	_ZN8PwmInput4initEv
+  73              		.syntax unified
+  74              		.thumb
+  75              		.thumb_func
+  77              	_ZN8PwmInput4initEv:
+  78              		.fnstart
+  79              	.LVL5:
+  80              	.LFB5158:
+  81              		.file 2 "MotorControl/pwm_input.cpp"
+   1:MotorControl/pwm_input.cpp **** 
+   2:MotorControl/pwm_input.cpp **** #include "pwm_input.hpp"
+   3:MotorControl/pwm_input.cpp **** #include "odrive_main.h"
+   4:MotorControl/pwm_input.cpp **** 
+   5:MotorControl/pwm_input.cpp **** void PwmInput::init() {
+  82              		.loc 2 5 23 is_stmt 1 view -0
+  83              		.cfi_startproc
+  84              		@ args = 0, pretend = 0, frame = 32
+  85              		@ frame_needed = 0, uses_anonymous_args = 0
+  86              		.loc 2 5 23 is_stmt 0 view .LVU11
+  87 0000 70B5     		push	{r4, r5, r6, lr}
+  88              		.save {r4, r5, r6, lr}
+  89              	.LCFI0:
+  90              		.cfi_def_cfa_offset 16
+  91              		.cfi_offset 4, -16
+  92              		.cfi_offset 5, -12
+  93              		.cfi_offset 6, -8
+  94              		.cfi_offset 14, -4
+  95              		.pad #32
+  96 0002 88B0     		sub	sp, sp, #32
+  97              	.LCFI1:
+  98              		.cfi_def_cfa_offset 48
+  99 0004 0546     		mov	r5, r0
+   6:MotorControl/pwm_input.cpp ****     TIM_IC_InitTypeDef sConfigIC;
+ 100              		.loc 2 6 5 is_stmt 1 view .LVU12
+   7:MotorControl/pwm_input.cpp ****     sConfigIC.ICPolarity = TIM_INPUTCHANNELPOLARITY_BOTHEDGE;
+ 101              		.loc 2 7 5 view .LVU13
+ 102              		.loc 2 7 26 is_stmt 0 view .LVU14
+ 103 0006 0A23     		movs	r3, #10
+ 104 0008 0493     		str	r3, [sp, #16]
+   8:MotorControl/pwm_input.cpp ****     sConfigIC.ICSelection = TIM_ICSELECTION_DIRECTTI;
+ 105              		.loc 2 8 5 is_stmt 1 view .LVU15
+ 106              		.loc 2 8 27 is_stmt 0 view .LVU16
+ 107 000a 0123     		movs	r3, #1
+ 108 000c 0593     		str	r3, [sp, #20]
+   9:MotorControl/pwm_input.cpp ****     sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
+ 109              		.loc 2 9 5 is_stmt 1 view .LVU17
+ARM GAS  /tmp/ccudXTmH.s 			page 6
+
+
+ 110              		.loc 2 9 27 is_stmt 0 view .LVU18
+ 111 000e 0024     		movs	r4, #0
+ 112 0010 0694     		str	r4, [sp, #24]
+  10:MotorControl/pwm_input.cpp ****     sConfigIC.ICFilter = 15;
+ 113              		.loc 2 10 5 is_stmt 1 view .LVU19
+ 114              		.loc 2 10 24 is_stmt 0 view .LVU20
+ 115 0012 0F23     		movs	r3, #15
+ 116 0014 0793     		str	r3, [sp, #28]
+  11:MotorControl/pwm_input.cpp **** 
+  12:MotorControl/pwm_input.cpp ****     uint32_t channels[] = {TIM_CHANNEL_1, TIM_CHANNEL_2, TIM_CHANNEL_3, TIM_CHANNEL_4};
+ 117              		.loc 2 12 5 is_stmt 1 view .LVU21
+ 118              		.loc 2 12 14 is_stmt 0 view .LVU22
+ 119 0016 134B     		ldr	r3, .L11
+ 120 0018 6E46     		mov	r6, sp
+ 121 001a 0FCB     		ldm	r3, {r0, r1, r2, r3}
+ 122              	.LVL6:
+ 123              		.loc 2 12 14 view .LVU23
+ 124 001c 86E80F00 		stm	r6, {r0, r1, r2, r3}
+  13:MotorControl/pwm_input.cpp **** 
+  14:MotorControl/pwm_input.cpp ****     for (size_t i = 0; i < 4; ++i) {
+ 125              		.loc 2 14 5 is_stmt 1 view .LVU24
+ 126              	.LVL7:
+ 127              		.loc 2 14 5 is_stmt 0 view .LVU25
+ 128 0020 00E0     		b	.L9
+ 129              	.LVL8:
+ 130              	.L8:
+ 131              	.LBB12:
+ 132              		.loc 2 14 5 is_stmt 1 discriminator 2 view .LVU26
+ 133 0022 0134     		adds	r4, r4, #1
+ 134              	.LVL9:
+ 135              	.L9:
+ 136              		.loc 2 14 26 discriminator 1 view .LVU27
+ 137 0024 032C     		cmp	r4, #3
+ 138 0026 1AD8     		bhi	.L6
+  15:MotorControl/pwm_input.cpp ****         if (!fibre::is_endpoint_ref_valid(odrv.config_.pwm_mappings[i].endpoint))
+ 139              		.loc 2 15 9 view .LVU28
+ 140              		.loc 2 15 42 is_stmt 0 view .LVU29
+ 141 0028 04EB4403 		add	r3, r4, r4, lsl #1
+ 142 002c 0E4A     		ldr	r2, .L11+4
+ 143 002e 02EB8303 		add	r3, r2, r3, lsl #2
+ 144 0032 44F2CC12 		movw	r2, #16844
+ 145 0036 9858     		ldr	r0, [r3, r2]
+ 146 0038 FFF7FEFF 		bl	_ZN5fibre21is_endpoint_ref_validE14endpoint_ref_t
+ 147              	.LVL10:
+ 148              		.loc 2 15 9 view .LVU30
+ 149 003c 0028     		cmp	r0, #0
+ 150 003e F0D0     		beq	.L8
+  16:MotorControl/pwm_input.cpp ****             continue;
+  17:MotorControl/pwm_input.cpp ****         HAL_TIM_IC_ConfigChannel(htim_, &sConfigIC, channels[i]);
+ 151              		.loc 2 17 9 is_stmt 1 view .LVU31
+ 152              		.loc 2 17 33 is_stmt 0 view .LVU32
+ 153 0040 08AB     		add	r3, sp, #32
+ 154 0042 03EB8403 		add	r3, r3, r4, lsl #2
+ 155 0046 53F8206C 		ldr	r6, [r3, #-32]
+ 156 004a 3246     		mov	r2, r6
+ 157 004c 04A9     		add	r1, sp, #16
+ 158 004e 2868     		ldr	r0, [r5]
+ARM GAS  /tmp/ccudXTmH.s 			page 7
+
+
+ 159 0050 FFF7FEFF 		bl	HAL_TIM_IC_ConfigChannel
+ 160              	.LVL11:
+  18:MotorControl/pwm_input.cpp ****         HAL_TIM_IC_Start_IT(htim_, channels[i]);
+ 161              		.loc 2 18 9 is_stmt 1 view .LVU33
+ 162              		.loc 2 18 28 is_stmt 0 view .LVU34
+ 163 0054 3146     		mov	r1, r6
+ 164 0056 2868     		ldr	r0, [r5]
+ 165 0058 FFF7FEFF 		bl	HAL_TIM_IC_Start_IT
+ 166              	.LVL12:
+ 167 005c E1E7     		b	.L8
+ 168              	.L6:
+ 169              		.loc 2 18 28 view .LVU35
+ 170              	.LBE12:
+  19:MotorControl/pwm_input.cpp ****     }
+  20:MotorControl/pwm_input.cpp **** }
+ 171              		.loc 2 20 1 view .LVU36
+ 172 005e 08B0     		add	sp, sp, #32
+ 173              	.LCFI2:
+ 174              		.cfi_def_cfa_offset 16
+ 175              		@ sp needed
+ 176 0060 70BD     		pop	{r4, r5, r6, pc}
+ 177              	.LVL13:
+ 178              	.L12:
+ 179              		.loc 2 20 1 view .LVU37
+ 180 0062 00BF     		.align	2
+ 181              	.L11:
+ 182 0064 00000000 		.word	.LANCHOR0
+ 183 0068 00000000 		.word	odrv
+ 184              		.cfi_endproc
+ 185              	.LFE5158:
+ 186              		.fnend
+ 188              		.section	.text._Z12handle_pulseim,"ax",%progbits
+ 189              		.align	1
+ 190              		.global	_Z12handle_pulseim
+ 191              		.syntax unified
+ 192              		.thumb
+ 193              		.thumb_func
+ 195              	_Z12handle_pulseim:
+ 196              		.fnstart
+ 197              	.LVL14:
+ 198              	.LFB5159:
+  21:MotorControl/pwm_input.cpp **** 
+  22:MotorControl/pwm_input.cpp **** //TODO: These expressions have integer division by 1MHz, so it will be incorrect for clock speeds o
+  23:MotorControl/pwm_input.cpp **** #define TIM_2_5_CLOCK_HZ        TIM_APB1_CLOCK_HZ
+  24:MotorControl/pwm_input.cpp **** #define PWM_MIN_HIGH_TIME          ((TIM_2_5_CLOCK_HZ / 1000000UL) * 1000UL) // 1ms high is conside
+  25:MotorControl/pwm_input.cpp **** #define PWM_MAX_HIGH_TIME          ((TIM_2_5_CLOCK_HZ / 1000000UL) * 2000UL) // 2ms high is conside
+  26:MotorControl/pwm_input.cpp **** #define PWM_MIN_LEGAL_HIGH_TIME    ((TIM_2_5_CLOCK_HZ / 1000000UL) * 500UL) // ignore high periods 
+  27:MotorControl/pwm_input.cpp **** #define PWM_MAX_LEGAL_HIGH_TIME    ((TIM_2_5_CLOCK_HZ / 1000000UL) * 2500UL) // ignore high periods
+  28:MotorControl/pwm_input.cpp **** #define PWM_INVERT_INPUT        false
+  29:MotorControl/pwm_input.cpp **** 
+  30:MotorControl/pwm_input.cpp **** /**
+  31:MotorControl/pwm_input.cpp ****  * @param channel: A channel number in [0, 3]
+  32:MotorControl/pwm_input.cpp ****  */
+  33:MotorControl/pwm_input.cpp **** void handle_pulse(int channel, uint32_t high_time) {
+ 199              		.loc 2 33 52 is_stmt 1 view -0
+ 200              		.cfi_startproc
+ 201              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /tmp/ccudXTmH.s 			page 8
+
+
+ 202              		@ frame_needed = 0, uses_anonymous_args = 0
+ 203              		.loc 2 33 52 is_stmt 0 view .LVU39
+ 204 0000 08B5     		push	{r3, lr}
+ 205              		.save {r3, lr}
+ 206              	.LCFI3:
+ 207              		.cfi_def_cfa_offset 8
+ 208              		.cfi_offset 3, -8
+ 209              		.cfi_offset 14, -4
+  34:MotorControl/pwm_input.cpp ****     if (high_time < PWM_MIN_LEGAL_HIGH_TIME || high_time > PWM_MAX_LEGAL_HIGH_TIME)
+ 210              		.loc 2 34 5 is_stmt 1 view .LVU40
+ 211              		.loc 2 34 45 is_stmt 0 view .LVU41
+ 212 0002 A1F52443 		sub	r3, r1, #41984
+ 213 0006 103B     		subs	r3, r3, #16
+ 214              		.loc 2 34 5 view .LVU42
+ 215 0008 194A     		ldr	r2, .L19
+ 216 000a 9342     		cmp	r3, r2
+ 217 000c 2ED8     		bhi	.L13
+  35:MotorControl/pwm_input.cpp ****         return;
+  36:MotorControl/pwm_input.cpp **** 
+  37:MotorControl/pwm_input.cpp ****     if (high_time < PWM_MIN_HIGH_TIME)
+ 218              		.loc 2 37 5 is_stmt 1 view .LVU43
+ 219 000e 194B     		ldr	r3, .L19+4
+ 220 0010 9942     		cmp	r1, r3
+ 221 0012 03D9     		bls	.L16
+  38:MotorControl/pwm_input.cpp ****         high_time = PWM_MIN_HIGH_TIME;
+  39:MotorControl/pwm_input.cpp ****     if (high_time > PWM_MAX_HIGH_TIME)
+ 222              		.loc 2 39 5 view .LVU44
+ 223 0014 9142     		cmp	r1, r2
+ 224 0016 02D9     		bls	.L15
+  40:MotorControl/pwm_input.cpp ****         high_time = PWM_MAX_HIGH_TIME;
+ 225              		.loc 2 40 19 is_stmt 0 view .LVU45
+ 226 0018 1549     		ldr	r1, .L19
+ 227              	.LVL15:
+ 228              		.loc 2 40 19 view .LVU46
+ 229 001a 00E0     		b	.L15
+ 230              	.LVL16:
+ 231              	.L16:
+  38:MotorControl/pwm_input.cpp ****         high_time = PWM_MIN_HIGH_TIME;
+ 232              		.loc 2 38 19 view .LVU47
+ 233 001c 1649     		ldr	r1, .L19+8
+ 234              	.LVL17:
+ 235              	.L15:
+  41:MotorControl/pwm_input.cpp ****     float fraction = (float)(high_time - PWM_MIN_HIGH_TIME) / (float)(PWM_MAX_HIGH_TIME - PWM_MIN_H
+ 236              		.loc 2 41 5 is_stmt 1 view .LVU48
+ 237              		.loc 2 41 40 is_stmt 0 view .LVU49
+ 238 001e A1F5A431 		sub	r1, r1, #83968
+ 239              	.LVL18:
+ 240              		.loc 2 41 40 view .LVU50
+ 241 0022 2039     		subs	r1, r1, #32
+ 242              	.LVL19:
+ 243              		.loc 2 41 22 view .LVU51
+ 244 0024 07EE901A 		vmov	s15, r1	@ int
+ 245 0028 F8EE677A 		vcvt.f32.u32	s15, s15
+ 246              		.loc 2 41 11 view .LVU52
+ 247 002c DFED136A 		vldr.32	s13, .L19+12
+ 248 0030 87EEA67A 		vdiv.f32	s14, s15, s13
+ 249              	.LVL20:
+ARM GAS  /tmp/ccudXTmH.s 			page 9
+
+
+  42:MotorControl/pwm_input.cpp ****     float value = odrv.config_.pwm_mappings[channel].min +
+ 250              		.loc 2 42 5 is_stmt 1 view .LVU53
+ 251              		.loc 2 42 54 is_stmt 0 view .LVU54
+ 252 0034 124A     		ldr	r2, .L19+16
+ 253 0036 00EB4003 		add	r3, r0, r0, lsl #1
+ 254 003a 02EB8303 		add	r3, r2, r3, lsl #2
+ 255 003e 03F58341 		add	r1, r3, #16768
+ 256              	.LVL21:
+ 257              		.loc 2 42 54 view .LVU55
+ 258 0042 91ED140A 		vldr.32	s0, [r1, #80]
+  43:MotorControl/pwm_input.cpp ****                   (fraction * (odrv.config_.pwm_mappings[channel].max - odrv.config_.pwm_mappings[c
+ 259              		.loc 2 43 67 view .LVU56
+ 260 0046 03F58343 		add	r3, r3, #16768
+ 261 004a D3ED157A 		vldr.32	s15, [r3, #84]
+ 262              		.loc 2 43 71 view .LVU57
+ 263 004e 77EEC07A 		vsub.f32	s15, s15, s0
+ 264              		.loc 2 43 29 view .LVU58
+ 265 0052 67EE877A 		vmul.f32	s15, s15, s14
+ 266              	.LVL22:
+  44:MotorControl/pwm_input.cpp **** 
+  45:MotorControl/pwm_input.cpp ****     fibre::set_endpoint_from_float(odrv.config_.pwm_mappings[channel].endpoint, value);
+ 267              		.loc 2 45 5 is_stmt 1 view .LVU59
+ 268              		.loc 2 45 35 is_stmt 0 view .LVU60
+ 269 0056 00EB4000 		add	r0, r0, r0, lsl #1
+ 270              	.LVL23:
+ 271              		.loc 2 45 35 view .LVU61
+ 272 005a 02EB8000 		add	r0, r2, r0, lsl #2
+ 273 005e 30EE270A 		vadd.f32	s0, s0, s15
+ 274              	.LVL24:
+ 275              		.loc 2 45 35 view .LVU62
+ 276 0062 44F2CC13 		movw	r3, #16844
+ 277 0066 C058     		ldr	r0, [r0, r3]
+ 278 0068 FFF7FEFF 		bl	_ZN5fibre23set_endpoint_from_floatE14endpoint_ref_tf
+ 279              	.LVL25:
+ 280              	.L13:
+  46:MotorControl/pwm_input.cpp **** }
+ 281              		.loc 2 46 1 view .LVU63
+ 282 006c 08BD     		pop	{r3, pc}
+ 283              	.L20:
+ 284 006e 00BF     		.align	2
+ 285              	.L19:
+ 286 0070 40900200 		.word	168000
+ 287 0074 1F480100 		.word	83999
+ 288 0078 20480100 		.word	84000
+ 289 007c 0010A447 		.word	1201934336
+ 290 0080 00000000 		.word	odrv
+ 291              		.cfi_endproc
+ 292              	.LFE5159:
+ 293              		.fnend
+ 295              		.section	.text._ZN8PwmInput10on_captureEim,"ax",%progbits
+ 296              		.align	1
+ 297              		.global	_ZN8PwmInput10on_captureEim
+ 298              		.syntax unified
+ 299              		.thumb
+ 300              		.thumb_func
+ 302              	_ZN8PwmInput10on_captureEim:
+ 303              		.fnstart
+ARM GAS  /tmp/ccudXTmH.s 			page 10
+
+
+ 304              	.LVL26:
+ 305              	.LFB5160:
+  47:MotorControl/pwm_input.cpp **** 
+  48:MotorControl/pwm_input.cpp **** /**
+  49:MotorControl/pwm_input.cpp ****  * @param channel: A channel number in [0, 3]
+  50:MotorControl/pwm_input.cpp ****  */
+  51:MotorControl/pwm_input.cpp **** void PwmInput::on_capture(int channel, uint32_t timestamp) {
+ 306              		.loc 2 51 60 is_stmt 1 view -0
+ 307              		.cfi_startproc
+ 308              		@ args = 0, pretend = 0, frame = 8
+ 309              		@ frame_needed = 0, uses_anonymous_args = 0
+  52:MotorControl/pwm_input.cpp ****     static uint32_t last_timestamp[4] = { 0 };
+ 310              		.loc 2 52 5 view .LVU65
+  53:MotorControl/pwm_input.cpp ****     static bool last_pin_state[4] = { false };
+ 311              		.loc 2 53 5 view .LVU66
+  54:MotorControl/pwm_input.cpp ****     static bool last_sample_valid[4] = { false };
+ 312              		.loc 2 54 5 view .LVU67
+  55:MotorControl/pwm_input.cpp **** 
+  56:MotorControl/pwm_input.cpp ****     if (channel >= 4)
+ 313              		.loc 2 56 5 view .LVU68
+ 314 0000 0329     		cmp	r1, #3
+ 315 0002 2DDC     		bgt	.L28
+  51:MotorControl/pwm_input.cpp ****     static uint32_t last_timestamp[4] = { 0 };
+ 316              		.loc 2 51 60 is_stmt 0 view .LVU69
+ 317 0004 70B5     		push	{r4, r5, r6, lr}
+ 318              		.save {r4, r5, r6, lr}
+ 319              	.LCFI4:
+ 320              		.cfi_def_cfa_offset 16
+ 321              		.cfi_offset 4, -16
+ 322              		.cfi_offset 5, -12
+ 323              		.cfi_offset 6, -8
+ 324              		.cfi_offset 14, -4
+ 325              		.pad #8
+ 326 0006 82B0     		sub	sp, sp, #8
+ 327              	.LCFI5:
+ 328              		.cfi_def_cfa_offset 24
+ 329 0008 0C46     		mov	r4, r1
+ 330 000a 1546     		mov	r5, r2
+  57:MotorControl/pwm_input.cpp ****         return;
+  58:MotorControl/pwm_input.cpp ****     Stm32Gpio gpio = get_gpio(gpios_[channel]);
+ 331              		.loc 2 58 5 is_stmt 1 view .LVU70
+ 332              	.LVL27:
+ 333              	.LBB13:
+ 334              	.LBI13:
+ 335              		.file 3 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array"
+   1:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // <array> -*- C++ -*-
+   2:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+   3:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // Copyright (C) 2007-2020 Free Software Foundation, Inc.
+   4:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** //
+   5:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // This file is part of the GNU ISO C++ Library.  This library is free
+   6:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // software; you can redistribute it and/or modify it under the
+   7:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // terms of the GNU General Public License as published by the
+   8:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // Free Software Foundation; either version 3, or (at your option)
+   9:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // any later version.
+  10:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  11:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // This library is distributed in the hope that it will be useful,
+  12:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // but WITHOUT ANY WARRANTY; without even the implied warranty of
+ARM GAS  /tmp/ccudXTmH.s 			page 11
+
+
+  13:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  14:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // GNU General Public License for more details.
+  15:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  16:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // Under Section 7 of GPL version 3, you are granted additional
+  17:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // permissions described in the GCC Runtime Library Exception, version
+  18:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // 3.1, as published by the Free Software Foundation.
+  19:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  20:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // You should have received a copy of the GNU General Public License and
+  21:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // a copy of the GCC Runtime Library Exception along with this program;
+  22:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+  23:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // <http://www.gnu.org/licenses/>.
+  24:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  25:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** /** @file include/array
+  26:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****  *  This is a Standard C++ Library header.
+  27:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****  */
+  28:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  29:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** #ifndef _GLIBCXX_ARRAY
+  30:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** #define _GLIBCXX_ARRAY 1
+  31:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  32:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** #pragma GCC system_header
+  33:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  34:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** #if __cplusplus < 201103L
+  35:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** # include <bits/c++0x_warning.h>
+  36:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** #else
+  37:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  38:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** #include <utility>
+  39:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** #include <bits/functexcept.h>
+  40:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** #include <bits/stl_algobase.h>
+  41:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** #include <bits/range_access.h>
+  42:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  43:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** namespace std _GLIBCXX_VISIBILITY(default)
+  44:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** {
+  45:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** _GLIBCXX_BEGIN_NAMESPACE_CONTAINER
+  46:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  47:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****   template<typename _Tp, std::size_t _Nm>
+  48:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****     struct __array_traits
+  49:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****     {
+  50:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef _Tp _Type[_Nm];
+  51:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef __is_swappable<_Tp> _Is_swappable;
+  52:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef __is_nothrow_swappable<_Tp> _Is_nothrow_swappable;
+  53:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  54:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       static constexpr _Tp&
+  55:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _S_ref(const _Type& __t, std::size_t __n) noexcept
+  56:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return const_cast<_Tp&>(__t[__n]); }
+  57:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  58:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       static constexpr _Tp*
+  59:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _S_ptr(const _Type& __t) noexcept
+  60:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return const_cast<_Tp*>(__t); }
+  61:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****     };
+  62:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  63:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****  template<typename _Tp>
+  64:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    struct __array_traits<_Tp, 0>
+  65:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    {
+  66:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****      struct _Type { };
+  67:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****      typedef true_type _Is_swappable;
+  68:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****      typedef true_type _Is_nothrow_swappable;
+  69:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ARM GAS  /tmp/ccudXTmH.s 			page 12
+
+
+  70:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****      static constexpr _Tp&
+  71:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****      _S_ref(const _Type&, std::size_t) noexcept
+  72:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****      { return *static_cast<_Tp*>(nullptr); }
+  73:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  74:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****      static constexpr _Tp*
+  75:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****      _S_ptr(const _Type&) noexcept
+  76:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****      { return nullptr; }
+  77:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    };
+  78:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+  79:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****   /**
+  80:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    *  @brief A standard container for storing a fixed size sequence of elements.
+  81:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    *
+  82:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    *  @ingroup sequences
+  83:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    *
+  84:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    *  Meets the requirements of a <a href="tables.html#65">container</a>, a
+  85:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    *  <a href="tables.html#66">reversible container</a>, and a
+  86:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    *  <a href="tables.html#67">sequence</a>.
+  87:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    *
+  88:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    *  Sets support random access iterators.
+  89:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    *
+  90:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    *  @tparam  Tp  Type of element. Required to be a complete type.
+  91:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****    *  @tparam  Nm  Number of elements.
+  92:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****   */
+  93:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****   template<typename _Tp, std::size_t _Nm>
+  94:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****     struct array
+  95:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****     {
+  96:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef _Tp 	    			      value_type;
+  97:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef value_type*			      pointer;
+  98:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef const value_type*                       const_pointer;
+  99:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef value_type&                   	      reference;
+ 100:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef const value_type&             	      const_reference;
+ 101:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef value_type*          		      iterator;
+ 102:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef const value_type*			      const_iterator;
+ 103:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef std::size_t                    	      size_type;
+ 104:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef std::ptrdiff_t                   	      difference_type;
+ 105:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef std::reverse_iterator<iterator>	      reverse_iterator;
+ 106:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef std::reverse_iterator<const_iterator>   const_reverse_iterator;
+ 107:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 108:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       // Support for zero-sized arrays mandatory.
+ 109:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef _GLIBCXX_STD_C::__array_traits<_Tp, _Nm> _AT_Type;
+ 110:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typename _AT_Type::_Type                         _M_elems;
+ 111:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 112:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       // No explicit construct/copy/destroy for aggregate type.
+ 113:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 114:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       // DR 776.
+ 115:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX20_CONSTEXPR void
+ 116:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       fill(const value_type& __u)
+ 117:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { std::fill_n(begin(), size(), __u); }
+ 118:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 119:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX20_CONSTEXPR void
+ 120:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       swap(array& __other)
+ 121:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       noexcept(_AT_Type::_Is_nothrow_swappable::value)
+ 122:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { std::swap_ranges(begin(), end(), __other.begin()); }
+ 123:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 124:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       // Iterators.
+ 125:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR iterator
+ 126:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       begin() noexcept
+ARM GAS  /tmp/ccudXTmH.s 			page 13
+
+
+ 127:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return iterator(data()); }
+ 128:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 129:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR const_iterator
+ 130:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       begin() const noexcept
+ 131:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return const_iterator(data()); }
+ 132:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 133:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR iterator
+ 134:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       end() noexcept
+ 135:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return iterator(data() + _Nm); }
+ 136:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR const_iterator
+ 138:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       end() const noexcept
+ 139:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return const_iterator(data() + _Nm); }
+ 140:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 141:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR reverse_iterator
+ 142:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       rbegin() noexcept
+ 143:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return reverse_iterator(end()); }
+ 144:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 145:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR const_reverse_iterator
+ 146:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       rbegin() const noexcept
+ 147:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return const_reverse_iterator(end()); }
+ 148:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 149:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR reverse_iterator
+ 150:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       rend() noexcept
+ 151:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return reverse_iterator(begin()); }
+ 152:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 153:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR const_reverse_iterator
+ 154:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       rend() const noexcept
+ 155:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return const_reverse_iterator(begin()); }
+ 156:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 157:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR const_iterator
+ 158:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       cbegin() const noexcept
+ 159:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return const_iterator(data()); }
+ 160:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 161:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR const_iterator
+ 162:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       cend() const noexcept
+ 163:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return const_iterator(data() + _Nm); }
+ 164:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 165:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR const_reverse_iterator
+ 166:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       crbegin() const noexcept
+ 167:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return const_reverse_iterator(end()); }
+ 168:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 169:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR const_reverse_iterator
+ 170:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       crend() const noexcept
+ 171:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return const_reverse_iterator(begin()); }
+ 172:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 173:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       // Capacity.
+ 174:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       constexpr size_type
+ 175:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       size() const noexcept { return _Nm; }
+ 176:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 177:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       constexpr size_type
+ 178:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       max_size() const noexcept { return _Nm; }
+ 179:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 180:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX_NODISCARD constexpr bool
+ 181:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       empty() const noexcept { return size() == 0; }
+ 182:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
+ 183:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       // Element access.
+ARM GAS  /tmp/ccudXTmH.s 			page 14
+
+
+ 184:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR reference
+ 185:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       operator[](size_type __n) noexcept
+ 336              		.loc 3 185 7 view .LVU71
+ 337              	.LBB14:
+ 338              	.LBI14:
+  55:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return const_cast<_Tp&>(__t[__n]); }
+ 339              		.loc 3 55 7 view .LVU72
+  55:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return const_cast<_Tp&>(__t[__n]); }
+ 340              		.loc 3 55 7 is_stmt 0 view .LVU73
+ 341              	.LBE14:
+ 342              	.LBE13:
+ 343              		.loc 2 58 46 view .LVU74
+ 344 000c 00EB4100 		add	r0, r0, r1, lsl #1
+ 345              	.LVL28:
+ 346              		.loc 2 58 46 view .LVU75
+ 347 0010 8188     		ldrh	r1, [r0, #4]
+ 348              	.LVL29:
+ 349              		.loc 2 58 46 view .LVU76
+ 350 0012 6846     		mov	r0, sp
+ 351 0014 FFF7FEFF 		bl	_ZL8get_gpioj
+ 352              	.LVL30:
+  59:MotorControl/pwm_input.cpp ****     if (!gpio)
+ 353              		.loc 2 59 5 is_stmt 1 view .LVU77
+ 354              	.LBB15:
+ 355              	.LBI15:
+ 356              		.file 4 "./Drivers/STM32/stm32_gpio.hpp"
+   1:./Drivers/STM32/stm32_gpio.hpp **** #ifndef __STM32_GPIO_HPP
+   2:./Drivers/STM32/stm32_gpio.hpp **** #define __STM32_GPIO_HPP
+   3:./Drivers/STM32/stm32_gpio.hpp **** 
+   4:./Drivers/STM32/stm32_gpio.hpp **** #include <gpio.h>
+   5:./Drivers/STM32/stm32_gpio.hpp **** 
+   6:./Drivers/STM32/stm32_gpio.hpp **** class Stm32Gpio {
+   7:./Drivers/STM32/stm32_gpio.hpp **** public:
+   8:./Drivers/STM32/stm32_gpio.hpp ****     static const Stm32Gpio none;
+   9:./Drivers/STM32/stm32_gpio.hpp **** 
+  10:./Drivers/STM32/stm32_gpio.hpp ****     Stm32Gpio() : port_(nullptr), pin_mask_(0) {}
+  11:./Drivers/STM32/stm32_gpio.hpp ****     Stm32Gpio(GPIO_TypeDef* port, uint16_t pin) : port_(port), pin_mask_(pin) {}
+  12:./Drivers/STM32/stm32_gpio.hpp **** 
+  13:./Drivers/STM32/stm32_gpio.hpp ****     operator bool() const { return port_ && pin_mask_; }
+ 357              		.loc 4 13 5 view .LVU78
+ 358              	.LBB16:
+ 359              		.loc 4 13 29 view .LVU79
+ 360              		.loc 4 13 36 is_stmt 0 view .LVU80
+ 361 0018 009B     		ldr	r3, [sp]
+ 362              		.loc 4 13 42 view .LVU81
+ 363 001a ABB1     		cbz	r3, .L21
+ 364              		.loc 4 13 45 view .LVU82
+ 365 001c BDF80420 		ldrh	r2, [sp, #4]
+ 366              		.loc 4 13 42 view .LVU83
+ 367 0020 92B1     		cbz	r2, .L21
+ 368              	.LVL31:
+ 369              		.loc 4 13 42 view .LVU84
+ 370              	.LBE16:
+ 371              	.LBE15:
+  60:MotorControl/pwm_input.cpp ****         return;
+  61:MotorControl/pwm_input.cpp ****     bool current_pin_state = gpio.read();
+ 372              		.loc 2 61 5 is_stmt 1 view .LVU85
+ARM GAS  /tmp/ccudXTmH.s 			page 15
+
+
+ 373              	.LBB17:
+ 374              	.LBI17:
+  14:./Drivers/STM32/stm32_gpio.hpp **** 
+  15:./Drivers/STM32/stm32_gpio.hpp ****     /**
+  16:./Drivers/STM32/stm32_gpio.hpp ****      * @brief Configures the GPIO with the specified parameters.
+  17:./Drivers/STM32/stm32_gpio.hpp ****      * 
+  18:./Drivers/STM32/stm32_gpio.hpp ****      * This can be done regardless of the current state of the GPIO.
+  19:./Drivers/STM32/stm32_gpio.hpp ****      * 
+  20:./Drivers/STM32/stm32_gpio.hpp ****      * If any subscription is in place, it is not disabled by this function.
+  21:./Drivers/STM32/stm32_gpio.hpp ****      */
+  22:./Drivers/STM32/stm32_gpio.hpp ****     bool config(uint32_t mode, uint32_t pull, uint32_t speed = GPIO_SPEED_FREQ_LOW);
+  23:./Drivers/STM32/stm32_gpio.hpp **** 
+  24:./Drivers/STM32/stm32_gpio.hpp ****     void write(bool state) {
+  25:./Drivers/STM32/stm32_gpio.hpp ****         if (port_) {
+  26:./Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+  27:./Drivers/STM32/stm32_gpio.hpp ****         }
+  28:./Drivers/STM32/stm32_gpio.hpp ****     }
+  29:./Drivers/STM32/stm32_gpio.hpp **** 
+  30:./Drivers/STM32/stm32_gpio.hpp ****     bool read() {
+ 375              		.loc 4 30 10 view .LVU86
+ 376              	.LBB18:
+  31:./Drivers/STM32/stm32_gpio.hpp ****         return port_ && (port_->IDR & pin_mask_);
+ 377              		.loc 4 31 9 view .LVU87
+ 378              		.loc 4 31 33 is_stmt 0 view .LVU88
+ 379 0022 1B69     		ldr	r3, [r3, #16]
+ 380              		.loc 4 31 22 view .LVU89
+ 381 0024 1342     		tst	r3, r2
+ 382 0026 11D0     		beq	.L26
+ 383 0028 0126     		movs	r6, #1
+ 384              	.L23:
+ 385              	.LVL32:
+ 386              		.loc 4 31 22 view .LVU90
+ 387              	.LBE18:
+ 388              	.LBE17:
+  62:MotorControl/pwm_input.cpp **** 
+  63:MotorControl/pwm_input.cpp ****     if (last_sample_valid[channel]
+ 389              		.loc 2 63 5 is_stmt 1 view .LVU91
+ 390              		.loc 2 63 34 is_stmt 0 view .LVU92
+ 391 002a 0E4B     		ldr	r3, .L32
+ 392 002c 1B5D     		ldrb	r3, [r3, r4]	@ zero_extendqisi2
+ 393              		.loc 2 63 5 view .LVU93
+ 394 002e 1BB1     		cbz	r3, .L24
+  64:MotorControl/pwm_input.cpp ****         && (last_pin_state[channel] != PWM_INVERT_INPUT)
+ 395              		.loc 2 64 35 view .LVU94
+ 396 0030 0D4B     		ldr	r3, .L32+4
+ 397 0032 1B5D     		ldrb	r3, [r3, r4]	@ zero_extendqisi2
+ 398              		.loc 2 64 9 view .LVU95
+ 399 0034 03B1     		cbz	r3, .L24
+  65:MotorControl/pwm_input.cpp ****         && (current_pin_state == PWM_INVERT_INPUT)) {
+ 400              		.loc 2 65 9 view .LVU96
+ 401 0036 5EB1     		cbz	r6, .L31
+ 402              	.L24:
+  66:MotorControl/pwm_input.cpp ****         handle_pulse(channel, timestamp - last_timestamp[channel]);
+  67:MotorControl/pwm_input.cpp ****     }
+  68:MotorControl/pwm_input.cpp **** 
+  69:MotorControl/pwm_input.cpp ****     last_timestamp[channel] = timestamp;
+ 403              		.loc 2 69 5 is_stmt 1 view .LVU97
+ARM GAS  /tmp/ccudXTmH.s 			page 16
+
+
+ 404              		.loc 2 69 29 is_stmt 0 view .LVU98
+ 405 0038 0C4B     		ldr	r3, .L32+8
+ 406 003a 43F82450 		str	r5, [r3, r4, lsl #2]
+  70:MotorControl/pwm_input.cpp ****     last_pin_state[channel] = current_pin_state;
+ 407              		.loc 2 70 5 is_stmt 1 view .LVU99
+ 408              		.loc 2 70 29 is_stmt 0 view .LVU100
+ 409 003e 0A4B     		ldr	r3, .L32+4
+ 410 0040 1E55     		strb	r6, [r3, r4]
+  71:MotorControl/pwm_input.cpp ****     last_sample_valid[channel] = true;
+ 411              		.loc 2 71 5 is_stmt 1 view .LVU101
+ 412              		.loc 2 71 32 is_stmt 0 view .LVU102
+ 413 0042 084B     		ldr	r3, .L32
+ 414 0044 0122     		movs	r2, #1
+ 415 0046 1A55     		strb	r2, [r3, r4]
+ 416              	.LVL33:
+ 417              	.L21:
+  72:MotorControl/pwm_input.cpp **** }
+ 418              		.loc 2 72 1 view .LVU103
+ 419 0048 02B0     		add	sp, sp, #8
+ 420              	.LCFI6:
+ 421              		.cfi_remember_state
+ 422              		.cfi_def_cfa_offset 16
+ 423              		@ sp needed
+ 424 004a 70BD     		pop	{r4, r5, r6, pc}
+ 425              	.LVL34:
+ 426              	.L26:
+ 427              	.LCFI7:
+ 428              		.cfi_restore_state
+ 429              	.LBB20:
+ 430              	.LBB19:
+ 431              		.loc 4 31 22 view .LVU104
+ 432 004c 0026     		movs	r6, #0
+ 433 004e ECE7     		b	.L23
+ 434              	.LVL35:
+ 435              	.L31:
+ 436              		.loc 4 31 22 view .LVU105
+ 437              	.LBE19:
+ 438              	.LBE20:
+  66:MotorControl/pwm_input.cpp ****     }
+ 439              		.loc 2 66 9 is_stmt 1 view .LVU106
+  66:MotorControl/pwm_input.cpp ****     }
+ 440              		.loc 2 66 65 is_stmt 0 view .LVU107
+ 441 0050 064B     		ldr	r3, .L32+8
+ 442 0052 53F82410 		ldr	r1, [r3, r4, lsl #2]
+  66:MotorControl/pwm_input.cpp ****     }
+ 443              		.loc 2 66 21 view .LVU108
+ 444 0056 691A     		subs	r1, r5, r1
+ 445 0058 2046     		mov	r0, r4
+ 446 005a FFF7FEFF 		bl	_Z12handle_pulseim
+ 447              	.LVL36:
+ 448 005e EBE7     		b	.L24
+ 449              	.LVL37:
+ 450              	.L28:
+ 451              	.LCFI8:
+ 452              		.cfi_def_cfa_offset 0
+ 453              		.cfi_restore 4
+ 454              		.cfi_restore 5
+ARM GAS  /tmp/ccudXTmH.s 			page 17
+
+
+ 455              		.cfi_restore 6
+ 456              		.cfi_restore 14
+  66:MotorControl/pwm_input.cpp ****     }
+ 457              		.loc 2 66 21 view .LVU109
+ 458 0060 7047     		bx	lr
+ 459              	.L33:
+ 460 0062 00BF     		.align	2
+ 461              	.L32:
+ 462 0064 00000000 		.word	.LANCHOR1
+ 463 0068 00000000 		.word	.LANCHOR2
+ 464 006c 00000000 		.word	.LANCHOR3
+ 465              		.cfi_endproc
+ 466              	.LFE5160:
+ 467              		.fnend
+ 469              		.section	.text._ZN8PwmInput10on_captureEv,"ax",%progbits
+ 470              		.align	1
+ 471              		.global	_ZN8PwmInput10on_captureEv
+ 472              		.syntax unified
+ 473              		.thumb
+ 474              		.thumb_func
+ 476              	_ZN8PwmInput10on_captureEv:
+ 477              		.fnstart
+ 478              	.LVL38:
+ 479              	.LFB5161:
+  73:MotorControl/pwm_input.cpp **** 
+  74:MotorControl/pwm_input.cpp **** void PwmInput::on_capture() {
+ 480              		.loc 2 74 29 is_stmt 1 view -0
+ 481              		.cfi_startproc
+ 482              		@ args = 0, pretend = 0, frame = 0
+ 483              		@ frame_needed = 0, uses_anonymous_args = 0
+ 484              		.loc 2 74 29 is_stmt 0 view .LVU111
+ 485 0000 10B5     		push	{r4, lr}
+ 486              		.save {r4, lr}
+ 487              	.LCFI9:
+ 488              		.cfi_def_cfa_offset 8
+ 489              		.cfi_offset 4, -8
+ 490              		.cfi_offset 14, -4
+ 491 0002 0446     		mov	r4, r0
+  75:MotorControl/pwm_input.cpp ****     if(__HAL_TIM_GET_FLAG(htim_, TIM_FLAG_CC1)) {
+ 492              		.loc 2 75 5 is_stmt 1 view .LVU112
+ 493              		.loc 2 75 8 is_stmt 0 view .LVU113
+ 494 0004 0368     		ldr	r3, [r0]
+ 495 0006 1B68     		ldr	r3, [r3]
+ 496 0008 1A69     		ldr	r2, [r3, #16]
+ 497              		.loc 2 75 5 view .LVU114
+ 498 000a 12F0020F 		tst	r2, #2
+ 499 000e 12D1     		bne	.L40
+ 500              	.LVL39:
+ 501              	.L35:
+  76:MotorControl/pwm_input.cpp ****         __HAL_TIM_CLEAR_IT(htim_, TIM_IT_CC1);
+  77:MotorControl/pwm_input.cpp ****         on_capture(0, htim_->Instance->CCR1);
+  78:MotorControl/pwm_input.cpp ****     }
+  79:MotorControl/pwm_input.cpp ****     if(__HAL_TIM_GET_FLAG(htim_, TIM_FLAG_CC2)) {
+ 502              		.loc 2 79 5 is_stmt 1 view .LVU115
+ 503              		.loc 2 79 8 is_stmt 0 view .LVU116
+ 504 0010 2368     		ldr	r3, [r4]
+ 505 0012 1B68     		ldr	r3, [r3]
+ARM GAS  /tmp/ccudXTmH.s 			page 18
+
+
+ 506 0014 1A69     		ldr	r2, [r3, #16]
+ 507              		.loc 2 79 5 view .LVU117
+ 508 0016 12F0040F 		tst	r2, #4
+ 509 001a 16D1     		bne	.L41
+ 510              	.L36:
+  80:MotorControl/pwm_input.cpp ****         __HAL_TIM_CLEAR_IT(htim_, TIM_IT_CC2);
+  81:MotorControl/pwm_input.cpp ****         on_capture(1, htim_->Instance->CCR2);
+  82:MotorControl/pwm_input.cpp ****     }
+  83:MotorControl/pwm_input.cpp ****     if(__HAL_TIM_GET_FLAG(htim_, TIM_FLAG_CC3)) {
+ 511              		.loc 2 83 5 is_stmt 1 view .LVU118
+ 512              		.loc 2 83 8 is_stmt 0 view .LVU119
+ 513 001c 2368     		ldr	r3, [r4]
+ 514 001e 1B68     		ldr	r3, [r3]
+ 515 0020 1A69     		ldr	r2, [r3, #16]
+ 516              		.loc 2 83 5 view .LVU120
+ 517 0022 12F0080F 		tst	r2, #8
+ 518 0026 1BD1     		bne	.L42
+ 519              	.L37:
+  84:MotorControl/pwm_input.cpp ****         __HAL_TIM_CLEAR_IT(htim_, TIM_IT_CC3);
+  85:MotorControl/pwm_input.cpp ****         on_capture(2, htim_->Instance->CCR3);
+  86:MotorControl/pwm_input.cpp ****     }
+  87:MotorControl/pwm_input.cpp ****     if(__HAL_TIM_GET_FLAG(htim_, TIM_FLAG_CC4)) {
+ 520              		.loc 2 87 5 is_stmt 1 view .LVU121
+ 521              		.loc 2 87 8 is_stmt 0 view .LVU122
+ 522 0028 2368     		ldr	r3, [r4]
+ 523 002a 1B68     		ldr	r3, [r3]
+ 524 002c 1A69     		ldr	r2, [r3, #16]
+ 525              		.loc 2 87 5 view .LVU123
+ 526 002e 12F0100F 		tst	r2, #16
+ 527 0032 20D1     		bne	.L43
+ 528              	.L34:
+  88:MotorControl/pwm_input.cpp ****         __HAL_TIM_CLEAR_IT(htim_, TIM_IT_CC4);
+  89:MotorControl/pwm_input.cpp ****         on_capture(3, htim_->Instance->CCR4);
+  90:MotorControl/pwm_input.cpp ****     }
+  91:MotorControl/pwm_input.cpp **** }
+ 529              		.loc 2 91 1 view .LVU124
+ 530 0034 10BD     		pop	{r4, pc}
+ 531              	.LVL40:
+ 532              	.L40:
+  76:MotorControl/pwm_input.cpp ****         on_capture(0, htim_->Instance->CCR1);
+ 533              		.loc 2 76 9 is_stmt 1 view .LVU125
+ 534 0036 6FF00202 		mvn	r2, #2
+ 535 003a 1A61     		str	r2, [r3, #16]
+  77:MotorControl/pwm_input.cpp ****     }
+ 536              		.loc 2 77 9 view .LVU126
+  77:MotorControl/pwm_input.cpp ****     }
+ 537              		.loc 2 77 23 is_stmt 0 view .LVU127
+ 538 003c 0368     		ldr	r3, [r0]
+  77:MotorControl/pwm_input.cpp ****     }
+ 539              		.loc 2 77 30 view .LVU128
+ 540 003e 1B68     		ldr	r3, [r3]
+  77:MotorControl/pwm_input.cpp ****     }
+ 541              		.loc 2 77 40 view .LVU129
+ 542 0040 5A6B     		ldr	r2, [r3, #52]
+  77:MotorControl/pwm_input.cpp ****     }
+ 543              		.loc 2 77 19 view .LVU130
+ 544 0042 0021     		movs	r1, #0
+ARM GAS  /tmp/ccudXTmH.s 			page 19
+
+
+ 545 0044 FFF7FEFF 		bl	_ZN8PwmInput10on_captureEim
+ 546              	.LVL41:
+  77:MotorControl/pwm_input.cpp ****     }
+ 547              		.loc 2 77 19 view .LVU131
+ 548 0048 E2E7     		b	.L35
+ 549              	.L41:
+  80:MotorControl/pwm_input.cpp ****         on_capture(1, htim_->Instance->CCR2);
+ 550              		.loc 2 80 9 is_stmt 1 view .LVU132
+ 551 004a 6FF00402 		mvn	r2, #4
+ 552 004e 1A61     		str	r2, [r3, #16]
+  81:MotorControl/pwm_input.cpp ****     }
+ 553              		.loc 2 81 9 view .LVU133
+  81:MotorControl/pwm_input.cpp ****     }
+ 554              		.loc 2 81 23 is_stmt 0 view .LVU134
+ 555 0050 2368     		ldr	r3, [r4]
+  81:MotorControl/pwm_input.cpp ****     }
+ 556              		.loc 2 81 30 view .LVU135
+ 557 0052 1B68     		ldr	r3, [r3]
+  81:MotorControl/pwm_input.cpp ****     }
+ 558              		.loc 2 81 40 view .LVU136
+ 559 0054 9A6B     		ldr	r2, [r3, #56]
+  81:MotorControl/pwm_input.cpp ****     }
+ 560              		.loc 2 81 19 view .LVU137
+ 561 0056 0121     		movs	r1, #1
+ 562 0058 2046     		mov	r0, r4
+ 563 005a FFF7FEFF 		bl	_ZN8PwmInput10on_captureEim
+ 564              	.LVL42:
+ 565 005e DDE7     		b	.L36
+ 566              	.L42:
+  84:MotorControl/pwm_input.cpp ****         on_capture(2, htim_->Instance->CCR3);
+ 567              		.loc 2 84 9 is_stmt 1 view .LVU138
+ 568 0060 6FF00802 		mvn	r2, #8
+ 569 0064 1A61     		str	r2, [r3, #16]
+  85:MotorControl/pwm_input.cpp ****     }
+ 570              		.loc 2 85 9 view .LVU139
+  85:MotorControl/pwm_input.cpp ****     }
+ 571              		.loc 2 85 23 is_stmt 0 view .LVU140
+ 572 0066 2368     		ldr	r3, [r4]
+  85:MotorControl/pwm_input.cpp ****     }
+ 573              		.loc 2 85 30 view .LVU141
+ 574 0068 1B68     		ldr	r3, [r3]
+  85:MotorControl/pwm_input.cpp ****     }
+ 575              		.loc 2 85 40 view .LVU142
+ 576 006a DA6B     		ldr	r2, [r3, #60]
+  85:MotorControl/pwm_input.cpp ****     }
+ 577              		.loc 2 85 19 view .LVU143
+ 578 006c 0221     		movs	r1, #2
+ 579 006e 2046     		mov	r0, r4
+ 580 0070 FFF7FEFF 		bl	_ZN8PwmInput10on_captureEim
+ 581              	.LVL43:
+ 582 0074 D8E7     		b	.L37
+ 583              	.L43:
+  88:MotorControl/pwm_input.cpp ****         on_capture(3, htim_->Instance->CCR4);
+ 584              		.loc 2 88 9 is_stmt 1 view .LVU144
+ 585 0076 6FF01002 		mvn	r2, #16
+ 586 007a 1A61     		str	r2, [r3, #16]
+  89:MotorControl/pwm_input.cpp ****     }
+ARM GAS  /tmp/ccudXTmH.s 			page 20
+
+
+ 587              		.loc 2 89 9 view .LVU145
+  89:MotorControl/pwm_input.cpp ****     }
+ 588              		.loc 2 89 23 is_stmt 0 view .LVU146
+ 589 007c 2368     		ldr	r3, [r4]
+  89:MotorControl/pwm_input.cpp ****     }
+ 590              		.loc 2 89 30 view .LVU147
+ 591 007e 1B68     		ldr	r3, [r3]
+  89:MotorControl/pwm_input.cpp ****     }
+ 592              		.loc 2 89 40 view .LVU148
+ 593 0080 1A6C     		ldr	r2, [r3, #64]
+  89:MotorControl/pwm_input.cpp ****     }
+ 594              		.loc 2 89 19 view .LVU149
+ 595 0082 0321     		movs	r1, #3
+ 596 0084 2046     		mov	r0, r4
+ 597 0086 FFF7FEFF 		bl	_ZN8PwmInput10on_captureEim
+ 598              	.LVL44:
+ 599              		.loc 2 91 1 view .LVU150
+ 600 008a D3E7     		b	.L34
+ 601              		.cfi_endproc
+ 602              	.LFE5161:
+ 603              		.fnend
+ 605              		.section	.rodata
+ 606              		.align	2
+ 607              		.set	.LANCHOR0,. + 0
+ 608              	.LC0:
+ 609 0000 00000000 		.word	0
+ 610 0004 04000000 		.word	4
+ 611 0008 08000000 		.word	8
+ 612 000c 0C000000 		.word	12
+ 613              		.section	.bss._ZZN8PwmInput10on_captureEimE14last_pin_state,"aw",%nobits
+ 614              		.align	2
+ 615              		.set	.LANCHOR2,. + 0
+ 618              	_ZZN8PwmInput10on_captureEimE14last_pin_state:
+ 619 0000 00000000 		.space	4
+ 620              		.section	.bss._ZZN8PwmInput10on_captureEimE14last_timestamp,"aw",%nobits
+ 621              		.align	2
+ 622              		.set	.LANCHOR3,. + 0
+ 625              	_ZZN8PwmInput10on_captureEimE14last_timestamp:
+ 626 0000 00000000 		.space	16
+ 626      00000000 
+ 626      00000000 
+ 626      00000000 
+ 627              		.section	.bss._ZZN8PwmInput10on_captureEimE17last_sample_valid,"aw",%nobits
+ 628              		.align	2
+ 629              		.set	.LANCHOR1,. + 0
+ 632              	_ZZN8PwmInput10on_captureEimE17last_sample_valid:
+ 633 0000 00000000 		.space	4
+ 634              		.text
+ 635              	.Letext0:
+ 636              		.file 5 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 637              		.file 6 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 638              		.file 7 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdint.h"
+ 639              		.file 8 "ThirdParty/CMSIS/Device/ST/STM32F4xx/Include/stm32f405xx.h"
+ 640              		.file 9 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h"
+ 641              		.file 10 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stdarg.h"
+ 642              		.file 11 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_types.h"
+ 643              		.file 12 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/reent.h"
+ARM GAS  /tmp/ccudXTmH.s 			page 21
+
+
+ 644              		.file 13 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/lock.h"
+ 645              		.file 14 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdio.h"
+ 646              		.file 15 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 647              		.file 16 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 648              		.file 17 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim.h"
+ 649              		.file 18 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/type_traits"
+ 650              		.file 19 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/har
+ 651              		.file 20 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/debug/debug.h"
+ 652              		.file 21 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstdlib"
+ 653              		.file 22 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h"
+ 654              		.file 23 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath"
+ 655              		.file 24 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/exception_ptr.h"
+ 656              		.file 25 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_iterator.h"
+ 657              		.file 26 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_function.h"
+ 658              		.file 27 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/algorithmfwd.h"
+ 659              		.file 28 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/functional"
+ 660              		.file 29 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstring"
+ 661              		.file 30 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/parse_numbers.h"
+ 662              		.file 31 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cwchar"
+ 663              		.file 32 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/clocale"
+ 664              		.file 33 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstdint"
+ 665              		.file 34 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/string_view"
+ 666              		.file 35 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/basic_string.h"
+ 667              		.file 36 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstdio"
+ 668              		.file 37 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h"
+ 669              		.file 38 "MotorControl/pwm_input.hpp"
+ 670              		.file 39 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdlib.h"
+ 671              		.file 40 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/stdlib.h"
+ 672              		.file 41 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/math.h"
+ 673              		.file 42 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/math.h"
+ 674              		.file 43 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/string.h"
+ 675              		.file 44 "fibre-cpp/include/fibre/cpp_utils.hpp"
+ 676              		.file 45 "fibre-cpp/include/fibre/callback.hpp"
+ 677              		.file 46 "fibre-cpp/include/fibre/../../protocol.hpp"
+ 678              		.file 47 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/pstl/execution_defs.h"
+ 679              		.file 48 "./MotorControl/utils.hpp"
+ 680              		.file 49 "Board/v3/Inc/board.h"
+ 681              		.file 50 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/wchar.h"
+ 682              		.file 51 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/locale.h"
+ 683              		.file 52 "<built-in>"
+ARM GAS  /tmp/ccudXTmH.s 			page 22
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 pwm_input.cpp
+     /tmp/ccudXTmH.s:20     .text._ZL8get_gpioj:0000000000000000 $t
+     /tmp/ccudXTmH.s:25     .text._ZL8get_gpioj:0000000000000000 _ZL8get_gpioj
+     /tmp/ccudXTmH.s:64     .text._ZL8get_gpioj:000000000000001c $d
+    .ARM.exidx.text._ZL8get_gpioj:0000000000000000 $d
+     /tmp/ccudXTmH.s:71     .text._ZN8PwmInput4initEv:0000000000000000 $t
+     /tmp/ccudXTmH.s:77     .text._ZN8PwmInput4initEv:0000000000000000 _ZN8PwmInput4initEv
+     /tmp/ccudXTmH.s:182    .text._ZN8PwmInput4initEv:0000000000000064 $d
+.ARM.exidx.text._ZN8PwmInput4initEv:0000000000000000 $d
+     /tmp/ccudXTmH.s:189    .text._Z12handle_pulseim:0000000000000000 $t
+     /tmp/ccudXTmH.s:195    .text._Z12handle_pulseim:0000000000000000 _Z12handle_pulseim
+     /tmp/ccudXTmH.s:286    .text._Z12handle_pulseim:0000000000000070 $d
+.ARM.extab.text._Z12handle_pulseim:0000000000000000 $d
+.ARM.exidx.text._Z12handle_pulseim:0000000000000000 $d
+     /tmp/ccudXTmH.s:296    .text._ZN8PwmInput10on_captureEim:0000000000000000 $t
+     /tmp/ccudXTmH.s:302    .text._ZN8PwmInput10on_captureEim:0000000000000000 _ZN8PwmInput10on_captureEim
+     /tmp/ccudXTmH.s:462    .text._ZN8PwmInput10on_captureEim:0000000000000064 $d
+.ARM.exidx.text._ZN8PwmInput10on_captureEim:0000000000000000 $d
+     /tmp/ccudXTmH.s:470    .text._ZN8PwmInput10on_captureEv:0000000000000000 $t
+     /tmp/ccudXTmH.s:476    .text._ZN8PwmInput10on_captureEv:0000000000000000 _ZN8PwmInput10on_captureEv
+.ARM.exidx.text._ZN8PwmInput10on_captureEv:0000000000000000 $d
+     /tmp/ccudXTmH.s:606    .rodata:0000000000000000 $d
+     /tmp/ccudXTmH.s:614    .bss._ZZN8PwmInput10on_captureEimE14last_pin_state:0000000000000000 $d
+     /tmp/ccudXTmH.s:618    .bss._ZZN8PwmInput10on_captureEimE14last_pin_state:0000000000000000 _ZZN8PwmInput10on_captureEimE14last_pin_state
+     /tmp/ccudXTmH.s:621    .bss._ZZN8PwmInput10on_captureEimE14last_timestamp:0000000000000000 $d
+     /tmp/ccudXTmH.s:625    .bss._ZZN8PwmInput10on_captureEimE14last_timestamp:0000000000000000 _ZZN8PwmInput10on_captureEimE14last_timestamp
+     /tmp/ccudXTmH.s:628    .bss._ZZN8PwmInput10on_captureEimE17last_sample_valid:0000000000000000 $d
+     /tmp/ccudXTmH.s:632    .bss._ZZN8PwmInput10on_captureEimE17last_sample_valid:0000000000000000 _ZZN8PwmInput10on_captureEimE17last_sample_valid
+
+UNDEFINED SYMBOLS
+gpios
+_ZN5fibre21is_endpoint_ref_validE14endpoint_ref_t
+HAL_TIM_IC_ConfigChannel
+HAL_TIM_IC_Start_IT
+odrv
+__aeabi_unwind_cpp_pr0
+_ZN5fibre23set_endpoint_from_floatE14endpoint_ref_tf
+__aeabi_unwind_cpp_pr1

@@ -1,0 +1,2019 @@
+ARM GAS  /tmp/ccSTr1Mh.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"stm32_spi_arbiter.cpp"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text._ZZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjmENUlPvbE_4_FUNES5_
+  20              		.align	1
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	_ZZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjmENUlPvbE_4_FUNES5_b:
+  26              		.fnstart
+  27              	.LFB2951:
+  28              		.file 1 "Drivers/STM32/stm32_spi_arbiter.cpp"
+   1:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+   2:Drivers/STM32/stm32_spi_arbiter.cpp **** #include "stm32_spi_arbiter.hpp"
+   3:Drivers/STM32/stm32_spi_arbiter.cpp **** #include "stm32_system.h"
+   4:Drivers/STM32/stm32_spi_arbiter.cpp **** #include "utils.hpp"
+   5:Drivers/STM32/stm32_spi_arbiter.cpp **** #include <cmsis_os.h>
+   6:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+   7:Drivers/STM32/stm32_spi_arbiter.cpp **** bool equals(const SPI_InitTypeDef& lhs, const SPI_InitTypeDef& rhs) {
+   8:Drivers/STM32/stm32_spi_arbiter.cpp ****   return (lhs.Mode == rhs.Mode)
+   9:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.Direction == rhs.Direction)
+  10:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.DataSize == rhs.DataSize)
+  11:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CLKPolarity == rhs.CLKPolarity)
+  12:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CLKPhase == rhs.CLKPhase)
+  13:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.NSS == rhs.NSS)
+  14:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.BaudRatePrescaler == rhs.BaudRatePrescaler)
+  15:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.FirstBit == rhs.FirstBit)
+  16:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.TIMode == rhs.TIMode)
+  17:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CRCCalculation == rhs.CRCCalculation)
+  18:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CRCPolynomial == rhs.CRCPolynomial);
+  19:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+  20:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+  21:Drivers/STM32/stm32_spi_arbiter.cpp **** bool Stm32SpiArbiter::acquire_task(SpiTask* task) {
+  22:Drivers/STM32/stm32_spi_arbiter.cpp ****     return !__atomic_exchange_n(&task->is_in_use, true, __ATOMIC_SEQ_CST);
+  23:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+  24:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+  25:Drivers/STM32/stm32_spi_arbiter.cpp **** void Stm32SpiArbiter::release_task(SpiTask* task) {
+  26:Drivers/STM32/stm32_spi_arbiter.cpp ****     task->is_in_use = false;
+  27:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+  28:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+  29:Drivers/STM32/stm32_spi_arbiter.cpp **** bool Stm32SpiArbiter::start() {
+  30:Drivers/STM32/stm32_spi_arbiter.cpp ****     if (!task_list_) {
+ARM GAS  /tmp/ccSTr1Mh.s 			page 2
+
+
+  31:Drivers/STM32/stm32_spi_arbiter.cpp ****         return false;
+  32:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+  33:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+  34:Drivers/STM32/stm32_spi_arbiter.cpp ****     SpiTask& task = *task_list_;
+  35:Drivers/STM32/stm32_spi_arbiter.cpp ****     if (!equals(task.config, hspi_->Init)) {
+  36:Drivers/STM32/stm32_spi_arbiter.cpp ****         HAL_SPI_DeInit(hspi_);
+  37:Drivers/STM32/stm32_spi_arbiter.cpp ****         hspi_->Init = task.config;
+  38:Drivers/STM32/stm32_spi_arbiter.cpp ****         HAL_SPI_Init(hspi_);
+  39:Drivers/STM32/stm32_spi_arbiter.cpp ****         __HAL_SPI_ENABLE(hspi_);
+  40:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+  41:Drivers/STM32/stm32_spi_arbiter.cpp ****     task.ncs_gpio.write(false);
+  42:Drivers/STM32/stm32_spi_arbiter.cpp ****     
+  43:Drivers/STM32/stm32_spi_arbiter.cpp ****     HAL_StatusTypeDef status = HAL_ERROR;
+  44:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+  45:Drivers/STM32/stm32_spi_arbiter.cpp ****     if (hspi_->hdmatx->State != HAL_DMA_STATE_READY || hspi_->hdmarx->State != HAL_DMA_STATE_READY)
+  46:Drivers/STM32/stm32_spi_arbiter.cpp ****         // This can happen if the DMA or interrupt priorities are not configured properly.
+  47:Drivers/STM32/stm32_spi_arbiter.cpp ****         status = HAL_BUSY;
+  48:Drivers/STM32/stm32_spi_arbiter.cpp ****     } else if (task.tx_buf && task.rx_buf) {
+  49:Drivers/STM32/stm32_spi_arbiter.cpp ****         status = HAL_SPI_TransmitReceive_DMA(hspi_, (uint8_t*)task.tx_buf, task.rx_buf, task.length
+  50:Drivers/STM32/stm32_spi_arbiter.cpp ****     } else if (task.tx_buf) {
+  51:Drivers/STM32/stm32_spi_arbiter.cpp ****         status = HAL_SPI_Transmit_DMA(hspi_, (uint8_t*)task.tx_buf, task.length);
+  52:Drivers/STM32/stm32_spi_arbiter.cpp ****     } else if (task.rx_buf) {
+  53:Drivers/STM32/stm32_spi_arbiter.cpp ****         status = HAL_SPI_Receive_DMA(hspi_, task.rx_buf, task.length);
+  54:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+  55:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+  56:Drivers/STM32/stm32_spi_arbiter.cpp ****     if (status != HAL_OK) {
+  57:Drivers/STM32/stm32_spi_arbiter.cpp ****         task.ncs_gpio.write(true);
+  58:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+  59:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+  60:Drivers/STM32/stm32_spi_arbiter.cpp ****     return status == HAL_OK;
+  61:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+  62:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+  63:Drivers/STM32/stm32_spi_arbiter.cpp **** void Stm32SpiArbiter::transfer_async(SpiTask* task) {
+  64:Drivers/STM32/stm32_spi_arbiter.cpp ****     task->next = nullptr;
+  65:Drivers/STM32/stm32_spi_arbiter.cpp ****     
+  66:Drivers/STM32/stm32_spi_arbiter.cpp ****     // Append new task to task list.
+  67:Drivers/STM32/stm32_spi_arbiter.cpp ****     // We could try to do this lock free but we could also use our time for useful things.
+  68:Drivers/STM32/stm32_spi_arbiter.cpp ****     SpiTask** ptr = &task_list_;
+  69:Drivers/STM32/stm32_spi_arbiter.cpp ****     CRITICAL_SECTION() {
+  70:Drivers/STM32/stm32_spi_arbiter.cpp ****         while (*ptr)
+  71:Drivers/STM32/stm32_spi_arbiter.cpp ****             ptr = &(*ptr)->next;
+  72:Drivers/STM32/stm32_spi_arbiter.cpp ****         *ptr = task;
+  73:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+  74:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+  75:Drivers/STM32/stm32_spi_arbiter.cpp ****     // If the list was empty before, kick off the SPI arbiter now
+  76:Drivers/STM32/stm32_spi_arbiter.cpp ****     if (ptr == &task_list_) {
+  77:Drivers/STM32/stm32_spi_arbiter.cpp ****         if (!start()) {
+  78:Drivers/STM32/stm32_spi_arbiter.cpp ****             if (task->on_complete) {
+  79:Drivers/STM32/stm32_spi_arbiter.cpp ****                 (*task->on_complete)(task->on_complete_ctx, false);
+  80:Drivers/STM32/stm32_spi_arbiter.cpp ****             }
+  81:Drivers/STM32/stm32_spi_arbiter.cpp ****         }
+  82:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+  83:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+  84:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+  85:Drivers/STM32/stm32_spi_arbiter.cpp **** // TODO: this currently only works when called in a CMSIS thread.
+  86:Drivers/STM32/stm32_spi_arbiter.cpp **** bool Stm32SpiArbiter::transfer(SPI_InitTypeDef config, Stm32Gpio ncs_gpio, const uint8_t* tx_buf, u
+  87:Drivers/STM32/stm32_spi_arbiter.cpp ****     volatile uint8_t result = 0xff;
+ARM GAS  /tmp/ccSTr1Mh.s 			page 3
+
+
+  88:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+  89:Drivers/STM32/stm32_spi_arbiter.cpp ****     SpiTask task = {
+  90:Drivers/STM32/stm32_spi_arbiter.cpp ****         .config = config,
+  91:Drivers/STM32/stm32_spi_arbiter.cpp ****         .ncs_gpio = ncs_gpio,
+  92:Drivers/STM32/stm32_spi_arbiter.cpp ****         .tx_buf = tx_buf,
+  93:Drivers/STM32/stm32_spi_arbiter.cpp ****         .rx_buf = rx_buf,
+  94:Drivers/STM32/stm32_spi_arbiter.cpp ****         .length = length,
+  95:Drivers/STM32/stm32_spi_arbiter.cpp ****         .on_complete = [](void* ctx, bool success) { *(volatile uint8_t*)ctx = success ? 1 : 0; },
+  29              		.loc 1 95 24 view -0
+  30              		.cfi_startproc
+  31              		@ args = 0, pretend = 0, frame = 0
+  32              		@ frame_needed = 0, uses_anonymous_args = 0
+  33              		@ link register save eliminated.
+  34              	.LVL0:
+  35              	.LBB58:
+  36              	.LBI58:
+  37              		.loc 1 95 24 view .LVU1
+  38              	.LBB59:
+  39              		.loc 1 95 54 view .LVU2
+  40              		.loc 1 95 78 is_stmt 0 view .LVU3
+  41 0000 11B1     		cbz	r1, .L3
+  42 0002 0123     		movs	r3, #1
+  43              	.L2:
+  44 0004 0370     		strb	r3, [r0]
+  45              	.LVL1:
+  46              		.loc 1 95 78 view .LVU4
+  47              	.LBE59:
+  48              	.LBE58:
+  49              		.loc 1 95 97 view .LVU5
+  50 0006 7047     		bx	lr
+  51              	.LVL2:
+  52              	.L3:
+  53              	.LBB61:
+  54              	.LBB60:
+  55              		.loc 1 95 78 view .LVU6
+  56 0008 0023     		movs	r3, #0
+  57 000a FBE7     		b	.L2
+  58              	.LBE60:
+  59              	.LBE61:
+  60              		.cfi_endproc
+  61              	.LFE2951:
+  62              		.cantunwind
+  63              		.fnend
+  65              		.section	.text._Z6equalsRK15SPI_InitTypeDefS1_,"ax",%progbits
+  66              		.align	1
+  67              		.global	_Z6equalsRK15SPI_InitTypeDefS1_
+  68              		.syntax unified
+  69              		.thumb
+  70              		.thumb_func
+  72              	_Z6equalsRK15SPI_InitTypeDefS1_:
+  73              		.fnstart
+  74              	.LVL3:
+  75              	.LFB2944:
+   7:Drivers/STM32/stm32_spi_arbiter.cpp ****   return (lhs.Mode == rhs.Mode)
+  76              		.loc 1 7 69 is_stmt 1 view -0
+  77              		.cfi_startproc
+  78              		@ args = 0, pretend = 0, frame = 0
+ARM GAS  /tmp/ccSTr1Mh.s 			page 4
+
+
+  79              		@ frame_needed = 0, uses_anonymous_args = 0
+  80              		@ link register save eliminated.
+   8:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.Direction == rhs.Direction)
+  81              		.loc 1 8 3 view .LVU8
+   8:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.Direction == rhs.Direction)
+  82              		.loc 1 8 15 is_stmt 0 view .LVU9
+  83 0000 0268     		ldr	r2, [r0]
+   8:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.Direction == rhs.Direction)
+  84              		.loc 1 8 27 view .LVU10
+  85 0002 0B68     		ldr	r3, [r1]
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+  86              		.loc 1 18 7 view .LVU11
+  87 0004 9A42     		cmp	r2, r3
+  88 0006 01D0     		beq	.L17
+  89 0008 0020     		movs	r0, #0
+  90              	.LVL4:
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+  91              		.loc 1 18 7 view .LVU12
+  92 000a 7047     		bx	lr
+  93              	.LVL5:
+  94              	.L17:
+   9:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.DataSize == rhs.DataSize)
+  95              		.loc 1 9 15 view .LVU13
+  96 000c 4268     		ldr	r2, [r0, #4]
+   9:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.DataSize == rhs.DataSize)
+  97              		.loc 1 9 32 view .LVU14
+  98 000e 4B68     		ldr	r3, [r1, #4]
+   9:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.DataSize == rhs.DataSize)
+  99              		.loc 1 9 7 view .LVU15
+ 100 0010 9A42     		cmp	r2, r3
+ 101 0012 01D0     		beq	.L18
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 102              		.loc 1 18 7 view .LVU16
+ 103 0014 0020     		movs	r0, #0
+ 104              	.LVL6:
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 105              		.loc 1 18 7 view .LVU17
+ 106 0016 7047     		bx	lr
+ 107              	.LVL7:
+ 108              	.L18:
+  10:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CLKPolarity == rhs.CLKPolarity)
+ 109              		.loc 1 10 15 view .LVU18
+ 110 0018 8268     		ldr	r2, [r0, #8]
+  10:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CLKPolarity == rhs.CLKPolarity)
+ 111              		.loc 1 10 31 view .LVU19
+ 112 001a 8B68     		ldr	r3, [r1, #8]
+  10:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CLKPolarity == rhs.CLKPolarity)
+ 113              		.loc 1 10 7 view .LVU20
+ 114 001c 9A42     		cmp	r2, r3
+ 115 001e 01D0     		beq	.L19
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 116              		.loc 1 18 7 view .LVU21
+ 117 0020 0020     		movs	r0, #0
+ 118              	.LVL8:
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 119              		.loc 1 18 7 view .LVU22
+ 120 0022 7047     		bx	lr
+ARM GAS  /tmp/ccSTr1Mh.s 			page 5
+
+
+ 121              	.LVL9:
+ 122              	.L19:
+  11:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CLKPhase == rhs.CLKPhase)
+ 123              		.loc 1 11 15 view .LVU23
+ 124 0024 C268     		ldr	r2, [r0, #12]
+  11:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CLKPhase == rhs.CLKPhase)
+ 125              		.loc 1 11 34 view .LVU24
+ 126 0026 CB68     		ldr	r3, [r1, #12]
+  11:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CLKPhase == rhs.CLKPhase)
+ 127              		.loc 1 11 7 view .LVU25
+ 128 0028 9A42     		cmp	r2, r3
+ 129 002a 01D0     		beq	.L20
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 130              		.loc 1 18 7 view .LVU26
+ 131 002c 0020     		movs	r0, #0
+ 132              	.LVL10:
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 133              		.loc 1 18 7 view .LVU27
+ 134 002e 7047     		bx	lr
+ 135              	.LVL11:
+ 136              	.L20:
+  12:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.NSS == rhs.NSS)
+ 137              		.loc 1 12 15 view .LVU28
+ 138 0030 0269     		ldr	r2, [r0, #16]
+  12:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.NSS == rhs.NSS)
+ 139              		.loc 1 12 31 view .LVU29
+ 140 0032 0B69     		ldr	r3, [r1, #16]
+  12:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.NSS == rhs.NSS)
+ 141              		.loc 1 12 7 view .LVU30
+ 142 0034 9A42     		cmp	r2, r3
+ 143 0036 01D0     		beq	.L21
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 144              		.loc 1 18 7 view .LVU31
+ 145 0038 0020     		movs	r0, #0
+ 146              	.LVL12:
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 147              		.loc 1 18 7 view .LVU32
+ 148 003a 7047     		bx	lr
+ 149              	.LVL13:
+ 150              	.L21:
+  13:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.BaudRatePrescaler == rhs.BaudRatePrescaler)
+ 151              		.loc 1 13 15 view .LVU33
+ 152 003c 4269     		ldr	r2, [r0, #20]
+  13:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.BaudRatePrescaler == rhs.BaudRatePrescaler)
+ 153              		.loc 1 13 26 view .LVU34
+ 154 003e 4B69     		ldr	r3, [r1, #20]
+  13:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.BaudRatePrescaler == rhs.BaudRatePrescaler)
+ 155              		.loc 1 13 7 view .LVU35
+ 156 0040 9A42     		cmp	r2, r3
+ 157 0042 01D0     		beq	.L22
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 158              		.loc 1 18 7 view .LVU36
+ 159 0044 0020     		movs	r0, #0
+ 160              	.LVL14:
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 161              		.loc 1 18 7 view .LVU37
+ 162 0046 7047     		bx	lr
+ARM GAS  /tmp/ccSTr1Mh.s 			page 6
+
+
+ 163              	.LVL15:
+ 164              	.L22:
+  14:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.FirstBit == rhs.FirstBit)
+ 165              		.loc 1 14 15 view .LVU38
+ 166 0048 8269     		ldr	r2, [r0, #24]
+  14:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.FirstBit == rhs.FirstBit)
+ 167              		.loc 1 14 40 view .LVU39
+ 168 004a 8B69     		ldr	r3, [r1, #24]
+  14:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.FirstBit == rhs.FirstBit)
+ 169              		.loc 1 14 7 view .LVU40
+ 170 004c 9A42     		cmp	r2, r3
+ 171 004e 01D0     		beq	.L23
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 172              		.loc 1 18 7 view .LVU41
+ 173 0050 0020     		movs	r0, #0
+ 174              	.LVL16:
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 175              		.loc 1 18 7 view .LVU42
+ 176 0052 7047     		bx	lr
+ 177              	.LVL17:
+ 178              	.L23:
+  15:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.TIMode == rhs.TIMode)
+ 179              		.loc 1 15 15 view .LVU43
+ 180 0054 C269     		ldr	r2, [r0, #28]
+  15:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.TIMode == rhs.TIMode)
+ 181              		.loc 1 15 31 view .LVU44
+ 182 0056 CB69     		ldr	r3, [r1, #28]
+  15:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.TIMode == rhs.TIMode)
+ 183              		.loc 1 15 7 view .LVU45
+ 184 0058 9A42     		cmp	r2, r3
+ 185 005a 01D0     		beq	.L24
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 186              		.loc 1 18 7 view .LVU46
+ 187 005c 0020     		movs	r0, #0
+ 188              	.LVL18:
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 189              		.loc 1 18 7 view .LVU47
+ 190 005e 7047     		bx	lr
+ 191              	.LVL19:
+ 192              	.L24:
+  16:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CRCCalculation == rhs.CRCCalculation)
+ 193              		.loc 1 16 15 view .LVU48
+ 194 0060 026A     		ldr	r2, [r0, #32]
+  16:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CRCCalculation == rhs.CRCCalculation)
+ 195              		.loc 1 16 29 view .LVU49
+ 196 0062 0B6A     		ldr	r3, [r1, #32]
+  16:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CRCCalculation == rhs.CRCCalculation)
+ 197              		.loc 1 16 7 view .LVU50
+ 198 0064 9A42     		cmp	r2, r3
+ 199 0066 01D0     		beq	.L25
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 200              		.loc 1 18 7 view .LVU51
+ 201 0068 0020     		movs	r0, #0
+ 202              	.LVL20:
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 203              		.loc 1 18 7 view .LVU52
+ 204 006a 7047     		bx	lr
+ARM GAS  /tmp/ccSTr1Mh.s 			page 7
+
+
+ 205              	.LVL21:
+ 206              	.L25:
+  17:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CRCPolynomial == rhs.CRCPolynomial);
+ 207              		.loc 1 17 15 view .LVU53
+ 208 006c 426A     		ldr	r2, [r0, #36]
+  17:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CRCPolynomial == rhs.CRCPolynomial);
+ 209              		.loc 1 17 37 view .LVU54
+ 210 006e 4B6A     		ldr	r3, [r1, #36]
+  17:Drivers/STM32/stm32_spi_arbiter.cpp ****       && (lhs.CRCPolynomial == rhs.CRCPolynomial);
+ 211              		.loc 1 17 7 view .LVU55
+ 212 0070 9A42     		cmp	r2, r3
+ 213 0072 01D0     		beq	.L26
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 214              		.loc 1 18 7 view .LVU56
+ 215 0074 0020     		movs	r0, #0
+ 216              	.LVL22:
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 217              		.loc 1 18 7 view .LVU57
+ 218 0076 7047     		bx	lr
+ 219              	.LVL23:
+ 220              	.L26:
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 221              		.loc 1 18 15 discriminator 3 view .LVU58
+ 222 0078 826A     		ldr	r2, [r0, #40]
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 223              		.loc 1 18 36 discriminator 3 view .LVU59
+ 224 007a 8B6A     		ldr	r3, [r1, #40]
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 225              		.loc 1 18 7 discriminator 3 view .LVU60
+ 226 007c 9A42     		cmp	r2, r3
+ 227 007e 01D0     		beq	.L16
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 228              		.loc 1 18 7 view .LVU61
+ 229 0080 0020     		movs	r0, #0
+ 230              	.LVL24:
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 231              		.loc 1 18 7 view .LVU62
+ 232 0082 7047     		bx	lr
+ 233              	.LVL25:
+ 234              	.L16:
+  18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 235              		.loc 1 18 7 view .LVU63
+ 236 0084 0120     		movs	r0, #1
+ 237              	.LVL26:
+  19:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 238              		.loc 1 19 1 view .LVU64
+ 239 0086 7047     		bx	lr
+ 240              		.cfi_endproc
+ 241              	.LFE2944:
+ 242              		.cantunwind
+ 243              		.fnend
+ 245              		.section	.text._ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE,"ax",%progbits
+ 246              		.align	1
+ 247              		.global	_ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE
+ 248              		.syntax unified
+ 249              		.thumb
+ 250              		.thumb_func
+ARM GAS  /tmp/ccSTr1Mh.s 			page 8
+
+
+ 252              	_ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE:
+ 253              		.fnstart
+ 254              	.LVL27:
+ 255              	.LFB2945:
+  21:Drivers/STM32/stm32_spi_arbiter.cpp ****     return !__atomic_exchange_n(&task->is_in_use, true, __ATOMIC_SEQ_CST);
+ 256              		.loc 1 21 51 is_stmt 1 view -0
+ 257              		.cfi_startproc
+ 258              		@ args = 0, pretend = 0, frame = 0
+ 259              		@ frame_needed = 0, uses_anonymous_args = 0
+ 260              		@ link register save eliminated.
+  22:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 261              		.loc 1 22 5 view .LVU66
+  22:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 262              		.loc 1 22 33 is_stmt 0 view .LVU67
+ 263 0000 4830     		adds	r0, r0, #72
+ 264              	.LVL28:
+  22:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 265              		.loc 1 22 73 view .LVU68
+ 266 0002 4FF00102 		mov	r2, #1
+ 267 0006 BFF35B8F 		dmb	ish
+ 268              	.L28:
+ 269 000a D0E84F3F 		ldrexb	r3, [r0]
+ 270 000e C0E8412F 		strexb	r1, r2, [r0]
+ 271 0012 0029     		cmp	r1, #0
+ 272 0014 F9D1     		bne	.L28
+ 273 0016 BFF35B8F 		dmb	ish
+ 274 001a D8B2     		uxtb	r0, r3
+ 275              	.LVL29:
+  23:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 276              		.loc 1 23 1 view .LVU69
+ 277 001c B0FA80F0 		clz	r0, r0
+ 278 0020 4009     		lsrs	r0, r0, #5
+ 279 0022 7047     		bx	lr
+ 280              		.cfi_endproc
+ 281              	.LFE2945:
+ 282              		.cantunwind
+ 283              		.fnend
+ 285              		.section	.text._ZN15Stm32SpiArbiter12release_taskEPNS_7SpiTaskE,"ax",%progbits
+ 286              		.align	1
+ 287              		.global	_ZN15Stm32SpiArbiter12release_taskEPNS_7SpiTaskE
+ 288              		.syntax unified
+ 289              		.thumb
+ 290              		.thumb_func
+ 292              	_ZN15Stm32SpiArbiter12release_taskEPNS_7SpiTaskE:
+ 293              		.fnstart
+ 294              	.LVL30:
+ 295              	.LFB2946:
+  25:Drivers/STM32/stm32_spi_arbiter.cpp ****     task->is_in_use = false;
+ 296              		.loc 1 25 51 is_stmt 1 view -0
+ 297              		.cfi_startproc
+ 298              		@ args = 0, pretend = 0, frame = 0
+ 299              		@ frame_needed = 0, uses_anonymous_args = 0
+ 300              		@ link register save eliminated.
+  26:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 301              		.loc 1 26 5 view .LVU71
+  26:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 302              		.loc 1 26 21 is_stmt 0 view .LVU72
+ARM GAS  /tmp/ccSTr1Mh.s 			page 9
+
+
+ 303 0000 0023     		movs	r3, #0
+ 304 0002 80F84830 		strb	r3, [r0, #72]
+  27:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 305              		.loc 1 27 1 view .LVU73
+ 306 0006 7047     		bx	lr
+ 307              		.cfi_endproc
+ 308              	.LFE2946:
+ 309              		.cantunwind
+ 310              		.fnend
+ 312              		.section	.text._ZN15Stm32SpiArbiter5startEv,"ax",%progbits
+ 313              		.align	1
+ 314              		.global	_ZN15Stm32SpiArbiter5startEv
+ 315              		.syntax unified
+ 316              		.thumb
+ 317              		.thumb_func
+ 319              	_ZN15Stm32SpiArbiter5startEv:
+ 320              		.fnstart
+ 321              	.LVL31:
+ 322              	.LFB2947:
+  29:Drivers/STM32/stm32_spi_arbiter.cpp ****     if (!task_list_) {
+ 323              		.loc 1 29 31 is_stmt 1 view -0
+ 324              		.cfi_startproc
+ 325              		@ args = 0, pretend = 0, frame = 0
+ 326              		@ frame_needed = 0, uses_anonymous_args = 0
+  29:Drivers/STM32/stm32_spi_arbiter.cpp ****     if (!task_list_) {
+ 327              		.loc 1 29 31 is_stmt 0 view .LVU75
+ 328 0000 70B5     		push	{r4, r5, r6, lr}
+ 329              		.save {r4, r5, r6, lr}
+ 330              	.LCFI0:
+ 331              		.cfi_def_cfa_offset 16
+ 332              		.cfi_offset 4, -16
+ 333              		.cfi_offset 5, -12
+ 334              		.cfi_offset 6, -8
+ 335              		.cfi_offset 14, -4
+  30:Drivers/STM32/stm32_spi_arbiter.cpp ****         return false;
+ 336              		.loc 1 30 5 is_stmt 1 view .LVU76
+  30:Drivers/STM32/stm32_spi_arbiter.cpp ****         return false;
+ 337              		.loc 1 30 10 is_stmt 0 view .LVU77
+ 338 0002 4568     		ldr	r5, [r0, #4]
+  30:Drivers/STM32/stm32_spi_arbiter.cpp ****         return false;
+ 339              		.loc 1 30 5 view .LVU78
+ 340 0004 002D     		cmp	r5, #0
+ 341 0006 5DD0     		beq	.L40
+ 342 0008 0446     		mov	r4, r0
+  34:Drivers/STM32/stm32_spi_arbiter.cpp ****     if (!equals(task.config, hspi_->Init)) {
+ 343              		.loc 1 34 5 is_stmt 1 view .LVU79
+ 344              	.LVL32:
+  35:Drivers/STM32/stm32_spi_arbiter.cpp ****         HAL_SPI_DeInit(hspi_);
+ 345              		.loc 1 35 5 view .LVU80
+  35:Drivers/STM32/stm32_spi_arbiter.cpp ****         HAL_SPI_DeInit(hspi_);
+ 346              		.loc 1 35 30 is_stmt 0 view .LVU81
+ 347 000a 0668     		ldr	r6, [r0]
+  35:Drivers/STM32/stm32_spi_arbiter.cpp ****         HAL_SPI_DeInit(hspi_);
+ 348              		.loc 1 35 16 view .LVU82
+ 349 000c 311D     		adds	r1, r6, #4
+ 350 000e 2846     		mov	r0, r5
+ 351              	.LVL33:
+ARM GAS  /tmp/ccSTr1Mh.s 			page 10
+
+
+  35:Drivers/STM32/stm32_spi_arbiter.cpp ****         HAL_SPI_DeInit(hspi_);
+ 352              		.loc 1 35 16 view .LVU83
+ 353 0010 FFF7FEFF 		bl	_Z6equalsRK15SPI_InitTypeDefS1_
+ 354              	.LVL34:
+  35:Drivers/STM32/stm32_spi_arbiter.cpp ****         HAL_SPI_DeInit(hspi_);
+ 355              		.loc 1 35 5 view .LVU84
+ 356 0014 C0B1     		cbz	r0, .L44
+ 357              	.L32:
+  41:Drivers/STM32/stm32_spi_arbiter.cpp ****     
+ 358              		.loc 1 41 5 is_stmt 1 view .LVU85
+  41:Drivers/STM32/stm32_spi_arbiter.cpp ****     
+ 359              		.loc 1 41 24 is_stmt 0 view .LVU86
+ 360 0016 05F12C06 		add	r6, r5, #44
+ 361              	.LVL35:
+ 362              	.LBB66:
+ 363              	.LBI66:
+ 364              		.file 2 "Drivers/STM32/stm32_gpio.hpp"
+   1:Drivers/STM32/stm32_gpio.hpp **** #ifndef __STM32_GPIO_HPP
+   2:Drivers/STM32/stm32_gpio.hpp **** #define __STM32_GPIO_HPP
+   3:Drivers/STM32/stm32_gpio.hpp **** 
+   4:Drivers/STM32/stm32_gpio.hpp **** #include <gpio.h>
+   5:Drivers/STM32/stm32_gpio.hpp **** 
+   6:Drivers/STM32/stm32_gpio.hpp **** class Stm32Gpio {
+   7:Drivers/STM32/stm32_gpio.hpp **** public:
+   8:Drivers/STM32/stm32_gpio.hpp ****     static const Stm32Gpio none;
+   9:Drivers/STM32/stm32_gpio.hpp **** 
+  10:Drivers/STM32/stm32_gpio.hpp ****     Stm32Gpio() : port_(nullptr), pin_mask_(0) {}
+  11:Drivers/STM32/stm32_gpio.hpp ****     Stm32Gpio(GPIO_TypeDef* port, uint16_t pin) : port_(port), pin_mask_(pin) {}
+  12:Drivers/STM32/stm32_gpio.hpp **** 
+  13:Drivers/STM32/stm32_gpio.hpp ****     operator bool() const { return port_ && pin_mask_; }
+  14:Drivers/STM32/stm32_gpio.hpp **** 
+  15:Drivers/STM32/stm32_gpio.hpp ****     /**
+  16:Drivers/STM32/stm32_gpio.hpp ****      * @brief Configures the GPIO with the specified parameters.
+  17:Drivers/STM32/stm32_gpio.hpp ****      * 
+  18:Drivers/STM32/stm32_gpio.hpp ****      * This can be done regardless of the current state of the GPIO.
+  19:Drivers/STM32/stm32_gpio.hpp ****      * 
+  20:Drivers/STM32/stm32_gpio.hpp ****      * If any subscription is in place, it is not disabled by this function.
+  21:Drivers/STM32/stm32_gpio.hpp ****      */
+  22:Drivers/STM32/stm32_gpio.hpp ****     bool config(uint32_t mode, uint32_t pull, uint32_t speed = GPIO_SPEED_FREQ_LOW);
+  23:Drivers/STM32/stm32_gpio.hpp **** 
+  24:Drivers/STM32/stm32_gpio.hpp ****     void write(bool state) {
+ 365              		.loc 2 24 10 is_stmt 1 view .LVU87
+ 366              	.LBB67:
+  25:Drivers/STM32/stm32_gpio.hpp ****         if (port_) {
+ 367              		.loc 2 25 9 view .LVU88
+ 368              		.loc 2 25 13 is_stmt 0 view .LVU89
+ 369 001a E86A     		ldr	r0, [r5, #44]
+ 370              		.loc 2 25 9 view .LVU90
+ 371 001c 18B1     		cbz	r0, .L33
+  26:Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 372              		.loc 2 26 13 is_stmt 1 view .LVU91
+ 373              		.loc 2 26 30 is_stmt 0 view .LVU92
+ 374 001e 0022     		movs	r2, #0
+ 375 0020 B188     		ldrh	r1, [r6, #4]
+ 376 0022 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 377              	.LVL36:
+ 378              	.L33:
+ARM GAS  /tmp/ccSTr1Mh.s 			page 11
+
+
+ 379              		.loc 2 26 30 view .LVU93
+ 380              	.LBE67:
+ 381              	.LBE66:
+  43:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 382              		.loc 1 43 5 is_stmt 1 view .LVU94
+  45:Drivers/STM32/stm32_spi_arbiter.cpp ****         // This can happen if the DMA or interrupt priorities are not configured properly.
+ 383              		.loc 1 45 5 view .LVU95
+  45:Drivers/STM32/stm32_spi_arbiter.cpp ****         // This can happen if the DMA or interrupt priorities are not configured properly.
+ 384              		.loc 1 45 9 is_stmt 0 view .LVU96
+ 385 0026 2068     		ldr	r0, [r4]
+  45:Drivers/STM32/stm32_spi_arbiter.cpp ****         // This can happen if the DMA or interrupt priorities are not configured properly.
+ 386              		.loc 1 45 16 view .LVU97
+ 387 0028 836C     		ldr	r3, [r0, #72]
+  45:Drivers/STM32/stm32_spi_arbiter.cpp ****         // This can happen if the DMA or interrupt priorities are not configured properly.
+ 388              		.loc 1 45 24 view .LVU98
+ 389 002a 93F83530 		ldrb	r3, [r3, #53]	@ zero_extendqisi2
+ 390 002e DBB2     		uxtb	r3, r3
+  45:Drivers/STM32/stm32_spi_arbiter.cpp ****         // This can happen if the DMA or interrupt priorities are not configured properly.
+ 391              		.loc 1 45 53 view .LVU99
+ 392 0030 012B     		cmp	r3, #1
+ 393 0032 3CD1     		bne	.L41
+  45:Drivers/STM32/stm32_spi_arbiter.cpp ****         // This can happen if the DMA or interrupt priorities are not configured properly.
+ 394              		.loc 1 45 63 discriminator 2 view .LVU100
+ 395 0034 C36C     		ldr	r3, [r0, #76]
+  45:Drivers/STM32/stm32_spi_arbiter.cpp ****         // This can happen if the DMA or interrupt priorities are not configured properly.
+ 396              		.loc 1 45 71 discriminator 2 view .LVU101
+ 397 0036 93F83540 		ldrb	r4, [r3, #53]	@ zero_extendqisi2
+ 398              	.LVL37:
+  45:Drivers/STM32/stm32_spi_arbiter.cpp ****         // This can happen if the DMA or interrupt priorities are not configured properly.
+ 399              		.loc 1 45 71 discriminator 2 view .LVU102
+ 400 003a E4B2     		uxtb	r4, r4
+  45:Drivers/STM32/stm32_spi_arbiter.cpp ****         // This can happen if the DMA or interrupt priorities are not configured properly.
+ 401              		.loc 1 45 53 discriminator 2 view .LVU103
+ 402 003c 012C     		cmp	r4, #1
+ 403 003e 20D0     		beq	.L45
+  47:Drivers/STM32/stm32_spi_arbiter.cpp ****     } else if (task.tx_buf && task.rx_buf) {
+ 404              		.loc 1 47 16 view .LVU104
+ 405 0040 0224     		movs	r4, #2
+ 406              	.LVL38:
+ 407              	.L35:
+  56:Drivers/STM32/stm32_spi_arbiter.cpp ****         task.ncs_gpio.write(true);
+ 408              		.loc 1 56 5 is_stmt 1 view .LVU105
+ 409 0042 002C     		cmp	r4, #0
+ 410 0044 3AD0     		beq	.L38
+ 411 0046 33E0     		b	.L34
+ 412              	.LVL39:
+ 413              	.L44:
+  36:Drivers/STM32/stm32_spi_arbiter.cpp ****         hspi_->Init = task.config;
+ 414              		.loc 1 36 9 view .LVU106
+  36:Drivers/STM32/stm32_spi_arbiter.cpp ****         hspi_->Init = task.config;
+ 415              		.loc 1 36 23 is_stmt 0 view .LVU107
+ 416 0048 3046     		mov	r0, r6
+ 417 004a FFF7FEFF 		bl	HAL_SPI_DeInit
+ 418              	.LVL40:
+  37:Drivers/STM32/stm32_spi_arbiter.cpp ****         HAL_SPI_Init(hspi_);
+ 419              		.loc 1 37 9 is_stmt 1 view .LVU108
+ 420 004e 2368     		ldr	r3, [r4]
+ARM GAS  /tmp/ccSTr1Mh.s 			page 12
+
+
+  37:Drivers/STM32/stm32_spi_arbiter.cpp ****         HAL_SPI_Init(hspi_);
+ 421              		.loc 1 37 21 is_stmt 0 view .LVU109
+ 422 0050 03F1040C 		add	ip, r3, #4
+ 423 0054 AE46     		mov	lr, r5
+ 424 0056 BEE80F00 		ldmia	lr!, {r0, r1, r2, r3}
+ 425 005a ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 426 005e BEE80F00 		ldmia	lr!, {r0, r1, r2, r3}
+ 427 0062 ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
+ 428 0066 9EE80700 		ldm	lr, {r0, r1, r2}
+ 429 006a 8CE80700 		stm	ip, {r0, r1, r2}
+  38:Drivers/STM32/stm32_spi_arbiter.cpp ****         __HAL_SPI_ENABLE(hspi_);
+ 430              		.loc 1 38 9 is_stmt 1 view .LVU110
+  38:Drivers/STM32/stm32_spi_arbiter.cpp ****         __HAL_SPI_ENABLE(hspi_);
+ 431              		.loc 1 38 21 is_stmt 0 view .LVU111
+ 432 006e 2068     		ldr	r0, [r4]
+ 433 0070 FFF7FEFF 		bl	HAL_SPI_Init
+ 434              	.LVL41:
+  39:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+ 435              		.loc 1 39 9 is_stmt 1 view .LVU112
+ 436 0074 2368     		ldr	r3, [r4]
+ 437 0076 1A68     		ldr	r2, [r3]
+ 438 0078 1368     		ldr	r3, [r2]
+ 439 007a 43F04003 		orr	r3, r3, #64
+ 440 007e 1360     		str	r3, [r2]
+ 441 0080 C9E7     		b	.L32
+ 442              	.LVL42:
+ 443              	.L45:
+  48:Drivers/STM32/stm32_spi_arbiter.cpp ****         status = HAL_SPI_TransmitReceive_DMA(hspi_, (uint8_t*)task.tx_buf, task.rx_buf, task.length
+ 444              		.loc 1 48 12 view .LVU113
+  48:Drivers/STM32/stm32_spi_arbiter.cpp ****         status = HAL_SPI_TransmitReceive_DMA(hspi_, (uint8_t*)task.tx_buf, task.rx_buf, task.length
+ 445              		.loc 1 48 21 is_stmt 0 view .LVU114
+ 446 0082 696B     		ldr	r1, [r5, #52]
+  48:Drivers/STM32/stm32_spi_arbiter.cpp ****         status = HAL_SPI_TransmitReceive_DMA(hspi_, (uint8_t*)task.tx_buf, task.rx_buf, task.length
+ 447              		.loc 1 48 12 view .LVU115
+ 448 0084 31B1     		cbz	r1, .L36
+  48:Drivers/STM32/stm32_spi_arbiter.cpp ****         status = HAL_SPI_TransmitReceive_DMA(hspi_, (uint8_t*)task.tx_buf, task.rx_buf, task.length
+ 449              		.loc 1 48 36 discriminator 1 view .LVU116
+ 450 0086 AA6B     		ldr	r2, [r5, #56]
+  48:Drivers/STM32/stm32_spi_arbiter.cpp ****         status = HAL_SPI_TransmitReceive_DMA(hspi_, (uint8_t*)task.tx_buf, task.rx_buf, task.length
+ 451              		.loc 1 48 28 discriminator 1 view .LVU117
+ 452 0088 22B1     		cbz	r2, .L36
+  49:Drivers/STM32/stm32_spi_arbiter.cpp ****     } else if (task.tx_buf) {
+ 453              		.loc 1 49 9 is_stmt 1 view .LVU118
+  49:Drivers/STM32/stm32_spi_arbiter.cpp ****     } else if (task.tx_buf) {
+ 454              		.loc 1 49 45 is_stmt 0 view .LVU119
+ 455 008a AB8F     		ldrh	r3, [r5, #60]
+ 456 008c FFF7FEFF 		bl	HAL_SPI_TransmitReceive_DMA
+ 457              	.LVL43:
+ 458 0090 0446     		mov	r4, r0
+ 459              	.LVL44:
+  49:Drivers/STM32/stm32_spi_arbiter.cpp ****     } else if (task.tx_buf) {
+ 460              		.loc 1 49 16 view .LVU120
+ 461 0092 D6E7     		b	.L35
+ 462              	.LVL45:
+ 463              	.L36:
+  50:Drivers/STM32/stm32_spi_arbiter.cpp ****         status = HAL_SPI_Transmit_DMA(hspi_, (uint8_t*)task.tx_buf, task.length);
+ 464              		.loc 1 50 12 is_stmt 1 view .LVU121
+ARM GAS  /tmp/ccSTr1Mh.s 			page 13
+
+
+ 465 0094 21B1     		cbz	r1, .L37
+  51:Drivers/STM32/stm32_spi_arbiter.cpp ****     } else if (task.rx_buf) {
+ 466              		.loc 1 51 9 view .LVU122
+  51:Drivers/STM32/stm32_spi_arbiter.cpp ****     } else if (task.rx_buf) {
+ 467              		.loc 1 51 38 is_stmt 0 view .LVU123
+ 468 0096 AA8F     		ldrh	r2, [r5, #60]
+ 469 0098 FFF7FEFF 		bl	HAL_SPI_Transmit_DMA
+ 470              	.LVL46:
+ 471 009c 0446     		mov	r4, r0
+ 472              	.LVL47:
+  51:Drivers/STM32/stm32_spi_arbiter.cpp ****     } else if (task.rx_buf) {
+ 473              		.loc 1 51 38 view .LVU124
+ 474 009e D0E7     		b	.L35
+ 475              	.LVL48:
+ 476              	.L37:
+  52:Drivers/STM32/stm32_spi_arbiter.cpp ****         status = HAL_SPI_Receive_DMA(hspi_, task.rx_buf, task.length);
+ 477              		.loc 1 52 12 is_stmt 1 view .LVU125
+  52:Drivers/STM32/stm32_spi_arbiter.cpp ****         status = HAL_SPI_Receive_DMA(hspi_, task.rx_buf, task.length);
+ 478              		.loc 1 52 21 is_stmt 0 view .LVU126
+ 479 00a0 A96B     		ldr	r1, [r5, #56]
+  52:Drivers/STM32/stm32_spi_arbiter.cpp ****         status = HAL_SPI_Receive_DMA(hspi_, task.rx_buf, task.length);
+ 480              		.loc 1 52 12 view .LVU127
+ 481 00a2 29B1     		cbz	r1, .L34
+  53:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+ 482              		.loc 1 53 9 is_stmt 1 view .LVU128
+  53:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+ 483              		.loc 1 53 37 is_stmt 0 view .LVU129
+ 484 00a4 AA8F     		ldrh	r2, [r5, #60]
+ 485 00a6 FFF7FEFF 		bl	HAL_SPI_Receive_DMA
+ 486              	.LVL49:
+ 487 00aa 0446     		mov	r4, r0
+ 488              	.LVL50:
+  53:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+ 489              		.loc 1 53 37 view .LVU130
+ 490 00ac C9E7     		b	.L35
+ 491              	.LVL51:
+ 492              	.L41:
+  47:Drivers/STM32/stm32_spi_arbiter.cpp ****     } else if (task.tx_buf && task.rx_buf) {
+ 493              		.loc 1 47 16 view .LVU131
+ 494 00ae 0224     		movs	r4, #2
+ 495              	.LVL52:
+ 496              	.L34:
+  57:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+ 497              		.loc 1 57 9 is_stmt 1 view .LVU132
+ 498              	.LBB68:
+ 499              	.LBI68:
+  24:Drivers/STM32/stm32_gpio.hpp ****         if (port_) {
+ 500              		.loc 2 24 10 view .LVU133
+ 501              	.LBB69:
+  25:Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 502              		.loc 2 25 9 view .LVU134
+  25:Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 503              		.loc 2 25 13 is_stmt 0 view .LVU135
+ 504 00b0 E86A     		ldr	r0, [r5, #44]
+  25:Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 505              		.loc 2 25 9 view .LVU136
+ 506 00b2 18B1     		cbz	r0, .L38
+ARM GAS  /tmp/ccSTr1Mh.s 			page 14
+
+
+ 507              		.loc 2 26 13 is_stmt 1 view .LVU137
+ 508              		.loc 2 26 30 is_stmt 0 view .LVU138
+ 509 00b4 0122     		movs	r2, #1
+ 510 00b6 B188     		ldrh	r1, [r6, #4]
+ 511 00b8 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 512              	.LVL53:
+ 513              	.L38:
+ 514              		.loc 2 26 30 view .LVU139
+ 515              	.LBE69:
+ 516              	.LBE68:
+  60:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 517              		.loc 1 60 5 is_stmt 1 view .LVU140
+  60:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 518              		.loc 1 60 22 is_stmt 0 view .LVU141
+ 519 00bc B4FA84F0 		clz	r0, r4
+ 520 00c0 4009     		lsrs	r0, r0, #5
+ 521              	.LVL54:
+ 522              	.L31:
+  61:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 523              		.loc 1 61 1 view .LVU142
+ 524 00c2 70BD     		pop	{r4, r5, r6, pc}
+ 525              	.LVL55:
+ 526              	.L40:
+  31:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+ 527              		.loc 1 31 16 view .LVU143
+ 528 00c4 0020     		movs	r0, #0
+ 529              	.LVL56:
+  31:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+ 530              		.loc 1 31 16 view .LVU144
+ 531 00c6 FCE7     		b	.L31
+ 532              		.cfi_endproc
+ 533              	.LFE2947:
+ 534              		.fnend
+ 536              		.section	.text._ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE,"ax",%progbits
+ 537              		.align	1
+ 538              		.global	_ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE
+ 539              		.syntax unified
+ 540              		.thumb
+ 541              		.thumb_func
+ 543              	_ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE:
+ 544              		.fnstart
+ 545              	.LVL57:
+ 546              	.LFB2948:
+  63:Drivers/STM32/stm32_spi_arbiter.cpp ****     task->next = nullptr;
+ 547              		.loc 1 63 53 is_stmt 1 view -0
+ 548              		.cfi_startproc
+ 549              		@ args = 0, pretend = 0, frame = 8
+ 550              		@ frame_needed = 0, uses_anonymous_args = 0
+  63:Drivers/STM32/stm32_spi_arbiter.cpp ****     task->next = nullptr;
+ 551              		.loc 1 63 53 is_stmt 0 view .LVU146
+ 552 0000 30B5     		push	{r4, r5, lr}
+ 553              		.save {r4, r5, lr}
+ 554              	.LCFI1:
+ 555              		.cfi_def_cfa_offset 12
+ 556              		.cfi_offset 4, -12
+ 557              		.cfi_offset 5, -8
+ 558              		.cfi_offset 14, -4
+ARM GAS  /tmp/ccSTr1Mh.s 			page 15
+
+
+ 559              		.pad #12
+ 560 0002 83B0     		sub	sp, sp, #12
+ 561              	.LCFI2:
+ 562              		.cfi_def_cfa_offset 24
+ 563 0004 0C46     		mov	r4, r1
+  64:Drivers/STM32/stm32_spi_arbiter.cpp ****     
+ 564              		.loc 1 64 5 is_stmt 1 view .LVU147
+  64:Drivers/STM32/stm32_spi_arbiter.cpp ****     
+ 565              		.loc 1 64 16 is_stmt 0 view .LVU148
+ 566 0006 0023     		movs	r3, #0
+ 567 0008 CB64     		str	r3, [r1, #76]
+  68:Drivers/STM32/stm32_spi_arbiter.cpp ****     CRITICAL_SECTION() {
+ 568              		.loc 1 68 5 is_stmt 1 view .LVU149
+  68:Drivers/STM32/stm32_spi_arbiter.cpp ****     CRITICAL_SECTION() {
+ 569              		.loc 1 68 15 is_stmt 0 view .LVU150
+ 570 000a 011D     		adds	r1, r0, #4
+ 571              	.LVL58:
+  69:Drivers/STM32/stm32_spi_arbiter.cpp ****         while (*ptr)
+ 572              		.loc 1 69 5 is_stmt 1 view .LVU151
+ 573              	.LBB70:
+ 574              	.LBB71:
+ 575              	.LBI71:
+ 576              		.file 3 "Drivers/STM32/stm32_system.h"
+   1:Drivers/STM32/stm32_system.h **** #ifndef __STM32_SYSTEM_H
+   2:Drivers/STM32/stm32_system.h **** #define __STM32_SYSTEM_H
+   3:Drivers/STM32/stm32_system.h **** 
+   4:Drivers/STM32/stm32_system.h **** #if defined(STM32F405xx)
+   5:Drivers/STM32/stm32_system.h **** #include <stm32f405xx.h>
+   6:Drivers/STM32/stm32_system.h **** #elif defined(STM32F722xx)
+   7:Drivers/STM32/stm32_system.h **** #include <stm32f722xx.h>
+   8:Drivers/STM32/stm32_system.h **** #else
+   9:Drivers/STM32/stm32_system.h **** #error "unknown STM32 microcontroller"
+  10:Drivers/STM32/stm32_system.h **** #endif
+  11:Drivers/STM32/stm32_system.h **** 
+  12:Drivers/STM32/stm32_system.h **** // C/C++ definitions
+  13:Drivers/STM32/stm32_system.h **** 
+  14:Drivers/STM32/stm32_system.h **** #ifdef __cplusplus
+  15:Drivers/STM32/stm32_system.h **** extern "C" {
+  16:Drivers/STM32/stm32_system.h **** #endif
+  17:Drivers/STM32/stm32_system.h **** 
+  18:Drivers/STM32/stm32_system.h **** // Uncomment the following line to sacrifice 1kB of RAM for the ability to
+  19:Drivers/STM32/stm32_system.h **** // monitor the number of times each interrupt fires.
+  20:Drivers/STM32/stm32_system.h **** //#define ENABLE_IRQ_COUNTER
+  21:Drivers/STM32/stm32_system.h **** 
+  22:Drivers/STM32/stm32_system.h **** #ifdef ENABLE_IRQ_COUNTER
+  23:Drivers/STM32/stm32_system.h **** extern uint32_t irq_counters[];
+  24:Drivers/STM32/stm32_system.h **** #define COUNT_IRQ(irqn) (++irq_counters[irqn + 14])
+  25:Drivers/STM32/stm32_system.h **** #define GET_IRQ_COUNTER(irqn) irq_counters[irqn + 14]
+  26:Drivers/STM32/stm32_system.h **** #else
+  27:Drivers/STM32/stm32_system.h **** #define COUNT_IRQ(irqn) ((void)0)
+  28:Drivers/STM32/stm32_system.h **** #define GET_IRQ_COUNTER(irqn) 0
+  29:Drivers/STM32/stm32_system.h **** #endif
+  30:Drivers/STM32/stm32_system.h **** 
+  31:Drivers/STM32/stm32_system.h **** static inline uint32_t cpu_enter_critical() {
+  32:Drivers/STM32/stm32_system.h ****     uint32_t primask = __get_PRIMASK();
+  33:Drivers/STM32/stm32_system.h ****     __disable_irq();
+  34:Drivers/STM32/stm32_system.h ****     return primask;
+ARM GAS  /tmp/ccSTr1Mh.s 			page 16
+
+
+  35:Drivers/STM32/stm32_system.h **** }
+  36:Drivers/STM32/stm32_system.h **** 
+  37:Drivers/STM32/stm32_system.h **** static inline void cpu_exit_critical(uint32_t priority_mask) {
+  38:Drivers/STM32/stm32_system.h ****     __set_PRIMASK(priority_mask);
+  39:Drivers/STM32/stm32_system.h **** }
+  40:Drivers/STM32/stm32_system.h **** 
+  41:Drivers/STM32/stm32_system.h **** #ifdef __cplusplus
+  42:Drivers/STM32/stm32_system.h **** }
+  43:Drivers/STM32/stm32_system.h **** #endif
+  44:Drivers/STM32/stm32_system.h **** 
+  45:Drivers/STM32/stm32_system.h **** 
+  46:Drivers/STM32/stm32_system.h **** // C++ only definitions
+  47:Drivers/STM32/stm32_system.h **** 
+  48:Drivers/STM32/stm32_system.h **** #ifdef __cplusplus
+  49:Drivers/STM32/stm32_system.h **** 
+  50:Drivers/STM32/stm32_system.h **** struct CriticalSectionContext {
+  51:Drivers/STM32/stm32_system.h ****     CriticalSectionContext(const CriticalSectionContext&) = delete;
+  52:Drivers/STM32/stm32_system.h ****     CriticalSectionContext(const CriticalSectionContext&&) = delete;
+  53:Drivers/STM32/stm32_system.h ****     void operator=(const CriticalSectionContext&) = delete;
+  54:Drivers/STM32/stm32_system.h ****     void operator=(const CriticalSectionContext&&) = delete;
+  55:Drivers/STM32/stm32_system.h ****     operator bool() { return true; };
+  56:Drivers/STM32/stm32_system.h ****     CriticalSectionContext() : mask_(cpu_enter_critical()) {}
+ 577              		.loc 3 56 5 view .LVU152
+ 578              	.LBB72:
+ 579              	.LBB73:
+ 580              	.LBB74:
+ 581              	.LBI74:
+  31:Drivers/STM32/stm32_system.h ****     uint32_t primask = __get_PRIMASK();
+ 582              		.loc 3 31 24 view .LVU153
+ 583              	.LBB75:
+  32:Drivers/STM32/stm32_system.h ****     __disable_irq();
+ 584              		.loc 3 32 5 view .LVU154
+ 585              	.LBB76:
+ 586              	.LBI76:
+ 587              		.file 4 "ThirdParty/CMSIS/Include/cmsis_gcc.h"
+   1:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**************************************************************************//**
+   2:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * @version  V5.0.4
+   5:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * @date     09. April 2018
+   6:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  ******************************************************************************/
+   7:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /*
+   8:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * Copyright (c) 2009-2018 Arm Limited. All rights reserved.
+   9:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  *
+  10:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  *
+  12:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  *
+  16:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  *
+  18:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * limitations under the License.
+ARM GAS  /tmp/ccSTr1Mh.s 			page 17
+
+
+  23:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+  24:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+  25:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+  28:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /* ignore some GCC warnings */
+  29:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic push
+  30:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  31:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  33:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+  34:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef __has_builtin
+  36:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  38:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+  39:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ASM
+  41:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  43:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __INLINE
+  44:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  46:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  48:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  49:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_FORCEINLINE                 
+  50:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  51:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif                                           
+  52:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __NO_RETURN
+  53:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
+  54:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  55:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __USED
+  56:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  57:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  58:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __WEAK
+  59:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  60:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  61:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED
+  62:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  63:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  64:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  65:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  66:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  67:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  68:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  69:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  70:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  71:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  72:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  73:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  74:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  75:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  76:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  77:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  78:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  79:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ARM GAS  /tmp/ccSTr1Mh.s 			page 18
+
+
+  80:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  81:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  82:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  83:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  84:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  85:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  86:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  87:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  88:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  89:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  90:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  91:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  92:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  93:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  94:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  95:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  96:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  97:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  98:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  99:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 100:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+ 101:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 102:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 103:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 104:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ 105:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 106:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 107:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 108:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 109:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 110:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 111:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 112:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 113:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 114:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 115:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 116:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 117:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 118:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 119:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 120:ThirdParty/CMSIS/Include/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 121:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   @{
+ 122:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 123:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 124:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 125:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 126:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 127:ThirdParty/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 128:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 129:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_irq(void)
+ 130:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 131:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 132:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 133:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 134:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 135:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 136:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+ARM GAS  /tmp/ccSTr1Mh.s 			page 19
+
+
+ 137:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+ 138:ThirdParty/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 139:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 140:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_irq(void)
+ 141:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 142:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+ 143:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 144:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 145:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 146:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 147:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Control Register
+ 148:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the Control Register.
+ 149:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               Control Register value
+ 150:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 151:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_CONTROL(void)
+ 152:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 153:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 154:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 155:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+ 156:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 157:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 158:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 159:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 160:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 161:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 162:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Control Register (non-secure)
+ 163:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the non-secure Control Register when in secure mode.
+ 164:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               non-secure Control Register value
+ 165:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 166:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
+ 167:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 168:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 169:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 170:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control_ns" : "=r" (result) );
+ 171:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 172:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 173:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 174:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 175:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 176:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 177:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Control Register
+ 178:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Writes the given value to the Control Register.
+ 179:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 180:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 181:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_CONTROL(uint32_t control)
+ 182:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 183:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR control, %0" : : "r" (control) : "memory");
+ 184:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 185:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 186:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 187:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 188:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 189:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Control Register (non-secure)
+ 190:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Writes the given value to the non-secure Control Register when in secure state.
+ 191:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 192:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 193:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_CONTROL_NS(uint32_t control)
+ARM GAS  /tmp/ccSTr1Mh.s 			page 20
+
+
+ 194:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 195:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR control_ns, %0" : : "r" (control) : "memory");
+ 196:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 197:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 198:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 199:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 200:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 201:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get IPSR Register
+ 202:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the IPSR Register.
+ 203:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               IPSR Register value
+ 204:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 205:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_IPSR(void)
+ 206:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 207:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 208:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 209:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
+ 210:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 211:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 212:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 213:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 214:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 215:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get APSR Register
+ 216:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the APSR Register.
+ 217:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               APSR Register value
+ 218:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 219:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_APSR(void)
+ 220:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 221:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 222:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 223:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
+ 224:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 225:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 226:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 227:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 228:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 229:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get xPSR Register
+ 230:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the xPSR Register.
+ 231:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               xPSR Register value
+ 232:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 233:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_xPSR(void)
+ 234:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 235:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 236:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 237:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, xpsr" : "=r" (result) );
+ 238:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 239:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 240:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 241:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 242:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 243:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Process Stack Pointer
+ 244:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer (PSP).
+ 245:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               PSP Register value
+ 246:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 247:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PSP(void)
+ 248:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 249:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 250:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ARM GAS  /tmp/ccSTr1Mh.s 			page 21
+
+
+ 251:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp"  : "=r" (result) );
+ 252:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 253:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 254:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 255:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 256:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 257:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 258:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Process Stack Pointer (non-secure)
+ 259:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Process Stack Pointer (PSP) when in secure s
+ 260:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               PSP Register value
+ 261:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 262:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PSP_NS(void)
+ 263:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 264:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 265:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 266:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp_ns"  : "=r" (result) );
+ 267:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 268:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 269:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 270:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 271:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 272:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 273:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Process Stack Pointer
+ 274:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer (PSP).
+ 275:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 276:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 277:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PSP(uint32_t topOfProcStack)
+ 278:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 279:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR psp, %0" : : "r" (topOfProcStack) : );
+ 280:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 281:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 282:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 283:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 284:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 285:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Process Stack Pointer (non-secure)
+ 286:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Process Stack Pointer (PSP) when in secure sta
+ 287:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 288:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 289:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PSP_NS(uint32_t topOfProcStack)
+ 290:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 291:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR psp_ns, %0" : : "r" (topOfProcStack) : );
+ 292:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 293:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 294:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 295:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 296:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 297:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Main Stack Pointer
+ 298:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer (MSP).
+ 299:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               MSP Register value
+ 300:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 301:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_MSP(void)
+ 302:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 303:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 304:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 305:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp" : "=r" (result) );
+ 306:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 307:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ARM GAS  /tmp/ccSTr1Mh.s 			page 22
+
+
+ 308:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 309:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 310:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 311:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 312:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Main Stack Pointer (non-secure)
+ 313:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Main Stack Pointer (MSP) when in secure stat
+ 314:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               MSP Register value
+ 315:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 316:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_MSP_NS(void)
+ 317:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 318:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 319:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 320:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp_ns" : "=r" (result) );
+ 321:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 322:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 323:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 324:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 325:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 326:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 327:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Main Stack Pointer
+ 328:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer (MSP).
+ 329:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 330:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 331:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_MSP(uint32_t topOfMainStack)
+ 332:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 333:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR msp, %0" : : "r" (topOfMainStack) : );
+ 334:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 335:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 336:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 337:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 338:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 339:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Main Stack Pointer (non-secure)
+ 340:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Main Stack Pointer (MSP) when in secure state.
+ 341:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 342:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 343:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_MSP_NS(uint32_t topOfMainStack)
+ 344:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 345:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR msp_ns, %0" : : "r" (topOfMainStack) : );
+ 346:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 347:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 348:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 349:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 350:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 351:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 352:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Stack Pointer (non-secure)
+ 353:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Stack Pointer (SP) when in secure state.
+ 354:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               SP Register value
+ 355:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 356:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_SP_NS(void)
+ 357:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 358:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 359:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 360:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, sp_ns" : "=r" (result) );
+ 361:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 362:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 363:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 364:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ARM GAS  /tmp/ccSTr1Mh.s 			page 23
+
+
+ 365:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 366:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Stack Pointer (non-secure)
+ 367:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Stack Pointer (SP) when in secure state.
+ 368:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfStack  Stack Pointer value to set
+ 369:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 370:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_SP_NS(uint32_t topOfStack)
+ 371:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 372:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR sp_ns, %0" : : "r" (topOfStack) : );
+ 373:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 374:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 375:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 376:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 377:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 378:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Priority Mask
+ 379:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current state of the priority mask bit from the Priority Mask Register.
+ 380:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               Priority Mask value
+ 381:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 382:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PRIMASK(void)
+ 588              		.loc 4 382 31 view .LVU155
+ 589              	.LBB77:
+ 383:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 384:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 590              		.loc 4 384 3 view .LVU156
+ 385:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 386:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) :: "memory");
+ 591              		.loc 4 386 3 view .LVU157
+ 592              		.syntax unified
+ 593              	@ 386 "ThirdParty/CMSIS/Include/cmsis_gcc.h" 1
+ 594 000c EFF31085 		MRS r5, primask
+ 595              	@ 0 "" 2
+ 596              	.LVL59:
+ 387:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 597              		.loc 4 387 3 view .LVU158
+ 598              		.loc 4 387 3 is_stmt 0 view .LVU159
+ 599              		.thumb
+ 600              		.syntax unified
+ 601              	.LBE77:
+ 602              	.LBE76:
+  33:Drivers/STM32/stm32_system.h ****     return primask;
+ 603              		.loc 3 33 5 is_stmt 1 view .LVU160
+ 604              	.LBB78:
+ 605              	.LBI78:
+ 140:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 606              		.loc 4 140 27 view .LVU161
+ 607              	.LBB79:
+ 142:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 608              		.loc 4 142 3 view .LVU162
+ 609              		.syntax unified
+ 610              	@ 142 "ThirdParty/CMSIS/Include/cmsis_gcc.h" 1
+ 611 0010 72B6     		cpsid i
+ 612              	@ 0 "" 2
+ 613              		.thumb
+ 614              		.syntax unified
+ 615              	.LBE79:
+ 616              	.LBE78:
+  34:Drivers/STM32/stm32_system.h **** }
+ 617              		.loc 3 34 5 view .LVU163
+ARM GAS  /tmp/ccSTr1Mh.s 			page 24
+
+
+ 618              	.LBE75:
+ 619              	.LBE74:
+ 620              		.loc 3 56 58 is_stmt 0 view .LVU164
+ 621 0012 0095     		str	r5, [sp]
+ 622 0014 8DF80430 		strb	r3, [sp, #4]
+ 623              	.LVL60:
+ 624              		.loc 3 56 58 view .LVU165
+ 625              	.LBE73:
+ 626              	.LBE72:
+ 627              	.LBE71:
+ 628              	.LBE70:
+  55:Drivers/STM32/stm32_system.h ****     CriticalSectionContext() : mask_(cpu_enter_critical()) {}
+ 629              		.loc 3 55 23 is_stmt 1 view .LVU166
+  68:Drivers/STM32/stm32_spi_arbiter.cpp ****     CRITICAL_SECTION() {
+ 630              		.loc 1 68 15 is_stmt 0 view .LVU167
+ 631 0018 0A46     		mov	r2, r1
+ 632              	.LBB88:
+ 633 001a 01E0     		b	.L48
+ 634              	.LVL61:
+ 635              	.L51:
+  71:Drivers/STM32/stm32_spi_arbiter.cpp ****         *ptr = task;
+ 636              		.loc 1 71 13 is_stmt 1 view .LVU168
+  71:Drivers/STM32/stm32_spi_arbiter.cpp ****         *ptr = task;
+ 637              		.loc 1 71 17 is_stmt 0 view .LVU169
+ 638 001c 03F14C02 		add	r2, r3, #76
+ 639              	.LVL62:
+ 640              	.L48:
+  70:Drivers/STM32/stm32_spi_arbiter.cpp ****             ptr = &(*ptr)->next;
+ 641              		.loc 1 70 9 is_stmt 1 view .LVU170
+  70:Drivers/STM32/stm32_spi_arbiter.cpp ****             ptr = &(*ptr)->next;
+ 642              		.loc 1 70 16 view .LVU171
+ 643 0020 1368     		ldr	r3, [r2]
+ 644 0022 002B     		cmp	r3, #0
+ 645 0024 FAD1     		bne	.L51
+  72:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+ 646              		.loc 1 72 9 view .LVU172
+  72:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+ 647              		.loc 1 72 14 is_stmt 0 view .LVU173
+ 648 0026 1460     		str	r4, [r2]
+ 649              	.LVL63:
+ 650              	.LBB80:
+ 651              	.LBI80:
+  57:Drivers/STM32/stm32_system.h ****     ~CriticalSectionContext() { cpu_exit_critical(mask_); }
+ 652              		.loc 3 57 5 is_stmt 1 view .LVU174
+ 653              	.LBB81:
+ 654              		.loc 3 57 33 view .LVU175
+ 655              	.LBB82:
+ 656              	.LBI82:
+  37:Drivers/STM32/stm32_system.h ****     __set_PRIMASK(priority_mask);
+ 657              		.loc 3 37 20 view .LVU176
+ 658              	.LBE82:
+ 659              	.LBE81:
+ 660              	.LBE80:
+ 661              	.LBE88:
+  38:Drivers/STM32/stm32_system.h **** }
+ 662              		.loc 3 38 5 view .LVU177
+ 663              	.LBB89:
+ARM GAS  /tmp/ccSTr1Mh.s 			page 25
+
+
+ 664              	.LBB87:
+ 665              	.LBB86:
+ 666              	.LBB85:
+ 667              	.LBB83:
+ 668              	.LBI83:
+ 388:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 389:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 390:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 391:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 392:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 393:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Priority Mask (non-secure)
+ 394:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current state of the non-secure priority mask bit from the Priority Mask Reg
+ 395:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               Priority Mask value
+ 396:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 397:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PRIMASK_NS(void)
+ 398:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 399:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 400:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 401:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask_ns" : "=r" (result) :: "memory");
+ 402:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 403:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 404:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 405:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 406:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 407:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 408:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Priority Mask
+ 409:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Priority Mask Register.
+ 410:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 411:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 412:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PRIMASK(uint32_t priMask)
+ 669              		.loc 4 412 27 view .LVU178
+ 670              	.LBB84:
+ 413:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 414:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
+ 671              		.loc 4 414 3 view .LVU179
+ 672              		.syntax unified
+ 673              	@ 414 "ThirdParty/CMSIS/Include/cmsis_gcc.h" 1
+ 674 0028 85F31088 		MSR primask, r5
+ 675              	@ 0 "" 2
+ 676              	.LVL64:
+ 677              		.loc 4 414 3 is_stmt 0 view .LVU180
+ 678              		.thumb
+ 679              		.syntax unified
+ 680              	.LBE84:
+ 681              	.LBE83:
+ 682              	.LBE85:
+ 683              	.LBE86:
+ 684              	.LBE87:
+ 685              	.LBE89:
+  76:Drivers/STM32/stm32_spi_arbiter.cpp ****         if (!start()) {
+ 686              		.loc 1 76 5 is_stmt 1 view .LVU181
+ 687 002c 8A42     		cmp	r2, r1
+ 688 002e 01D0     		beq	.L52
+ 689              	.LVL65:
+ 690              	.L46:
+  83:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 691              		.loc 1 83 1 is_stmt 0 view .LVU182
+ARM GAS  /tmp/ccSTr1Mh.s 			page 26
+
+
+ 692 0030 03B0     		add	sp, sp, #12
+ 693              	.LCFI3:
+ 694              		.cfi_remember_state
+ 695              		.cfi_def_cfa_offset 12
+ 696              	.LVL66:
+  83:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 697              		.loc 1 83 1 view .LVU183
+ 698              		@ sp needed
+ 699 0032 30BD     		pop	{r4, r5, pc}
+ 700              	.LVL67:
+ 701              	.L52:
+ 702              	.LCFI4:
+ 703              		.cfi_restore_state
+  77:Drivers/STM32/stm32_spi_arbiter.cpp ****             if (task->on_complete) {
+ 704              		.loc 1 77 9 is_stmt 1 view .LVU184
+  77:Drivers/STM32/stm32_spi_arbiter.cpp ****             if (task->on_complete) {
+ 705              		.loc 1 77 19 is_stmt 0 view .LVU185
+ 706 0034 FFF7FEFF 		bl	_ZN15Stm32SpiArbiter5startEv
+ 707              	.LVL68:
+  77:Drivers/STM32/stm32_spi_arbiter.cpp ****             if (task->on_complete) {
+ 708              		.loc 1 77 9 view .LVU186
+ 709 0038 0028     		cmp	r0, #0
+ 710 003a F9D1     		bne	.L46
+  78:Drivers/STM32/stm32_spi_arbiter.cpp ****                 (*task->on_complete)(task->on_complete_ctx, false);
+ 711              		.loc 1 78 13 is_stmt 1 view .LVU187
+  78:Drivers/STM32/stm32_spi_arbiter.cpp ****                 (*task->on_complete)(task->on_complete_ctx, false);
+ 712              		.loc 1 78 23 is_stmt 0 view .LVU188
+ 713 003c 236C     		ldr	r3, [r4, #64]
+  78:Drivers/STM32/stm32_spi_arbiter.cpp ****                 (*task->on_complete)(task->on_complete_ctx, false);
+ 714              		.loc 1 78 13 view .LVU189
+ 715 003e 002B     		cmp	r3, #0
+ 716 0040 F6D0     		beq	.L46
+  79:Drivers/STM32/stm32_spi_arbiter.cpp ****             }
+ 717              		.loc 1 79 17 is_stmt 1 view .LVU190
+  79:Drivers/STM32/stm32_spi_arbiter.cpp ****             }
+ 718              		.loc 1 79 37 is_stmt 0 view .LVU191
+ 719 0042 0021     		movs	r1, #0
+ 720 0044 606C     		ldr	r0, [r4, #68]
+ 721 0046 9847     		blx	r3
+ 722              	.LVL69:
+  83:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 723              		.loc 1 83 1 view .LVU192
+ 724 0048 F2E7     		b	.L46
+ 725              		.cfi_endproc
+ 726              	.LFE2948:
+ 727              		.fnend
+ 729              		.section	.text._ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm,"ax",%progbits
+ 730              		.align	1
+ 731              		.global	_ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm
+ 732              		.syntax unified
+ 733              		.thumb
+ 734              		.thumb_func
+ 736              	_ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm:
+ 737              		.fnstart
+ 738              	.LVL70:
+ 739              	.LFB2949:
+  86:Drivers/STM32/stm32_spi_arbiter.cpp ****     volatile uint8_t result = 0xff;
+ARM GAS  /tmp/ccSTr1Mh.s 			page 27
+
+
+ 740              		.loc 1 86 152 is_stmt 1 view -0
+ 741              		.cfi_startproc
+ 742              		@ args = 72, pretend = 16, frame = 88
+ 743              		@ frame_needed = 0, uses_anonymous_args = 0
+  86:Drivers/STM32/stm32_spi_arbiter.cpp ****     volatile uint8_t result = 0xff;
+ 744              		.loc 1 86 152 is_stmt 0 view .LVU194
+ 745              		.pad #16
+ 746 0000 84B0     		sub	sp, sp, #16
+ 747              	.LCFI5:
+ 748              		.cfi_def_cfa_offset 16
+ 749 0002 30B5     		push	{r4, r5, lr}
+ 750              		.save {r4, r5, lr}
+ 751              	.LCFI6:
+ 752              		.cfi_def_cfa_offset 28
+ 753              		.cfi_offset 4, -28
+ 754              		.cfi_offset 5, -24
+ 755              		.cfi_offset 14, -20
+ 756              		.pad #92
+ 757 0004 97B0     		sub	sp, sp, #92
+ 758              	.LCFI7:
+ 759              		.cfi_def_cfa_offset 120
+ 760 0006 0546     		mov	r5, r0
+ 761 0008 1BAC     		add	r4, sp, #108
+ 762 000a 84E80E00 		stm	r4, {r1, r2, r3}
+  87:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 763              		.loc 1 87 5 is_stmt 1 view .LVU195
+  87:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 764              		.loc 1 87 22 is_stmt 0 view .LVU196
+ 765 000e FF23     		movs	r3, #255
+ 766 0010 8DF85730 		strb	r3, [sp, #87]
+  89:Drivers/STM32/stm32_spi_arbiter.cpp ****         .config = config,
+ 767              		.loc 1 89 5 is_stmt 1 view .LVU197
+  89:Drivers/STM32/stm32_spi_arbiter.cpp ****         .config = config,
+ 768              		.loc 1 89 13 is_stmt 0 view .LVU198
+ 769 0014 5022     		movs	r2, #80
+ 770 0016 0021     		movs	r1, #0
+ 771 0018 01A8     		add	r0, sp, #4
+ 772 001a FFF7FEFF 		bl	memset
+ 773              	.LVL71:
+  89:Drivers/STM32/stm32_spi_arbiter.cpp ****         .config = config,
+ 774              		.loc 1 89 13 view .LVU199
+ 775 001e 1B4B     		ldr	r3, .L58
+ 776 0020 1193     		str	r3, [sp, #68]
+  96:Drivers/STM32/stm32_spi_arbiter.cpp ****         .on_complete_ctx = (void*)&result,
+  97:Drivers/STM32/stm32_spi_arbiter.cpp ****         .is_in_use = false,
+  98:Drivers/STM32/stm32_spi_arbiter.cpp ****         .next = nullptr
+  99:Drivers/STM32/stm32_spi_arbiter.cpp ****     };
+ 777              		.loc 1 99 5 view .LVU200
+ 778 0022 0DF1040E 		add	lr, sp, #4
+ 779 0026 A446     		mov	ip, r4
+ 780 0028 BCE80F00 		ldmia	ip!, {r0, r1, r2, r3}
+ 781 002c AEE80F00 		stmia	lr!, {r0, r1, r2, r3}
+ 782 0030 BCE80F00 		ldmia	ip!, {r0, r1, r2, r3}
+ 783 0034 AEE80F00 		stmia	lr!, {r0, r1, r2, r3}
+ 784 0038 9CE80700 		ldm	ip, {r0, r1, r2}
+ 785 003c 8EE80700 		stm	lr, {r0, r1, r2}
+ 786 0040 0CAB     		add	r3, sp, #48
+ARM GAS  /tmp/ccSTr1Mh.s 			page 28
+
+
+ 787 0042 26AA     		add	r2, sp, #152
+ 788 0044 92E80300 		ldm	r2, {r0, r1}
+ 789 0048 83E80300 		stm	r3, {r0, r1}
+ 790 004c 289B     		ldr	r3, [sp, #160]
+ 791 004e 0E93     		str	r3, [sp, #56]
+ 792 0050 299B     		ldr	r3, [sp, #164]
+ 793 0052 0F93     		str	r3, [sp, #60]
+ 794 0054 2A9B     		ldr	r3, [sp, #168]
+ 795 0056 1093     		str	r3, [sp, #64]
+ 796 0058 0DF15703 		add	r3, sp, #87
+ 797 005c 1293     		str	r3, [sp, #72]
+ 100:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 101:Drivers/STM32/stm32_spi_arbiter.cpp ****     transfer_async(&task);
+ 798              		.loc 1 101 5 is_stmt 1 view .LVU201
+ 799              		.loc 1 101 19 is_stmt 0 view .LVU202
+ 800 005e 01A9     		add	r1, sp, #4
+ 801 0060 2846     		mov	r0, r5
+ 802 0062 FFF7FEFF 		bl	_ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE
+ 803              	.LVL72:
+ 804 0066 02E0     		b	.L55
+ 805              	.L57:
+ 102:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 103:Drivers/STM32/stm32_spi_arbiter.cpp ****     while (result == 0xff) {
+ 104:Drivers/STM32/stm32_spi_arbiter.cpp ****         osDelay(1); // TODO: honor timeout
+ 806              		.loc 1 104 9 is_stmt 1 view .LVU203
+ 807              		.loc 1 104 16 is_stmt 0 view .LVU204
+ 808 0068 0120     		movs	r0, #1
+ 809 006a FFF7FEFF 		bl	osDelay
+ 810              	.LVL73:
+ 811              	.L55:
+ 103:Drivers/STM32/stm32_spi_arbiter.cpp ****         osDelay(1); // TODO: honor timeout
+ 812              		.loc 1 103 5 is_stmt 1 view .LVU205
+ 103:Drivers/STM32/stm32_spi_arbiter.cpp ****         osDelay(1); // TODO: honor timeout
+ 813              		.loc 1 103 19 view .LVU206
+ 814 006e 9DF85730 		ldrb	r3, [sp, #87]	@ zero_extendqisi2
+ 815 0072 DBB2     		uxtb	r3, r3
+ 816 0074 FF2B     		cmp	r3, #255
+ 817 0076 F7D0     		beq	.L57
+ 105:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+ 106:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 107:Drivers/STM32/stm32_spi_arbiter.cpp ****     return result;
+ 818              		.loc 1 107 5 view .LVU207
+ 819              		.loc 1 107 12 is_stmt 0 view .LVU208
+ 820 0078 9DF85700 		ldrb	r0, [sp, #87]	@ zero_extendqisi2
+ 108:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 821              		.loc 1 108 1 view .LVU209
+ 822 007c 0038     		subs	r0, r0, #0
+ 823 007e 18BF     		it	ne
+ 824 0080 0120     		movne	r0, #1
+ 825 0082 17B0     		add	sp, sp, #92
+ 826              	.LCFI8:
+ 827              		.cfi_def_cfa_offset 28
+ 828              		@ sp needed
+ 829 0084 BDE83040 		pop	{r4, r5, lr}
+ 830              	.LCFI9:
+ 831              		.cfi_restore 14
+ 832              		.cfi_restore 5
+ARM GAS  /tmp/ccSTr1Mh.s 			page 29
+
+
+ 833              		.cfi_restore 4
+ 834              		.cfi_def_cfa_offset 16
+ 835              	.LVL74:
+ 836              		.loc 1 108 1 view .LVU210
+ 837 0088 04B0     		add	sp, sp, #16
+ 838              	.LCFI10:
+ 839              		.cfi_def_cfa_offset 0
+ 840 008a 7047     		bx	lr
+ 841              	.L59:
+ 842              		.align	2
+ 843              	.L58:
+ 844 008c 00000000 		.word	_ZZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjmENUlPvbE_4_FUNES5_b
+ 845              		.cfi_endproc
+ 846              	.LFE2949:
+ 847              		.fnend
+ 849              		.section	.text._ZN15Stm32SpiArbiter11on_completeEv,"ax",%progbits
+ 850              		.align	1
+ 851              		.global	_ZN15Stm32SpiArbiter11on_completeEv
+ 852              		.syntax unified
+ 853              		.thumb
+ 854              		.thumb_func
+ 856              	_ZN15Stm32SpiArbiter11on_completeEv:
+ 857              		.fnstart
+ 858              	.LVL75:
+ 859              	.LFB2953:
+ 109:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 110:Drivers/STM32/stm32_spi_arbiter.cpp **** void Stm32SpiArbiter::on_complete() {
+ 860              		.loc 1 110 37 is_stmt 1 view -0
+ 861              		.cfi_startproc
+ 862              		@ args = 0, pretend = 0, frame = 8
+ 863              		@ frame_needed = 0, uses_anonymous_args = 0
+ 111:Drivers/STM32/stm32_spi_arbiter.cpp ****     if (!task_list_) {
+ 864              		.loc 1 111 5 view .LVU212
+ 865              		.loc 1 111 10 is_stmt 0 view .LVU213
+ 866 0000 4368     		ldr	r3, [r0, #4]
+ 867              		.loc 1 111 5 view .LVU214
+ 868 0002 03B3     		cbz	r3, .L65
+ 110:Drivers/STM32/stm32_spi_arbiter.cpp ****     if (!task_list_) {
+ 869              		.loc 1 110 37 view .LVU215
+ 870 0004 10B5     		push	{r4, lr}
+ 871              		.save {r4, lr}
+ 872              	.LCFI11:
+ 873              		.cfi_def_cfa_offset 8
+ 874              		.cfi_offset 4, -8
+ 875              		.cfi_offset 14, -4
+ 876              		.pad #8
+ 877 0006 82B0     		sub	sp, sp, #8
+ 878              	.LCFI12:
+ 879              		.cfi_def_cfa_offset 16
+ 880 0008 0446     		mov	r4, r0
+ 112:Drivers/STM32/stm32_spi_arbiter.cpp ****         return; // this should not happen
+ 113:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+ 114:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 115:Drivers/STM32/stm32_spi_arbiter.cpp ****     // Wrap up transfer
+ 116:Drivers/STM32/stm32_spi_arbiter.cpp ****     task_list_->ncs_gpio.write(true);
+ 881              		.loc 1 116 5 is_stmt 1 view .LVU216
+ 882              	.LVL76:
+ARM GAS  /tmp/ccSTr1Mh.s 			page 30
+
+
+ 883              	.LBB107:
+ 884              	.LBI107:
+  24:Drivers/STM32/stm32_gpio.hpp ****         if (port_) {
+ 885              		.loc 2 24 10 view .LVU217
+ 886              	.LBB108:
+  25:Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 887              		.loc 2 25 9 view .LVU218
+  25:Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 888              		.loc 2 25 13 is_stmt 0 view .LVU219
+ 889 000a D86A     		ldr	r0, [r3, #44]
+ 890              	.LVL77:
+  25:Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+ 891              		.loc 2 25 9 view .LVU220
+ 892 000c 18B1     		cbz	r0, .L62
+ 893              		.loc 2 26 13 is_stmt 1 view .LVU221
+ 894              		.loc 2 26 30 is_stmt 0 view .LVU222
+ 895 000e 0122     		movs	r2, #1
+ 896 0010 198E     		ldrh	r1, [r3, #48]
+ 897 0012 FFF7FEFF 		bl	HAL_GPIO_WritePin
+ 898              	.LVL78:
+ 899              	.L62:
+ 900              		.loc 2 26 30 view .LVU223
+ 901              	.LBE108:
+ 902              	.LBE107:
+ 117:Drivers/STM32/stm32_spi_arbiter.cpp ****     if (task_list_->on_complete) {
+ 903              		.loc 1 117 5 is_stmt 1 view .LVU224
+ 904              		.loc 1 117 9 is_stmt 0 view .LVU225
+ 905 0016 6268     		ldr	r2, [r4, #4]
+ 906              		.loc 1 117 21 view .LVU226
+ 907 0018 136C     		ldr	r3, [r2, #64]
+ 908              		.loc 1 117 5 view .LVU227
+ 909 001a 13B1     		cbz	r3, .L63
+ 118:Drivers/STM32/stm32_spi_arbiter.cpp ****         (*task_list_->on_complete)(task_list_->on_complete_ctx, true);
+ 910              		.loc 1 118 9 is_stmt 1 view .LVU228
+ 911              		.loc 1 118 35 is_stmt 0 view .LVU229
+ 912 001c 0121     		movs	r1, #1
+ 913 001e 506C     		ldr	r0, [r2, #68]
+ 914 0020 9847     		blx	r3
+ 915              	.LVL79:
+ 916              	.L63:
+ 119:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+ 120:Drivers/STM32/stm32_spi_arbiter.cpp **** 
+ 121:Drivers/STM32/stm32_spi_arbiter.cpp ****     // Start next task if any
+ 122:Drivers/STM32/stm32_spi_arbiter.cpp ****     SpiTask* next = nullptr;
+ 917              		.loc 1 122 5 is_stmt 1 view .LVU230
+ 123:Drivers/STM32/stm32_spi_arbiter.cpp ****     CRITICAL_SECTION() {
+ 918              		.loc 1 123 5 view .LVU231
+ 919              	.LBB109:
+ 920              	.LBB110:
+ 921              	.LBI110:
+  56:Drivers/STM32/stm32_system.h ****     ~CriticalSectionContext() { cpu_exit_critical(mask_); }
+ 922              		.loc 3 56 5 view .LVU232
+ 923              	.LBB111:
+ 924              	.LBB112:
+ 925              	.LBB113:
+ 926              	.LBI113:
+  31:Drivers/STM32/stm32_system.h ****     uint32_t primask = __get_PRIMASK();
+ARM GAS  /tmp/ccSTr1Mh.s 			page 31
+
+
+ 927              		.loc 3 31 24 view .LVU233
+ 928              	.LBB114:
+  32:Drivers/STM32/stm32_system.h ****     __disable_irq();
+ 929              		.loc 3 32 5 view .LVU234
+ 930              	.LBB115:
+ 931              	.LBI115:
+ 382:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 932              		.loc 4 382 31 view .LVU235
+ 933              	.LBB116:
+ 384:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 934              		.loc 4 384 3 view .LVU236
+ 386:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 935              		.loc 4 386 3 view .LVU237
+ 936              		.syntax unified
+ 937              	@ 386 "ThirdParty/CMSIS/Include/cmsis_gcc.h" 1
+ 938 0022 EFF31082 		MRS r2, primask
+ 939              	@ 0 "" 2
+ 940              	.LVL80:
+ 387:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 941              		.loc 4 387 3 view .LVU238
+ 387:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 942              		.loc 4 387 3 is_stmt 0 view .LVU239
+ 943              		.thumb
+ 944              		.syntax unified
+ 945              	.LBE116:
+ 946              	.LBE115:
+  33:Drivers/STM32/stm32_system.h ****     return primask;
+ 947              		.loc 3 33 5 is_stmt 1 view .LVU240
+ 948              	.LBB117:
+ 949              	.LBI117:
+ 140:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 950              		.loc 4 140 27 view .LVU241
+ 951              	.LBB118:
+ 142:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 952              		.loc 4 142 3 view .LVU242
+ 953              		.syntax unified
+ 954              	@ 142 "ThirdParty/CMSIS/Include/cmsis_gcc.h" 1
+ 955 0026 72B6     		cpsid i
+ 956              	@ 0 "" 2
+ 957              		.thumb
+ 958              		.syntax unified
+ 959              	.LBE118:
+ 960              	.LBE117:
+  34:Drivers/STM32/stm32_system.h **** }
+ 961              		.loc 3 34 5 view .LVU243
+ 962              	.LBE114:
+ 963              	.LBE113:
+  56:Drivers/STM32/stm32_system.h ****     ~CriticalSectionContext() { cpu_exit_critical(mask_); }
+ 964              		.loc 3 56 58 is_stmt 0 view .LVU244
+ 965 0028 0092     		str	r2, [sp]
+ 966 002a 0023     		movs	r3, #0
+ 967 002c 8DF80430 		strb	r3, [sp, #4]
+ 968              	.LVL81:
+  56:Drivers/STM32/stm32_system.h ****     ~CriticalSectionContext() { cpu_exit_critical(mask_); }
+ 969              		.loc 3 56 58 view .LVU245
+ 970              	.LBE112:
+ 971              	.LBE111:
+ARM GAS  /tmp/ccSTr1Mh.s 			page 32
+
+
+ 972              	.LBE110:
+ 973              	.LBE109:
+  55:Drivers/STM32/stm32_system.h ****     CriticalSectionContext() : mask_(cpu_enter_critical()) {}
+ 974              		.loc 3 55 23 is_stmt 1 view .LVU246
+ 975              	.LBB127:
+ 124:Drivers/STM32/stm32_spi_arbiter.cpp ****         next = task_list_ = task_list_->next;
+ 976              		.loc 1 124 9 view .LVU247
+ 977              		.loc 1 124 29 is_stmt 0 view .LVU248
+ 978 0030 6368     		ldr	r3, [r4, #4]
+ 979              		.loc 1 124 41 view .LVU249
+ 980 0032 DB6C     		ldr	r3, [r3, #76]
+ 981              		.loc 1 124 27 view .LVU250
+ 982 0034 6360     		str	r3, [r4, #4]
+ 983              	.LVL82:
+ 984              	.LBB119:
+ 985              	.LBI119:
+ 986              		.loc 3 57 5 is_stmt 1 view .LVU251
+ 987              	.LBB120:
+ 988              		.loc 3 57 33 view .LVU252
+ 989              	.LBB121:
+ 990              	.LBI121:
+  37:Drivers/STM32/stm32_system.h ****     __set_PRIMASK(priority_mask);
+ 991              		.loc 3 37 20 view .LVU253
+ 992              	.LBE121:
+ 993              	.LBE120:
+ 994              	.LBE119:
+ 995              	.LBE127:
+  38:Drivers/STM32/stm32_system.h **** }
+ 996              		.loc 3 38 5 view .LVU254
+ 997              	.LBB128:
+ 998              	.LBB126:
+ 999              	.LBB125:
+ 1000              	.LBB124:
+ 1001              	.LBB122:
+ 1002              	.LBI122:
+ 412:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 1003              		.loc 4 412 27 view .LVU255
+ 1004              	.LBB123:
+ 1005              		.loc 4 414 3 view .LVU256
+ 1006              		.syntax unified
+ 1007              	@ 414 "ThirdParty/CMSIS/Include/cmsis_gcc.h" 1
+ 1008 0036 82F31088 		MSR primask, r2
+ 1009              	@ 0 "" 2
+ 1010              	.LVL83:
+ 1011              		.loc 4 414 3 is_stmt 0 view .LVU257
+ 1012              		.thumb
+ 1013              		.syntax unified
+ 1014              	.LBE123:
+ 1015              	.LBE122:
+ 1016              	.LBE124:
+ 1017              	.LBE125:
+ 1018              	.LBE126:
+ 1019              	.LBE128:
+ 125:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+ 126:Drivers/STM32/stm32_spi_arbiter.cpp ****     if (next) {
+ 1020              		.loc 1 126 5 is_stmt 1 view .LVU258
+ 1021 003a 13B1     		cbz	r3, .L60
+ARM GAS  /tmp/ccSTr1Mh.s 			page 33
+
+
+ 127:Drivers/STM32/stm32_spi_arbiter.cpp ****         start();
+ 1022              		.loc 1 127 9 view .LVU259
+ 1023              		.loc 1 127 14 is_stmt 0 view .LVU260
+ 1024 003c 2046     		mov	r0, r4
+ 1025 003e FFF7FEFF 		bl	_ZN15Stm32SpiArbiter5startEv
+ 1026              	.LVL84:
+ 1027              	.L60:
+ 128:Drivers/STM32/stm32_spi_arbiter.cpp ****     }
+ 129:Drivers/STM32/stm32_spi_arbiter.cpp **** }
+ 1028              		.loc 1 129 1 view .LVU261
+ 1029 0042 02B0     		add	sp, sp, #8
+ 1030              	.LCFI13:
+ 1031              		.cfi_def_cfa_offset 8
+ 1032              	.LVL85:
+ 1033              		.loc 1 129 1 view .LVU262
+ 1034              		@ sp needed
+ 1035 0044 10BD     		pop	{r4, pc}
+ 1036              	.LVL86:
+ 1037              	.L65:
+ 1038              	.LCFI14:
+ 1039              		.cfi_def_cfa_offset 0
+ 1040              		.cfi_restore 4
+ 1041              		.cfi_restore 14
+ 1042              		.loc 1 129 1 view .LVU263
+ 1043 0046 7047     		bx	lr
+ 1044              		.cfi_endproc
+ 1045              	.LFE2953:
+ 1046              		.fnend
+ 1048              		.text
+ 1049              	.Letext0:
+ 1050              		.file 5 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 1051              		.file 6 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 1052              		.file 7 "ThirdParty/CMSIS/Device/ST/STM32F4xx/Include/stm32f405xx.h"
+ 1053              		.file 8 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h"
+ 1054              		.file 9 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 1055              		.file 10 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h"
+ 1056              		.file 11 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 1057              		.file 12 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_spi.h"
+ 1058              		.file 13 "Drivers/STM32/stm32_spi_arbiter.hpp"
+ 1059              		.file 14 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/type_traits"
+ 1060              		.file 15 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/debug/debug.h"
+ 1061              		.file 16 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstdlib"
+ 1062              		.file 17 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/har
+ 1063              		.file 18 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/algorithmfwd.h"
+ 1064              		.file 19 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/exception_ptr.h"
+ 1065              		.file 20 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_iterator.h"
+ 1066              		.file 21 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/functional"
+ 1067              		.file 22 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath"
+ 1068              		.file 23 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h"
+ 1069              		.file 24 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdlib.h"
+ 1070              		.file 25 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/pstl/execution_defs.h"
+ 1071              		.file 26 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/math.h"
+ 1072              		.file 27 "MotorControl/utils.hpp"
+ 1073              		.file 28 "ThirdParty/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
+ 1074              		.file 29 "<built-in>"
+ARM GAS  /tmp/ccSTr1Mh.s 			page 34
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 stm32_spi_arbiter.cpp
+     /tmp/ccSTr1Mh.s:20     .text._ZZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjmENUlPvbE_4_FUNES5_b:0000000000000000 $t
+     /tmp/ccSTr1Mh.s:25     .text._ZZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjmENUlPvbE_4_FUNES5_b:0000000000000000 _ZZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjmENUlPvbE_4_FUNES5_b
+.ARM.exidx.text._ZZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjmENUlPvbE_4_FUNES5_b:0000000000000000 $d
+     /tmp/ccSTr1Mh.s:66     .text._Z6equalsRK15SPI_InitTypeDefS1_:0000000000000000 $t
+     /tmp/ccSTr1Mh.s:72     .text._Z6equalsRK15SPI_InitTypeDefS1_:0000000000000000 _Z6equalsRK15SPI_InitTypeDefS1_
+.ARM.exidx.text._Z6equalsRK15SPI_InitTypeDefS1_:0000000000000000 $d
+     /tmp/ccSTr1Mh.s:246    .text._ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE:0000000000000000 $t
+     /tmp/ccSTr1Mh.s:252    .text._ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE:0000000000000000 _ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE
+.ARM.exidx.text._ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE:0000000000000000 $d
+     /tmp/ccSTr1Mh.s:286    .text._ZN15Stm32SpiArbiter12release_taskEPNS_7SpiTaskE:0000000000000000 $t
+     /tmp/ccSTr1Mh.s:292    .text._ZN15Stm32SpiArbiter12release_taskEPNS_7SpiTaskE:0000000000000000 _ZN15Stm32SpiArbiter12release_taskEPNS_7SpiTaskE
+.ARM.exidx.text._ZN15Stm32SpiArbiter12release_taskEPNS_7SpiTaskE:0000000000000000 $d
+     /tmp/ccSTr1Mh.s:313    .text._ZN15Stm32SpiArbiter5startEv:0000000000000000 $t
+     /tmp/ccSTr1Mh.s:319    .text._ZN15Stm32SpiArbiter5startEv:0000000000000000 _ZN15Stm32SpiArbiter5startEv
+.ARM.exidx.text._ZN15Stm32SpiArbiter5startEv:0000000000000000 $d
+     /tmp/ccSTr1Mh.s:537    .text._ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE:0000000000000000 $t
+     /tmp/ccSTr1Mh.s:543    .text._ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE:0000000000000000 _ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE
+.ARM.exidx.text._ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE:0000000000000000 $d
+     /tmp/ccSTr1Mh.s:730    .text._ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm:0000000000000000 $t
+     /tmp/ccSTr1Mh.s:736    .text._ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm:0000000000000000 _ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm
+     /tmp/ccSTr1Mh.s:844    .text._ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm:000000000000008c $d
+.ARM.exidx.text._ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm:0000000000000000 $d
+     /tmp/ccSTr1Mh.s:850    .text._ZN15Stm32SpiArbiter11on_completeEv:0000000000000000 $t
+     /tmp/ccSTr1Mh.s:856    .text._ZN15Stm32SpiArbiter11on_completeEv:0000000000000000 _ZN15Stm32SpiArbiter11on_completeEv
+.ARM.exidx.text._ZN15Stm32SpiArbiter11on_completeEv:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+HAL_GPIO_WritePin
+HAL_SPI_DeInit
+HAL_SPI_Init
+HAL_SPI_TransmitReceive_DMA
+HAL_SPI_Transmit_DMA
+HAL_SPI_Receive_DMA
+__aeabi_unwind_cpp_pr0
+memset
+osDelay

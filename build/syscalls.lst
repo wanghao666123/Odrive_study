@@ -1,0 +1,754 @@
+ARM GAS  /tmp/ccPmX7Fe.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"syscalls.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text._sbrk,"ax",%progbits
+  20              		.align	1
+  21              		.global	_sbrk
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	_sbrk:
+  27              	.LVL0:
+  28              	.LFB178:
+  29              		.file 1 "syscalls.c"
+   1:syscalls.c    **** /**
+   2:syscalls.c    ****   ******************************************************************************
+   3:syscalls.c    ****   * @file           : syscalls.c
+   4:syscalls.c    ****   * @brief          : This file implements printf functionality
+   5:syscalls.c    ****   ******************************************************************************
+   6:syscalls.c    **** */
+   7:syscalls.c    **** 
+   8:syscalls.c    **** #include <sys/unistd.h>
+   9:syscalls.c    **** #include <board.h>
+  10:syscalls.c    **** 
+  11:syscalls.c    **** 
+  12:syscalls.c    **** //int _read(int file, char *data, int len) {}
+  13:syscalls.c    **** //int _close(int file) {}
+  14:syscalls.c    **** //int _lseek(int file, int ptr, int dir) {}
+  15:syscalls.c    **** //int _fstat(int file, struct stat *st) {}
+  16:syscalls.c    **** //int _isatty(int file) {}
+  17:syscalls.c    **** 
+  18:syscalls.c    **** extern char _end; // provided by the linker script: it's end of statically allocated section, which
+  19:syscalls.c    **** extern char _heap_end_max; // provided by the linker script
+  20:syscalls.c    **** void* _end_ptr = &_end;
+  21:syscalls.c    **** void* _heap_end_max_ptr = &_heap_end_max;
+  22:syscalls.c    **** void* heap_end_ptr = 0;
+  23:syscalls.c    **** 
+  24:syscalls.c    **** /* @brief Increments the program break (aka heap end)
+  25:syscalls.c    **** *
+  26:syscalls.c    **** * This is called internally by malloc once it runs out
+  27:syscalls.c    **** * of heap space. Malloc might expect a contiguous heap,
+  28:syscalls.c    **** * so we don't call the FreeRTOS pvPortMalloc here.
+  29:syscalls.c    **** * If this function returns -1, malloc will return NULL.
+ARM GAS  /tmp/ccPmX7Fe.s 			page 2
+
+
+  30:syscalls.c    **** * Note that if this function returns NULL, malloc does not
+  31:syscalls.c    **** * consider this as an error and will return the pointer 0x8.
+  32:syscalls.c    **** *
+  33:syscalls.c    **** * You should still be careful with using malloc though,
+  34:syscalls.c    **** * as it does not guarantee thread safety.
+  35:syscalls.c    **** *
+  36:syscalls.c    **** * @return A pointer to the newly allocated block on success
+  37:syscalls.c    **** *         or -1 otherwise.
+  38:syscalls.c    **** */
+  39:syscalls.c    **** intptr_t _sbrk(size_t size) {
+  30              		.loc 1 39 29 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  40:syscalls.c    ****     intptr_t ptr;
+  35              		.loc 1 40 5 view .LVU1
+  36              	.LBB19:
+  41:syscalls.c    **** 	{
+  42:syscalls.c    ****         uint32_t mask = cpu_enter_critical();
+  37              		.loc 1 42 9 view .LVU2
+  38              	.LBB20:
+  39              	.LBI20:
+  40              		.file 2 "./Drivers/STM32/stm32_system.h"
+   1:./Drivers/STM32/stm32_system.h **** #ifndef __STM32_SYSTEM_H
+   2:./Drivers/STM32/stm32_system.h **** #define __STM32_SYSTEM_H
+   3:./Drivers/STM32/stm32_system.h **** 
+   4:./Drivers/STM32/stm32_system.h **** #if defined(STM32F405xx)
+   5:./Drivers/STM32/stm32_system.h **** #include <stm32f405xx.h>
+   6:./Drivers/STM32/stm32_system.h **** #elif defined(STM32F722xx)
+   7:./Drivers/STM32/stm32_system.h **** #include <stm32f722xx.h>
+   8:./Drivers/STM32/stm32_system.h **** #else
+   9:./Drivers/STM32/stm32_system.h **** #error "unknown STM32 microcontroller"
+  10:./Drivers/STM32/stm32_system.h **** #endif
+  11:./Drivers/STM32/stm32_system.h **** 
+  12:./Drivers/STM32/stm32_system.h **** // C/C++ definitions
+  13:./Drivers/STM32/stm32_system.h **** 
+  14:./Drivers/STM32/stm32_system.h **** #ifdef __cplusplus
+  15:./Drivers/STM32/stm32_system.h **** extern "C" {
+  16:./Drivers/STM32/stm32_system.h **** #endif
+  17:./Drivers/STM32/stm32_system.h **** 
+  18:./Drivers/STM32/stm32_system.h **** // Uncomment the following line to sacrifice 1kB of RAM for the ability to
+  19:./Drivers/STM32/stm32_system.h **** // monitor the number of times each interrupt fires.
+  20:./Drivers/STM32/stm32_system.h **** //#define ENABLE_IRQ_COUNTER
+  21:./Drivers/STM32/stm32_system.h **** 
+  22:./Drivers/STM32/stm32_system.h **** #ifdef ENABLE_IRQ_COUNTER
+  23:./Drivers/STM32/stm32_system.h **** extern uint32_t irq_counters[];
+  24:./Drivers/STM32/stm32_system.h **** #define COUNT_IRQ(irqn) (++irq_counters[irqn + 14])
+  25:./Drivers/STM32/stm32_system.h **** #define GET_IRQ_COUNTER(irqn) irq_counters[irqn + 14]
+  26:./Drivers/STM32/stm32_system.h **** #else
+  27:./Drivers/STM32/stm32_system.h **** #define COUNT_IRQ(irqn) ((void)0)
+  28:./Drivers/STM32/stm32_system.h **** #define GET_IRQ_COUNTER(irqn) 0
+  29:./Drivers/STM32/stm32_system.h **** #endif
+  30:./Drivers/STM32/stm32_system.h **** 
+  31:./Drivers/STM32/stm32_system.h **** static inline uint32_t cpu_enter_critical() {
+  41              		.loc 2 31 24 view .LVU3
+  42              	.LBB21:
+ARM GAS  /tmp/ccPmX7Fe.s 			page 3
+
+
+  32:./Drivers/STM32/stm32_system.h ****     uint32_t primask = __get_PRIMASK();
+  43              		.loc 2 32 5 view .LVU4
+  44              	.LBB22:
+  45              	.LBI22:
+  46              		.file 3 "ThirdParty/CMSIS/Include/cmsis_gcc.h"
+   1:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**************************************************************************//**
+   2:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * @file     cmsis_gcc.h
+   3:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * @brief    CMSIS compiler GCC header file
+   4:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * @version  V5.0.4
+   5:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * @date     09. April 2018
+   6:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  ******************************************************************************/
+   7:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /*
+   8:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * Copyright (c) 2009-2018 Arm Limited. All rights reserved.
+   9:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  *
+  10:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * SPDX-License-Identifier: Apache-2.0
+  11:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  *
+  12:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  13:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * not use this file except in compliance with the License.
+  14:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * You may obtain a copy of the License at
+  15:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  *
+  16:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * www.apache.org/licenses/LICENSE-2.0
+  17:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  *
+  18:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * Unless required by applicable law or agreed to in writing, software
+  19:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  20:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  21:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
+  22:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * limitations under the License.
+  23:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+  24:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+  25:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef __CMSIS_GCC_H
+  26:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #define __CMSIS_GCC_H
+  27:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+  28:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /* ignore some GCC warnings */
+  29:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic push
+  30:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wsign-conversion"
+  31:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wconversion"
+  32:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #pragma GCC diagnostic ignored "-Wunused-parameter"
+  33:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+  34:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /* Fallback for __has_builtin */
+  35:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef __has_builtin
+  36:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __has_builtin(x) (0)
+  37:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  38:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+  39:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /* CMSIS compiler specific defines */
+  40:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ASM
+  41:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __ASM                                  __asm
+  42:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  43:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __INLINE
+  44:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __INLINE                               inline
+  45:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  46:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_INLINE
+  47:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_INLINE                        static inline
+  48:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  49:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __STATIC_FORCEINLINE                 
+  50:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __STATIC_FORCEINLINE                   __attribute__((always_inline)) static inline
+  51:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif                                           
+  52:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __NO_RETURN
+ARM GAS  /tmp/ccPmX7Fe.s 			page 4
+
+
+  53:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
+  54:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  55:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __USED
+  56:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __USED                                 __attribute__((used))
+  57:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  58:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __WEAK
+  59:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __WEAK                                 __attribute__((weak))
+  60:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  61:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED
+  62:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED                               __attribute__((packed, aligned(1)))
+  63:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  64:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_STRUCT
+  65:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_STRUCT                        struct __attribute__((packed, aligned(1)))
+  66:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  67:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __PACKED_UNION
+  68:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __PACKED_UNION                         union __attribute__((packed, aligned(1)))
+  69:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  70:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32        /* deprecated */
+  71:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  72:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  73:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  74:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   struct __attribute__((packed)) T_UINT32 { uint32_t v; };
+  75:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  76:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32(x)                  (((struct T_UINT32 *)(x))->v)
+  77:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  78:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
+  79:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  80:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  81:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  82:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_WRITE { uint16_t v; };
+  83:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  84:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_WRITE(addr, val)    (void)((((struct T_UINT16_WRITE *)(void *)(addr))-
+  85:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  86:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_READ
+  87:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  88:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  89:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  90:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT16_READ { uint16_t v; };
+  91:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+  92:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT16_READ(addr)          (((const struct T_UINT16_READ *)(const void *)(add
+  93:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+  94:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_WRITE
+  95:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+  96:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+  97:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+  98:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_WRITE { uint32_t v; };
+  99:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 100:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_WRITE(addr, val)    (void)((((struct T_UINT32_WRITE *)(void *)(addr))-
+ 101:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 102:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT32_READ
+ 103:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
+ 104:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
+ 105:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wattributes"
+ 106:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __PACKED_STRUCT T_UINT32_READ { uint32_t v; };
+ 107:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic pop
+ 108:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
+ 109:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ARM GAS  /tmp/ccPmX7Fe.s 			page 5
+
+
+ 110:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ALIGNED
+ 111:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
+ 112:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 113:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __RESTRICT
+ 114:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __RESTRICT                             __restrict
+ 115:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 116:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 117:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 118:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /* ###########################  Core Function Access  ########################### */
+ 119:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /** \ingroup  CMSIS_Core_FunctionInterface
+ 120:ThirdParty/CMSIS/Include/cmsis_gcc.h ****     \defgroup CMSIS_Core_RegAccFunctions CMSIS Core Register Access Functions
+ 121:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   @{
+ 122:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 123:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 124:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 125:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Enable IRQ Interrupts
+ 126:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Enables IRQ interrupts by clearing the I-bit in the CPSR.
+ 127:ThirdParty/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 128:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 129:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __enable_irq(void)
+ 130:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 131:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsie i" : : : "memory");
+ 132:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 133:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 134:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 135:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 136:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
+ 137:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
+ 138:ThirdParty/CMSIS/Include/cmsis_gcc.h ****            Can only be executed in Privileged modes.
+ 139:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 140:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_irq(void)
+ 141:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 142:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsid i" : : : "memory");
+ 143:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 144:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 145:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 146:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 147:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Control Register
+ 148:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the Control Register.
+ 149:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               Control Register value
+ 150:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 151:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_CONTROL(void)
+ 152:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 153:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 154:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 155:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control" : "=r" (result) );
+ 156:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 157:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 158:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 159:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 160:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 161:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 162:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Control Register (non-secure)
+ 163:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the non-secure Control Register when in secure mode.
+ 164:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               non-secure Control Register value
+ 165:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 166:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
+ARM GAS  /tmp/ccPmX7Fe.s 			page 6
+
+
+ 167:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 168:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 169:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 170:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, control_ns" : "=r" (result) );
+ 171:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 172:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 173:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 174:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 175:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 176:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 177:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Control Register
+ 178:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Writes the given value to the Control Register.
+ 179:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 180:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 181:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_CONTROL(uint32_t control)
+ 182:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 183:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR control, %0" : : "r" (control) : "memory");
+ 184:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 185:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 186:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 187:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 188:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 189:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Control Register (non-secure)
+ 190:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Writes the given value to the non-secure Control Register when in secure state.
+ 191:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
+ 192:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 193:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_CONTROL_NS(uint32_t control)
+ 194:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 195:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR control_ns, %0" : : "r" (control) : "memory");
+ 196:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 197:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 198:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 199:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 200:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 201:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get IPSR Register
+ 202:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the IPSR Register.
+ 203:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               IPSR Register value
+ 204:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 205:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_IPSR(void)
+ 206:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 207:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 208:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 209:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, ipsr" : "=r" (result) );
+ 210:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 211:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 212:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 213:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 214:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 215:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get APSR Register
+ 216:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the APSR Register.
+ 217:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               APSR Register value
+ 218:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 219:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_APSR(void)
+ 220:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 221:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 222:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 223:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
+ARM GAS  /tmp/ccPmX7Fe.s 			page 7
+
+
+ 224:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 225:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 226:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 227:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 228:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 229:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get xPSR Register
+ 230:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the content of the xPSR Register.
+ 231:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               xPSR Register value
+ 232:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 233:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_xPSR(void)
+ 234:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 235:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 236:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 237:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, xpsr" : "=r" (result) );
+ 238:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 239:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 240:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 241:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 242:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 243:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Process Stack Pointer
+ 244:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the Process Stack Pointer (PSP).
+ 245:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               PSP Register value
+ 246:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 247:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PSP(void)
+ 248:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 249:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 250:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 251:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp"  : "=r" (result) );
+ 252:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 253:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 254:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 255:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 256:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 257:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 258:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Process Stack Pointer (non-secure)
+ 259:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Process Stack Pointer (PSP) when in secure s
+ 260:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               PSP Register value
+ 261:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 262:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PSP_NS(void)
+ 263:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 264:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 265:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 266:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp_ns"  : "=r" (result) );
+ 267:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 268:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 269:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 270:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 271:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 272:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 273:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Process Stack Pointer
+ 274:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Process Stack Pointer (PSP).
+ 275:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 276:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 277:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PSP(uint32_t topOfProcStack)
+ 278:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 279:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR psp, %0" : : "r" (topOfProcStack) : );
+ 280:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ARM GAS  /tmp/ccPmX7Fe.s 			page 8
+
+
+ 281:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 282:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 283:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 284:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 285:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Process Stack Pointer (non-secure)
+ 286:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Process Stack Pointer (PSP) when in secure sta
+ 287:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfProcStack  Process Stack Pointer value to set
+ 288:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 289:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_PSP_NS(uint32_t topOfProcStack)
+ 290:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 291:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR psp_ns, %0" : : "r" (topOfProcStack) : );
+ 292:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 293:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 294:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 295:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 296:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 297:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Main Stack Pointer
+ 298:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the Main Stack Pointer (MSP).
+ 299:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               MSP Register value
+ 300:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 301:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_MSP(void)
+ 302:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 303:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 304:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 305:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp" : "=r" (result) );
+ 306:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 307:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 308:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 309:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 310:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 311:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 312:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Main Stack Pointer (non-secure)
+ 313:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Main Stack Pointer (MSP) when in secure stat
+ 314:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               MSP Register value
+ 315:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 316:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_MSP_NS(void)
+ 317:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 318:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 319:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 320:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp_ns" : "=r" (result) );
+ 321:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 322:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 323:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 324:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 325:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 326:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 327:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Main Stack Pointer
+ 328:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Main Stack Pointer (MSP).
+ 329:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 330:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 331:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_MSP(uint32_t topOfMainStack)
+ 332:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 333:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR msp, %0" : : "r" (topOfMainStack) : );
+ 334:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 335:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 336:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 337:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ARM GAS  /tmp/ccPmX7Fe.s 			page 9
+
+
+ 338:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 339:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Main Stack Pointer (non-secure)
+ 340:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Main Stack Pointer (MSP) when in secure state.
+ 341:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfMainStack  Main Stack Pointer value to set
+ 342:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 343:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_MSP_NS(uint32_t topOfMainStack)
+ 344:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 345:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR msp_ns, %0" : : "r" (topOfMainStack) : );
+ 346:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 347:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 348:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 349:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 350:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 351:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 352:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Stack Pointer (non-secure)
+ 353:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current value of the non-secure Stack Pointer (SP) when in secure state.
+ 354:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               SP Register value
+ 355:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 356:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_SP_NS(void)
+ 357:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 358:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 359:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 360:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, sp_ns" : "=r" (result) );
+ 361:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 362:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 363:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 364:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 365:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 366:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Stack Pointer (non-secure)
+ 367:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Stack Pointer (SP) when in secure state.
+ 368:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    topOfStack  Stack Pointer value to set
+ 369:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 370:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_SP_NS(uint32_t topOfStack)
+ 371:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 372:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR sp_ns, %0" : : "r" (topOfStack) : );
+ 373:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 374:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 375:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 376:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 377:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 378:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Priority Mask
+ 379:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current state of the priority mask bit from the Priority Mask Register.
+ 380:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               Priority Mask value
+ 381:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 382:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_PRIMASK(void)
+  47              		.loc 3 382 31 view .LVU5
+  48              	.LBB23:
+ 383:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 384:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+  49              		.loc 3 384 3 view .LVU6
+ 385:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 386:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask" : "=r" (result) :: "memory");
+  50              		.loc 3 386 3 view .LVU7
+  51              		.syntax unified
+  52              	@ 386 "ThirdParty/CMSIS/Include/cmsis_gcc.h" 1
+  53 0000 EFF31081 		MRS r1, primask
+  54              	@ 0 "" 2
+ARM GAS  /tmp/ccPmX7Fe.s 			page 10
+
+
+  55              	.LVL1:
+ 387:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+  56              		.loc 3 387 3 view .LVU8
+  57              		.loc 3 387 3 is_stmt 0 view .LVU9
+  58              		.thumb
+  59              		.syntax unified
+  60              	.LBE23:
+  61              	.LBE22:
+  33:./Drivers/STM32/stm32_system.h ****     __disable_irq();
+  62              		.loc 2 33 5 is_stmt 1 view .LVU10
+  63              	.LBB24:
+  64              	.LBI24:
+ 140:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+  65              		.loc 3 140 27 view .LVU11
+  66              	.LBB25:
+ 142:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+  67              		.loc 3 142 3 view .LVU12
+  68              		.syntax unified
+  69              	@ 142 "ThirdParty/CMSIS/Include/cmsis_gcc.h" 1
+  70 0004 72B6     		cpsid i
+  71              	@ 0 "" 2
+  72              		.thumb
+  73              		.syntax unified
+  74              	.LBE25:
+  75              	.LBE24:
+  34:./Drivers/STM32/stm32_system.h ****     return primask;
+  76              		.loc 2 34 5 view .LVU13
+  77              	.LVL2:
+  78              		.loc 2 34 5 is_stmt 0 view .LVU14
+  79              	.LBE21:
+  80              	.LBE20:
+  43:syscalls.c    ****         if (!heap_end_ptr)
+  81              		.loc 1 43 9 is_stmt 1 view .LVU15
+  82              		.loc 1 43 13 is_stmt 0 view .LVU16
+  83 0006 0C4B     		ldr	r3, .L6
+  84 0008 1B68     		ldr	r3, [r3]
+  85              		.loc 1 43 12 view .LVU17
+  86 000a 63B1     		cbz	r3, .L5
+  87              	.L2:
+  44:syscalls.c    ****             heap_end_ptr = _end_ptr;
+  45:syscalls.c    ****         if (heap_end_ptr + size > _heap_end_max_ptr) {
+  88              		.loc 1 45 9 is_stmt 1 view .LVU18
+  89              		.loc 1 45 26 is_stmt 0 view .LVU19
+  90 000c 0A4B     		ldr	r3, .L6
+  91 000e 1A68     		ldr	r2, [r3]
+  92 0010 1318     		adds	r3, r2, r0
+  93              		.loc 1 45 33 view .LVU20
+  94 0012 0A48     		ldr	r0, .L6+4
+  95              	.LVL3:
+  96              		.loc 1 45 33 view .LVU21
+  97 0014 0068     		ldr	r0, [r0]
+  98              		.loc 1 45 12 view .LVU22
+  99 0016 8342     		cmp	r3, r0
+ 100 0018 0AD8     		bhi	.L4
+  46:syscalls.c    ****             ptr = -1;
+  47:syscalls.c    ****         } else {
+  48:syscalls.c    ****             ptr = (intptr_t)heap_end_ptr;
+ARM GAS  /tmp/ccPmX7Fe.s 			page 11
+
+
+ 101              		.loc 1 48 13 is_stmt 1 view .LVU23
+ 102              		.loc 1 48 17 is_stmt 0 view .LVU24
+ 103 001a 1046     		mov	r0, r2
+ 104              	.LVL4:
+  49:syscalls.c    ****             heap_end_ptr += size;
+ 105              		.loc 1 49 13 is_stmt 1 view .LVU25
+ 106              		.loc 1 49 26 is_stmt 0 view .LVU26
+ 107 001c 064A     		ldr	r2, .L6
+ 108 001e 1360     		str	r3, [r2]
+ 109              	.LVL5:
+ 110              	.L3:
+  50:syscalls.c    ****         }
+  51:syscalls.c    ****         cpu_exit_critical(mask);
+ 111              		.loc 1 51 9 is_stmt 1 view .LVU27
+ 112              	.LBB26:
+ 113              	.LBI26:
+  35:./Drivers/STM32/stm32_system.h **** }
+  36:./Drivers/STM32/stm32_system.h **** 
+  37:./Drivers/STM32/stm32_system.h **** static inline void cpu_exit_critical(uint32_t priority_mask) {
+ 114              		.loc 2 37 20 view .LVU28
+ 115              	.LBE26:
+ 116              	.LBE19:
+  38:./Drivers/STM32/stm32_system.h ****     __set_PRIMASK(priority_mask);
+ 117              		.loc 2 38 5 view .LVU29
+ 118              	.LBB30:
+ 119              	.LBB29:
+ 120              	.LBB27:
+ 121              	.LBI27:
+ 388:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 389:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 390:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 391:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
+ 392:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 393:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Priority Mask (non-secure)
+ 394:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current state of the non-secure priority mask bit from the Priority Mask Reg
+ 395:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               Priority Mask value
+ 396:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 397:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_PRIMASK_NS(void)
+ 398:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 399:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
+ 400:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 401:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, primask_ns" : "=r" (result) :: "memory");
+ 402:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
+ 403:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
+ 404:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
+ 405:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 406:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
+ 407:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
+ 408:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Priority Mask
+ 409:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the Priority Mask Register.
+ 410:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    priMask  Priority Mask
+ 411:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
+ 412:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_PRIMASK(uint32_t priMask)
+ 122              		.loc 3 412 27 view .LVU30
+ 123              	.LBB28:
+ 413:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
+ 414:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR primask, %0" : : "r" (priMask) : "memory");
+ARM GAS  /tmp/ccPmX7Fe.s 			page 12
+
+
+ 124              		.loc 3 414 3 view .LVU31
+ 125              		.syntax unified
+ 126              	@ 414 "ThirdParty/CMSIS/Include/cmsis_gcc.h" 1
+ 127 0020 81F31088 		MSR primask, r1
+ 128              	@ 0 "" 2
+ 129              	.LVL6:
+ 130              		.loc 3 414 3 is_stmt 0 view .LVU32
+ 131              		.thumb
+ 132              		.syntax unified
+ 133              	.LBE28:
+ 134              	.LBE27:
+ 135              	.LBE29:
+ 136              	.LBE30:
+  52:syscalls.c    **** 	}
+  53:syscalls.c    ****     return ptr;
+ 137              		.loc 1 53 5 is_stmt 1 view .LVU33
+  54:syscalls.c    **** }
+ 138              		.loc 1 54 1 is_stmt 0 view .LVU34
+ 139 0024 7047     		bx	lr
+ 140              	.LVL7:
+ 141              	.L5:
+ 142              	.LBB31:
+  44:syscalls.c    ****         if (heap_end_ptr + size > _heap_end_max_ptr) {
+ 143              		.loc 1 44 13 is_stmt 1 view .LVU35
+  44:syscalls.c    ****         if (heap_end_ptr + size > _heap_end_max_ptr) {
+ 144              		.loc 1 44 26 is_stmt 0 view .LVU36
+ 145 0026 064B     		ldr	r3, .L6+8
+ 146 0028 1A68     		ldr	r2, [r3]
+ 147 002a 034B     		ldr	r3, .L6
+ 148 002c 1A60     		str	r2, [r3]
+ 149 002e EDE7     		b	.L2
+ 150              	.LVL8:
+ 151              	.L4:
+  46:syscalls.c    ****         } else {
+ 152              		.loc 1 46 17 view .LVU37
+ 153 0030 4FF0FF30 		mov	r0, #-1
+ 154 0034 F4E7     		b	.L3
+ 155              	.L7:
+ 156 0036 00BF     		.align	2
+ 157              	.L6:
+ 158 0038 00000000 		.word	.LANCHOR0
+ 159 003c 00000000 		.word	.LANCHOR2
+ 160 0040 00000000 		.word	.LANCHOR1
+ 161              	.LBE31:
+ 162              		.cfi_endproc
+ 163              	.LFE178:
+ 165              		.global	heap_end_ptr
+ 166              		.global	_heap_end_max_ptr
+ 167              		.global	_end_ptr
+ 168              		.section	.bss.heap_end_ptr,"aw",%nobits
+ 169              		.align	2
+ 170              		.set	.LANCHOR0,. + 0
+ 173              	heap_end_ptr:
+ 174 0000 00000000 		.space	4
+ 175              		.section	.data._end_ptr,"aw"
+ 176              		.align	2
+ 177              		.set	.LANCHOR1,. + 0
+ARM GAS  /tmp/ccPmX7Fe.s 			page 13
+
+
+ 180              	_end_ptr:
+ 181 0000 00000000 		.word	_end
+ 182              		.section	.data._heap_end_max_ptr,"aw"
+ 183              		.align	2
+ 184              		.set	.LANCHOR2,. + 0
+ 187              	_heap_end_max_ptr:
+ 188 0000 00000000 		.word	_heap_end_max
+ 189              		.text
+ 190              	.Letext0:
+ 191              		.file 4 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 192              		.file 5 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h"
+ 193              		.file 6 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 194              		.file 7 "Board/v3/Inc/board.h"
+ARM GAS  /tmp/ccPmX7Fe.s 			page 14
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 syscalls.c
+     /tmp/ccPmX7Fe.s:20     .text._sbrk:0000000000000000 $t
+     /tmp/ccPmX7Fe.s:26     .text._sbrk:0000000000000000 _sbrk
+     /tmp/ccPmX7Fe.s:158    .text._sbrk:0000000000000038 $d
+     /tmp/ccPmX7Fe.s:173    .bss.heap_end_ptr:0000000000000000 heap_end_ptr
+     /tmp/ccPmX7Fe.s:187    .data._heap_end_max_ptr:0000000000000000 _heap_end_max_ptr
+     /tmp/ccPmX7Fe.s:180    .data._end_ptr:0000000000000000 _end_ptr
+     /tmp/ccPmX7Fe.s:169    .bss.heap_end_ptr:0000000000000000 $d
+     /tmp/ccPmX7Fe.s:176    .data._end_ptr:0000000000000000 $d
+     /tmp/ccPmX7Fe.s:183    .data._heap_end_max_ptr:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+_end
+_heap_end_max

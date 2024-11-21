@@ -1,0 +1,2255 @@
+ARM GAS  /tmp/cctVPsmX.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"stm32_gpio.cpp"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text._Z41__static_initialization_and_destruction_0ii,"ax",%progbits
+  20              		.align	1
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	_Z41__static_initialization_and_destruction_0ii:
+  26              		.fnstart
+  27              	.LVL0:
+  28              	.LFB156:
+  29              		.file 1 "Drivers/STM32/stm32_gpio.cpp"
+   1:Drivers/STM32/stm32_gpio.cpp **** 
+   2:Drivers/STM32/stm32_gpio.cpp **** #include "stm32_gpio.hpp"
+   3:Drivers/STM32/stm32_gpio.cpp **** 
+   4:Drivers/STM32/stm32_gpio.cpp **** #define N_EXTI 16
+   5:Drivers/STM32/stm32_gpio.cpp **** 
+   6:Drivers/STM32/stm32_gpio.cpp **** struct subscription_t {
+   7:Drivers/STM32/stm32_gpio.cpp ****     GPIO_TypeDef* port = nullptr;
+   8:Drivers/STM32/stm32_gpio.cpp ****     void (*callback)(void*) = nullptr;
+   9:Drivers/STM32/stm32_gpio.cpp ****     void* ctx = nullptr;
+  10:Drivers/STM32/stm32_gpio.cpp **** } subscriptions[N_EXTI];
+  11:Drivers/STM32/stm32_gpio.cpp **** 
+  12:Drivers/STM32/stm32_gpio.cpp **** const Stm32Gpio Stm32Gpio::none{nullptr, 0};
+  13:Drivers/STM32/stm32_gpio.cpp **** 
+  14:Drivers/STM32/stm32_gpio.cpp **** /**
+  15:Drivers/STM32/stm32_gpio.cpp ****  * @brief Returns the IRQ number associated with a certain pin.
+  16:Drivers/STM32/stm32_gpio.cpp ****  * Note that all GPIOs with the same pin number map to the same IRQn,
+  17:Drivers/STM32/stm32_gpio.cpp ****  * no matter which port they belong to.
+  18:Drivers/STM32/stm32_gpio.cpp ****  */
+  19:Drivers/STM32/stm32_gpio.cpp **** static inline IRQn_Type get_irq_number(uint16_t pin_number) {
+  20:Drivers/STM32/stm32_gpio.cpp ****     switch (pin_number) {
+  21:Drivers/STM32/stm32_gpio.cpp ****         case 0: return EXTI0_IRQn;
+  22:Drivers/STM32/stm32_gpio.cpp ****         case 1: return EXTI1_IRQn;
+  23:Drivers/STM32/stm32_gpio.cpp ****         case 2: return EXTI2_IRQn;
+  24:Drivers/STM32/stm32_gpio.cpp ****         case 3: return EXTI3_IRQn;
+  25:Drivers/STM32/stm32_gpio.cpp ****         case 4: return EXTI4_IRQn;
+  26:Drivers/STM32/stm32_gpio.cpp ****         case 5:
+  27:Drivers/STM32/stm32_gpio.cpp ****         case 6:
+  28:Drivers/STM32/stm32_gpio.cpp ****         case 7:
+  29:Drivers/STM32/stm32_gpio.cpp ****         case 8:
+ARM GAS  /tmp/cctVPsmX.s 			page 2
+
+
+  30:Drivers/STM32/stm32_gpio.cpp ****         case 9: return EXTI9_5_IRQn;
+  31:Drivers/STM32/stm32_gpio.cpp ****         case 10:
+  32:Drivers/STM32/stm32_gpio.cpp ****         case 11:
+  33:Drivers/STM32/stm32_gpio.cpp ****         case 12:
+  34:Drivers/STM32/stm32_gpio.cpp ****         case 13:
+  35:Drivers/STM32/stm32_gpio.cpp ****         case 14:
+  36:Drivers/STM32/stm32_gpio.cpp ****         case 15: return EXTI15_10_IRQn;
+  37:Drivers/STM32/stm32_gpio.cpp ****         default: return (IRQn_Type)0; // impossible
+  38:Drivers/STM32/stm32_gpio.cpp ****     }
+  39:Drivers/STM32/stm32_gpio.cpp **** }
+  40:Drivers/STM32/stm32_gpio.cpp **** 
+  41:Drivers/STM32/stm32_gpio.cpp **** #define GPIO_MODE             0x00000003U
+  42:Drivers/STM32/stm32_gpio.cpp **** #define GPIO_OUTPUT_TYPE      0x00000010U
+  43:Drivers/STM32/stm32_gpio.cpp **** 
+  44:Drivers/STM32/stm32_gpio.cpp **** 
+  45:Drivers/STM32/stm32_gpio.cpp **** bool Stm32Gpio::config(uint32_t mode, uint32_t pull, uint32_t speed) {
+  46:Drivers/STM32/stm32_gpio.cpp ****     if (port_ == GPIOA) {
+  47:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOA_CLK_ENABLE();
+  48:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOB) {
+  49:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOB_CLK_ENABLE();
+  50:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOC) {
+  51:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOC_CLK_ENABLE();
+  52:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOD) {
+  53:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOD_CLK_ENABLE();
+  54:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOE) {
+  55:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOE_CLK_ENABLE();
+  56:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOF) {
+  57:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOF_CLK_ENABLE();
+  58:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOG) {
+  59:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOG_CLK_ENABLE();
+  60:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOH) {
+  61:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOH_CLK_ENABLE();
+  62:Drivers/STM32/stm32_gpio.cpp ****     } else {
+  63:Drivers/STM32/stm32_gpio.cpp ****         return false;
+  64:Drivers/STM32/stm32_gpio.cpp ****     }
+  65:Drivers/STM32/stm32_gpio.cpp **** 
+  66:Drivers/STM32/stm32_gpio.cpp ****     size_t position = get_pin_number();
+  67:Drivers/STM32/stm32_gpio.cpp **** 
+  68:Drivers/STM32/stm32_gpio.cpp ****     // The following code is mostly taken from HAL_GPIO_Init
+  69:Drivers/STM32/stm32_gpio.cpp **** 
+  70:Drivers/STM32/stm32_gpio.cpp ****     /* Configure IO Direction mode (Input, Output, Alternate or Analog) */
+  71:Drivers/STM32/stm32_gpio.cpp ****     uint32_t temp = port_->MODER;
+  72:Drivers/STM32/stm32_gpio.cpp ****     temp &= ~(GPIO_MODER_MODER0 << (position * 2U));
+  73:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((mode & GPIO_MODE) << (position * 2U));
+  74:Drivers/STM32/stm32_gpio.cpp ****     port_->MODER = temp;
+  75:Drivers/STM32/stm32_gpio.cpp **** 
+  76:Drivers/STM32/stm32_gpio.cpp ****     /* In case of Output or Alternate function mode selection */
+  77:Drivers/STM32/stm32_gpio.cpp ****     if((mode == GPIO_MODE_OUTPUT_PP) || (mode == GPIO_MODE_AF_PP) ||
+  78:Drivers/STM32/stm32_gpio.cpp ****        (mode == GPIO_MODE_OUTPUT_OD) || (mode == GPIO_MODE_AF_OD))
+  79:Drivers/STM32/stm32_gpio.cpp ****     {
+  80:Drivers/STM32/stm32_gpio.cpp ****         /* Check the Speed parameter */
+  81:Drivers/STM32/stm32_gpio.cpp ****         assert_param(IS_GPIO_SPEED(speed));
+  82:Drivers/STM32/stm32_gpio.cpp ****         /* Configure the IO Speed */
+  83:Drivers/STM32/stm32_gpio.cpp ****         temp = port_->OSPEEDR; 
+  84:Drivers/STM32/stm32_gpio.cpp ****         temp &= ~(GPIO_OSPEEDER_OSPEEDR0 << (position * 2U));
+  85:Drivers/STM32/stm32_gpio.cpp ****         temp |= (speed << (position * 2U));
+  86:Drivers/STM32/stm32_gpio.cpp ****         port_->OSPEEDR = temp;
+ARM GAS  /tmp/cctVPsmX.s 			page 3
+
+
+  87:Drivers/STM32/stm32_gpio.cpp **** 
+  88:Drivers/STM32/stm32_gpio.cpp ****         /* Configure the IO Output Type */
+  89:Drivers/STM32/stm32_gpio.cpp ****         temp = port_->OTYPER;
+  90:Drivers/STM32/stm32_gpio.cpp ****         temp &= ~(GPIO_OTYPER_OT_0 << position) ;
+  91:Drivers/STM32/stm32_gpio.cpp ****         temp |= (((mode & GPIO_OUTPUT_TYPE) >> 4U) << position);
+  92:Drivers/STM32/stm32_gpio.cpp ****         port_->OTYPER = temp;
+  93:Drivers/STM32/stm32_gpio.cpp ****     }
+  94:Drivers/STM32/stm32_gpio.cpp **** 
+  95:Drivers/STM32/stm32_gpio.cpp ****     /* Activate the Pull-up or Pull down resistor for the current IO */
+  96:Drivers/STM32/stm32_gpio.cpp ****     temp = port_->PUPDR;
+  97:Drivers/STM32/stm32_gpio.cpp ****     temp &= ~(GPIO_PUPDR_PUPDR0 << (position * 2U));
+  98:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((pull) << (position * 2U));
+  99:Drivers/STM32/stm32_gpio.cpp ****     port_->PUPDR = temp;
+ 100:Drivers/STM32/stm32_gpio.cpp **** 
+ 101:Drivers/STM32/stm32_gpio.cpp ****     return true;
+ 102:Drivers/STM32/stm32_gpio.cpp **** }
+ 103:Drivers/STM32/stm32_gpio.cpp **** 
+ 104:Drivers/STM32/stm32_gpio.cpp **** bool Stm32Gpio::subscribe(bool rising_edge, bool falling_edge, void (*callback)(void*), void* ctx) 
+ 105:Drivers/STM32/stm32_gpio.cpp ****     uint32_t pin_number = get_pin_number();
+ 106:Drivers/STM32/stm32_gpio.cpp ****     if (pin_number >= N_EXTI) {
+ 107:Drivers/STM32/stm32_gpio.cpp ****         return false; // invalid pin number
+ 108:Drivers/STM32/stm32_gpio.cpp ****     }
+ 109:Drivers/STM32/stm32_gpio.cpp **** 
+ 110:Drivers/STM32/stm32_gpio.cpp ****     struct subscription_t& subscription = subscriptions[pin_number];
+ 111:Drivers/STM32/stm32_gpio.cpp **** 
+ 112:Drivers/STM32/stm32_gpio.cpp ****     GPIO_TypeDef* no_port = nullptr;
+ 113:Drivers/STM32/stm32_gpio.cpp ****     if (!__atomic_compare_exchange_n(&subscription.port, &no_port, port_, false, __ATOMIC_SEQ_CST, 
+ 114:Drivers/STM32/stm32_gpio.cpp ****         return false; // already in use
+ 115:Drivers/STM32/stm32_gpio.cpp ****     }
+ 116:Drivers/STM32/stm32_gpio.cpp **** 
+ 117:Drivers/STM32/stm32_gpio.cpp ****     // The following code is mostly taken from HAL_GPIO_Init
+ 118:Drivers/STM32/stm32_gpio.cpp ****     __HAL_RCC_SYSCFG_CLK_ENABLE();
+ 119:Drivers/STM32/stm32_gpio.cpp **** 
+ 120:Drivers/STM32/stm32_gpio.cpp ****     uint32_t temp = SYSCFG->EXTICR[pin_number >> 2U];
+ 121:Drivers/STM32/stm32_gpio.cpp ****     temp &= ~(0x0FU << (4U * (pin_number & 0x03U)));
+ 122:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((uint32_t)(GPIO_GET_INDEX(port_)) << (4U * (pin_number & 0x03U)));
+ 123:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 124:Drivers/STM32/stm32_gpio.cpp **** 
+ 125:Drivers/STM32/stm32_gpio.cpp **** 
+ 126:Drivers/STM32/stm32_gpio.cpp ****     if (rising_edge) {
+ 127:Drivers/STM32/stm32_gpio.cpp ****         EXTI->RTSR |= (uint32_t)pin_mask_;
+ 128:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 129:Drivers/STM32/stm32_gpio.cpp ****         EXTI->RTSR &= ~((uint32_t)pin_mask_);
+ 130:Drivers/STM32/stm32_gpio.cpp ****     }
+ 131:Drivers/STM32/stm32_gpio.cpp **** 
+ 132:Drivers/STM32/stm32_gpio.cpp ****     if (falling_edge) {
+ 133:Drivers/STM32/stm32_gpio.cpp ****         EXTI->FTSR |= (uint32_t)pin_mask_;
+ 134:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 135:Drivers/STM32/stm32_gpio.cpp ****         EXTI->FTSR &= ~((uint32_t)pin_mask_);
+ 136:Drivers/STM32/stm32_gpio.cpp ****     }
+ 137:Drivers/STM32/stm32_gpio.cpp **** 
+ 138:Drivers/STM32/stm32_gpio.cpp ****     EXTI->EMR &= ~((uint32_t)pin_mask_);
+ 139:Drivers/STM32/stm32_gpio.cpp ****     EXTI->IMR |= (uint32_t)pin_mask_;
+ 140:Drivers/STM32/stm32_gpio.cpp **** 
+ 141:Drivers/STM32/stm32_gpio.cpp ****     // Clear any previous triggers
+ 142:Drivers/STM32/stm32_gpio.cpp ****     __HAL_GPIO_EXTI_CLEAR_IT(pin_mask_);
+ 143:Drivers/STM32/stm32_gpio.cpp ****     
+ARM GAS  /tmp/cctVPsmX.s 			page 4
+
+
+ 144:Drivers/STM32/stm32_gpio.cpp ****     subscription.ctx = ctx;
+ 145:Drivers/STM32/stm32_gpio.cpp ****     subscription.callback = callback;
+ 146:Drivers/STM32/stm32_gpio.cpp ****     return true;
+ 147:Drivers/STM32/stm32_gpio.cpp **** }
+ 148:Drivers/STM32/stm32_gpio.cpp **** 
+ 149:Drivers/STM32/stm32_gpio.cpp **** void Stm32Gpio::unsubscribe() {
+ 150:Drivers/STM32/stm32_gpio.cpp ****     uint32_t pin_number = get_pin_number();
+ 151:Drivers/STM32/stm32_gpio.cpp ****     if (pin_number >= N_EXTI) {
+ 152:Drivers/STM32/stm32_gpio.cpp ****         return; // invalid pin number
+ 153:Drivers/STM32/stm32_gpio.cpp ****     }
+ 154:Drivers/STM32/stm32_gpio.cpp **** 
+ 155:Drivers/STM32/stm32_gpio.cpp ****     struct subscription_t& subscription = subscriptions[pin_number];
+ 156:Drivers/STM32/stm32_gpio.cpp **** 
+ 157:Drivers/STM32/stm32_gpio.cpp ****     if (subscription.port != port_) {
+ 158:Drivers/STM32/stm32_gpio.cpp ****         return; // the subscription was not for this GPIO
+ 159:Drivers/STM32/stm32_gpio.cpp ****     }
+ 160:Drivers/STM32/stm32_gpio.cpp **** 
+ 161:Drivers/STM32/stm32_gpio.cpp ****     EXTI->IMR |= (uint32_t)pin_mask_;
+ 162:Drivers/STM32/stm32_gpio.cpp ****     __HAL_GPIO_EXTI_CLEAR_IT(pin_mask_);
+ 163:Drivers/STM32/stm32_gpio.cpp **** 
+ 164:Drivers/STM32/stm32_gpio.cpp ****     // At this point no more interrupts will be triggered for this GPIO
+ 165:Drivers/STM32/stm32_gpio.cpp **** 
+ 166:Drivers/STM32/stm32_gpio.cpp ****     subscription.callback = nullptr;
+ 167:Drivers/STM32/stm32_gpio.cpp ****     subscription.ctx = nullptr;
+ 168:Drivers/STM32/stm32_gpio.cpp ****     subscription.port = nullptr; // after this line, the subscription can be reused (possibly by an
+ 169:Drivers/STM32/stm32_gpio.cpp **** }
+ 170:Drivers/STM32/stm32_gpio.cpp **** 
+ 171:Drivers/STM32/stm32_gpio.cpp **** void maybe_handle(uint16_t exti_number) {
+ 172:Drivers/STM32/stm32_gpio.cpp ****     if(__HAL_GPIO_EXTI_GET_IT(1 << exti_number) == RESET) {
+ 173:Drivers/STM32/stm32_gpio.cpp ****         return; // This interrupt source did not trigger the interrupt line
+ 174:Drivers/STM32/stm32_gpio.cpp ****     }
+ 175:Drivers/STM32/stm32_gpio.cpp **** 
+ 176:Drivers/STM32/stm32_gpio.cpp ****     __HAL_GPIO_EXTI_CLEAR_IT(1 << exti_number);
+ 177:Drivers/STM32/stm32_gpio.cpp ****     
+ 178:Drivers/STM32/stm32_gpio.cpp ****     if (exti_number >= N_EXTI) {
+ 179:Drivers/STM32/stm32_gpio.cpp ****         return;
+ 180:Drivers/STM32/stm32_gpio.cpp ****     }
+ 181:Drivers/STM32/stm32_gpio.cpp **** 
+ 182:Drivers/STM32/stm32_gpio.cpp ****     subscription_t& subscription = subscriptions[exti_number];
+ 183:Drivers/STM32/stm32_gpio.cpp ****     if (subscription.callback) {
+ 184:Drivers/STM32/stm32_gpio.cpp ****         (*subscription.callback)(subscription.ctx);
+ 185:Drivers/STM32/stm32_gpio.cpp ****     }
+ 186:Drivers/STM32/stm32_gpio.cpp **** }
+ 187:Drivers/STM32/stm32_gpio.cpp **** 
+ 188:Drivers/STM32/stm32_gpio.cpp **** extern "C" {
+ 189:Drivers/STM32/stm32_gpio.cpp **** 
+ 190:Drivers/STM32/stm32_gpio.cpp **** /** @brief Entrypoint for the EXTI line 0 interrupt. */
+ 191:Drivers/STM32/stm32_gpio.cpp **** void EXTI0_IRQHandler(void) {
+ 192:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(0);
+ 193:Drivers/STM32/stm32_gpio.cpp **** }
+ 194:Drivers/STM32/stm32_gpio.cpp **** 
+ 195:Drivers/STM32/stm32_gpio.cpp **** /** @brief Entrypoint for the EXTI line 1 interrupt. */
+ 196:Drivers/STM32/stm32_gpio.cpp **** void EXTI1_IRQHandler(void) {
+ 197:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(1);
+ 198:Drivers/STM32/stm32_gpio.cpp **** }
+ 199:Drivers/STM32/stm32_gpio.cpp **** 
+ 200:Drivers/STM32/stm32_gpio.cpp **** /** @brief Entrypoint for the EXTI line 2 interrupt. */
+ARM GAS  /tmp/cctVPsmX.s 			page 5
+
+
+ 201:Drivers/STM32/stm32_gpio.cpp **** void EXTI2_IRQHandler(void) {
+ 202:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(2);
+ 203:Drivers/STM32/stm32_gpio.cpp **** }
+ 204:Drivers/STM32/stm32_gpio.cpp **** 
+ 205:Drivers/STM32/stm32_gpio.cpp **** /** @brief Entrypoint for the EXTI line 3 interrupt. */
+ 206:Drivers/STM32/stm32_gpio.cpp **** void EXTI3_IRQHandler(void) {
+ 207:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(3);
+ 208:Drivers/STM32/stm32_gpio.cpp **** }
+ 209:Drivers/STM32/stm32_gpio.cpp **** 
+ 210:Drivers/STM32/stm32_gpio.cpp **** /** @brief Entrypoint for the EXTI line 4 interrupt. */
+ 211:Drivers/STM32/stm32_gpio.cpp **** void EXTI4_IRQHandler(void) {
+ 212:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(4);
+ 213:Drivers/STM32/stm32_gpio.cpp **** }
+ 214:Drivers/STM32/stm32_gpio.cpp **** 
+ 215:Drivers/STM32/stm32_gpio.cpp **** /** @brief Entrypoint for the EXTI lines 5-9 interrupt. */
+ 216:Drivers/STM32/stm32_gpio.cpp **** void EXTI9_5_IRQHandler(void) {
+ 217:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(5);
+ 218:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(6);
+ 219:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(7);
+ 220:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(8);
+ 221:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(9);
+ 222:Drivers/STM32/stm32_gpio.cpp **** }
+ 223:Drivers/STM32/stm32_gpio.cpp **** 
+ 224:Drivers/STM32/stm32_gpio.cpp **** /** @brief This function handles EXTI lines 10-15 interrupt. */
+ 225:Drivers/STM32/stm32_gpio.cpp **** void EXTI15_10_IRQHandler(void) {
+ 226:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(10);
+ 227:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(11);
+ 228:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(12);
+ 229:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(13);
+ 230:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(14);
+ 231:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(15);
+ 232:Drivers/STM32/stm32_gpio.cpp **** }
+ 233:Drivers/STM32/stm32_gpio.cpp **** 
+ 234:Drivers/STM32/stm32_gpio.cpp **** }
+  30              		.loc 1 234 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  35              		.loc 1 234 1 is_stmt 0 view .LVU1
+  36 0000 0128     		cmp	r0, #1
+  37 0002 00D0     		beq	.L3
+  38              	.L1:
+  39 0004 7047     		bx	lr
+  40              	.L3:
+  41              		.loc 1 234 1 discriminator 1 view .LVU2
+  42 0006 4FF6FF73 		movw	r3, #65535
+  43 000a 9942     		cmp	r1, r3
+  44 000c FAD1     		bne	.L1
+  45              	.LVL1:
+  46              	.LBB28:
+  47              	.LBI28:
+  48              		.file 2 "Drivers/STM32/stm32_gpio.hpp"
+   1:Drivers/STM32/stm32_gpio.hpp **** #ifndef __STM32_GPIO_HPP
+   2:Drivers/STM32/stm32_gpio.hpp **** #define __STM32_GPIO_HPP
+   3:Drivers/STM32/stm32_gpio.hpp **** 
+   4:Drivers/STM32/stm32_gpio.hpp **** #include <gpio.h>
+ARM GAS  /tmp/cctVPsmX.s 			page 6
+
+
+   5:Drivers/STM32/stm32_gpio.hpp **** 
+   6:Drivers/STM32/stm32_gpio.hpp **** class Stm32Gpio {
+   7:Drivers/STM32/stm32_gpio.hpp **** public:
+   8:Drivers/STM32/stm32_gpio.hpp ****     static const Stm32Gpio none;
+   9:Drivers/STM32/stm32_gpio.hpp **** 
+  10:Drivers/STM32/stm32_gpio.hpp ****     Stm32Gpio() : port_(nullptr), pin_mask_(0) {}
+  11:Drivers/STM32/stm32_gpio.hpp ****     Stm32Gpio(GPIO_TypeDef* port, uint16_t pin) : port_(port), pin_mask_(pin) {}
+  49              		.loc 2 11 5 is_stmt 1 view .LVU3
+  50              	.LBB29:
+  51              	.LBB30:
+  52              		.loc 2 11 77 is_stmt 0 view .LVU4
+  53 000e 024B     		ldr	r3, .L4
+  54 0010 0022     		movs	r2, #0
+  55 0012 1A60     		str	r2, [r3]
+  56 0014 9A80     		strh	r2, [r3, #4]	@ movhi
+  57              	.LVL2:
+  58              		.loc 2 11 77 view .LVU5
+  59              	.LBE30:
+  60              	.LBE29:
+  61              	.LBE28:
+  62              		.loc 1 234 1 view .LVU6
+  63 0016 F5E7     		b	.L1
+  64              	.L5:
+  65              		.align	2
+  66              	.L4:
+  67 0018 00000000 		.word	.LANCHOR0
+  68              		.cfi_endproc
+  69              	.LFE156:
+  70              		.cantunwind
+  71              		.fnend
+  73              		.section	.text._ZN9Stm32Gpio6configEmmm,"ax",%progbits
+  74              		.align	1
+  75              		.global	_ZN9Stm32Gpio6configEmmm
+  76              		.syntax unified
+  77              		.thumb
+  78              		.thumb_func
+  80              	_ZN9Stm32Gpio6configEmmm:
+  81              		.fnstart
+  82              	.LVL3:
+  83              	.LFB145:
+  45:Drivers/STM32/stm32_gpio.cpp ****     if (port_ == GPIOA) {
+  84              		.loc 1 45 70 is_stmt 1 view -0
+  85              		.cfi_startproc
+  86              		@ args = 0, pretend = 0, frame = 32
+  87              		@ frame_needed = 0, uses_anonymous_args = 0
+  45:Drivers/STM32/stm32_gpio.cpp ****     if (port_ == GPIOA) {
+  88              		.loc 1 45 70 is_stmt 0 view .LVU8
+  89 0000 F0B5     		push	{r4, r5, r6, r7, lr}
+  90              	.LCFI0:
+  91              		.cfi_def_cfa_offset 20
+  92              		.cfi_offset 4, -20
+  93              		.cfi_offset 5, -16
+  94              		.cfi_offset 6, -12
+  95              		.cfi_offset 7, -8
+  96              		.cfi_offset 14, -4
+  97 0002 89B0     		sub	sp, sp, #36
+  98              	.LCFI1:
+ARM GAS  /tmp/cctVPsmX.s 			page 7
+
+
+  99              		.cfi_def_cfa_offset 56
+  46:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOA_CLK_ENABLE();
+ 100              		.loc 1 46 5 is_stmt 1 view .LVU9
+ 101              	.LBB31:
+  46:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOA_CLK_ENABLE();
+ 102              		.loc 1 46 9 is_stmt 0 view .LVU10
+ 103 0004 0468     		ldr	r4, [r0]
+  46:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOA_CLK_ENABLE();
+ 104              		.loc 1 46 5 view .LVU11
+ 105 0006 624D     		ldr	r5, .L31
+ 106 0008 AC42     		cmp	r4, r5
+ 107 000a 16D0     		beq	.L22
+ 108              	.LBE31:
+  48:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOB_CLK_ENABLE();
+ 109              		.loc 1 48 12 is_stmt 1 view .LVU12
+ 110              	.LBB96:
+ 111              	.LBB32:
+ 112 000c 614D     		ldr	r5, .L31+4
+ 113 000e AC42     		cmp	r4, r5
+ 114 0010 24D0     		beq	.L23
+ 115              	.LBE32:
+ 116              	.LBE96:
+  50:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOC_CLK_ENABLE();
+ 117              		.loc 1 50 12 view .LVU13
+ 118              	.LBB97:
+ 119              	.LBB82:
+ 120              	.LBB33:
+ 121 0012 614D     		ldr	r5, .L31+8
+ 122 0014 AC42     		cmp	r4, r5
+ 123 0016 2ED0     		beq	.L24
+ 124              	.LBE33:
+ 125              	.LBE82:
+ 126              	.LBE97:
+  52:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOD_CLK_ENABLE();
+ 127              		.loc 1 52 12 view .LVU14
+ 128              	.LBB98:
+ 129              	.LBB83:
+ 130              	.LBB70:
+ 131              	.LBB34:
+ 132 0018 604D     		ldr	r5, .L31+12
+ 133 001a AC42     		cmp	r4, r5
+ 134 001c 38D0     		beq	.L25
+ 135              	.LBE34:
+ 136              	.LBE70:
+ 137              	.LBE83:
+ 138              	.LBE98:
+  54:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOE_CLK_ENABLE();
+ 139              		.loc 1 54 12 view .LVU15
+ 140              	.LBB99:
+ 141              	.LBB84:
+ 142              	.LBB71:
+ 143              	.LBB60:
+ 144              	.LBB35:
+ 145 001e 604D     		ldr	r5, .L31+16
+ 146 0020 AC42     		cmp	r4, r5
+ 147 0022 42D0     		beq	.L26
+ 148              	.LBE35:
+ARM GAS  /tmp/cctVPsmX.s 			page 8
+
+
+ 149              	.LBE60:
+ 150              	.LBE71:
+ 151              	.LBE84:
+ 152              	.LBE99:
+  56:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOF_CLK_ENABLE();
+ 153              		.loc 1 56 12 view .LVU16
+ 154              	.LBB100:
+ 155              	.LBB85:
+ 156              	.LBB72:
+ 157              	.LBB61:
+ 158              	.LBB52:
+ 159              	.LBB36:
+ 160 0024 5F4D     		ldr	r5, .L31+20
+ 161 0026 AC42     		cmp	r4, r5
+ 162 0028 4CD0     		beq	.L27
+ 163              	.LBE36:
+ 164              	.LBE52:
+ 165              	.LBE61:
+ 166              	.LBE72:
+ 167              	.LBE85:
+ 168              	.LBE100:
+  58:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOG_CLK_ENABLE();
+ 169              		.loc 1 58 12 view .LVU17
+ 170              	.LBB101:
+ 171              	.LBB86:
+ 172              	.LBB73:
+ 173              	.LBB62:
+ 174              	.LBB53:
+ 175              	.LBB46:
+ 176              	.LBB37:
+ 177 002a 5F4D     		ldr	r5, .L31+24
+ 178 002c AC42     		cmp	r4, r5
+ 179 002e 56D0     		beq	.L28
+ 180              	.LBE37:
+ 181              	.LBE46:
+ 182              	.LBE53:
+ 183              	.LBE62:
+ 184              	.LBE73:
+ 185              	.LBE86:
+ 186              	.LBE101:
+  60:Drivers/STM32/stm32_gpio.cpp ****         __HAL_RCC_GPIOH_CLK_ENABLE();
+ 187              		.loc 1 60 12 view .LVU18
+ 188              	.LBB102:
+ 189              	.LBB87:
+ 190              	.LBB74:
+ 191              	.LBB63:
+ 192              	.LBB54:
+ 193              	.LBB47:
+ 194              	.LBB42:
+ 195              	.LBB38:
+ 196 0030 5E4D     		ldr	r5, .L31+28
+ 197 0032 AC42     		cmp	r4, r5
+ 198 0034 60D0     		beq	.L29
+  63:Drivers/STM32/stm32_gpio.cpp ****     }
+ 199              		.loc 1 63 16 is_stmt 0 view .LVU19
+ 200 0036 0020     		movs	r0, #0
+ 201              	.LVL4:
+ARM GAS  /tmp/cctVPsmX.s 			page 9
+
+
+  63:Drivers/STM32/stm32_gpio.cpp ****     }
+ 202              		.loc 1 63 16 view .LVU20
+ 203 0038 A8E0     		b	.L15
+ 204              	.LVL5:
+ 205              	.L22:
+  63:Drivers/STM32/stm32_gpio.cpp ****     }
+ 206              		.loc 1 63 16 view .LVU21
+ 207              	.LBE38:
+ 208              	.LBE42:
+ 209              	.LBE47:
+ 210              	.LBE54:
+ 211              	.LBE63:
+ 212              	.LBE74:
+ 213              	.LBE87:
+ 214              	.LBE102:
+  47:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOB) {
+ 215              		.loc 1 47 9 is_stmt 1 view .LVU22
+ 216              	.LBB103:
+ 217              	.LBB88:
+  47:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOB) {
+ 218              		.loc 1 47 9 view .LVU23
+ 219 003a 0024     		movs	r4, #0
+ 220 003c 0094     		str	r4, [sp]
+  47:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOB) {
+ 221              		.loc 1 47 9 view .LVU24
+ 222 003e 5C4C     		ldr	r4, .L31+32
+ 223 0040 256B     		ldr	r5, [r4, #48]
+ 224 0042 45F00105 		orr	r5, r5, #1
+ 225 0046 2563     		str	r5, [r4, #48]
+  47:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOB) {
+ 226              		.loc 1 47 9 view .LVU25
+ 227 0048 246B     		ldr	r4, [r4, #48]
+ 228 004a 04F00104 		and	r4, r4, #1
+ 229 004e 0094     		str	r4, [sp]
+  47:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOB) {
+ 230              		.loc 1 47 9 view .LVU26
+ 231 0050 009C     		ldr	r4, [sp]
+ 232              	.L8:
+ 233              	.LBE88:
+ 234              	.LBE103:
+  66:Drivers/STM32/stm32_gpio.cpp **** 
+ 235              		.loc 1 66 5 view .LVU27
+ 236              	.LVL6:
+ 237              	.LBB104:
+ 238              	.LBI104:
+  12:Drivers/STM32/stm32_gpio.hpp **** 
+  13:Drivers/STM32/stm32_gpio.hpp ****     operator bool() const { return port_ && pin_mask_; }
+  14:Drivers/STM32/stm32_gpio.hpp **** 
+  15:Drivers/STM32/stm32_gpio.hpp ****     /**
+  16:Drivers/STM32/stm32_gpio.hpp ****      * @brief Configures the GPIO with the specified parameters.
+  17:Drivers/STM32/stm32_gpio.hpp ****      * 
+  18:Drivers/STM32/stm32_gpio.hpp ****      * This can be done regardless of the current state of the GPIO.
+  19:Drivers/STM32/stm32_gpio.hpp ****      * 
+  20:Drivers/STM32/stm32_gpio.hpp ****      * If any subscription is in place, it is not disabled by this function.
+  21:Drivers/STM32/stm32_gpio.hpp ****      */
+  22:Drivers/STM32/stm32_gpio.hpp ****     bool config(uint32_t mode, uint32_t pull, uint32_t speed = GPIO_SPEED_FREQ_LOW);
+  23:Drivers/STM32/stm32_gpio.hpp **** 
+ARM GAS  /tmp/cctVPsmX.s 			page 10
+
+
+  24:Drivers/STM32/stm32_gpio.hpp ****     void write(bool state) {
+  25:Drivers/STM32/stm32_gpio.hpp ****         if (port_) {
+  26:Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
+  27:Drivers/STM32/stm32_gpio.hpp ****         }
+  28:Drivers/STM32/stm32_gpio.hpp ****     }
+  29:Drivers/STM32/stm32_gpio.hpp **** 
+  30:Drivers/STM32/stm32_gpio.hpp ****     bool read() {
+  31:Drivers/STM32/stm32_gpio.hpp ****         return port_ && (port_->IDR & pin_mask_);
+  32:Drivers/STM32/stm32_gpio.hpp ****     }
+  33:Drivers/STM32/stm32_gpio.hpp **** 
+  34:Drivers/STM32/stm32_gpio.hpp ****     /**
+  35:Drivers/STM32/stm32_gpio.hpp ****      * @brief Subscribes to external interrupts on the specified GPIO.
+  36:Drivers/STM32/stm32_gpio.hpp ****      * 
+  37:Drivers/STM32/stm32_gpio.hpp ****      * Before calling this function the gpio should most likely be configured as
+  38:Drivers/STM32/stm32_gpio.hpp ****      * input (however this is not mandatory, the interrupt works in output mode
+  39:Drivers/STM32/stm32_gpio.hpp ****      * too).
+  40:Drivers/STM32/stm32_gpio.hpp ****      * Also you need to enable the EXTIx_IRQn interrupt vectors in the NVIC,
+  41:Drivers/STM32/stm32_gpio.hpp ****      * otherwise the subscription won't have any effect.
+  42:Drivers/STM32/stm32_gpio.hpp ****      * 
+  43:Drivers/STM32/stm32_gpio.hpp ****      * Only one subscription is allowed per pin number. I.e. it is not possible
+  44:Drivers/STM32/stm32_gpio.hpp ****      * to set up a subscription for both PA0 and PB0 at the same time.
+  45:Drivers/STM32/stm32_gpio.hpp ****      * 
+  46:Drivers/STM32/stm32_gpio.hpp ****      * This function is thread-safe with respect to all other public functions
+  47:Drivers/STM32/stm32_gpio.hpp ****      * of this class.
+  48:Drivers/STM32/stm32_gpio.hpp ****      * 
+  49:Drivers/STM32/stm32_gpio.hpp ****      * Returns true if the subscription was set up successfully or false otherwise.
+  50:Drivers/STM32/stm32_gpio.hpp ****      */
+  51:Drivers/STM32/stm32_gpio.hpp ****     bool subscribe(bool rising_edge, bool falling_edge, void (*callback)(void*), void* ctx);
+  52:Drivers/STM32/stm32_gpio.hpp **** 
+  53:Drivers/STM32/stm32_gpio.hpp ****     /**
+  54:Drivers/STM32/stm32_gpio.hpp ****      * @brief Unsubscribes from external interrupt on the specified GPIO.
+  55:Drivers/STM32/stm32_gpio.hpp ****      * 
+  56:Drivers/STM32/stm32_gpio.hpp ****      * If no subscription was active for this GPIO, calling this function has no
+  57:Drivers/STM32/stm32_gpio.hpp ****      * effect.
+  58:Drivers/STM32/stm32_gpio.hpp ****      *
+  59:Drivers/STM32/stm32_gpio.hpp ****      * This function is thread-safe with respect to all other public functions
+  60:Drivers/STM32/stm32_gpio.hpp ****      * of this class, however it must not be called from an interrupt routine
+  61:Drivers/STM32/stm32_gpio.hpp ****      * running at a higher priority than the interrupt that is being unsubscribed.
+  62:Drivers/STM32/stm32_gpio.hpp ****      *
+  63:Drivers/STM32/stm32_gpio.hpp ****      * After this function returns the callback given to subscribe() will no
+  64:Drivers/STM32/stm32_gpio.hpp ****      * longer be invoked.
+  65:Drivers/STM32/stm32_gpio.hpp ****      */
+  66:Drivers/STM32/stm32_gpio.hpp ****     void unsubscribe();
+  67:Drivers/STM32/stm32_gpio.hpp **** 
+  68:Drivers/STM32/stm32_gpio.hpp ****     uint16_t get_pin_number() {
+ 239              		.loc 2 68 14 view .LVU28
+ 240              	.LBB105:
+  69:Drivers/STM32/stm32_gpio.hpp ****         uint16_t pin_number = 0;
+ 241              		.loc 2 69 9 view .LVU29
+  70:Drivers/STM32/stm32_gpio.hpp ****         uint16_t pin_mask = pin_mask_ >> 1;
+ 242              		.loc 2 70 9 view .LVU30
+ 243              		.loc 2 70 29 is_stmt 0 view .LVU31
+ 244 0052 8488     		ldrh	r4, [r0, #4]
+ 245              		.loc 2 70 18 view .LVU32
+ 246 0054 6408     		lsrs	r4, r4, #1
+ 247              	.LVL7:
+  69:Drivers/STM32/stm32_gpio.hpp ****         uint16_t pin_number = 0;
+ARM GAS  /tmp/cctVPsmX.s 			page 11
+
+
+ 248              		.loc 2 69 18 view .LVU33
+ 249 0056 4FF0000C 		mov	ip, #0
+ 250 005a 5FE0     		b	.L17
+ 251              	.LVL8:
+ 252              	.L23:
+  69:Drivers/STM32/stm32_gpio.hpp ****         uint16_t pin_number = 0;
+ 253              		.loc 2 69 18 view .LVU34
+ 254              	.LBE105:
+ 255              	.LBE104:
+  49:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOC) {
+ 256              		.loc 1 49 9 is_stmt 1 view .LVU35
+ 257              	.LBB107:
+ 258              	.LBB89:
+ 259              	.LBB75:
+  49:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOC) {
+ 260              		.loc 1 49 9 view .LVU36
+ 261 005c 0024     		movs	r4, #0
+ 262 005e 0194     		str	r4, [sp, #4]
+  49:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOC) {
+ 263              		.loc 1 49 9 view .LVU37
+ 264 0060 534C     		ldr	r4, .L31+32
+ 265 0062 256B     		ldr	r5, [r4, #48]
+ 266 0064 45F00205 		orr	r5, r5, #2
+ 267 0068 2563     		str	r5, [r4, #48]
+  49:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOC) {
+ 268              		.loc 1 49 9 view .LVU38
+ 269 006a 246B     		ldr	r4, [r4, #48]
+ 270 006c 04F00204 		and	r4, r4, #2
+ 271 0070 0194     		str	r4, [sp, #4]
+  49:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOC) {
+ 272              		.loc 1 49 9 view .LVU39
+ 273 0072 019C     		ldr	r4, [sp, #4]
+ 274              	.LBE75:
+ 275 0074 EDE7     		b	.L8
+ 276              	.L24:
+ 277              	.LBE89:
+ 278              	.LBE107:
+  51:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOD) {
+ 279              		.loc 1 51 9 view .LVU40
+ 280              	.LBB108:
+ 281              	.LBB90:
+ 282              	.LBB76:
+ 283              	.LBB64:
+  51:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOD) {
+ 284              		.loc 1 51 9 view .LVU41
+ 285 0076 0024     		movs	r4, #0
+ 286 0078 0294     		str	r4, [sp, #8]
+  51:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOD) {
+ 287              		.loc 1 51 9 view .LVU42
+ 288 007a 4D4C     		ldr	r4, .L31+32
+ 289 007c 256B     		ldr	r5, [r4, #48]
+ 290 007e 45F00405 		orr	r5, r5, #4
+ 291 0082 2563     		str	r5, [r4, #48]
+  51:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOD) {
+ 292              		.loc 1 51 9 view .LVU43
+ 293 0084 246B     		ldr	r4, [r4, #48]
+ 294 0086 04F00404 		and	r4, r4, #4
+ARM GAS  /tmp/cctVPsmX.s 			page 12
+
+
+ 295 008a 0294     		str	r4, [sp, #8]
+  51:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOD) {
+ 296              		.loc 1 51 9 view .LVU44
+ 297 008c 029C     		ldr	r4, [sp, #8]
+ 298              	.LBE64:
+ 299 008e E0E7     		b	.L8
+ 300              	.L25:
+ 301              	.LBE76:
+ 302              	.LBE90:
+ 303              	.LBE108:
+  53:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOE) {
+ 304              		.loc 1 53 9 view .LVU45
+ 305              	.LBB109:
+ 306              	.LBB91:
+ 307              	.LBB77:
+ 308              	.LBB65:
+ 309              	.LBB55:
+  53:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOE) {
+ 310              		.loc 1 53 9 view .LVU46
+ 311 0090 0024     		movs	r4, #0
+ 312 0092 0394     		str	r4, [sp, #12]
+  53:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOE) {
+ 313              		.loc 1 53 9 view .LVU47
+ 314 0094 464C     		ldr	r4, .L31+32
+ 315 0096 256B     		ldr	r5, [r4, #48]
+ 316 0098 45F00805 		orr	r5, r5, #8
+ 317 009c 2563     		str	r5, [r4, #48]
+  53:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOE) {
+ 318              		.loc 1 53 9 view .LVU48
+ 319 009e 246B     		ldr	r4, [r4, #48]
+ 320 00a0 04F00804 		and	r4, r4, #8
+ 321 00a4 0394     		str	r4, [sp, #12]
+  53:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOE) {
+ 322              		.loc 1 53 9 view .LVU49
+ 323 00a6 039C     		ldr	r4, [sp, #12]
+ 324              	.LBE55:
+ 325 00a8 D3E7     		b	.L8
+ 326              	.L26:
+ 327              	.LBE65:
+ 328              	.LBE77:
+ 329              	.LBE91:
+ 330              	.LBE109:
+  55:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOF) {
+ 331              		.loc 1 55 9 view .LVU50
+ 332              	.LBB110:
+ 333              	.LBB92:
+ 334              	.LBB78:
+ 335              	.LBB66:
+ 336              	.LBB56:
+ 337              	.LBB48:
+  55:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOF) {
+ 338              		.loc 1 55 9 view .LVU51
+ 339 00aa 0024     		movs	r4, #0
+ 340 00ac 0494     		str	r4, [sp, #16]
+  55:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOF) {
+ 341              		.loc 1 55 9 view .LVU52
+ 342 00ae 404C     		ldr	r4, .L31+32
+ARM GAS  /tmp/cctVPsmX.s 			page 13
+
+
+ 343 00b0 256B     		ldr	r5, [r4, #48]
+ 344 00b2 45F01005 		orr	r5, r5, #16
+ 345 00b6 2563     		str	r5, [r4, #48]
+  55:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOF) {
+ 346              		.loc 1 55 9 view .LVU53
+ 347 00b8 246B     		ldr	r4, [r4, #48]
+ 348 00ba 04F01004 		and	r4, r4, #16
+ 349 00be 0494     		str	r4, [sp, #16]
+  55:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOF) {
+ 350              		.loc 1 55 9 view .LVU54
+ 351 00c0 049C     		ldr	r4, [sp, #16]
+ 352              	.LBE48:
+ 353 00c2 C6E7     		b	.L8
+ 354              	.L27:
+ 355              	.LBE56:
+ 356              	.LBE66:
+ 357              	.LBE78:
+ 358              	.LBE92:
+ 359              	.LBE110:
+  57:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOG) {
+ 360              		.loc 1 57 9 view .LVU55
+ 361              	.LBB111:
+ 362              	.LBB93:
+ 363              	.LBB79:
+ 364              	.LBB67:
+ 365              	.LBB57:
+ 366              	.LBB49:
+ 367              	.LBB43:
+  57:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOG) {
+ 368              		.loc 1 57 9 view .LVU56
+ 369 00c4 0024     		movs	r4, #0
+ 370 00c6 0594     		str	r4, [sp, #20]
+  57:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOG) {
+ 371              		.loc 1 57 9 view .LVU57
+ 372 00c8 394C     		ldr	r4, .L31+32
+ 373 00ca 256B     		ldr	r5, [r4, #48]
+ 374 00cc 45F02005 		orr	r5, r5, #32
+ 375 00d0 2563     		str	r5, [r4, #48]
+  57:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOG) {
+ 376              		.loc 1 57 9 view .LVU58
+ 377 00d2 246B     		ldr	r4, [r4, #48]
+ 378 00d4 04F02004 		and	r4, r4, #32
+ 379 00d8 0594     		str	r4, [sp, #20]
+  57:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOG) {
+ 380              		.loc 1 57 9 view .LVU59
+ 381 00da 059C     		ldr	r4, [sp, #20]
+ 382              	.LBE43:
+ 383 00dc B9E7     		b	.L8
+ 384              	.L28:
+ 385              	.LBE49:
+ 386              	.LBE57:
+ 387              	.LBE67:
+ 388              	.LBE79:
+ 389              	.LBE93:
+ 390              	.LBE111:
+  59:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOH) {
+ 391              		.loc 1 59 9 view .LVU60
+ARM GAS  /tmp/cctVPsmX.s 			page 14
+
+
+ 392              	.LBB112:
+ 393              	.LBB94:
+ 394              	.LBB80:
+ 395              	.LBB68:
+ 396              	.LBB58:
+ 397              	.LBB50:
+ 398              	.LBB44:
+ 399              	.LBB40:
+  59:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOH) {
+ 400              		.loc 1 59 9 view .LVU61
+ 401 00de 0024     		movs	r4, #0
+ 402 00e0 0694     		str	r4, [sp, #24]
+  59:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOH) {
+ 403              		.loc 1 59 9 view .LVU62
+ 404 00e2 334C     		ldr	r4, .L31+32
+ 405 00e4 256B     		ldr	r5, [r4, #48]
+ 406 00e6 45F04005 		orr	r5, r5, #64
+ 407 00ea 2563     		str	r5, [r4, #48]
+  59:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOH) {
+ 408              		.loc 1 59 9 view .LVU63
+ 409 00ec 246B     		ldr	r4, [r4, #48]
+ 410 00ee 04F04004 		and	r4, r4, #64
+ 411 00f2 0694     		str	r4, [sp, #24]
+  59:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOH) {
+ 412              		.loc 1 59 9 view .LVU64
+ 413 00f4 069C     		ldr	r4, [sp, #24]
+ 414              	.LBE40:
+ 415 00f6 ACE7     		b	.L8
+ 416              	.L29:
+ 417              	.LBE44:
+ 418              	.LBE50:
+ 419              	.LBE58:
+ 420              	.LBE68:
+ 421              	.LBE80:
+ 422              	.LBE94:
+ 423              	.LBE112:
+  61:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 424              		.loc 1 61 9 view .LVU65
+ 425              	.LBB113:
+ 426              	.LBB95:
+ 427              	.LBB81:
+ 428              	.LBB69:
+ 429              	.LBB59:
+ 430              	.LBB51:
+ 431              	.LBB45:
+ 432              	.LBB41:
+ 433              	.LBB39:
+  61:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 434              		.loc 1 61 9 view .LVU66
+ 435 00f8 0024     		movs	r4, #0
+ 436 00fa 0794     		str	r4, [sp, #28]
+  61:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 437              		.loc 1 61 9 view .LVU67
+ 438 00fc 2C4C     		ldr	r4, .L31+32
+ 439 00fe 256B     		ldr	r5, [r4, #48]
+ 440 0100 45F08005 		orr	r5, r5, #128
+ 441 0104 2563     		str	r5, [r4, #48]
+ARM GAS  /tmp/cctVPsmX.s 			page 15
+
+
+  61:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 442              		.loc 1 61 9 view .LVU68
+ 443 0106 246B     		ldr	r4, [r4, #48]
+ 444 0108 04F08004 		and	r4, r4, #128
+ 445 010c 0794     		str	r4, [sp, #28]
+  61:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 446              		.loc 1 61 9 view .LVU69
+ 447 010e 079C     		ldr	r4, [sp, #28]
+ 448              	.LBE39:
+ 449 0110 9FE7     		b	.L8
+ 450              	.LVL9:
+ 451              	.L30:
+  61:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 452              		.loc 1 61 9 is_stmt 0 view .LVU70
+ 453              	.LBE41:
+ 454              	.LBE45:
+ 455              	.LBE51:
+ 456              	.LBE59:
+ 457              	.LBE69:
+ 458              	.LBE81:
+ 459              	.LBE95:
+ 460              	.LBE113:
+ 461              	.LBB114:
+ 462              	.LBB106:
+  71:Drivers/STM32/stm32_gpio.hpp ****         while (pin_mask) {
+  72:Drivers/STM32/stm32_gpio.hpp ****             pin_mask >>= 1;
+ 463              		.loc 2 72 13 is_stmt 1 view .LVU71
+ 464              		.loc 2 72 22 is_stmt 0 view .LVU72
+ 465 0112 6408     		lsrs	r4, r4, #1
+ 466              	.LVL10:
+  73:Drivers/STM32/stm32_gpio.hpp ****             pin_number++;
+ 467              		.loc 2 73 13 is_stmt 1 view .LVU73
+ 468              		.loc 2 73 23 is_stmt 0 view .LVU74
+ 469 0114 0CF1010C 		add	ip, ip, #1
+ 470              	.LVL11:
+ 471              		.loc 2 73 23 view .LVU75
+ 472 0118 1FFA8CFC 		uxth	ip, ip
+ 473              	.LVL12:
+ 474              	.L17:
+  71:Drivers/STM32/stm32_gpio.hpp ****         while (pin_mask) {
+ 475              		.loc 2 71 9 is_stmt 1 view .LVU76
+  71:Drivers/STM32/stm32_gpio.hpp ****         while (pin_mask) {
+ 476              		.loc 2 71 16 view .LVU77
+ 477 011c 002C     		cmp	r4, #0
+ 478 011e F8D1     		bne	.L30
+  74:Drivers/STM32/stm32_gpio.hpp ****         }
+  75:Drivers/STM32/stm32_gpio.hpp ****         return pin_number;
+ 479              		.loc 2 75 9 view .LVU78
+ 480              	.LVL13:
+ 481              		.loc 2 75 9 is_stmt 0 view .LVU79
+ 482              	.LBE106:
+ 483              	.LBE114:
+  66:Drivers/STM32/stm32_gpio.cpp **** 
+ 484              		.loc 1 66 38 view .LVU80
+ 485 0120 6546     		mov	r5, ip
+ 486              	.LVL14:
+  71:Drivers/STM32/stm32_gpio.cpp ****     temp &= ~(GPIO_MODER_MODER0 << (position * 2U));
+ARM GAS  /tmp/cctVPsmX.s 			page 16
+
+
+ 487              		.loc 1 71 5 is_stmt 1 view .LVU81
+  71:Drivers/STM32/stm32_gpio.cpp ****     temp &= ~(GPIO_MODER_MODER0 << (position * 2U));
+ 488              		.loc 1 71 21 is_stmt 0 view .LVU82
+ 489 0122 0668     		ldr	r6, [r0]
+  71:Drivers/STM32/stm32_gpio.cpp ****     temp &= ~(GPIO_MODER_MODER0 << (position * 2U));
+ 490              		.loc 1 71 28 view .LVU83
+ 491 0124 3768     		ldr	r7, [r6]
+ 492              	.LVL15:
+  72:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((mode & GPIO_MODE) << (position * 2U));
+ 493              		.loc 1 72 5 is_stmt 1 view .LVU84
+  72:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((mode & GPIO_MODE) << (position * 2U));
+ 494              		.loc 1 72 46 is_stmt 0 view .LVU85
+ 495 0126 4FEA4C0C 		lsl	ip, ip, #1
+  72:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((mode & GPIO_MODE) << (position * 2U));
+ 496              		.loc 1 72 33 view .LVU86
+ 497 012a 0324     		movs	r4, #3
+ 498 012c 04FA0CF4 		lsl	r4, r4, ip
+  72:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((mode & GPIO_MODE) << (position * 2U));
+ 499              		.loc 1 72 13 view .LVU87
+ 500 0130 6FEA040E 		mvn	lr, r4
+  72:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((mode & GPIO_MODE) << (position * 2U));
+ 501              		.loc 1 72 10 view .LVU88
+ 502 0134 27EA0407 		bic	r7, r7, r4
+ 503              	.LVL16:
+  73:Drivers/STM32/stm32_gpio.cpp ****     port_->MODER = temp;
+ 504              		.loc 1 73 5 is_stmt 1 view .LVU89
+  73:Drivers/STM32/stm32_gpio.cpp ****     port_->MODER = temp;
+ 505              		.loc 1 73 20 is_stmt 0 view .LVU90
+ 506 0138 01F00304 		and	r4, r1, #3
+  73:Drivers/STM32/stm32_gpio.cpp ****     port_->MODER = temp;
+ 507              		.loc 1 73 33 view .LVU91
+ 508 013c 04FA0CF4 		lsl	r4, r4, ip
+  73:Drivers/STM32/stm32_gpio.cpp ****     port_->MODER = temp;
+ 509              		.loc 1 73 10 view .LVU92
+ 510 0140 3C43     		orrs	r4, r4, r7
+ 511              	.LVL17:
+  74:Drivers/STM32/stm32_gpio.cpp **** 
+ 512              		.loc 1 74 5 is_stmt 1 view .LVU93
+  74:Drivers/STM32/stm32_gpio.cpp **** 
+ 513              		.loc 1 74 18 is_stmt 0 view .LVU94
+ 514 0142 3460     		str	r4, [r6]
+  77:Drivers/STM32/stm32_gpio.cpp ****        (mode == GPIO_MODE_OUTPUT_OD) || (mode == GPIO_MODE_AF_OD))
+ 515              		.loc 1 77 5 is_stmt 1 view .LVU95
+  77:Drivers/STM32/stm32_gpio.cpp ****        (mode == GPIO_MODE_OUTPUT_OD) || (mode == GPIO_MODE_AF_OD))
+ 516              		.loc 1 77 38 is_stmt 0 view .LVU96
+ 517 0144 4C1E     		subs	r4, r1, #1
+ 518              	.LVL18:
+  77:Drivers/STM32/stm32_gpio.cpp ****        (mode == GPIO_MODE_OUTPUT_OD) || (mode == GPIO_MODE_AF_OD))
+ 519              		.loc 1 77 5 view .LVU97
+ 520 0146 012C     		cmp	r4, #1
+ 521 0148 03D9     		bls	.L18
+  77:Drivers/STM32/stm32_gpio.cpp ****        (mode == GPIO_MODE_OUTPUT_OD) || (mode == GPIO_MODE_AF_OD))
+ 522              		.loc 1 77 67 discriminator 1 view .LVU98
+ 523 014a 1129     		cmp	r1, #17
+ 524 014c 01D0     		beq	.L18
+  78:Drivers/STM32/stm32_gpio.cpp ****     {
+ 525              		.loc 1 78 38 view .LVU99
+ARM GAS  /tmp/cctVPsmX.s 			page 17
+
+
+ 526 014e 1229     		cmp	r1, #18
+ 527 0150 12D1     		bne	.L19
+ 528              	.L18:
+  81:Drivers/STM32/stm32_gpio.cpp ****         /* Configure the IO Speed */
+ 529              		.loc 1 81 9 is_stmt 1 view .LVU100
+  83:Drivers/STM32/stm32_gpio.cpp ****         temp &= ~(GPIO_OSPEEDER_OSPEEDR0 << (position * 2U));
+ 530              		.loc 1 83 9 view .LVU101
+  83:Drivers/STM32/stm32_gpio.cpp ****         temp &= ~(GPIO_OSPEEDER_OSPEEDR0 << (position * 2U));
+ 531              		.loc 1 83 16 is_stmt 0 view .LVU102
+ 532 0152 0668     		ldr	r6, [r0]
+ 533              	.LVL19:
+  83:Drivers/STM32/stm32_gpio.cpp ****         temp &= ~(GPIO_OSPEEDER_OSPEEDR0 << (position * 2U));
+ 534              		.loc 1 83 14 view .LVU103
+ 535 0154 B468     		ldr	r4, [r6, #8]
+ 536              	.LVL20:
+  84:Drivers/STM32/stm32_gpio.cpp ****         temp |= (speed << (position * 2U));
+ 537              		.loc 1 84 9 is_stmt 1 view .LVU104
+  84:Drivers/STM32/stm32_gpio.cpp ****         temp |= (speed << (position * 2U));
+ 538              		.loc 1 84 14 is_stmt 0 view .LVU105
+ 539 0156 0EEA0404 		and	r4, lr, r4
+ 540              	.LVL21:
+  85:Drivers/STM32/stm32_gpio.cpp ****         port_->OSPEEDR = temp;
+ 541              		.loc 1 85 9 is_stmt 1 view .LVU106
+  85:Drivers/STM32/stm32_gpio.cpp ****         port_->OSPEEDR = temp;
+ 542              		.loc 1 85 24 is_stmt 0 view .LVU107
+ 543 015a 03FA0CF3 		lsl	r3, r3, ip
+ 544              	.LVL22:
+  85:Drivers/STM32/stm32_gpio.cpp ****         port_->OSPEEDR = temp;
+ 545              		.loc 1 85 14 view .LVU108
+ 546 015e 2343     		orrs	r3, r3, r4
+ 547              	.LVL23:
+  86:Drivers/STM32/stm32_gpio.cpp **** 
+ 548              		.loc 1 86 9 is_stmt 1 view .LVU109
+  86:Drivers/STM32/stm32_gpio.cpp **** 
+ 549              		.loc 1 86 24 is_stmt 0 view .LVU110
+ 550 0160 B360     		str	r3, [r6, #8]
+  89:Drivers/STM32/stm32_gpio.cpp ****         temp &= ~(GPIO_OTYPER_OT_0 << position) ;
+ 551              		.loc 1 89 9 is_stmt 1 view .LVU111
+  89:Drivers/STM32/stm32_gpio.cpp ****         temp &= ~(GPIO_OTYPER_OT_0 << position) ;
+ 552              		.loc 1 89 16 is_stmt 0 view .LVU112
+ 553 0162 0668     		ldr	r6, [r0]
+  89:Drivers/STM32/stm32_gpio.cpp ****         temp &= ~(GPIO_OTYPER_OT_0 << position) ;
+ 554              		.loc 1 89 14 view .LVU113
+ 555 0164 7368     		ldr	r3, [r6, #4]
+ 556              	.LVL24:
+  90:Drivers/STM32/stm32_gpio.cpp ****         temp |= (((mode & GPIO_OUTPUT_TYPE) >> 4U) << position);
+ 557              		.loc 1 90 9 is_stmt 1 view .LVU114
+  90:Drivers/STM32/stm32_gpio.cpp ****         temp |= (((mode & GPIO_OUTPUT_TYPE) >> 4U) << position);
+ 558              		.loc 1 90 36 is_stmt 0 view .LVU115
+ 559 0166 0124     		movs	r4, #1
+ 560 0168 AC40     		lsls	r4, r4, r5
+  90:Drivers/STM32/stm32_gpio.cpp ****         temp |= (((mode & GPIO_OUTPUT_TYPE) >> 4U) << position);
+ 561              		.loc 1 90 14 view .LVU116
+ 562 016a 23EA0403 		bic	r3, r3, r4
+ 563              	.LVL25:
+  91:Drivers/STM32/stm32_gpio.cpp ****         port_->OTYPER = temp;
+ 564              		.loc 1 91 9 is_stmt 1 view .LVU117
+ARM GAS  /tmp/cctVPsmX.s 			page 18
+
+
+  91:Drivers/STM32/stm32_gpio.cpp ****         port_->OTYPER = temp;
+ 565              		.loc 1 91 45 is_stmt 0 view .LVU118
+ 566 016e C1F30011 		ubfx	r1, r1, #4, #1
+ 567              	.LVL26:
+  91:Drivers/STM32/stm32_gpio.cpp ****         port_->OTYPER = temp;
+ 568              		.loc 1 91 52 view .LVU119
+ 569 0172 A940     		lsls	r1, r1, r5
+  91:Drivers/STM32/stm32_gpio.cpp ****         port_->OTYPER = temp;
+ 570              		.loc 1 91 14 view .LVU120
+ 571 0174 1943     		orrs	r1, r1, r3
+ 572              	.LVL27:
+  92:Drivers/STM32/stm32_gpio.cpp ****     }
+ 573              		.loc 1 92 9 is_stmt 1 view .LVU121
+  92:Drivers/STM32/stm32_gpio.cpp ****     }
+ 574              		.loc 1 92 23 is_stmt 0 view .LVU122
+ 575 0176 7160     		str	r1, [r6, #4]
+ 576              	.LVL28:
+ 577              	.L19:
+  96:Drivers/STM32/stm32_gpio.cpp ****     temp &= ~(GPIO_PUPDR_PUPDR0 << (position * 2U));
+ 578              		.loc 1 96 5 is_stmt 1 view .LVU123
+  96:Drivers/STM32/stm32_gpio.cpp ****     temp &= ~(GPIO_PUPDR_PUPDR0 << (position * 2U));
+ 579              		.loc 1 96 12 is_stmt 0 view .LVU124
+ 580 0178 0368     		ldr	r3, [r0]
+  96:Drivers/STM32/stm32_gpio.cpp ****     temp &= ~(GPIO_PUPDR_PUPDR0 << (position * 2U));
+ 581              		.loc 1 96 10 view .LVU125
+ 582 017a D968     		ldr	r1, [r3, #12]
+ 583              	.LVL29:
+  97:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((pull) << (position * 2U));
+ 584              		.loc 1 97 5 is_stmt 1 view .LVU126
+  97:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((pull) << (position * 2U));
+ 585              		.loc 1 97 10 is_stmt 0 view .LVU127
+ 586 017c 0EEA010E 		and	lr, lr, r1
+ 587              	.LVL30:
+  98:Drivers/STM32/stm32_gpio.cpp ****     port_->PUPDR = temp;
+ 588              		.loc 1 98 5 is_stmt 1 view .LVU128
+  98:Drivers/STM32/stm32_gpio.cpp ****     port_->PUPDR = temp;
+ 589              		.loc 1 98 21 is_stmt 0 view .LVU129
+ 590 0180 02FA0CFC 		lsl	ip, r2, ip
+  98:Drivers/STM32/stm32_gpio.cpp ****     port_->PUPDR = temp;
+ 591              		.loc 1 98 10 view .LVU130
+ 592 0184 4CEA0E02 		orr	r2, ip, lr
+ 593              	.LVL31:
+  99:Drivers/STM32/stm32_gpio.cpp **** 
+ 594              		.loc 1 99 5 is_stmt 1 view .LVU131
+  99:Drivers/STM32/stm32_gpio.cpp **** 
+ 595              		.loc 1 99 18 is_stmt 0 view .LVU132
+ 596 0188 DA60     		str	r2, [r3, #12]
+ 101:Drivers/STM32/stm32_gpio.cpp **** }
+ 597              		.loc 1 101 5 is_stmt 1 view .LVU133
+ 101:Drivers/STM32/stm32_gpio.cpp **** }
+ 598              		.loc 1 101 12 is_stmt 0 view .LVU134
+ 599 018a 0120     		movs	r0, #1
+ 600              	.LVL32:
+ 601              	.L15:
+ 102:Drivers/STM32/stm32_gpio.cpp **** 
+ 602              		.loc 1 102 1 view .LVU135
+ 603 018c 09B0     		add	sp, sp, #36
+ARM GAS  /tmp/cctVPsmX.s 			page 19
+
+
+ 604              	.LCFI2:
+ 605              		.cfi_def_cfa_offset 20
+ 606              		@ sp needed
+ 607 018e F0BD     		pop	{r4, r5, r6, r7, pc}
+ 608              	.L32:
+ 609              		.align	2
+ 610              	.L31:
+ 611 0190 00000240 		.word	1073872896
+ 612 0194 00040240 		.word	1073873920
+ 613 0198 00080240 		.word	1073874944
+ 614 019c 000C0240 		.word	1073875968
+ 615 01a0 00100240 		.word	1073876992
+ 616 01a4 00140240 		.word	1073878016
+ 617 01a8 00180240 		.word	1073879040
+ 618 01ac 001C0240 		.word	1073880064
+ 619 01b0 00380240 		.word	1073887232
+ 620              		.cfi_endproc
+ 621              	.LFE145:
+ 622              		.cantunwind
+ 623              		.fnend
+ 625              		.section	.text._ZN9Stm32Gpio9subscribeEbbPFvPvES0_,"ax",%progbits
+ 626              		.align	1
+ 627              		.global	_ZN9Stm32Gpio9subscribeEbbPFvPvES0_
+ 628              		.syntax unified
+ 629              		.thumb
+ 630              		.thumb_func
+ 632              	_ZN9Stm32Gpio9subscribeEbbPFvPvES0_:
+ 633              		.fnstart
+ 634              	.LVL33:
+ 635              	.LFB146:
+ 104:Drivers/STM32/stm32_gpio.cpp ****     uint32_t pin_number = get_pin_number();
+ 636              		.loc 1 104 100 is_stmt 1 view -0
+ 637              		.cfi_startproc
+ 638              		@ args = 4, pretend = 0, frame = 8
+ 639              		@ frame_needed = 0, uses_anonymous_args = 0
+ 104:Drivers/STM32/stm32_gpio.cpp ****     uint32_t pin_number = get_pin_number();
+ 640              		.loc 1 104 100 is_stmt 0 view .LVU137
+ 641 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 642              	.LCFI3:
+ 643              		.cfi_def_cfa_offset 24
+ 644              		.cfi_offset 4, -24
+ 645              		.cfi_offset 5, -20
+ 646              		.cfi_offset 6, -16
+ 647              		.cfi_offset 7, -12
+ 648              		.cfi_offset 8, -8
+ 649              		.cfi_offset 14, -4
+ 650 0004 82B0     		sub	sp, sp, #8
+ 651              	.LCFI4:
+ 652              		.cfi_def_cfa_offset 32
+ 653 0006 8646     		mov	lr, r0
+ 105:Drivers/STM32/stm32_gpio.cpp ****     if (pin_number >= N_EXTI) {
+ 654              		.loc 1 105 5 is_stmt 1 view .LVU138
+ 655              	.LVL34:
+ 656              	.LBB115:
+ 657              	.LBI115:
+  68:Drivers/STM32/stm32_gpio.hpp ****         uint16_t pin_number = 0;
+ 658              		.loc 2 68 14 view .LVU139
+ARM GAS  /tmp/cctVPsmX.s 			page 20
+
+
+ 659              	.LBB116:
+  69:Drivers/STM32/stm32_gpio.hpp ****         uint16_t pin_mask = pin_mask_ >> 1;
+ 660              		.loc 2 69 9 view .LVU140
+  70:Drivers/STM32/stm32_gpio.hpp ****         while (pin_mask) {
+ 661              		.loc 2 70 9 view .LVU141
+  70:Drivers/STM32/stm32_gpio.hpp ****         while (pin_mask) {
+ 662              		.loc 2 70 29 is_stmt 0 view .LVU142
+ 663 0008 8488     		ldrh	r4, [r0, #4]
+  70:Drivers/STM32/stm32_gpio.hpp ****         while (pin_mask) {
+ 664              		.loc 2 70 18 view .LVU143
+ 665 000a 6408     		lsrs	r4, r4, #1
+ 666              	.LVL35:
+  69:Drivers/STM32/stm32_gpio.hpp ****         uint16_t pin_mask = pin_mask_ >> 1;
+ 667              		.loc 2 69 18 view .LVU144
+ 668 000c 4FF0000C 		mov	ip, #0
+ 669 0010 04E0     		b	.L35
+ 670              	.LVL36:
+ 671              	.L54:
+  72:Drivers/STM32/stm32_gpio.hpp ****             pin_number++;
+ 672              		.loc 2 72 13 is_stmt 1 view .LVU145
+  72:Drivers/STM32/stm32_gpio.hpp ****             pin_number++;
+ 673              		.loc 2 72 22 is_stmt 0 view .LVU146
+ 674 0012 6408     		lsrs	r4, r4, #1
+ 675              	.LVL37:
+  73:Drivers/STM32/stm32_gpio.hpp ****         }
+ 676              		.loc 2 73 13 is_stmt 1 view .LVU147
+  73:Drivers/STM32/stm32_gpio.hpp ****         }
+ 677              		.loc 2 73 23 is_stmt 0 view .LVU148
+ 678 0014 0CF1010C 		add	ip, ip, #1
+ 679              	.LVL38:
+  73:Drivers/STM32/stm32_gpio.hpp ****         }
+ 680              		.loc 2 73 23 view .LVU149
+ 681 0018 1FFA8CFC 		uxth	ip, ip
+ 682              	.LVL39:
+ 683              	.L35:
+  71:Drivers/STM32/stm32_gpio.hpp ****             pin_mask >>= 1;
+ 684              		.loc 2 71 9 is_stmt 1 view .LVU150
+  71:Drivers/STM32/stm32_gpio.hpp ****             pin_mask >>= 1;
+ 685              		.loc 2 71 16 view .LVU151
+ 686 001c 002C     		cmp	r4, #0
+ 687 001e F8D1     		bne	.L54
+ 688              		.loc 2 75 9 view .LVU152
+ 689              	.LVL40:
+ 690              		.loc 2 75 9 is_stmt 0 view .LVU153
+ 691              	.LBE116:
+ 692              	.LBE115:
+ 105:Drivers/STM32/stm32_gpio.cpp ****     if (pin_number >= N_EXTI) {
+ 693              		.loc 1 105 42 view .LVU154
+ 694 0020 6446     		mov	r4, ip
+ 695              	.LVL41:
+ 106:Drivers/STM32/stm32_gpio.cpp ****         return false; // invalid pin number
+ 696              		.loc 1 106 5 is_stmt 1 view .LVU155
+ 697 0022 BCF10F0F 		cmp	ip, #15
+ 698 0026 00F2A680 		bhi	.L42
+ 110:Drivers/STM32/stm32_gpio.cpp **** 
+ 699              		.loc 1 110 5 view .LVU156
+ 700              	.LVL42:
+ARM GAS  /tmp/cctVPsmX.s 			page 21
+
+
+ 112:Drivers/STM32/stm32_gpio.cpp ****     if (!__atomic_compare_exchange_n(&subscription.port, &no_port, port_, false, __ATOMIC_SEQ_CST, 
+ 701              		.loc 1 112 5 view .LVU157
+ 113:Drivers/STM32/stm32_gpio.cpp ****         return false; // already in use
+ 702              		.loc 1 113 5 view .LVU158
+ 113:Drivers/STM32/stm32_gpio.cpp ****         return false; // already in use
+ 703              		.loc 1 113 38 is_stmt 0 view .LVU159
+ 704 002a 0CEB4C00 		add	r0, ip, ip, lsl #1
+ 705              	.LVL43:
+ 113:Drivers/STM32/stm32_gpio.cpp ****         return false; // already in use
+ 706              		.loc 1 113 38 view .LVU160
+ 707 002e 534D     		ldr	r5, .L56
+ 708 0030 05EB8000 		add	r0, r5, r0, lsl #2
+ 113:Drivers/STM32/stm32_gpio.cpp ****         return false; // already in use
+ 709              		.loc 1 113 68 view .LVU161
+ 710 0034 DEF80050 		ldr	r5, [lr]
+ 113:Drivers/STM32/stm32_gpio.cpp ****         return false; // already in use
+ 711              		.loc 1 113 37 view .LVU162
+ 712 0038 BFF35B8F 		dmb	ish
+ 713              	.L51:
+ 714 003c 50E8006F 		ldrex	r6, [r0]
+ 715 0040 002E     		cmp	r6, #0
+ 716 0042 03D1     		bne	.L52
+ 717 0044 40E80057 		strex	r7, r5, [r0]
+ 718 0048 002F     		cmp	r7, #0
+ 719 004a F7D1     		bne	.L51
+ 720              	.L52:
+ 721 004c BFF35B8F 		dmb	ish
+ 722 0050 0CBF     		ite	eq
+ 723 0052 0120     		moveq	r0, #1
+ 724 0054 0020     		movne	r0, #0
+ 725              	.LVL44:
+ 113:Drivers/STM32/stm32_gpio.cpp ****         return false; // already in use
+ 726              		.loc 1 113 5 view .LVU163
+ 727 0056 6FD1     		bne	.L36
+ 118:Drivers/STM32/stm32_gpio.cpp **** 
+ 728              		.loc 1 118 5 is_stmt 1 view .LVU164
+ 729              	.LBB117:
+ 118:Drivers/STM32/stm32_gpio.cpp **** 
+ 730              		.loc 1 118 5 view .LVU165
+ 731 0058 0025     		movs	r5, #0
+ 732 005a 0195     		str	r5, [sp, #4]
+ 118:Drivers/STM32/stm32_gpio.cpp **** 
+ 733              		.loc 1 118 5 view .LVU166
+ 734 005c 484D     		ldr	r5, .L56+4
+ 735 005e 6E6C     		ldr	r6, [r5, #68]
+ 736 0060 46F48046 		orr	r6, r6, #16384
+ 737 0064 6E64     		str	r6, [r5, #68]
+ 738              	.LVL45:
+ 118:Drivers/STM32/stm32_gpio.cpp **** 
+ 739              		.loc 1 118 5 view .LVU167
+ 740 0066 6D6C     		ldr	r5, [r5, #68]
+ 741 0068 05F48045 		and	r5, r5, #16384
+ 742 006c 0195     		str	r5, [sp, #4]
+ 118:Drivers/STM32/stm32_gpio.cpp **** 
+ 743              		.loc 1 118 5 view .LVU168
+ 744 006e 019D     		ldr	r5, [sp, #4]
+ 745              	.LBE117:
+ARM GAS  /tmp/cctVPsmX.s 			page 22
+
+
+ 120:Drivers/STM32/stm32_gpio.cpp ****     temp &= ~(0x0FU << (4U * (pin_number & 0x03U)));
+ 746              		.loc 1 120 5 view .LVU169
+ 120:Drivers/STM32/stm32_gpio.cpp ****     temp &= ~(0x0FU << (4U * (pin_number & 0x03U)));
+ 747              		.loc 1 120 47 is_stmt 0 view .LVU170
+ 748 0070 A608     		lsrs	r6, r4, #2
+ 120:Drivers/STM32/stm32_gpio.cpp ****     temp &= ~(0x0FU << (4U * (pin_number & 0x03U)));
+ 749              		.loc 1 120 52 view .LVU171
+ 750 0072 B71C     		adds	r7, r6, #2
+ 751 0074 434D     		ldr	r5, .L56+8
+ 752 0076 55F82770 		ldr	r7, [r5, r7, lsl #2]
+ 753              	.LVL46:
+ 121:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((uint32_t)(GPIO_GET_INDEX(port_)) << (4U * (pin_number & 0x03U)));
+ 754              		.loc 1 121 5 is_stmt 1 view .LVU172
+ 121:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((uint32_t)(GPIO_GET_INDEX(port_)) << (4U * (pin_number & 0x03U)));
+ 755              		.loc 1 121 42 is_stmt 0 view .LVU173
+ 756 007a 0CF0030C 		and	ip, ip, #3
+ 121:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((uint32_t)(GPIO_GET_INDEX(port_)) << (4U * (pin_number & 0x03U)));
+ 757              		.loc 1 121 28 view .LVU174
+ 758 007e 4FEA8C0C 		lsl	ip, ip, #2
+ 121:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((uint32_t)(GPIO_GET_INDEX(port_)) << (4U * (pin_number & 0x03U)));
+ 759              		.loc 1 121 21 view .LVU175
+ 760 0082 0F25     		movs	r5, #15
+ 761 0084 05FA0CF5 		lsl	r5, r5, ip
+ 121:Drivers/STM32/stm32_gpio.cpp ****     temp |= ((uint32_t)(GPIO_GET_INDEX(port_)) << (4U * (pin_number & 0x03U)));
+ 762              		.loc 1 121 10 view .LVU176
+ 763 0088 27EA0507 		bic	r7, r7, r5
+ 764              	.LVL47:
+ 122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 765              		.loc 1 122 5 is_stmt 1 view .LVU177
+ 122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 766              		.loc 1 122 25 is_stmt 0 view .LVU178
+ 767 008c DEF80050 		ldr	r5, [lr]
+ 122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 768              		.loc 1 122 14 view .LVU179
+ 769 0090 DFF8F880 		ldr	r8, .L56+16
+ 770 0094 4545     		cmp	r5, r8
+ 771 0096 1FD0     		beq	.L43
+ 122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 772              		.loc 1 122 14 discriminator 1 view .LVU180
+ 773 0098 08F58068 		add	r8, r8, #1024
+ 774 009c 4545     		cmp	r5, r8
+ 775 009e 4ED0     		beq	.L44
+ 122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 776              		.loc 1 122 14 discriminator 3 view .LVU181
+ 777 00a0 08F58068 		add	r8, r8, #1024
+ 778 00a4 4545     		cmp	r5, r8
+ 779 00a6 4CD0     		beq	.L45
+ 122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 780              		.loc 1 122 14 discriminator 5 view .LVU182
+ 781 00a8 08F58068 		add	r8, r8, #1024
+ 782 00ac 4545     		cmp	r5, r8
+ 783 00ae 4AD0     		beq	.L46
+ 122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 784              		.loc 1 122 14 discriminator 7 view .LVU183
+ 785 00b0 08F58068 		add	r8, r8, #1024
+ 786 00b4 4545     		cmp	r5, r8
+ 787 00b6 48D0     		beq	.L47
+ARM GAS  /tmp/cctVPsmX.s 			page 23
+
+
+ 122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 788              		.loc 1 122 14 discriminator 9 view .LVU184
+ 789 00b8 08F58068 		add	r8, r8, #1024
+ 790 00bc 4545     		cmp	r5, r8
+ 791 00be 46D0     		beq	.L48
+ 122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 792              		.loc 1 122 14 discriminator 11 view .LVU185
+ 793 00c0 08F58068 		add	r8, r8, #1024
+ 794 00c4 4545     		cmp	r5, r8
+ 795 00c6 44D0     		beq	.L49
+ 122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 796              		.loc 1 122 14 discriminator 13 view .LVU186
+ 797 00c8 08F58068 		add	r8, r8, #1024
+ 798 00cc 4545     		cmp	r5, r8
+ 799 00ce 01D0     		beq	.L55
+ 122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 800              		.loc 1 122 14 view .LVU187
+ 801 00d0 0825     		movs	r5, #8
+ 802 00d2 02E0     		b	.L37
+ 803              	.L55:
+ 804 00d4 0725     		movs	r5, #7
+ 805 00d6 00E0     		b	.L37
+ 806              	.L43:
+ 807 00d8 0025     		movs	r5, #0
+ 808              	.L37:
+ 122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 809              		.loc 1 122 48 discriminator 32 view .LVU188
+ 810 00da 05FA0CFC 		lsl	ip, r5, ip
+ 122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 811              		.loc 1 122 10 discriminator 32 view .LVU189
+ 812 00de 4CEA0705 		orr	r5, ip, r7
+ 813              	.LVL48:
+ 123:Drivers/STM32/stm32_gpio.cpp **** 
+ 814              		.loc 1 123 5 is_stmt 1 discriminator 32 view .LVU190
+ 123:Drivers/STM32/stm32_gpio.cpp **** 
+ 815              		.loc 1 123 38 is_stmt 0 discriminator 32 view .LVU191
+ 816 00e2 0236     		adds	r6, r6, #2
+ 817 00e4 274F     		ldr	r7, .L56+8
+ 818 00e6 47F82650 		str	r5, [r7, r6, lsl #2]
+ 126:Drivers/STM32/stm32_gpio.cpp ****         EXTI->RTSR |= (uint32_t)pin_mask_;
+ 819              		.loc 1 126 5 is_stmt 1 discriminator 32 view .LVU192
+ 820 00ea 0029     		cmp	r1, #0
+ 821 00ec 33D0     		beq	.L38
+ 127:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 822              		.loc 1 127 9 view .LVU193
+ 127:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 823              		.loc 1 127 20 is_stmt 0 view .LVU194
+ 824 00ee 264D     		ldr	r5, .L56+12
+ 825              	.LVL49:
+ 127:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 826              		.loc 1 127 20 view .LVU195
+ 827 00f0 A968     		ldr	r1, [r5, #8]
+ 828              	.LVL50:
+ 127:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 829              		.loc 1 127 33 view .LVU196
+ 830 00f2 BEF80460 		ldrh	r6, [lr, #4]
+ 831              	.LVL51:
+ARM GAS  /tmp/cctVPsmX.s 			page 24
+
+
+ 127:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 832              		.loc 1 127 20 view .LVU197
+ 833 00f6 3143     		orrs	r1, r1, r6
+ 834 00f8 A960     		str	r1, [r5, #8]
+ 835              	.LVL52:
+ 836              	.L39:
+ 132:Drivers/STM32/stm32_gpio.cpp ****         EXTI->FTSR |= (uint32_t)pin_mask_;
+ 837              		.loc 1 132 5 is_stmt 1 view .LVU198
+ 838 00fa 002A     		cmp	r2, #0
+ 839 00fc 33D0     		beq	.L40
+ 133:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 840              		.loc 1 133 9 view .LVU199
+ 133:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 841              		.loc 1 133 20 is_stmt 0 view .LVU200
+ 842 00fe 2249     		ldr	r1, .L56+12
+ 843 0100 CA68     		ldr	r2, [r1, #12]
+ 844              	.LVL53:
+ 133:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 845              		.loc 1 133 33 view .LVU201
+ 846 0102 BEF80450 		ldrh	r5, [lr, #4]
+ 133:Drivers/STM32/stm32_gpio.cpp ****     } else {
+ 847              		.loc 1 133 20 view .LVU202
+ 848 0106 2A43     		orrs	r2, r2, r5
+ 849 0108 CA60     		str	r2, [r1, #12]
+ 850              	.L41:
+ 138:Drivers/STM32/stm32_gpio.cpp ****     EXTI->IMR |= (uint32_t)pin_mask_;
+ 851              		.loc 1 138 5 is_stmt 1 view .LVU203
+ 138:Drivers/STM32/stm32_gpio.cpp ****     EXTI->IMR |= (uint32_t)pin_mask_;
+ 852              		.loc 1 138 15 is_stmt 0 view .LVU204
+ 853 010a 1F4A     		ldr	r2, .L56+12
+ 854 010c 5168     		ldr	r1, [r2, #4]
+ 138:Drivers/STM32/stm32_gpio.cpp ****     EXTI->IMR |= (uint32_t)pin_mask_;
+ 855              		.loc 1 138 30 view .LVU205
+ 856 010e BEF80450 		ldrh	r5, [lr, #4]
+ 138:Drivers/STM32/stm32_gpio.cpp ****     EXTI->IMR |= (uint32_t)pin_mask_;
+ 857              		.loc 1 138 15 view .LVU206
+ 858 0112 21EA0501 		bic	r1, r1, r5
+ 859 0116 5160     		str	r1, [r2, #4]
+ 139:Drivers/STM32/stm32_gpio.cpp **** 
+ 860              		.loc 1 139 5 is_stmt 1 view .LVU207
+ 139:Drivers/STM32/stm32_gpio.cpp **** 
+ 861              		.loc 1 139 15 is_stmt 0 view .LVU208
+ 862 0118 1168     		ldr	r1, [r2]
+ 139:Drivers/STM32/stm32_gpio.cpp **** 
+ 863              		.loc 1 139 28 view .LVU209
+ 864 011a BEF80450 		ldrh	r5, [lr, #4]
+ 139:Drivers/STM32/stm32_gpio.cpp **** 
+ 865              		.loc 1 139 15 view .LVU210
+ 866 011e 2943     		orrs	r1, r1, r5
+ 867 0120 1160     		str	r1, [r2]
+ 142:Drivers/STM32/stm32_gpio.cpp ****     
+ 868              		.loc 1 142 5 is_stmt 1 view .LVU211
+ 869 0122 BEF80410 		ldrh	r1, [lr, #4]
+ 870 0126 5161     		str	r1, [r2, #20]
+ 144:Drivers/STM32/stm32_gpio.cpp ****     subscription.callback = callback;
+ 871              		.loc 1 144 5 view .LVU212
+ 144:Drivers/STM32/stm32_gpio.cpp ****     subscription.callback = callback;
+ARM GAS  /tmp/cctVPsmX.s 			page 25
+
+
+ 872              		.loc 1 144 22 is_stmt 0 view .LVU213
+ 873 0128 144A     		ldr	r2, .L56
+ 874 012a 04EB4401 		add	r1, r4, r4, lsl #1
+ 875 012e 02EB8101 		add	r1, r2, r1, lsl #2
+ 876 0132 089D     		ldr	r5, [sp, #32]
+ 877 0134 8D60     		str	r5, [r1, #8]
+ 145:Drivers/STM32/stm32_gpio.cpp ****     return true;
+ 878              		.loc 1 145 5 is_stmt 1 view .LVU214
+ 145:Drivers/STM32/stm32_gpio.cpp ****     return true;
+ 879              		.loc 1 145 27 is_stmt 0 view .LVU215
+ 880 0136 4B60     		str	r3, [r1, #4]
+ 146:Drivers/STM32/stm32_gpio.cpp **** }
+ 881              		.loc 1 146 5 is_stmt 1 view .LVU216
+ 882              	.LVL54:
+ 883              	.L36:
+ 147:Drivers/STM32/stm32_gpio.cpp **** 
+ 884              		.loc 1 147 1 is_stmt 0 view .LVU217
+ 885 0138 02B0     		add	sp, sp, #8
+ 886              	.LCFI5:
+ 887              		.cfi_remember_state
+ 888              		.cfi_def_cfa_offset 24
+ 889              		@ sp needed
+ 890 013a BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 891              	.LVL55:
+ 892              	.L44:
+ 893              	.LCFI6:
+ 894              		.cfi_restore_state
+ 122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
+ 895              		.loc 1 122 14 view .LVU218
+ 896 013e 0125     		movs	r5, #1
+ 897 0140 CBE7     		b	.L37
+ 898              	.L45:
+ 899 0142 0225     		movs	r5, #2
+ 900 0144 C9E7     		b	.L37
+ 901              	.L46:
+ 902 0146 0325     		movs	r5, #3
+ 903 0148 C7E7     		b	.L37
+ 904              	.L47:
+ 905 014a 0425     		movs	r5, #4
+ 906 014c C5E7     		b	.L37
+ 907              	.L48:
+ 908 014e 0525     		movs	r5, #5
+ 909 0150 C3E7     		b	.L37
+ 910              	.L49:
+ 911 0152 0625     		movs	r5, #6
+ 912 0154 C1E7     		b	.L37
+ 913              	.LVL56:
+ 914              	.L38:
+ 129:Drivers/STM32/stm32_gpio.cpp ****     }
+ 915              		.loc 1 129 9 is_stmt 1 view .LVU219
+ 129:Drivers/STM32/stm32_gpio.cpp ****     }
+ 916              		.loc 1 129 20 is_stmt 0 view .LVU220
+ 917 0156 0C4D     		ldr	r5, .L56+12
+ 918              	.LVL57:
+ 129:Drivers/STM32/stm32_gpio.cpp ****     }
+ 919              		.loc 1 129 20 view .LVU221
+ 920 0158 A968     		ldr	r1, [r5, #8]
+ARM GAS  /tmp/cctVPsmX.s 			page 26
+
+
+ 921              	.LVL58:
+ 129:Drivers/STM32/stm32_gpio.cpp ****     }
+ 922              		.loc 1 129 35 view .LVU222
+ 923 015a BEF80460 		ldrh	r6, [lr, #4]
+ 924              	.LVL59:
+ 129:Drivers/STM32/stm32_gpio.cpp ****     }
+ 925              		.loc 1 129 20 view .LVU223
+ 926 015e 21EA0601 		bic	r1, r1, r6
+ 927 0162 A960     		str	r1, [r5, #8]
+ 928              	.LVL60:
+ 129:Drivers/STM32/stm32_gpio.cpp ****     }
+ 929              		.loc 1 129 20 view .LVU224
+ 930 0164 C9E7     		b	.L39
+ 931              	.L40:
+ 135:Drivers/STM32/stm32_gpio.cpp ****     }
+ 932              		.loc 1 135 9 is_stmt 1 view .LVU225
+ 135:Drivers/STM32/stm32_gpio.cpp ****     }
+ 933              		.loc 1 135 20 is_stmt 0 view .LVU226
+ 934 0166 0849     		ldr	r1, .L56+12
+ 935 0168 CA68     		ldr	r2, [r1, #12]
+ 936              	.LVL61:
+ 135:Drivers/STM32/stm32_gpio.cpp ****     }
+ 937              		.loc 1 135 35 view .LVU227
+ 938 016a BEF80450 		ldrh	r5, [lr, #4]
+ 135:Drivers/STM32/stm32_gpio.cpp ****     }
+ 939              		.loc 1 135 20 view .LVU228
+ 940 016e 22EA0502 		bic	r2, r2, r5
+ 941 0172 CA60     		str	r2, [r1, #12]
+ 942 0174 C9E7     		b	.L41
+ 943              	.LVL62:
+ 944              	.L42:
+ 107:Drivers/STM32/stm32_gpio.cpp ****     }
+ 945              		.loc 1 107 16 view .LVU229
+ 946 0176 0020     		movs	r0, #0
+ 947              	.LVL63:
+ 107:Drivers/STM32/stm32_gpio.cpp ****     }
+ 948              		.loc 1 107 16 view .LVU230
+ 949 0178 DEE7     		b	.L36
+ 950              	.L57:
+ 951 017a 00BF     		.align	2
+ 952              	.L56:
+ 953 017c 00000000 		.word	.LANCHOR1
+ 954 0180 00380240 		.word	1073887232
+ 955 0184 00380140 		.word	1073821696
+ 956 0188 003C0140 		.word	1073822720
+ 957 018c 00000240 		.word	1073872896
+ 958              		.cfi_endproc
+ 959              	.LFE146:
+ 960              		.cantunwind
+ 961              		.fnend
+ 963              		.section	.text._ZN9Stm32Gpio11unsubscribeEv,"ax",%progbits
+ 964              		.align	1
+ 965              		.global	_ZN9Stm32Gpio11unsubscribeEv
+ 966              		.syntax unified
+ 967              		.thumb
+ 968              		.thumb_func
+ 970              	_ZN9Stm32Gpio11unsubscribeEv:
+ARM GAS  /tmp/cctVPsmX.s 			page 27
+
+
+ 971              		.fnstart
+ 972              	.LVL64:
+ 973              	.LFB147:
+ 149:Drivers/STM32/stm32_gpio.cpp ****     uint32_t pin_number = get_pin_number();
+ 974              		.loc 1 149 31 is_stmt 1 view -0
+ 975              		.cfi_startproc
+ 976              		@ args = 0, pretend = 0, frame = 0
+ 977              		@ frame_needed = 0, uses_anonymous_args = 0
+ 978              		@ link register save eliminated.
+ 150:Drivers/STM32/stm32_gpio.cpp ****     if (pin_number >= N_EXTI) {
+ 979              		.loc 1 150 5 view .LVU232
+ 980              	.LBB118:
+ 981              	.LBI118:
+  68:Drivers/STM32/stm32_gpio.hpp ****         uint16_t pin_number = 0;
+ 982              		.loc 2 68 14 view .LVU233
+ 983              	.LBB119:
+  69:Drivers/STM32/stm32_gpio.hpp ****         uint16_t pin_mask = pin_mask_ >> 1;
+ 984              		.loc 2 69 9 view .LVU234
+  70:Drivers/STM32/stm32_gpio.hpp ****         while (pin_mask) {
+ 985              		.loc 2 70 9 view .LVU235
+  70:Drivers/STM32/stm32_gpio.hpp ****         while (pin_mask) {
+ 986              		.loc 2 70 29 is_stmt 0 view .LVU236
+ 987 0000 8188     		ldrh	r1, [r0, #4]
+  70:Drivers/STM32/stm32_gpio.hpp ****         while (pin_mask) {
+ 988              		.loc 2 70 18 view .LVU237
+ 989 0002 4A08     		lsrs	r2, r1, #1
+ 990              	.LVL65:
+  69:Drivers/STM32/stm32_gpio.hpp ****         uint16_t pin_mask = pin_mask_ >> 1;
+ 991              		.loc 2 69 18 view .LVU238
+ 992 0004 0023     		movs	r3, #0
+ 993 0006 02E0     		b	.L60
+ 994              	.LVL66:
+ 995              	.L66:
+  72:Drivers/STM32/stm32_gpio.hpp ****             pin_number++;
+ 996              		.loc 2 72 13 is_stmt 1 view .LVU239
+  72:Drivers/STM32/stm32_gpio.hpp ****             pin_number++;
+ 997              		.loc 2 72 22 is_stmt 0 view .LVU240
+ 998 0008 5208     		lsrs	r2, r2, #1
+ 999              	.LVL67:
+  73:Drivers/STM32/stm32_gpio.hpp ****         }
+ 1000              		.loc 2 73 13 is_stmt 1 view .LVU241
+  73:Drivers/STM32/stm32_gpio.hpp ****         }
+ 1001              		.loc 2 73 23 is_stmt 0 view .LVU242
+ 1002 000a 0133     		adds	r3, r3, #1
+ 1003              	.LVL68:
+  73:Drivers/STM32/stm32_gpio.hpp ****         }
+ 1004              		.loc 2 73 23 view .LVU243
+ 1005 000c 9BB2     		uxth	r3, r3
+ 1006              	.LVL69:
+ 1007              	.L60:
+  71:Drivers/STM32/stm32_gpio.hpp ****             pin_mask >>= 1;
+ 1008              		.loc 2 71 9 is_stmt 1 view .LVU244
+  71:Drivers/STM32/stm32_gpio.hpp ****             pin_mask >>= 1;
+ 1009              		.loc 2 71 16 view .LVU245
+ 1010 000e 002A     		cmp	r2, #0
+ 1011 0010 FAD1     		bne	.L66
+ 1012              		.loc 2 75 9 view .LVU246
+ARM GAS  /tmp/cctVPsmX.s 			page 28
+
+
+ 1013              	.LVL70:
+ 1014              		.loc 2 75 9 is_stmt 0 view .LVU247
+ 1015              	.LBE119:
+ 1016              	.LBE118:
+ 150:Drivers/STM32/stm32_gpio.cpp ****     if (pin_number >= N_EXTI) {
+ 1017              		.loc 1 150 42 view .LVU248
+ 1018 0012 1A46     		mov	r2, r3
+ 1019              	.LVL71:
+ 151:Drivers/STM32/stm32_gpio.cpp ****         return; // invalid pin number
+ 1020              		.loc 1 151 5 is_stmt 1 view .LVU249
+ 1021 0014 0F2B     		cmp	r3, #15
+ 1022 0016 1ED8     		bhi	.L63
+ 149:Drivers/STM32/stm32_gpio.cpp ****     uint32_t pin_number = get_pin_number();
+ 1023              		.loc 1 149 31 is_stmt 0 view .LVU250
+ 1024 0018 10B4     		push	{r4}
+ 1025              	.LCFI7:
+ 1026              		.cfi_def_cfa_offset 4
+ 1027              		.cfi_offset 4, -4
+ 155:Drivers/STM32/stm32_gpio.cpp **** 
+ 1028              		.loc 1 155 5 is_stmt 1 view .LVU251
+ 1029              	.LVL72:
+ 157:Drivers/STM32/stm32_gpio.cpp ****         return; // the subscription was not for this GPIO
+ 1030              		.loc 1 157 5 view .LVU252
+ 157:Drivers/STM32/stm32_gpio.cpp ****         return; // the subscription was not for this GPIO
+ 1031              		.loc 1 157 22 is_stmt 0 view .LVU253
+ 1032 001a 03EB4303 		add	r3, r3, r3, lsl #1
+ 1033 001e 0E4C     		ldr	r4, .L68
+ 1034 0020 54F82340 		ldr	r4, [r4, r3, lsl #2]
+ 157:Drivers/STM32/stm32_gpio.cpp ****         return; // the subscription was not for this GPIO
+ 1035              		.loc 1 157 30 view .LVU254
+ 1036 0024 0368     		ldr	r3, [r0]
+ 157:Drivers/STM32/stm32_gpio.cpp ****         return; // the subscription was not for this GPIO
+ 1037              		.loc 1 157 5 view .LVU255
+ 1038 0026 9C42     		cmp	r4, r3
+ 1039 0028 02D0     		beq	.L67
+ 1040              	.LVL73:
+ 1041              	.L58:
+ 169:Drivers/STM32/stm32_gpio.cpp **** 
+ 1042              		.loc 1 169 1 view .LVU256
+ 1043 002a 5DF8044B 		ldr	r4, [sp], #4
+ 1044              	.LCFI8:
+ 1045              		.cfi_remember_state
+ 1046              		.cfi_restore 4
+ 1047              		.cfi_def_cfa_offset 0
+ 1048 002e 7047     		bx	lr
+ 1049              	.LVL74:
+ 1050              	.L67:
+ 1051              	.LCFI9:
+ 1052              		.cfi_restore_state
+ 161:Drivers/STM32/stm32_gpio.cpp ****     __HAL_GPIO_EXTI_CLEAR_IT(pin_mask_);
+ 1053              		.loc 1 161 5 is_stmt 1 view .LVU257
+ 161:Drivers/STM32/stm32_gpio.cpp ****     __HAL_GPIO_EXTI_CLEAR_IT(pin_mask_);
+ 1054              		.loc 1 161 15 is_stmt 0 view .LVU258
+ 1055 0030 0A4B     		ldr	r3, .L68+4
+ 1056 0032 1C68     		ldr	r4, [r3]
+ 1057 0034 2143     		orrs	r1, r1, r4
+ 1058 0036 1960     		str	r1, [r3]
+ARM GAS  /tmp/cctVPsmX.s 			page 29
+
+
+ 162:Drivers/STM32/stm32_gpio.cpp **** 
+ 1059              		.loc 1 162 5 is_stmt 1 view .LVU259
+ 1060 0038 8188     		ldrh	r1, [r0, #4]
+ 1061 003a 5961     		str	r1, [r3, #20]
+ 166:Drivers/STM32/stm32_gpio.cpp ****     subscription.ctx = nullptr;
+ 1062              		.loc 1 166 5 view .LVU260
+ 166:Drivers/STM32/stm32_gpio.cpp ****     subscription.ctx = nullptr;
+ 1063              		.loc 1 166 27 is_stmt 0 view .LVU261
+ 1064 003c 0648     		ldr	r0, .L68
+ 1065              	.LVL75:
+ 166:Drivers/STM32/stm32_gpio.cpp ****     subscription.ctx = nullptr;
+ 1066              		.loc 1 166 27 view .LVU262
+ 1067 003e 02EB4203 		add	r3, r2, r2, lsl #1
+ 1068 0042 00EB8303 		add	r3, r0, r3, lsl #2
+ 1069 0046 0021     		movs	r1, #0
+ 1070 0048 5960     		str	r1, [r3, #4]
+ 167:Drivers/STM32/stm32_gpio.cpp ****     subscription.port = nullptr; // after this line, the subscription can be reused (possibly by an
+ 1071              		.loc 1 167 5 is_stmt 1 view .LVU263
+ 167:Drivers/STM32/stm32_gpio.cpp ****     subscription.port = nullptr; // after this line, the subscription can be reused (possibly by an
+ 1072              		.loc 1 167 22 is_stmt 0 view .LVU264
+ 1073 004a 9960     		str	r1, [r3, #8]
+ 168:Drivers/STM32/stm32_gpio.cpp **** }
+ 1074              		.loc 1 168 5 is_stmt 1 view .LVU265
+ 168:Drivers/STM32/stm32_gpio.cpp **** }
+ 1075              		.loc 1 168 23 is_stmt 0 view .LVU266
+ 1076 004c 02EB4202 		add	r2, r2, r2, lsl #1
+ 1077              	.LVL76:
+ 168:Drivers/STM32/stm32_gpio.cpp **** }
+ 1078              		.loc 1 168 23 view .LVU267
+ 1079 0050 9200     		lsls	r2, r2, #2
+ 1080 0052 8150     		str	r1, [r0, r2]
+ 1081 0054 E9E7     		b	.L58
+ 1082              	.LVL77:
+ 1083              	.L63:
+ 1084              	.LCFI10:
+ 1085              		.cfi_def_cfa_offset 0
+ 1086              		.cfi_restore 4
+ 168:Drivers/STM32/stm32_gpio.cpp **** }
+ 1087              		.loc 1 168 23 view .LVU268
+ 1088 0056 7047     		bx	lr
+ 1089              	.L69:
+ 1090              		.align	2
+ 1091              	.L68:
+ 1092 0058 00000000 		.word	.LANCHOR1
+ 1093 005c 003C0140 		.word	1073822720
+ 1094              		.cfi_endproc
+ 1095              	.LFE147:
+ 1096              		.cantunwind
+ 1097              		.fnend
+ 1099              		.section	.text._Z12maybe_handlet,"ax",%progbits
+ 1100              		.align	1
+ 1101              		.global	_Z12maybe_handlet
+ 1102              		.syntax unified
+ 1103              		.thumb
+ 1104              		.thumb_func
+ 1106              	_Z12maybe_handlet:
+ 1107              		.fnstart
+ARM GAS  /tmp/cctVPsmX.s 			page 30
+
+
+ 1108              	.LVL78:
+ 1109              	.LFB148:
+ 171:Drivers/STM32/stm32_gpio.cpp ****     if(__HAL_GPIO_EXTI_GET_IT(1 << exti_number) == RESET) {
+ 1110              		.loc 1 171 41 is_stmt 1 view -0
+ 1111              		.cfi_startproc
+ 1112              		@ args = 0, pretend = 0, frame = 0
+ 1113              		@ frame_needed = 0, uses_anonymous_args = 0
+ 171:Drivers/STM32/stm32_gpio.cpp ****     if(__HAL_GPIO_EXTI_GET_IT(1 << exti_number) == RESET) {
+ 1114              		.loc 1 171 41 is_stmt 0 view .LVU270
+ 1115 0000 08B5     		push	{r3, lr}
+ 1116              		.save {r3, lr}
+ 1117              	.LCFI11:
+ 1118              		.cfi_def_cfa_offset 8
+ 1119              		.cfi_offset 3, -8
+ 1120              		.cfi_offset 14, -4
+ 172:Drivers/STM32/stm32_gpio.cpp ****         return; // This interrupt source did not trigger the interrupt line
+ 1121              		.loc 1 172 5 is_stmt 1 view .LVU271
+ 172:Drivers/STM32/stm32_gpio.cpp ****         return; // This interrupt source did not trigger the interrupt line
+ 1122              		.loc 1 172 8 is_stmt 0 view .LVU272
+ 1123 0002 0C4B     		ldr	r3, .L73
+ 1124 0004 5A69     		ldr	r2, [r3, #20]
+ 1125 0006 0123     		movs	r3, #1
+ 1126 0008 8340     		lsls	r3, r3, r0
+ 172:Drivers/STM32/stm32_gpio.cpp ****         return; // This interrupt source did not trigger the interrupt line
+ 1127              		.loc 1 172 5 view .LVU273
+ 1128 000a 1A42     		tst	r2, r3
+ 1129 000c 11D0     		beq	.L70
+ 176:Drivers/STM32/stm32_gpio.cpp ****     
+ 1130              		.loc 1 176 5 is_stmt 1 view .LVU274
+ 1131 000e 094A     		ldr	r2, .L73
+ 1132 0010 5361     		str	r3, [r2, #20]
+ 178:Drivers/STM32/stm32_gpio.cpp ****         return;
+ 1133              		.loc 1 178 5 view .LVU275
+ 1134 0012 0F28     		cmp	r0, #15
+ 1135 0014 0DD8     		bhi	.L70
+ 182:Drivers/STM32/stm32_gpio.cpp ****     if (subscription.callback) {
+ 1136              		.loc 1 182 5 view .LVU276
+ 1137              	.LVL79:
+ 183:Drivers/STM32/stm32_gpio.cpp ****         (*subscription.callback)(subscription.ctx);
+ 1138              		.loc 1 183 5 view .LVU277
+ 183:Drivers/STM32/stm32_gpio.cpp ****         (*subscription.callback)(subscription.ctx);
+ 1139              		.loc 1 183 22 is_stmt 0 view .LVU278
+ 1140 0016 00EB4003 		add	r3, r0, r0, lsl #1
+ 1141 001a 074A     		ldr	r2, .L73+4
+ 1142 001c 02EB8303 		add	r3, r2, r3, lsl #2
+ 1143 0020 5A68     		ldr	r2, [r3, #4]
+ 183:Drivers/STM32/stm32_gpio.cpp ****         (*subscription.callback)(subscription.ctx);
+ 1144              		.loc 1 183 5 view .LVU279
+ 1145 0022 32B1     		cbz	r2, .L70
+ 184:Drivers/STM32/stm32_gpio.cpp ****     }
+ 1146              		.loc 1 184 9 is_stmt 1 view .LVU280
+ 184:Drivers/STM32/stm32_gpio.cpp ****     }
+ 1147              		.loc 1 184 33 is_stmt 0 view .LVU281
+ 1148 0024 00EB4000 		add	r0, r0, r0, lsl #1
+ 1149              	.LVL80:
+ 184:Drivers/STM32/stm32_gpio.cpp ****     }
+ 1150              		.loc 1 184 33 view .LVU282
+ARM GAS  /tmp/cctVPsmX.s 			page 31
+
+
+ 1151 0028 034B     		ldr	r3, .L73+4
+ 1152 002a 03EB8000 		add	r0, r3, r0, lsl #2
+ 1153 002e 8068     		ldr	r0, [r0, #8]
+ 1154 0030 9047     		blx	r2
+ 1155              	.LVL81:
+ 1156              	.L70:
+ 186:Drivers/STM32/stm32_gpio.cpp **** 
+ 1157              		.loc 1 186 1 view .LVU283
+ 1158 0032 08BD     		pop	{r3, pc}
+ 1159              	.L74:
+ 1160              		.align	2
+ 1161              	.L73:
+ 1162 0034 003C0140 		.word	1073822720
+ 1163 0038 00000000 		.word	.LANCHOR1
+ 1164              		.cfi_endproc
+ 1165              	.LFE148:
+ 1166              		.fnend
+ 1168              		.section	.text.EXTI0_IRQHandler,"ax",%progbits
+ 1169              		.align	1
+ 1170              		.global	EXTI0_IRQHandler
+ 1171              		.syntax unified
+ 1172              		.thumb
+ 1173              		.thumb_func
+ 1175              	EXTI0_IRQHandler:
+ 1176              		.fnstart
+ 1177              	.LFB149:
+ 191:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(0);
+ 1178              		.loc 1 191 29 is_stmt 1 view -0
+ 1179              		.cfi_startproc
+ 1180              		@ args = 0, pretend = 0, frame = 0
+ 1181              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1182 0000 08B5     		push	{r3, lr}
+ 1183              		.save {r3, lr}
+ 1184              	.LCFI12:
+ 1185              		.cfi_def_cfa_offset 8
+ 1186              		.cfi_offset 3, -8
+ 1187              		.cfi_offset 14, -4
+ 192:Drivers/STM32/stm32_gpio.cpp **** }
+ 1188              		.loc 1 192 5 view .LVU285
+ 192:Drivers/STM32/stm32_gpio.cpp **** }
+ 1189              		.loc 1 192 17 is_stmt 0 view .LVU286
+ 1190 0002 0020     		movs	r0, #0
+ 1191 0004 FFF7FEFF 		bl	_Z12maybe_handlet
+ 1192              	.LVL82:
+ 193:Drivers/STM32/stm32_gpio.cpp **** 
+ 1193              		.loc 1 193 1 view .LVU287
+ 1194 0008 08BD     		pop	{r3, pc}
+ 1195              		.cfi_endproc
+ 1196              	.LFE149:
+ 1197              		.fnend
+ 1199              		.section	.text.EXTI1_IRQHandler,"ax",%progbits
+ 1200              		.align	1
+ 1201              		.global	EXTI1_IRQHandler
+ 1202              		.syntax unified
+ 1203              		.thumb
+ 1204              		.thumb_func
+ 1206              	EXTI1_IRQHandler:
+ARM GAS  /tmp/cctVPsmX.s 			page 32
+
+
+ 1207              		.fnstart
+ 1208              	.LFB150:
+ 196:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(1);
+ 1209              		.loc 1 196 29 is_stmt 1 view -0
+ 1210              		.cfi_startproc
+ 1211              		@ args = 0, pretend = 0, frame = 0
+ 1212              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1213 0000 08B5     		push	{r3, lr}
+ 1214              		.save {r3, lr}
+ 1215              	.LCFI13:
+ 1216              		.cfi_def_cfa_offset 8
+ 1217              		.cfi_offset 3, -8
+ 1218              		.cfi_offset 14, -4
+ 197:Drivers/STM32/stm32_gpio.cpp **** }
+ 1219              		.loc 1 197 5 view .LVU289
+ 197:Drivers/STM32/stm32_gpio.cpp **** }
+ 1220              		.loc 1 197 17 is_stmt 0 view .LVU290
+ 1221 0002 0120     		movs	r0, #1
+ 1222 0004 FFF7FEFF 		bl	_Z12maybe_handlet
+ 1223              	.LVL83:
+ 198:Drivers/STM32/stm32_gpio.cpp **** 
+ 1224              		.loc 1 198 1 view .LVU291
+ 1225 0008 08BD     		pop	{r3, pc}
+ 1226              		.cfi_endproc
+ 1227              	.LFE150:
+ 1228              		.fnend
+ 1230              		.section	.text.EXTI2_IRQHandler,"ax",%progbits
+ 1231              		.align	1
+ 1232              		.global	EXTI2_IRQHandler
+ 1233              		.syntax unified
+ 1234              		.thumb
+ 1235              		.thumb_func
+ 1237              	EXTI2_IRQHandler:
+ 1238              		.fnstart
+ 1239              	.LFB151:
+ 201:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(2);
+ 1240              		.loc 1 201 29 is_stmt 1 view -0
+ 1241              		.cfi_startproc
+ 1242              		@ args = 0, pretend = 0, frame = 0
+ 1243              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1244 0000 08B5     		push	{r3, lr}
+ 1245              		.save {r3, lr}
+ 1246              	.LCFI14:
+ 1247              		.cfi_def_cfa_offset 8
+ 1248              		.cfi_offset 3, -8
+ 1249              		.cfi_offset 14, -4
+ 202:Drivers/STM32/stm32_gpio.cpp **** }
+ 1250              		.loc 1 202 5 view .LVU293
+ 202:Drivers/STM32/stm32_gpio.cpp **** }
+ 1251              		.loc 1 202 17 is_stmt 0 view .LVU294
+ 1252 0002 0220     		movs	r0, #2
+ 1253 0004 FFF7FEFF 		bl	_Z12maybe_handlet
+ 1254              	.LVL84:
+ 203:Drivers/STM32/stm32_gpio.cpp **** 
+ 1255              		.loc 1 203 1 view .LVU295
+ 1256 0008 08BD     		pop	{r3, pc}
+ 1257              		.cfi_endproc
+ARM GAS  /tmp/cctVPsmX.s 			page 33
+
+
+ 1258              	.LFE151:
+ 1259              		.fnend
+ 1261              		.section	.text.EXTI3_IRQHandler,"ax",%progbits
+ 1262              		.align	1
+ 1263              		.global	EXTI3_IRQHandler
+ 1264              		.syntax unified
+ 1265              		.thumb
+ 1266              		.thumb_func
+ 1268              	EXTI3_IRQHandler:
+ 1269              		.fnstart
+ 1270              	.LFB152:
+ 206:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(3);
+ 1271              		.loc 1 206 29 is_stmt 1 view -0
+ 1272              		.cfi_startproc
+ 1273              		@ args = 0, pretend = 0, frame = 0
+ 1274              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1275 0000 08B5     		push	{r3, lr}
+ 1276              		.save {r3, lr}
+ 1277              	.LCFI15:
+ 1278              		.cfi_def_cfa_offset 8
+ 1279              		.cfi_offset 3, -8
+ 1280              		.cfi_offset 14, -4
+ 207:Drivers/STM32/stm32_gpio.cpp **** }
+ 1281              		.loc 1 207 5 view .LVU297
+ 207:Drivers/STM32/stm32_gpio.cpp **** }
+ 1282              		.loc 1 207 17 is_stmt 0 view .LVU298
+ 1283 0002 0320     		movs	r0, #3
+ 1284 0004 FFF7FEFF 		bl	_Z12maybe_handlet
+ 1285              	.LVL85:
+ 208:Drivers/STM32/stm32_gpio.cpp **** 
+ 1286              		.loc 1 208 1 view .LVU299
+ 1287 0008 08BD     		pop	{r3, pc}
+ 1288              		.cfi_endproc
+ 1289              	.LFE152:
+ 1290              		.fnend
+ 1292              		.section	.text.EXTI4_IRQHandler,"ax",%progbits
+ 1293              		.align	1
+ 1294              		.global	EXTI4_IRQHandler
+ 1295              		.syntax unified
+ 1296              		.thumb
+ 1297              		.thumb_func
+ 1299              	EXTI4_IRQHandler:
+ 1300              		.fnstart
+ 1301              	.LFB153:
+ 211:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(4);
+ 1302              		.loc 1 211 29 is_stmt 1 view -0
+ 1303              		.cfi_startproc
+ 1304              		@ args = 0, pretend = 0, frame = 0
+ 1305              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1306 0000 08B5     		push	{r3, lr}
+ 1307              		.save {r3, lr}
+ 1308              	.LCFI16:
+ 1309              		.cfi_def_cfa_offset 8
+ 1310              		.cfi_offset 3, -8
+ 1311              		.cfi_offset 14, -4
+ 212:Drivers/STM32/stm32_gpio.cpp **** }
+ 1312              		.loc 1 212 5 view .LVU301
+ARM GAS  /tmp/cctVPsmX.s 			page 34
+
+
+ 212:Drivers/STM32/stm32_gpio.cpp **** }
+ 1313              		.loc 1 212 17 is_stmt 0 view .LVU302
+ 1314 0002 0420     		movs	r0, #4
+ 1315 0004 FFF7FEFF 		bl	_Z12maybe_handlet
+ 1316              	.LVL86:
+ 213:Drivers/STM32/stm32_gpio.cpp **** 
+ 1317              		.loc 1 213 1 view .LVU303
+ 1318 0008 08BD     		pop	{r3, pc}
+ 1319              		.cfi_endproc
+ 1320              	.LFE153:
+ 1321              		.fnend
+ 1323              		.section	.text.EXTI9_5_IRQHandler,"ax",%progbits
+ 1324              		.align	1
+ 1325              		.global	EXTI9_5_IRQHandler
+ 1326              		.syntax unified
+ 1327              		.thumb
+ 1328              		.thumb_func
+ 1330              	EXTI9_5_IRQHandler:
+ 1331              		.fnstart
+ 1332              	.LFB154:
+ 216:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(5);
+ 1333              		.loc 1 216 31 is_stmt 1 view -0
+ 1334              		.cfi_startproc
+ 1335              		@ args = 0, pretend = 0, frame = 0
+ 1336              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1337 0000 08B5     		push	{r3, lr}
+ 1338              		.save {r3, lr}
+ 1339              	.LCFI17:
+ 1340              		.cfi_def_cfa_offset 8
+ 1341              		.cfi_offset 3, -8
+ 1342              		.cfi_offset 14, -4
+ 217:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(6);
+ 1343              		.loc 1 217 5 view .LVU305
+ 217:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(6);
+ 1344              		.loc 1 217 17 is_stmt 0 view .LVU306
+ 1345 0002 0520     		movs	r0, #5
+ 1346 0004 FFF7FEFF 		bl	_Z12maybe_handlet
+ 1347              	.LVL87:
+ 218:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(7);
+ 1348              		.loc 1 218 5 is_stmt 1 view .LVU307
+ 218:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(7);
+ 1349              		.loc 1 218 17 is_stmt 0 view .LVU308
+ 1350 0008 0620     		movs	r0, #6
+ 1351 000a FFF7FEFF 		bl	_Z12maybe_handlet
+ 1352              	.LVL88:
+ 219:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(8);
+ 1353              		.loc 1 219 5 is_stmt 1 view .LVU309
+ 219:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(8);
+ 1354              		.loc 1 219 17 is_stmt 0 view .LVU310
+ 1355 000e 0720     		movs	r0, #7
+ 1356 0010 FFF7FEFF 		bl	_Z12maybe_handlet
+ 1357              	.LVL89:
+ 220:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(9);
+ 1358              		.loc 1 220 5 is_stmt 1 view .LVU311
+ 220:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(9);
+ 1359              		.loc 1 220 17 is_stmt 0 view .LVU312
+ 1360 0014 0820     		movs	r0, #8
+ARM GAS  /tmp/cctVPsmX.s 			page 35
+
+
+ 1361 0016 FFF7FEFF 		bl	_Z12maybe_handlet
+ 1362              	.LVL90:
+ 221:Drivers/STM32/stm32_gpio.cpp **** }
+ 1363              		.loc 1 221 5 is_stmt 1 view .LVU313
+ 221:Drivers/STM32/stm32_gpio.cpp **** }
+ 1364              		.loc 1 221 17 is_stmt 0 view .LVU314
+ 1365 001a 0920     		movs	r0, #9
+ 1366 001c FFF7FEFF 		bl	_Z12maybe_handlet
+ 1367              	.LVL91:
+ 222:Drivers/STM32/stm32_gpio.cpp **** 
+ 1368              		.loc 1 222 1 view .LVU315
+ 1369 0020 08BD     		pop	{r3, pc}
+ 1370              		.cfi_endproc
+ 1371              	.LFE154:
+ 1372              		.fnend
+ 1374              		.section	.text.EXTI15_10_IRQHandler,"ax",%progbits
+ 1375              		.align	1
+ 1376              		.global	EXTI15_10_IRQHandler
+ 1377              		.syntax unified
+ 1378              		.thumb
+ 1379              		.thumb_func
+ 1381              	EXTI15_10_IRQHandler:
+ 1382              		.fnstart
+ 1383              	.LFB155:
+ 225:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(10);
+ 1384              		.loc 1 225 33 is_stmt 1 view -0
+ 1385              		.cfi_startproc
+ 1386              		@ args = 0, pretend = 0, frame = 0
+ 1387              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1388 0000 08B5     		push	{r3, lr}
+ 1389              		.save {r3, lr}
+ 1390              	.LCFI18:
+ 1391              		.cfi_def_cfa_offset 8
+ 1392              		.cfi_offset 3, -8
+ 1393              		.cfi_offset 14, -4
+ 226:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(11);
+ 1394              		.loc 1 226 5 view .LVU317
+ 226:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(11);
+ 1395              		.loc 1 226 17 is_stmt 0 view .LVU318
+ 1396 0002 0A20     		movs	r0, #10
+ 1397 0004 FFF7FEFF 		bl	_Z12maybe_handlet
+ 1398              	.LVL92:
+ 227:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(12);
+ 1399              		.loc 1 227 5 is_stmt 1 view .LVU319
+ 227:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(12);
+ 1400              		.loc 1 227 17 is_stmt 0 view .LVU320
+ 1401 0008 0B20     		movs	r0, #11
+ 1402 000a FFF7FEFF 		bl	_Z12maybe_handlet
+ 1403              	.LVL93:
+ 228:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(13);
+ 1404              		.loc 1 228 5 is_stmt 1 view .LVU321
+ 228:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(13);
+ 1405              		.loc 1 228 17 is_stmt 0 view .LVU322
+ 1406 000e 0C20     		movs	r0, #12
+ 1407 0010 FFF7FEFF 		bl	_Z12maybe_handlet
+ 1408              	.LVL94:
+ 229:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(14);
+ARM GAS  /tmp/cctVPsmX.s 			page 36
+
+
+ 1409              		.loc 1 229 5 is_stmt 1 view .LVU323
+ 229:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(14);
+ 1410              		.loc 1 229 17 is_stmt 0 view .LVU324
+ 1411 0014 0D20     		movs	r0, #13
+ 1412 0016 FFF7FEFF 		bl	_Z12maybe_handlet
+ 1413              	.LVL95:
+ 230:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(15);
+ 1414              		.loc 1 230 5 is_stmt 1 view .LVU325
+ 230:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(15);
+ 1415              		.loc 1 230 17 is_stmt 0 view .LVU326
+ 1416 001a 0E20     		movs	r0, #14
+ 1417 001c FFF7FEFF 		bl	_Z12maybe_handlet
+ 1418              	.LVL96:
+ 231:Drivers/STM32/stm32_gpio.cpp **** }
+ 1419              		.loc 1 231 5 is_stmt 1 view .LVU327
+ 231:Drivers/STM32/stm32_gpio.cpp **** }
+ 1420              		.loc 1 231 17 is_stmt 0 view .LVU328
+ 1421 0020 0F20     		movs	r0, #15
+ 1422 0022 FFF7FEFF 		bl	_Z12maybe_handlet
+ 1423              	.LVL97:
+ 232:Drivers/STM32/stm32_gpio.cpp **** 
+ 1424              		.loc 1 232 1 view .LVU329
+ 1425 0026 08BD     		pop	{r3, pc}
+ 1426              		.cfi_endproc
+ 1427              	.LFE155:
+ 1428              		.fnend
+ 1430              		.section	.text._GLOBAL__sub_I_subscriptions,"ax",%progbits
+ 1431              		.align	1
+ 1432              		.syntax unified
+ 1433              		.thumb
+ 1434              		.thumb_func
+ 1436              	_GLOBAL__sub_I_subscriptions:
+ 1437              		.fnstart
+ 1438              	.LFB157:
+ 1439              		.loc 1 234 1 is_stmt 1 view -0
+ 1440              		.cfi_startproc
+ 1441              		@ args = 0, pretend = 0, frame = 0
+ 1442              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1443 0000 08B5     		push	{r3, lr}
+ 1444              	.LCFI19:
+ 1445              		.cfi_def_cfa_offset 8
+ 1446              		.cfi_offset 3, -8
+ 1447              		.cfi_offset 14, -4
+ 1448              		.loc 1 234 1 is_stmt 0 view .LVU331
+ 1449 0002 4FF6FF71 		movw	r1, #65535
+ 1450 0006 0120     		movs	r0, #1
+ 1451 0008 FFF7FEFF 		bl	_Z41__static_initialization_and_destruction_0ii
+ 1452              	.LVL98:
+ 1453 000c 08BD     		pop	{r3, pc}
+ 1454              		.cfi_endproc
+ 1455              	.LFE157:
+ 1456              		.cantunwind
+ 1457              		.fnend
+ 1459              		.section	.init_array,"aw",%init_array
+ 1460              		.align	2
+ 1461 0000 00000000 		.word	_GLOBAL__sub_I_subscriptions(target1)
+ 1462              		.global	_ZN9Stm32Gpio4noneE
+ARM GAS  /tmp/cctVPsmX.s 			page 37
+
+
+ 1463              		.global	subscriptions
+ 1464              		.section	.bss._ZN9Stm32Gpio4noneE,"aw",%nobits
+ 1465              		.align	2
+ 1466              		.set	.LANCHOR0,. + 0
+ 1469              	_ZN9Stm32Gpio4noneE:
+ 1470 0000 00000000 		.space	8
+ 1470      00000000 
+ 1471              		.section	.bss.subscriptions,"aw",%nobits
+ 1472              		.align	2
+ 1473              		.set	.LANCHOR1,. + 0
+ 1476              	subscriptions:
+ 1477 0000 00000000 		.space	192
+ 1477      00000000 
+ 1477      00000000 
+ 1477      00000000 
+ 1477      00000000 
+ 1478              		.text
+ 1479              	.Letext0:
+ 1480              		.file 3 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 1481              		.file 4 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 1482              		.file 5 "ThirdParty/CMSIS/Device/ST/STM32F4xx/Include/stm32f405xx.h"
+ 1483              		.file 6 "ThirdParty/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
+ 1484              		.file 7 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h"
+ 1485              		.file 8 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ARM GAS  /tmp/cctVPsmX.s 			page 38
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 stm32_gpio.cpp
+     /tmp/cctVPsmX.s:20     .text._Z41__static_initialization_and_destruction_0ii:0000000000000000 $t
+     /tmp/cctVPsmX.s:25     .text._Z41__static_initialization_and_destruction_0ii:0000000000000000 _Z41__static_initialization_and_destruction_0ii
+     /tmp/cctVPsmX.s:67     .text._Z41__static_initialization_and_destruction_0ii:0000000000000018 $d
+.ARM.exidx.text._Z41__static_initialization_and_destruction_0ii:0000000000000000 $d
+     /tmp/cctVPsmX.s:74     .text._ZN9Stm32Gpio6configEmmm:0000000000000000 $t
+     /tmp/cctVPsmX.s:80     .text._ZN9Stm32Gpio6configEmmm:0000000000000000 _ZN9Stm32Gpio6configEmmm
+     /tmp/cctVPsmX.s:611    .text._ZN9Stm32Gpio6configEmmm:0000000000000190 $d
+.ARM.exidx.text._ZN9Stm32Gpio6configEmmm:0000000000000000 $d
+     /tmp/cctVPsmX.s:626    .text._ZN9Stm32Gpio9subscribeEbbPFvPvES0_:0000000000000000 $t
+     /tmp/cctVPsmX.s:632    .text._ZN9Stm32Gpio9subscribeEbbPFvPvES0_:0000000000000000 _ZN9Stm32Gpio9subscribeEbbPFvPvES0_
+     /tmp/cctVPsmX.s:953    .text._ZN9Stm32Gpio9subscribeEbbPFvPvES0_:000000000000017c $d
+.ARM.exidx.text._ZN9Stm32Gpio9subscribeEbbPFvPvES0_:0000000000000000 $d
+     /tmp/cctVPsmX.s:964    .text._ZN9Stm32Gpio11unsubscribeEv:0000000000000000 $t
+     /tmp/cctVPsmX.s:970    .text._ZN9Stm32Gpio11unsubscribeEv:0000000000000000 _ZN9Stm32Gpio11unsubscribeEv
+     /tmp/cctVPsmX.s:1092   .text._ZN9Stm32Gpio11unsubscribeEv:0000000000000058 $d
+.ARM.exidx.text._ZN9Stm32Gpio11unsubscribeEv:0000000000000000 $d
+     /tmp/cctVPsmX.s:1100   .text._Z12maybe_handlet:0000000000000000 $t
+     /tmp/cctVPsmX.s:1106   .text._Z12maybe_handlet:0000000000000000 _Z12maybe_handlet
+     /tmp/cctVPsmX.s:1162   .text._Z12maybe_handlet:0000000000000034 $d
+.ARM.extab.text._Z12maybe_handlet:0000000000000000 $d
+.ARM.exidx.text._Z12maybe_handlet:0000000000000000 $d
+     /tmp/cctVPsmX.s:1169   .text.EXTI0_IRQHandler:0000000000000000 $t
+     /tmp/cctVPsmX.s:1175   .text.EXTI0_IRQHandler:0000000000000000 EXTI0_IRQHandler
+ .ARM.extab.text.EXTI0_IRQHandler:0000000000000000 $d
+ .ARM.exidx.text.EXTI0_IRQHandler:0000000000000000 $d
+     /tmp/cctVPsmX.s:1200   .text.EXTI1_IRQHandler:0000000000000000 $t
+     /tmp/cctVPsmX.s:1206   .text.EXTI1_IRQHandler:0000000000000000 EXTI1_IRQHandler
+ .ARM.extab.text.EXTI1_IRQHandler:0000000000000000 $d
+ .ARM.exidx.text.EXTI1_IRQHandler:0000000000000000 $d
+     /tmp/cctVPsmX.s:1231   .text.EXTI2_IRQHandler:0000000000000000 $t
+     /tmp/cctVPsmX.s:1237   .text.EXTI2_IRQHandler:0000000000000000 EXTI2_IRQHandler
+ .ARM.extab.text.EXTI2_IRQHandler:0000000000000000 $d
+ .ARM.exidx.text.EXTI2_IRQHandler:0000000000000000 $d
+     /tmp/cctVPsmX.s:1262   .text.EXTI3_IRQHandler:0000000000000000 $t
+     /tmp/cctVPsmX.s:1268   .text.EXTI3_IRQHandler:0000000000000000 EXTI3_IRQHandler
+ .ARM.extab.text.EXTI3_IRQHandler:0000000000000000 $d
+ .ARM.exidx.text.EXTI3_IRQHandler:0000000000000000 $d
+     /tmp/cctVPsmX.s:1293   .text.EXTI4_IRQHandler:0000000000000000 $t
+     /tmp/cctVPsmX.s:1299   .text.EXTI4_IRQHandler:0000000000000000 EXTI4_IRQHandler
+ .ARM.extab.text.EXTI4_IRQHandler:0000000000000000 $d
+ .ARM.exidx.text.EXTI4_IRQHandler:0000000000000000 $d
+     /tmp/cctVPsmX.s:1324   .text.EXTI9_5_IRQHandler:0000000000000000 $t
+     /tmp/cctVPsmX.s:1330   .text.EXTI9_5_IRQHandler:0000000000000000 EXTI9_5_IRQHandler
+.ARM.extab.text.EXTI9_5_IRQHandler:0000000000000000 $d
+.ARM.exidx.text.EXTI9_5_IRQHandler:0000000000000000 $d
+     /tmp/cctVPsmX.s:1375   .text.EXTI15_10_IRQHandler:0000000000000000 $t
+     /tmp/cctVPsmX.s:1381   .text.EXTI15_10_IRQHandler:0000000000000000 EXTI15_10_IRQHandler
+.ARM.extab.text.EXTI15_10_IRQHandler:0000000000000000 $d
+.ARM.exidx.text.EXTI15_10_IRQHandler:0000000000000000 $d
+     /tmp/cctVPsmX.s:1431   .text._GLOBAL__sub_I_subscriptions:0000000000000000 $t
+     /tmp/cctVPsmX.s:1436   .text._GLOBAL__sub_I_subscriptions:0000000000000000 _GLOBAL__sub_I_subscriptions
+.ARM.exidx.text._GLOBAL__sub_I_subscriptions:0000000000000000 $d
+     /tmp/cctVPsmX.s:1460   .init_array:0000000000000000 $d
+     /tmp/cctVPsmX.s:1469   .bss._ZN9Stm32Gpio4noneE:0000000000000000 _ZN9Stm32Gpio4noneE
+     /tmp/cctVPsmX.s:1476   .bss.subscriptions:0000000000000000 subscriptions
+ARM GAS  /tmp/cctVPsmX.s 			page 39
+
+
+     /tmp/cctVPsmX.s:1465   .bss._ZN9Stm32Gpio4noneE:0000000000000000 $d
+     /tmp/cctVPsmX.s:1472   .bss.subscriptions:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+__aeabi_unwind_cpp_pr1

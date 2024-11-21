@@ -1,0 +1,2428 @@
+ARM GAS  /tmp/ccJf7vwm.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"stm32_nvm.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.HAL_FLASH_ClearError,"ax",%progbits
+  20              		.align	1
+  21              		.syntax unified
+  22              		.thumb
+  23              		.thumb_func
+  25              	HAL_FLASH_ClearError:
+  26              	.LFB133:
+  27              		.file 1 "Drivers/STM32/stm32_nvm.c"
+   1:Drivers/STM32/stm32_nvm.c **** /*
+   2:Drivers/STM32/stm32_nvm.c **** * Flash-based Non-Volatile Memory (NVM)
+   3:Drivers/STM32/stm32_nvm.c **** * 
+   4:Drivers/STM32/stm32_nvm.c **** * This file supports storing and loading persistent configuration based on
+   5:Drivers/STM32/stm32_nvm.c **** * the STM32 builtin flash memory.
+   6:Drivers/STM32/stm32_nvm.c **** *
+   7:Drivers/STM32/stm32_nvm.c **** * The STM32F405xx has 12 flash sectors of heterogeneous size. We use the last
+   8:Drivers/STM32/stm32_nvm.c **** * two sectors for configuration data. These pages have a size of 128kB each.
+   9:Drivers/STM32/stm32_nvm.c **** * Setting any bit in these sectors to 0 is always possible, but setting them
+  10:Drivers/STM32/stm32_nvm.c **** * to 1 requires erasing the whole sector.
+  11:Drivers/STM32/stm32_nvm.c **** *
+  12:Drivers/STM32/stm32_nvm.c **** * We consider each sector as an array of 64-bit fields except the first N bytes, which we
+  13:Drivers/STM32/stm32_nvm.c **** * instead use as an allocation block. The allocation block is a compact bit-field (2 bit per entry)
+  14:Drivers/STM32/stm32_nvm.c **** * that keeps track of the state of each field (erased, invalid, valid).
+  15:Drivers/STM32/stm32_nvm.c **** *
+  16:Drivers/STM32/stm32_nvm.c **** * One sector is always considered the valid (read) sector and the other one is the
+  17:Drivers/STM32/stm32_nvm.c **** * target for the next write access: they can be considered to be ping-pong or double buffred.
+  18:Drivers/STM32/stm32_nvm.c **** *
+  19:Drivers/STM32/stm32_nvm.c **** * When writing a block of data, instead of always erasing the whole writable sector the
+  20:Drivers/STM32/stm32_nvm.c **** * new data is appended in the erased area. This presumably increases flash life span.
+  21:Drivers/STM32/stm32_nvm.c **** * The writable sector is only erased if there is not enough space for the new data.
+  22:Drivers/STM32/stm32_nvm.c **** *
+  23:Drivers/STM32/stm32_nvm.c **** * On startup, if there is exactly one sector
+  24:Drivers/STM32/stm32_nvm.c **** * whose last non-erased value has the state "valid" that sector is considered
+  25:Drivers/STM32/stm32_nvm.c **** * the valid sector. In any other case the selection is undefined.
+  26:Drivers/STM32/stm32_nvm.c **** *
+  27:Drivers/STM32/stm32_nvm.c **** *
+  28:Drivers/STM32/stm32_nvm.c **** * To write a new block of data atomically we first mark all associated fields
+  29:Drivers/STM32/stm32_nvm.c **** * as "invalid" (in the allocation table) then write the data and then mark the
+  30:Drivers/STM32/stm32_nvm.c **** * fields as "valid" (in the direction of increasing address).
+  31:Drivers/STM32/stm32_nvm.c **** */
+ARM GAS  /tmp/ccJf7vwm.s 			page 2
+
+
+  32:Drivers/STM32/stm32_nvm.c **** 
+  33:Drivers/STM32/stm32_nvm.c **** #include "stm32_nvm.h"
+  34:Drivers/STM32/stm32_nvm.c **** 
+  35:Drivers/STM32/stm32_nvm.c **** #include <string.h>
+  36:Drivers/STM32/stm32_nvm.c **** 
+  37:Drivers/STM32/stm32_nvm.c **** #if defined(STM32F405xx)
+  38:Drivers/STM32/stm32_nvm.c **** 
+  39:Drivers/STM32/stm32_nvm.c **** #include <stm32f405xx.h>
+  40:Drivers/STM32/stm32_nvm.c **** #include <stm32f4xx_hal.h>
+  41:Drivers/STM32/stm32_nvm.c **** 
+  42:Drivers/STM32/stm32_nvm.c **** // refer to page 75 of datasheet:
+  43:Drivers/STM32/stm32_nvm.c **** // http://www.st.com/content/ccc/resource/technical/document/reference_manual/3d/6d/5a/66/b4/99/40/
+  44:Drivers/STM32/stm32_nvm.c **** #define FLASH_SECTOR_A FLASH_SECTOR_10
+  45:Drivers/STM32/stm32_nvm.c **** #define FLASH_SECTOR_A_BASE (const volatile uint8_t*)0x80C0000UL
+  46:Drivers/STM32/stm32_nvm.c **** #define FLASH_SECTOR_A_SIZE 0x20000UL
+  47:Drivers/STM32/stm32_nvm.c **** #define FLASH_SECTOR_B FLASH_SECTOR_11
+  48:Drivers/STM32/stm32_nvm.c **** #define FLASH_SECTOR_B_BASE (const volatile uint8_t*)0x80E0000UL
+  49:Drivers/STM32/stm32_nvm.c **** #define FLASH_SECTOR_B_SIZE 0x20000UL
+  50:Drivers/STM32/stm32_nvm.c **** 
+  51:Drivers/STM32/stm32_nvm.c **** #elif defined(STM32F722xx)
+  52:Drivers/STM32/stm32_nvm.c **** 
+  53:Drivers/STM32/stm32_nvm.c **** #include <stm32f722xx.h>
+  54:Drivers/STM32/stm32_nvm.c **** #include <stm32f7xx_hal.h>
+  55:Drivers/STM32/stm32_nvm.c **** 
+  56:Drivers/STM32/stm32_nvm.c **** // refer to page 68 of datasheet:
+  57:Drivers/STM32/stm32_nvm.c **** // https://www.st.com/resource/en/reference_manual/dm00305990-stm32f72xxx-and-stm32f73xxx-advanced-
+  58:Drivers/STM32/stm32_nvm.c **** #define FLASH_SECTOR_A FLASH_SECTOR_1
+  59:Drivers/STM32/stm32_nvm.c **** #define FLASH_SECTOR_A_BASE (const volatile uint8_t*)0x8004000UL
+  60:Drivers/STM32/stm32_nvm.c **** #define FLASH_SECTOR_A_SIZE 0x4000UL
+  61:Drivers/STM32/stm32_nvm.c **** #define FLASH_SECTOR_B FLASH_SECTOR_2
+  62:Drivers/STM32/stm32_nvm.c **** #define FLASH_SECTOR_B_BASE (const volatile uint8_t*)0x8008000UL
+  63:Drivers/STM32/stm32_nvm.c **** #define FLASH_SECTOR_B_SIZE 0x4000UL
+  64:Drivers/STM32/stm32_nvm.c **** 
+  65:Drivers/STM32/stm32_nvm.c **** #else
+  66:Drivers/STM32/stm32_nvm.c **** #error "unknown flash sector size"
+  67:Drivers/STM32/stm32_nvm.c **** #endif
+  68:Drivers/STM32/stm32_nvm.c **** 
+  69:Drivers/STM32/stm32_nvm.c **** typedef enum {
+  70:Drivers/STM32/stm32_nvm.c ****     VALID = 0,
+  71:Drivers/STM32/stm32_nvm.c ****     INVALID = 1,
+  72:Drivers/STM32/stm32_nvm.c ****     ERASED = 3
+  73:Drivers/STM32/stm32_nvm.c **** } field_state_t;
+  74:Drivers/STM32/stm32_nvm.c **** 
+  75:Drivers/STM32/stm32_nvm.c **** typedef struct {
+  76:Drivers/STM32/stm32_nvm.c ****     size_t index;               //!< next field to be written to (can be equal to n_data)
+  77:Drivers/STM32/stm32_nvm.c ****     const uint32_t sector_id;   //!< HAL ID of this sector
+  78:Drivers/STM32/stm32_nvm.c ****     const size_t n_data;        //!< number of 64-bit fields in this sector
+  79:Drivers/STM32/stm32_nvm.c ****     const size_t n_reserved;    //!< number of 64-bit fields in this sector that are reserved for t
+  80:Drivers/STM32/stm32_nvm.c ****     const volatile uint8_t* const alloc_table;
+  81:Drivers/STM32/stm32_nvm.c ****     const volatile uint64_t* const data;
+  82:Drivers/STM32/stm32_nvm.c **** } sector_t;
+  83:Drivers/STM32/stm32_nvm.c **** 
+  84:Drivers/STM32/stm32_nvm.c **** sector_t sectors[] = { {
+  85:Drivers/STM32/stm32_nvm.c ****     .sector_id = FLASH_SECTOR_A,
+  86:Drivers/STM32/stm32_nvm.c ****     .n_data = FLASH_SECTOR_A_SIZE >> 3,
+  87:Drivers/STM32/stm32_nvm.c ****     .n_reserved = (FLASH_SECTOR_A_SIZE >> 3) >> 5,
+  88:Drivers/STM32/stm32_nvm.c ****     .alloc_table = FLASH_SECTOR_A_BASE,
+ARM GAS  /tmp/ccJf7vwm.s 			page 3
+
+
+  89:Drivers/STM32/stm32_nvm.c ****     .data = (uint64_t *)FLASH_SECTOR_A_BASE
+  90:Drivers/STM32/stm32_nvm.c **** }, {
+  91:Drivers/STM32/stm32_nvm.c ****     .sector_id = FLASH_SECTOR_B,
+  92:Drivers/STM32/stm32_nvm.c ****     .n_data = FLASH_SECTOR_B_SIZE >> 3,
+  93:Drivers/STM32/stm32_nvm.c ****     .n_reserved = (FLASH_SECTOR_B_SIZE >> 3) >> 5,
+  94:Drivers/STM32/stm32_nvm.c ****     .alloc_table = FLASH_SECTOR_B_BASE,
+  95:Drivers/STM32/stm32_nvm.c ****     .data = (uint64_t *)FLASH_SECTOR_B_BASE
+  96:Drivers/STM32/stm32_nvm.c **** }};
+  97:Drivers/STM32/stm32_nvm.c **** 
+  98:Drivers/STM32/stm32_nvm.c **** uint8_t read_sector_; // 0 or 1 to indicate which sector to read from and which to write to
+  99:Drivers/STM32/stm32_nvm.c **** size_t n_staging_area_; // number of 64-bit values that were reserved using NVM_start_write
+ 100:Drivers/STM32/stm32_nvm.c **** size_t n_valid_; // number of 64-bit fields that can be read
+ 101:Drivers/STM32/stm32_nvm.c **** 
+ 102:Drivers/STM32/stm32_nvm.c **** static const uint32_t FLASH_ERR_FLAGS =
+ 103:Drivers/STM32/stm32_nvm.c **** #if defined(FLASH_FLAG_EOP)
+ 104:Drivers/STM32/stm32_nvm.c ****         FLASH_FLAG_EOP |
+ 105:Drivers/STM32/stm32_nvm.c **** #endif
+ 106:Drivers/STM32/stm32_nvm.c **** #if defined(FLASH_FLAG_OPERR)
+ 107:Drivers/STM32/stm32_nvm.c ****         FLASH_FLAG_OPERR |
+ 108:Drivers/STM32/stm32_nvm.c **** #endif
+ 109:Drivers/STM32/stm32_nvm.c **** #if defined(FLASH_FLAG_WRPERR)
+ 110:Drivers/STM32/stm32_nvm.c ****         FLASH_FLAG_WRPERR |
+ 111:Drivers/STM32/stm32_nvm.c **** #endif
+ 112:Drivers/STM32/stm32_nvm.c **** #if defined(FLASH_FLAG_PGAERR)
+ 113:Drivers/STM32/stm32_nvm.c ****         FLASH_FLAG_PGAERR |
+ 114:Drivers/STM32/stm32_nvm.c **** #endif
+ 115:Drivers/STM32/stm32_nvm.c **** #if defined(FLASH_FLAG_PGSERR)
+ 116:Drivers/STM32/stm32_nvm.c ****         FLASH_FLAG_PGSERR |
+ 117:Drivers/STM32/stm32_nvm.c **** #endif
+ 118:Drivers/STM32/stm32_nvm.c **** #if defined(FLASH_FLAG_PGPERR)
+ 119:Drivers/STM32/stm32_nvm.c ****         FLASH_FLAG_PGPERR |
+ 120:Drivers/STM32/stm32_nvm.c **** #endif
+ 121:Drivers/STM32/stm32_nvm.c ****         0;
+ 122:Drivers/STM32/stm32_nvm.c **** 
+ 123:Drivers/STM32/stm32_nvm.c **** static void HAL_FLASH_ClearError() {
+  28              		.loc 1 123 36 view -0
+  29              		.cfi_startproc
+  30              		@ args = 0, pretend = 0, frame = 0
+  31              		@ frame_needed = 0, uses_anonymous_args = 0
+  32              		@ link register save eliminated.
+ 124:Drivers/STM32/stm32_nvm.c ****     __HAL_FLASH_CLEAR_FLAG(FLASH_ERR_FLAGS);
+  33              		.loc 1 124 5 view .LVU1
+  34 0000 014B     		ldr	r3, .L2
+  35 0002 F322     		movs	r2, #243
+  36 0004 DA60     		str	r2, [r3, #12]
+ 125:Drivers/STM32/stm32_nvm.c **** }
+  37              		.loc 1 125 1 is_stmt 0 view .LVU2
+  38 0006 7047     		bx	lr
+  39              	.L3:
+  40              		.align	2
+  41              	.L2:
+  42 0008 003C0240 		.word	1073888256
+  43              		.cfi_endproc
+  44              	.LFE133:
+  46              		.section	.text.erase,"ax",%progbits
+  47              		.align	1
+  48              		.global	erase
+ARM GAS  /tmp/ccJf7vwm.s 			page 4
+
+
+  49              		.syntax unified
+  50              		.thumb
+  51              		.thumb_func
+  53              	erase:
+  54              	.LVL0:
+  55              	.LFB134:
+ 126:Drivers/STM32/stm32_nvm.c **** 
+ 127:Drivers/STM32/stm32_nvm.c **** 
+ 128:Drivers/STM32/stm32_nvm.c **** // @brief Erases a flash sector. This sets all bits in the sector to 1.
+ 129:Drivers/STM32/stm32_nvm.c **** // The sector's current index is reset to the minimum value (n_reserved).
+ 130:Drivers/STM32/stm32_nvm.c **** // @returns 0 on success or a non-zero error code otherwise
+ 131:Drivers/STM32/stm32_nvm.c **** int erase(sector_t *sector) {
+  56              		.loc 1 131 29 is_stmt 1 view -0
+  57              		.cfi_startproc
+  58              		@ args = 0, pretend = 0, frame = 24
+  59              		@ frame_needed = 0, uses_anonymous_args = 0
+  60              		.loc 1 131 29 is_stmt 0 view .LVU4
+  61 0000 10B5     		push	{r4, lr}
+  62              	.LCFI0:
+  63              		.cfi_def_cfa_offset 8
+  64              		.cfi_offset 4, -8
+  65              		.cfi_offset 14, -4
+  66 0002 86B0     		sub	sp, sp, #24
+  67              	.LCFI1:
+  68              		.cfi_def_cfa_offset 32
+  69 0004 0446     		mov	r4, r0
+ 132:Drivers/STM32/stm32_nvm.c ****     FLASH_EraseInitTypeDef erase_struct = {
+  70              		.loc 1 132 5 is_stmt 1 view .LVU5
+  71              		.loc 1 132 28 is_stmt 0 view .LVU6
+  72 0006 0023     		movs	r3, #0
+  73 0008 0193     		str	r3, [sp, #4]
+  74 000a 0293     		str	r3, [sp, #8]
+  75 000c 0393     		str	r3, [sp, #12]
+  76 000e 0493     		str	r3, [sp, #16]
+  77 0010 0593     		str	r3, [sp, #20]
+ 133:Drivers/STM32/stm32_nvm.c ****         .TypeErase = FLASH_TYPEERASE_SECTORS,
+ 134:Drivers/STM32/stm32_nvm.c **** #if defined(FLASH_OPTCR_nDBANK)
+ 135:Drivers/STM32/stm32_nvm.c ****         .Banks = 0, // only used for mass erase
+ 136:Drivers/STM32/stm32_nvm.c **** #endif
+ 137:Drivers/STM32/stm32_nvm.c ****         .Sector = sector->sector_id,
+  78              		.loc 1 137 25 view .LVU7
+  79 0012 4368     		ldr	r3, [r0, #4]
+ 132:Drivers/STM32/stm32_nvm.c ****     FLASH_EraseInitTypeDef erase_struct = {
+  80              		.loc 1 132 28 view .LVU8
+  81 0014 0393     		str	r3, [sp, #12]
+  82 0016 0123     		movs	r3, #1
+  83 0018 0493     		str	r3, [sp, #16]
+  84 001a 0223     		movs	r3, #2
+  85 001c 0593     		str	r3, [sp, #20]
+ 138:Drivers/STM32/stm32_nvm.c ****         .NbSectors = 1,
+ 139:Drivers/STM32/stm32_nvm.c ****         .VoltageRange = FLASH_VOLTAGE_RANGE_3
+ 140:Drivers/STM32/stm32_nvm.c ****     };
+ 141:Drivers/STM32/stm32_nvm.c ****     HAL_FLASH_Unlock();
+  86              		.loc 1 141 5 is_stmt 1 view .LVU9
+  87 001e FFF7FEFF 		bl	HAL_FLASH_Unlock
+  88              	.LVL1:
+ 142:Drivers/STM32/stm32_nvm.c ****     HAL_FLASH_ClearError();
+ARM GAS  /tmp/ccJf7vwm.s 			page 5
+
+
+  89              		.loc 1 142 5 view .LVU10
+  90 0022 FFF7FEFF 		bl	HAL_FLASH_ClearError
+  91              	.LVL2:
+ 143:Drivers/STM32/stm32_nvm.c ****     uint32_t sector_error;
+  92              		.loc 1 143 5 view .LVU11
+ 144:Drivers/STM32/stm32_nvm.c ****     if (HAL_FLASHEx_Erase(&erase_struct, &sector_error) != HAL_OK)
+  93              		.loc 1 144 5 view .LVU12
+  94              		.loc 1 144 9 is_stmt 0 view .LVU13
+  95 0026 6946     		mov	r1, sp
+  96 0028 01A8     		add	r0, sp, #4
+  97 002a FFF7FEFF 		bl	HAL_FLASHEx_Erase
+  98              	.LVL3:
+  99              		.loc 1 144 8 view .LVU14
+ 100 002e 30B9     		cbnz	r0, .L8
+ 145:Drivers/STM32/stm32_nvm.c ****         goto fail;
+ 146:Drivers/STM32/stm32_nvm.c ****     sector->index = sector->n_reserved;
+ 101              		.loc 1 146 5 is_stmt 1 view .LVU15
+ 102              		.loc 1 146 27 is_stmt 0 view .LVU16
+ 103 0030 E368     		ldr	r3, [r4, #12]
+ 104              		.loc 1 146 19 view .LVU17
+ 105 0032 2360     		str	r3, [r4]
+ 147:Drivers/STM32/stm32_nvm.c **** 
+ 148:Drivers/STM32/stm32_nvm.c ****     HAL_FLASH_Lock();
+ 106              		.loc 1 148 5 is_stmt 1 view .LVU18
+ 107 0034 FFF7FEFF 		bl	HAL_FLASH_Lock
+ 108              	.LVL4:
+ 149:Drivers/STM32/stm32_nvm.c ****     return 0;
+ 109              		.loc 1 149 5 view .LVU19
+ 110              		.loc 1 149 12 is_stmt 0 view .LVU20
+ 111 0038 0020     		movs	r0, #0
+ 112              	.L4:
+ 150:Drivers/STM32/stm32_nvm.c **** fail:
+ 151:Drivers/STM32/stm32_nvm.c ****     HAL_FLASH_Lock();
+ 152:Drivers/STM32/stm32_nvm.c ****     //printf("erase failed: %u \r\n", HAL_FLASH_GetError());
+ 153:Drivers/STM32/stm32_nvm.c ****     return HAL_FLASH_GetError(); // non-zero
+ 154:Drivers/STM32/stm32_nvm.c **** }
+ 113              		.loc 1 154 1 view .LVU21
+ 114 003a 06B0     		add	sp, sp, #24
+ 115              	.LCFI2:
+ 116              		.cfi_remember_state
+ 117              		.cfi_def_cfa_offset 8
+ 118              		@ sp needed
+ 119 003c 10BD     		pop	{r4, pc}
+ 120              	.LVL5:
+ 121              	.L8:
+ 122              	.LCFI3:
+ 123              		.cfi_restore_state
+ 145:Drivers/STM32/stm32_nvm.c ****     sector->index = sector->n_reserved;
+ 124              		.loc 1 145 9 is_stmt 1 view .LVU22
+ 125              	.LDL1:
+ 151:Drivers/STM32/stm32_nvm.c ****     //printf("erase failed: %u \r\n", HAL_FLASH_GetError());
+ 126              		.loc 1 151 5 view .LVU23
+ 127 003e FFF7FEFF 		bl	HAL_FLASH_Lock
+ 128              	.LVL6:
+ 153:Drivers/STM32/stm32_nvm.c **** }
+ 129              		.loc 1 153 5 view .LVU24
+ 153:Drivers/STM32/stm32_nvm.c **** }
+ARM GAS  /tmp/ccJf7vwm.s 			page 6
+
+
+ 130              		.loc 1 153 12 is_stmt 0 view .LVU25
+ 131 0042 FFF7FEFF 		bl	HAL_FLASH_GetError
+ 132              	.LVL7:
+ 133 0046 F8E7     		b	.L4
+ 134              		.cfi_endproc
+ 135              	.LFE134:
+ 137              		.section	.text.set_allocation_state,"ax",%progbits
+ 138              		.align	1
+ 139              		.global	set_allocation_state
+ 140              		.syntax unified
+ 141              		.thumb
+ 142              		.thumb_func
+ 144              	set_allocation_state:
+ 145              	.LVL8:
+ 146              	.LFB135:
+ 155:Drivers/STM32/stm32_nvm.c **** 
+ 156:Drivers/STM32/stm32_nvm.c **** 
+ 157:Drivers/STM32/stm32_nvm.c **** // @brief Writes states into the allocation table.
+ 158:Drivers/STM32/stm32_nvm.c **** // The write operation goes in the direction of increasing indices.
+ 159:Drivers/STM32/stm32_nvm.c **** // @param state: 11: erased, 10: writing, 00: valid data
+ 160:Drivers/STM32/stm32_nvm.c **** // @returns 0 on success or a non-zero error code otherwise
+ 161:Drivers/STM32/stm32_nvm.c **** int set_allocation_state(sector_t *sector, size_t index, size_t count, field_state_t state) {
+ 147              		.loc 1 161 93 is_stmt 1 view -0
+ 148              		.cfi_startproc
+ 149              		@ args = 0, pretend = 0, frame = 0
+ 150              		@ frame_needed = 0, uses_anonymous_args = 0
+ 151              		.loc 1 161 93 is_stmt 0 view .LVU27
+ 152 0000 2DE9F041 		push	{r4, r5, r6, r7, r8, lr}
+ 153              	.LCFI4:
+ 154              		.cfi_def_cfa_offset 24
+ 155              		.cfi_offset 4, -24
+ 156              		.cfi_offset 5, -20
+ 157              		.cfi_offset 6, -16
+ 158              		.cfi_offset 7, -12
+ 159              		.cfi_offset 8, -8
+ 160              		.cfi_offset 14, -4
+ 161 0004 8046     		mov	r8, r0
+ 162:Drivers/STM32/stm32_nvm.c ****     if (index < sector->n_reserved)
+ 162              		.loc 1 162 5 is_stmt 1 view .LVU28
+ 163              		.loc 1 162 23 is_stmt 0 view .LVU29
+ 164 0006 C068     		ldr	r0, [r0, #12]
+ 165              	.LVL9:
+ 166              		.loc 1 162 8 view .LVU30
+ 167 0008 8842     		cmp	r0, r1
+ 168 000a 4ED8     		bhi	.L15
+ 163:Drivers/STM32/stm32_nvm.c ****         return -1;
+ 164:Drivers/STM32/stm32_nvm.c ****     if (index + count >= sector->n_data)
+ 169              		.loc 1 164 5 is_stmt 1 view .LVU31
+ 170              		.loc 1 164 15 is_stmt 0 view .LVU32
+ 171 000c 8818     		adds	r0, r1, r2
+ 172              		.loc 1 164 32 view .LVU33
+ 173 000e D8F80840 		ldr	r4, [r8, #8]
+ 174              		.loc 1 164 8 view .LVU34
+ 175 0012 A042     		cmp	r0, r4
+ 176 0014 4CD2     		bcs	.L16
+ 165:Drivers/STM32/stm32_nvm.c ****         return -1;
+ 166:Drivers/STM32/stm32_nvm.c **** 
+ARM GAS  /tmp/ccJf7vwm.s 			page 7
+
+
+ 167:Drivers/STM32/stm32_nvm.c ****     // expand state to state for 4 values
+ 168:Drivers/STM32/stm32_nvm.c ****     const uint8_t states = (state << 0) | (state << 2) | (state << 4) | (state << 6);
+ 177              		.loc 1 168 5 is_stmt 1 view .LVU35
+ 178              		.loc 1 168 41 is_stmt 0 view .LVU36
+ 179 0016 43EA8307 		orr	r7, r3, r3, lsl #2
+ 180 001a 7FB2     		sxtb	r7, r7
+ 181              		.loc 1 168 56 view .LVU37
+ 182 001c 47EA0317 		orr	r7, r7, r3, lsl #4
+ 183 0020 7FB2     		sxtb	r7, r7
+ 184              		.loc 1 168 71 view .LVU38
+ 185 0022 47EA8317 		orr	r7, r7, r3, lsl #6
+ 186              		.loc 1 168 19 view .LVU39
+ 187 0026 FFB2     		uxtb	r7, r7
+ 188              	.LVL10:
+ 169:Drivers/STM32/stm32_nvm.c ****     
+ 170:Drivers/STM32/stm32_nvm.c ****     // handle unaligned start
+ 171:Drivers/STM32/stm32_nvm.c ****     uint8_t mask = ~(0xff << ((index & 0x3) << 1));
+ 189              		.loc 1 171 5 is_stmt 1 view .LVU40
+ 190              		.loc 1 171 45 is_stmt 0 view .LVU41
+ 191 0028 4C00     		lsls	r4, r1, #1
+ 192 002a 04F00603 		and	r3, r4, #6
+ 193              	.LVL11:
+ 194              		.loc 1 171 27 view .LVU42
+ 195 002e FF24     		movs	r4, #255
+ 196 0030 9C40     		lsls	r4, r4, r3
+ 197              		.loc 1 171 13 view .LVU43
+ 198 0032 E443     		mvns	r4, r4
+ 199 0034 E4B2     		uxtb	r4, r4
+ 200              	.LVL12:
+ 172:Drivers/STM32/stm32_nvm.c ****     count += index & 0x3;
+ 201              		.loc 1 172 5 is_stmt 1 view .LVU44
+ 202              		.loc 1 172 20 is_stmt 0 view .LVU45
+ 203 0036 01F00306 		and	r6, r1, #3
+ 204              		.loc 1 172 11 view .LVU46
+ 205 003a 1644     		add	r6, r6, r2
+ 206              	.LVL13:
+ 173:Drivers/STM32/stm32_nvm.c ****     index -= index & 0x3;
+ 207              		.loc 1 173 5 is_stmt 1 view .LVU47
+ 208              		.loc 1 173 11 is_stmt 0 view .LVU48
+ 209 003c 21F00305 		bic	r5, r1, #3
+ 210              	.LVL14:
+ 174:Drivers/STM32/stm32_nvm.c **** 
+ 175:Drivers/STM32/stm32_nvm.c ****     HAL_FLASH_Unlock();
+ 211              		.loc 1 175 5 is_stmt 1 view .LVU49
+ 212 0040 FFF7FEFF 		bl	HAL_FLASH_Unlock
+ 213              	.LVL15:
+ 176:Drivers/STM32/stm32_nvm.c ****     HAL_FLASH_ClearError();
+ 214              		.loc 1 176 5 view .LVU50
+ 215 0044 FFF7FEFF 		bl	HAL_FLASH_ClearError
+ 216              	.LVL16:
+ 177:Drivers/STM32/stm32_nvm.c **** 
+ 178:Drivers/STM32/stm32_nvm.c ****     // write states
+ 179:Drivers/STM32/stm32_nvm.c ****     for (; count >= 4; count -= 4, index += 4) {
+ 217              		.loc 1 179 5 view .LVU51
+ 218 0048 01E0     		b	.L11
+ 219              	.LVL17:
+ 220              	.L19:
+ARM GAS  /tmp/ccJf7vwm.s 			page 8
+
+
+ 180:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 181:Drivers/STM32/stm32_nvm.c ****             goto fail;
+ 182:Drivers/STM32/stm32_nvm.c ****         mask = 0;
+ 221              		.loc 1 182 9 view .LVU52
+ 179:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 222              		.loc 1 179 24 view .LVU53
+ 179:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 223              		.loc 1 179 30 is_stmt 0 view .LVU54
+ 224 004a 043E     		subs	r6, r6, #4
+ 225              	.LVL18:
+ 179:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 226              		.loc 1 179 42 view .LVU55
+ 227 004c 0435     		adds	r5, r5, #4
+ 228              	.LVL19:
+ 229              	.L11:
+ 179:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 230              		.loc 1 179 12 is_stmt 1 discriminator 1 view .LVU56
+ 179:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 231              		.loc 1 179 5 is_stmt 0 discriminator 1 view .LVU57
+ 232 004e 032E     		cmp	r6, #3
+ 233 0050 13D9     		bls	.L18
+ 180:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 234              		.loc 1 180 9 is_stmt 1 view .LVU58
+ 180:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 235              		.loc 1 180 73 is_stmt 0 view .LVU59
+ 236 0052 D8F81010 		ldr	r1, [r8, #16]
+ 180:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 237              		.loc 1 180 13 view .LVU60
+ 238 0056 44EA0702 		orr	r2, r4, r7
+ 239 005a 0020     		movs	r0, #0
+ 240 005c D2B2     		uxtb	r2, r2
+ 241 005e 0346     		mov	r3, r0
+ 242 0060 01EB9501 		add	r1, r1, r5, lsr #2
+ 243 0064 FFF7FEFF 		bl	HAL_FLASH_Program
+ 244              	.LVL20:
+ 180:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 245              		.loc 1 180 12 view .LVU61
+ 246 0068 0446     		mov	r4, r0
+ 247              	.LVL21:
+ 180:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 248              		.loc 1 180 12 view .LVU62
+ 249 006a 0028     		cmp	r0, #0
+ 250 006c EDD0     		beq	.L19
+ 251              	.LVL22:
+ 252              	.L12:
+ 183:Drivers/STM32/stm32_nvm.c ****     }
+ 184:Drivers/STM32/stm32_nvm.c **** 
+ 185:Drivers/STM32/stm32_nvm.c ****     // handle unaligned end
+ 186:Drivers/STM32/stm32_nvm.c ****     if (count) {
+ 187:Drivers/STM32/stm32_nvm.c ****         mask |= ~(0xff >> ((4 - count) << 1));
+ 188:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 189:Drivers/STM32/stm32_nvm.c ****             goto fail;
+ 190:Drivers/STM32/stm32_nvm.c ****     }
+ 191:Drivers/STM32/stm32_nvm.c ****     
+ 192:Drivers/STM32/stm32_nvm.c ****     HAL_FLASH_Lock();
+ 193:Drivers/STM32/stm32_nvm.c ****     return 0;
+ 194:Drivers/STM32/stm32_nvm.c **** fail:
+ARM GAS  /tmp/ccJf7vwm.s 			page 9
+
+
+ 195:Drivers/STM32/stm32_nvm.c ****     HAL_FLASH_Lock();
+ 253              		.loc 1 195 5 is_stmt 1 view .LVU63
+ 254 006e FFF7FEFF 		bl	HAL_FLASH_Lock
+ 255              	.LVL23:
+ 196:Drivers/STM32/stm32_nvm.c ****     return HAL_FLASH_GetError(); // non-zero
+ 256              		.loc 1 196 5 view .LVU64
+ 257              		.loc 1 196 12 is_stmt 0 view .LVU65
+ 258 0072 FFF7FEFF 		bl	HAL_FLASH_GetError
+ 259              	.LVL24:
+ 260              	.L9:
+ 197:Drivers/STM32/stm32_nvm.c **** }
+ 261              		.loc 1 197 1 view .LVU66
+ 262 0076 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
+ 263              	.LVL25:
+ 264              	.L18:
+ 186:Drivers/STM32/stm32_nvm.c ****         mask |= ~(0xff >> ((4 - count) << 1));
+ 265              		.loc 1 186 5 is_stmt 1 view .LVU67
+ 186:Drivers/STM32/stm32_nvm.c ****         mask |= ~(0xff >> ((4 - count) << 1));
+ 266              		.loc 1 186 8 is_stmt 0 view .LVU68
+ 267 007a 96B1     		cbz	r6, .L14
+ 187:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 268              		.loc 1 187 9 is_stmt 1 view .LVU69
+ 187:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 269              		.loc 1 187 31 is_stmt 0 view .LVU70
+ 270 007c C6F10406 		rsb	r6, r6, #4
+ 271              	.LVL26:
+ 187:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 272              		.loc 1 187 40 view .LVU71
+ 273 0080 7600     		lsls	r6, r6, #1
+ 187:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 274              		.loc 1 187 24 view .LVU72
+ 275 0082 FF22     		movs	r2, #255
+ 276 0084 3241     		asrs	r2, r2, r6
+ 187:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE, (uintptr_t)&sector->alloc_table[index >> 2], 
+ 277              		.loc 1 187 14 view .LVU73
+ 278 0086 64EA0202 		orn	r2, r4, r2
+ 279 008a D2B2     		uxtb	r2, r2
+ 280              	.LVL27:
+ 188:Drivers/STM32/stm32_nvm.c ****             goto fail;
+ 281              		.loc 1 188 9 is_stmt 1 view .LVU74
+ 188:Drivers/STM32/stm32_nvm.c ****             goto fail;
+ 282              		.loc 1 188 73 is_stmt 0 view .LVU75
+ 283 008c D8F81010 		ldr	r1, [r8, #16]
+ 188:Drivers/STM32/stm32_nvm.c ****             goto fail;
+ 284              		.loc 1 188 13 view .LVU76
+ 285 0090 0020     		movs	r0, #0
+ 286 0092 3A43     		orrs	r2, r2, r7
+ 287              	.LVL28:
+ 188:Drivers/STM32/stm32_nvm.c ****             goto fail;
+ 288              		.loc 1 188 13 view .LVU77
+ 289 0094 0346     		mov	r3, r0
+ 290 0096 01EB9501 		add	r1, r1, r5, lsr #2
+ 291 009a FFF7FEFF 		bl	HAL_FLASH_Program
+ 292              	.LVL29:
+ 188:Drivers/STM32/stm32_nvm.c ****             goto fail;
+ 293              		.loc 1 188 12 view .LVU78
+ 294 009e 0028     		cmp	r0, #0
+ARM GAS  /tmp/ccJf7vwm.s 			page 10
+
+
+ 295 00a0 E5D1     		bne	.L12
+ 296              	.LVL30:
+ 297              	.L14:
+ 192:Drivers/STM32/stm32_nvm.c ****     return 0;
+ 298              		.loc 1 192 5 is_stmt 1 view .LVU79
+ 299 00a2 FFF7FEFF 		bl	HAL_FLASH_Lock
+ 300              	.LVL31:
+ 193:Drivers/STM32/stm32_nvm.c **** fail:
+ 301              		.loc 1 193 5 view .LVU80
+ 193:Drivers/STM32/stm32_nvm.c **** fail:
+ 302              		.loc 1 193 12 is_stmt 0 view .LVU81
+ 303 00a6 0020     		movs	r0, #0
+ 304 00a8 E5E7     		b	.L9
+ 305              	.LVL32:
+ 306              	.L15:
+ 163:Drivers/STM32/stm32_nvm.c ****     if (index + count >= sector->n_data)
+ 307              		.loc 1 163 16 view .LVU82
+ 308 00aa 4FF0FF30 		mov	r0, #-1
+ 309 00ae E2E7     		b	.L9
+ 310              	.L16:
+ 165:Drivers/STM32/stm32_nvm.c **** 
+ 311              		.loc 1 165 16 view .LVU83
+ 312 00b0 4FF0FF30 		mov	r0, #-1
+ 313 00b4 DFE7     		b	.L9
+ 314              		.cfi_endproc
+ 315              	.LFE135:
+ 317              		.section	.text.scan_allocation_table,"ax",%progbits
+ 318              		.align	1
+ 319              		.global	scan_allocation_table
+ 320              		.syntax unified
+ 321              		.thumb
+ 322              		.thumb_func
+ 324              	scan_allocation_table:
+ 325              	.LVL33:
+ 326              	.LFB136:
+ 198:Drivers/STM32/stm32_nvm.c **** 
+ 199:Drivers/STM32/stm32_nvm.c **** // @brief Reads the allocation table from behind to determine how many fields match the
+ 200:Drivers/STM32/stm32_nvm.c **** // reference state.
+ 201:Drivers/STM32/stm32_nvm.c **** // @param sector: The sector on which to perform the search
+ 202:Drivers/STM32/stm32_nvm.c **** // @param max_index: The maximum index that should be considered
+ 203:Drivers/STM32/stm32_nvm.c **** // @param ref_state: The reference state
+ 204:Drivers/STM32/stm32_nvm.c **** // @param state: Set to the first encountered state that is unequal to ref_state.
+ 205:Drivers/STM32/stm32_nvm.c **** //               Set to ref_state if all encountered states are equal to ref_state.
+ 206:Drivers/STM32/stm32_nvm.c **** // @returns The smallest index that points to a field with ref_state.
+ 207:Drivers/STM32/stm32_nvm.c **** //          This value is at least sector->n_reserved and at most max_index.
+ 208:Drivers/STM32/stm32_nvm.c **** size_t scan_allocation_table(sector_t *sector, size_t max_index, field_state_t ref_state, field_sta
+ 327              		.loc 1 208 113 is_stmt 1 view -0
+ 328              		.cfi_startproc
+ 329              		@ args = 0, pretend = 0, frame = 0
+ 330              		@ frame_needed = 0, uses_anonymous_args = 0
+ 331              		.loc 1 208 113 is_stmt 0 view .LVU85
+ 332 0000 30B5     		push	{r4, r5, lr}
+ 333              	.LCFI5:
+ 334              		.cfi_def_cfa_offset 12
+ 335              		.cfi_offset 4, -12
+ 336              		.cfi_offset 5, -8
+ 337              		.cfi_offset 14, -4
+ARM GAS  /tmp/ccJf7vwm.s 			page 11
+
+
+ 338 0002 8646     		mov	lr, r0
+ 209:Drivers/STM32/stm32_nvm.c ****     const uint8_t ref_states = (ref_state << 0) | (ref_state << 2) | (ref_state << 4) | (ref_state 
+ 339              		.loc 1 209 5 is_stmt 1 view .LVU86
+ 340              		.loc 1 209 49 is_stmt 0 view .LVU87
+ 341 0004 42EA820C 		orr	ip, r2, r2, lsl #2
+ 342 0008 4FFA8CFC 		sxtb	ip, ip
+ 343              		.loc 1 209 68 view .LVU88
+ 344 000c 4CEA021C 		orr	ip, ip, r2, lsl #4
+ 345 0010 4FFA8CFC 		sxtb	ip, ip
+ 346              		.loc 1 209 87 view .LVU89
+ 347 0014 4CEA821C 		orr	ip, ip, r2, lsl #6
+ 348              		.loc 1 209 19 view .LVU90
+ 349 0018 5FFA8CFC 		uxtb	ip, ip
+ 350              	.LVL34:
+ 210:Drivers/STM32/stm32_nvm.c ****     size_t index = (((max_index + 3) >> 2) << 2); // start at the max index but round up to a multi
+ 351              		.loc 1 210 5 is_stmt 1 view .LVU91
+ 352              		.loc 1 210 33 is_stmt 0 view .LVU92
+ 353 001c C81C     		adds	r0, r1, #3
+ 354              	.LVL35:
+ 355              		.loc 1 210 12 view .LVU93
+ 356 001e 20F00300 		bic	r0, r0, #3
+ 357              	.LVL36:
+ 211:Drivers/STM32/stm32_nvm.c ****     size_t ignore = index - max_index;
+ 358              		.loc 1 211 5 is_stmt 1 view .LVU94
+ 359              		.loc 1 211 12 is_stmt 0 view .LVU95
+ 360 0022 411A     		subs	r1, r0, r1
+ 361              	.LVL37:
+ 212:Drivers/STM32/stm32_nvm.c ****     uint8_t states = ref_states;
+ 362              		.loc 1 212 5 is_stmt 1 view .LVU96
+ 213:Drivers/STM32/stm32_nvm.c **** 
+ 214:Drivers/STM32/stm32_nvm.c ****     //printf("scan from %08x to %08x for %02x\r\n", index, sector->n_reserved, ref_states); osDelay
+ 215:Drivers/STM32/stm32_nvm.c **** 
+ 216:Drivers/STM32/stm32_nvm.c ****     // read 4 states at a time
+ 217:Drivers/STM32/stm32_nvm.c ****     for (; index >= (sector->n_reserved + 4); index -= 4) {
+ 363              		.loc 1 217 5 view .LVU97
+ 212:Drivers/STM32/stm32_nvm.c ****     uint8_t states = ref_states;
+ 364              		.loc 1 212 13 is_stmt 0 view .LVU98
+ 365 0024 6246     		mov	r2, ip
+ 366              	.LVL38:
+ 367              		.loc 1 217 5 view .LVU99
+ 368 0026 02E0     		b	.L21
+ 369              	.LVL39:
+ 370              	.L22:
+ 218:Drivers/STM32/stm32_nvm.c ****         states = sector->alloc_table[(index - 1) >> 2];
+ 219:Drivers/STM32/stm32_nvm.c ****         if (ignore) { // ignore the upper 1, 2 or 3 states if max_index was unaligned
+ 220:Drivers/STM32/stm32_nvm.c ****             uint8_t ignore_mask = ~(0xff >> (ignore << 1));
+ 221:Drivers/STM32/stm32_nvm.c ****             states = (states & ~ignore_mask) | (ref_states & ignore_mask);
+ 222:Drivers/STM32/stm32_nvm.c ****             ignore = 0;
+ 223:Drivers/STM32/stm32_nvm.c ****         }
+ 224:Drivers/STM32/stm32_nvm.c ****         if (states != ref_states)
+ 371              		.loc 1 224 9 is_stmt 1 view .LVU100
+ 372              		.loc 1 224 12 is_stmt 0 view .LVU101
+ 373 0028 6245     		cmp	r2, ip
+ 374 002a 1ED1     		bne	.L25
+ 217:Drivers/STM32/stm32_nvm.c ****         states = sector->alloc_table[(index - 1) >> 2];
+ 375              		.loc 1 217 47 is_stmt 1 view .LVU102
+ 217:Drivers/STM32/stm32_nvm.c ****         states = sector->alloc_table[(index - 1) >> 2];
+ARM GAS  /tmp/ccJf7vwm.s 			page 12
+
+
+ 376              		.loc 1 217 53 is_stmt 0 view .LVU103
+ 377 002c 0438     		subs	r0, r0, #4
+ 378              	.LVL40:
+ 379              	.L21:
+ 217:Drivers/STM32/stm32_nvm.c ****         states = sector->alloc_table[(index - 1) >> 2];
+ 380              		.loc 1 217 12 is_stmt 1 discriminator 1 view .LVU104
+ 217:Drivers/STM32/stm32_nvm.c ****         states = sector->alloc_table[(index - 1) >> 2];
+ 381              		.loc 1 217 28 is_stmt 0 discriminator 1 view .LVU105
+ 382 002e DEF80C40 		ldr	r4, [lr, #12]
+ 217:Drivers/STM32/stm32_nvm.c ****         states = sector->alloc_table[(index - 1) >> 2];
+ 383              		.loc 1 217 41 discriminator 1 view .LVU106
+ 384 0032 251D     		adds	r5, r4, #4
+ 217:Drivers/STM32/stm32_nvm.c ****         states = sector->alloc_table[(index - 1) >> 2];
+ 385              		.loc 1 217 5 discriminator 1 view .LVU107
+ 386 0034 8542     		cmp	r5, r0
+ 387 0036 18D8     		bhi	.L25
+ 218:Drivers/STM32/stm32_nvm.c ****         states = sector->alloc_table[(index - 1) >> 2];
+ 388              		.loc 1 218 9 is_stmt 1 view .LVU108
+ 218:Drivers/STM32/stm32_nvm.c ****         states = sector->alloc_table[(index - 1) >> 2];
+ 389              		.loc 1 218 45 is_stmt 0 view .LVU109
+ 390 0038 421E     		subs	r2, r0, #1
+ 391              	.LVL41:
+ 218:Drivers/STM32/stm32_nvm.c ****         states = sector->alloc_table[(index - 1) >> 2];
+ 392              		.loc 1 218 50 view .LVU110
+ 393 003a 9208     		lsrs	r2, r2, #2
+ 218:Drivers/STM32/stm32_nvm.c ****         states = sector->alloc_table[(index - 1) >> 2];
+ 394              		.loc 1 218 16 view .LVU111
+ 395 003c DEF81050 		ldr	r5, [lr, #16]
+ 396 0040 AA5C     		ldrb	r2, [r5, r2]	@ zero_extendqisi2
+ 397 0042 D2B2     		uxtb	r2, r2
+ 398              	.LVL42:
+ 219:Drivers/STM32/stm32_nvm.c ****             uint8_t ignore_mask = ~(0xff >> (ignore << 1));
+ 399              		.loc 1 219 9 is_stmt 1 view .LVU112
+ 219:Drivers/STM32/stm32_nvm.c ****             uint8_t ignore_mask = ~(0xff >> (ignore << 1));
+ 400              		.loc 1 219 12 is_stmt 0 view .LVU113
+ 401 0044 0029     		cmp	r1, #0
+ 402 0046 EFD0     		beq	.L22
+ 403              	.LBB2:
+ 220:Drivers/STM32/stm32_nvm.c ****             states = (states & ~ignore_mask) | (ref_states & ignore_mask);
+ 404              		.loc 1 220 13 is_stmt 1 view .LVU114
+ 220:Drivers/STM32/stm32_nvm.c ****             states = (states & ~ignore_mask) | (ref_states & ignore_mask);
+ 405              		.loc 1 220 53 is_stmt 0 view .LVU115
+ 406 0048 4D00     		lsls	r5, r1, #1
+ 220:Drivers/STM32/stm32_nvm.c ****             states = (states & ~ignore_mask) | (ref_states & ignore_mask);
+ 407              		.loc 1 220 42 view .LVU116
+ 408 004a FF21     		movs	r1, #255
+ 409              	.LVL43:
+ 220:Drivers/STM32/stm32_nvm.c ****             states = (states & ~ignore_mask) | (ref_states & ignore_mask);
+ 410              		.loc 1 220 42 view .LVU117
+ 411 004c 2941     		asrs	r1, r1, r5
+ 220:Drivers/STM32/stm32_nvm.c ****             states = (states & ~ignore_mask) | (ref_states & ignore_mask);
+ 412              		.loc 1 220 21 view .LVU118
+ 413 004e C943     		mvns	r1, r1
+ 414 0050 C9B2     		uxtb	r1, r1
+ 415              	.LVL44:
+ 221:Drivers/STM32/stm32_nvm.c ****             ignore = 0;
+ 416              		.loc 1 221 13 is_stmt 1 view .LVU119
+ARM GAS  /tmp/ccJf7vwm.s 			page 13
+
+
+ 221:Drivers/STM32/stm32_nvm.c ****             ignore = 0;
+ 417              		.loc 1 221 30 is_stmt 0 view .LVU120
+ 418 0052 22EA0102 		bic	r2, r2, r1
+ 419              	.LVL45:
+ 221:Drivers/STM32/stm32_nvm.c ****             ignore = 0;
+ 420              		.loc 1 221 30 view .LVU121
+ 421 0056 52B2     		sxtb	r2, r2
+ 221:Drivers/STM32/stm32_nvm.c ****             ignore = 0;
+ 422              		.loc 1 221 46 view .LVU122
+ 423 0058 0CEA0101 		and	r1, ip, r1
+ 424              	.LVL46:
+ 221:Drivers/STM32/stm32_nvm.c ****             ignore = 0;
+ 425              		.loc 1 221 46 view .LVU123
+ 426 005c 1143     		orrs	r1, r1, r2
+ 221:Drivers/STM32/stm32_nvm.c ****             ignore = 0;
+ 427              		.loc 1 221 20 view .LVU124
+ 428 005e CAB2     		uxtb	r2, r1
+ 429              	.LVL47:
+ 222:Drivers/STM32/stm32_nvm.c ****         }
+ 430              		.loc 1 222 13 is_stmt 1 view .LVU125
+ 222:Drivers/STM32/stm32_nvm.c ****         }
+ 431              		.loc 1 222 20 is_stmt 0 view .LVU126
+ 432 0060 0021     		movs	r1, #0
+ 433 0062 E1E7     		b	.L22
+ 434              	.LVL48:
+ 435              	.L27:
+ 222:Drivers/STM32/stm32_nvm.c ****         }
+ 436              		.loc 1 222 20 view .LVU127
+ 437              	.LBE2:
+ 225:Drivers/STM32/stm32_nvm.c ****             break;
+ 226:Drivers/STM32/stm32_nvm.c ****     }
+ 227:Drivers/STM32/stm32_nvm.c **** 
+ 228:Drivers/STM32/stm32_nvm.c ****     // once we encounterd a byte with any state mismatch determine which of the 4 states it is
+ 229:Drivers/STM32/stm32_nvm.c ****     for (; ((states >> 6) == (ref_states & 0x3)) && (index > sector->n_reserved); index--) {
+ 230:Drivers/STM32/stm32_nvm.c ****         states <<= 2;
+ 438              		.loc 1 230 9 is_stmt 1 discriminator 3 view .LVU128
+ 439              		.loc 1 230 16 is_stmt 0 discriminator 3 view .LVU129
+ 440 0064 9200     		lsls	r2, r2, #2
+ 441              	.LVL49:
+ 442              		.loc 1 230 16 discriminator 3 view .LVU130
+ 443 0066 D2B2     		uxtb	r2, r2
+ 444              	.LVL50:
+ 229:Drivers/STM32/stm32_nvm.c ****         states <<= 2;
+ 445              		.loc 1 229 83 is_stmt 1 discriminator 3 view .LVU131
+ 229:Drivers/STM32/stm32_nvm.c ****         states <<= 2;
+ 446              		.loc 1 229 88 is_stmt 0 discriminator 3 view .LVU132
+ 447 0068 0138     		subs	r0, r0, #1
+ 448              	.LVL51:
+ 449              	.L25:
+ 229:Drivers/STM32/stm32_nvm.c ****         states <<= 2;
+ 450              		.loc 1 229 12 is_stmt 1 discriminator 1 view .LVU133
+ 229:Drivers/STM32/stm32_nvm.c ****         states <<= 2;
+ 451              		.loc 1 229 21 is_stmt 0 discriminator 1 view .LVU134
+ 452 006a 9509     		lsrs	r5, r2, #6
+ 229:Drivers/STM32/stm32_nvm.c ****         states <<= 2;
+ 453              		.loc 1 229 5 discriminator 1 view .LVU135
+ 454 006c 0CF00301 		and	r1, ip, #3
+ARM GAS  /tmp/ccJf7vwm.s 			page 14
+
+
+ 455 0070 B1EB921F 		cmp	r1, r2, lsr #6
+ 456 0074 01D1     		bne	.L26
+ 229:Drivers/STM32/stm32_nvm.c ****         states <<= 2;
+ 457              		.loc 1 229 50 discriminator 2 view .LVU136
+ 458 0076 8442     		cmp	r4, r0
+ 459 0078 F4D3     		bcc	.L27
+ 460              	.L26:
+ 231:Drivers/STM32/stm32_nvm.c ****     }
+ 232:Drivers/STM32/stm32_nvm.c ****     
+ 233:Drivers/STM32/stm32_nvm.c ****     *state = states >> 6;
+ 461              		.loc 1 233 5 is_stmt 1 view .LVU137
+ 462              		.loc 1 233 12 is_stmt 0 view .LVU138
+ 463 007a 1D70     		strb	r5, [r3]
+ 234:Drivers/STM32/stm32_nvm.c ****     //printf("(it's %02x)\r\n", index); osDelay(5);
+ 235:Drivers/STM32/stm32_nvm.c ****     return index;
+ 464              		.loc 1 235 5 is_stmt 1 view .LVU139
+ 236:Drivers/STM32/stm32_nvm.c **** }
+ 465              		.loc 1 236 1 is_stmt 0 view .LVU140
+ 466 007c 30BD     		pop	{r4, r5, pc}
+ 467              		.cfi_endproc
+ 468              	.LFE136:
+ 470              		.section	.text.NVM_init,"ax",%progbits
+ 471              		.align	1
+ 472              		.global	NVM_init
+ 473              		.syntax unified
+ 474              		.thumb
+ 475              		.thumb_func
+ 477              	NVM_init:
+ 478              	.LFB137:
+ 237:Drivers/STM32/stm32_nvm.c **** 
+ 238:Drivers/STM32/stm32_nvm.c **** // Loads the head of the NVM data.
+ 239:Drivers/STM32/stm32_nvm.c **** // If this function fails subsequent calls to NVM functions (other than NVM_init or NVM_erase)
+ 240:Drivers/STM32/stm32_nvm.c **** // cause undefined behavior.
+ 241:Drivers/STM32/stm32_nvm.c **** // @returns 0 on success or a non-zero error code otherwise
+ 242:Drivers/STM32/stm32_nvm.c **** int NVM_init(void) {
+ 479              		.loc 1 242 20 is_stmt 1 view -0
+ 480              		.cfi_startproc
+ 481              		@ args = 0, pretend = 0, frame = 8
+ 482              		@ frame_needed = 0, uses_anonymous_args = 0
+ 483 0000 70B5     		push	{r4, r5, r6, lr}
+ 484              	.LCFI6:
+ 485              		.cfi_def_cfa_offset 16
+ 486              		.cfi_offset 4, -16
+ 487              		.cfi_offset 5, -12
+ 488              		.cfi_offset 6, -8
+ 489              		.cfi_offset 14, -4
+ 490 0002 82B0     		sub	sp, sp, #8
+ 491              	.LCFI7:
+ 492              		.cfi_def_cfa_offset 24
+ 243:Drivers/STM32/stm32_nvm.c ****     field_state_t sector0_state, sector1_state;
+ 493              		.loc 1 243 5 view .LVU142
+ 244:Drivers/STM32/stm32_nvm.c ****     sectors[0].index = scan_allocation_table(&sectors[0], sectors[0].n_data,
+ 494              		.loc 1 244 5 view .LVU143
+ 495              		.loc 1 244 24 is_stmt 0 view .LVU144
+ 496 0004 1A4C     		ldr	r4, .L32
+ 497 0006 0DF10703 		add	r3, sp, #7
+ 498 000a 0322     		movs	r2, #3
+ARM GAS  /tmp/ccJf7vwm.s 			page 15
+
+
+ 499 000c A168     		ldr	r1, [r4, #8]
+ 500 000e 2046     		mov	r0, r4
+ 501 0010 FFF7FEFF 		bl	scan_allocation_table
+ 502              	.LVL52:
+ 503              		.loc 1 244 22 view .LVU145
+ 504 0014 2060     		str	r0, [r4]
+ 245:Drivers/STM32/stm32_nvm.c ****                 ERASED, &sector0_state);
+ 246:Drivers/STM32/stm32_nvm.c ****     sectors[1].index = scan_allocation_table(&sectors[1], sectors[1].n_data,
+ 505              		.loc 1 246 5 is_stmt 1 view .LVU146
+ 506              		.loc 1 246 24 is_stmt 0 view .LVU147
+ 507 0016 0DF10603 		add	r3, sp, #6
+ 508 001a 0322     		movs	r2, #3
+ 509 001c 216A     		ldr	r1, [r4, #32]
+ 510 001e 04F11800 		add	r0, r4, #24
+ 511 0022 FFF7FEFF 		bl	scan_allocation_table
+ 512              	.LVL53:
+ 513              		.loc 1 246 22 view .LVU148
+ 514 0026 A061     		str	r0, [r4, #24]
+ 247:Drivers/STM32/stm32_nvm.c ****                 ERASED, &sector1_state);
+ 248:Drivers/STM32/stm32_nvm.c ****     //printf("sector states: %02x, %02x\r\n", sector0_state, sector1_state); osDelay(5);
+ 249:Drivers/STM32/stm32_nvm.c **** 
+ 250:Drivers/STM32/stm32_nvm.c ****     // Select valid sector on a best effort basis
+ 251:Drivers/STM32/stm32_nvm.c ****     // (in unfortunate cases valid_sector might actually point
+ 252:Drivers/STM32/stm32_nvm.c ****     // to an invalid or erased sector)
+ 253:Drivers/STM32/stm32_nvm.c ****     read_sector_ = 0;
+ 515              		.loc 1 253 5 is_stmt 1 view .LVU149
+ 516              		.loc 1 253 18 is_stmt 0 view .LVU150
+ 517 0028 124B     		ldr	r3, .L32+4
+ 518 002a 0022     		movs	r2, #0
+ 519 002c 1A70     		strb	r2, [r3]
+ 254:Drivers/STM32/stm32_nvm.c ****     if (sector1_state == VALID)
+ 520              		.loc 1 254 5 is_stmt 1 view .LVU151
+ 521              		.loc 1 254 23 is_stmt 0 view .LVU152
+ 522 002e 9DF80630 		ldrb	r3, [sp, #6]	@ zero_extendqisi2
+ 523              		.loc 1 254 8 view .LVU153
+ 524 0032 13B9     		cbnz	r3, .L30
+ 255:Drivers/STM32/stm32_nvm.c ****         read_sector_ = 1;
+ 525              		.loc 1 255 9 is_stmt 1 view .LVU154
+ 526              		.loc 1 255 22 is_stmt 0 view .LVU155
+ 527 0034 0F4B     		ldr	r3, .L32+4
+ 528 0036 0122     		movs	r2, #1
+ 529 0038 1A70     		strb	r2, [r3]
+ 530              	.L30:
+ 256:Drivers/STM32/stm32_nvm.c ****     
+ 257:Drivers/STM32/stm32_nvm.c ****     // count the number of valid fields
+ 258:Drivers/STM32/stm32_nvm.c ****     sector_t *read_sector = &sectors[read_sector_];
+ 531              		.loc 1 258 5 is_stmt 1 view .LVU156
+ 532              		.loc 1 258 37 is_stmt 0 view .LVU157
+ 533 003a 0E4B     		ldr	r3, .L32+4
+ 534 003c 1C78     		ldrb	r4, [r3]	@ zero_extendqisi2
+ 535              		.loc 1 258 15 view .LVU158
+ 536 003e 0C4D     		ldr	r5, .L32
+ 537 0040 6600     		lsls	r6, r4, #1
+ 538 0042 04EB4400 		add	r0, r4, r4, lsl #1
+ 539              	.LVL54:
+ 259:Drivers/STM32/stm32_nvm.c ****     uint8_t first_nonvalid_state;
+ 540              		.loc 1 259 5 is_stmt 1 view .LVU159
+ARM GAS  /tmp/ccJf7vwm.s 			page 16
+
+
+ 260:Drivers/STM32/stm32_nvm.c ****     size_t min_valid_index = scan_allocation_table(read_sector, read_sector->index,
+ 541              		.loc 1 260 5 view .LVU160
+ 542              		.loc 1 260 30 is_stmt 0 view .LVU161
+ 543 0046 0DF10503 		add	r3, sp, #5
+ 544 004a 0022     		movs	r2, #0
+ 545 004c 55F83010 		ldr	r1, [r5, r0, lsl #3]
+ 546 0050 05EBC000 		add	r0, r5, r0, lsl #3
+ 547              	.LVL55:
+ 548              		.loc 1 260 30 view .LVU162
+ 549 0054 FFF7FEFF 		bl	scan_allocation_table
+ 550              	.LVL56:
+ 261:Drivers/STM32/stm32_nvm.c ****         VALID, &first_nonvalid_state);
+ 262:Drivers/STM32/stm32_nvm.c ****     n_valid_ = read_sector->index - min_valid_index;
+ 551              		.loc 1 262 5 is_stmt 1 view .LVU163
+ 552              		.loc 1 262 27 is_stmt 0 view .LVU164
+ 553 0058 3444     		add	r4, r4, r6
+ 554              	.LVL57:
+ 555              		.loc 1 262 27 view .LVU165
+ 556 005a 55F83430 		ldr	r3, [r5, r4, lsl #3]
+ 557              		.loc 1 262 35 view .LVU166
+ 558 005e 1B1A     		subs	r3, r3, r0
+ 559              		.loc 1 262 14 view .LVU167
+ 560 0060 054A     		ldr	r2, .L32+8
+ 561 0062 1360     		str	r3, [r2]
+ 263:Drivers/STM32/stm32_nvm.c ****     
+ 264:Drivers/STM32/stm32_nvm.c ****     n_staging_area_ = 0;
+ 562              		.loc 1 264 5 is_stmt 1 view .LVU168
+ 563              		.loc 1 264 21 is_stmt 0 view .LVU169
+ 564 0064 0020     		movs	r0, #0
+ 565              	.LVL58:
+ 566              		.loc 1 264 21 view .LVU170
+ 567 0066 054B     		ldr	r3, .L32+12
+ 568 0068 1860     		str	r0, [r3]
+ 265:Drivers/STM32/stm32_nvm.c **** 
+ 266:Drivers/STM32/stm32_nvm.c ****     int status = 0;
+ 569              		.loc 1 266 5 is_stmt 1 view .LVU171
+ 570              	.LVL59:
+ 267:Drivers/STM32/stm32_nvm.c ****     /*// bring non-valid sectors into a known state
+ 268:Drivers/STM32/stm32_nvm.c ****     this is not absolutely required
+ 269:Drivers/STM32/stm32_nvm.c ****     if (sector0_state != VALID)
+ 270:Drivers/STM32/stm32_nvm.c ****         status |= erase(&sectors[0]);
+ 271:Drivers/STM32/stm32_nvm.c ****     if (sector1_state != VALID)
+ 272:Drivers/STM32/stm32_nvm.c ****         status |= erase(&sectors[1]);
+ 273:Drivers/STM32/stm32_nvm.c ****     */
+ 274:Drivers/STM32/stm32_nvm.c ****     return status;
+ 571              		.loc 1 274 5 view .LVU172
+ 275:Drivers/STM32/stm32_nvm.c **** }
+ 572              		.loc 1 275 1 is_stmt 0 view .LVU173
+ 573 006a 02B0     		add	sp, sp, #8
+ 574              	.LCFI8:
+ 575              		.cfi_def_cfa_offset 16
+ 576              		@ sp needed
+ 577 006c 70BD     		pop	{r4, r5, r6, pc}
+ 578              	.LVL60:
+ 579              	.L33:
+ 580              		.loc 1 275 1 view .LVU174
+ 581 006e 00BF     		.align	2
+ARM GAS  /tmp/ccJf7vwm.s 			page 17
+
+
+ 582              	.L32:
+ 583 0070 00000000 		.word	.LANCHOR0
+ 584 0074 00000000 		.word	.LANCHOR1
+ 585 0078 00000000 		.word	.LANCHOR2
+ 586 007c 00000000 		.word	.LANCHOR3
+ 587              		.cfi_endproc
+ 588              	.LFE137:
+ 590              		.section	.text.NVM_erase,"ax",%progbits
+ 591              		.align	1
+ 592              		.global	NVM_erase
+ 593              		.syntax unified
+ 594              		.thumb
+ 595              		.thumb_func
+ 597              	NVM_erase:
+ 598              	.LFB138:
+ 276:Drivers/STM32/stm32_nvm.c **** 
+ 277:Drivers/STM32/stm32_nvm.c **** // @brief Erases all data in the NVM.
+ 278:Drivers/STM32/stm32_nvm.c **** //
+ 279:Drivers/STM32/stm32_nvm.c **** // If this function fails subsequent calls to NVM functions (other than NVM_init or NVM_erase)
+ 280:Drivers/STM32/stm32_nvm.c **** // cause undefined behavior.
+ 281:Drivers/STM32/stm32_nvm.c **** // Caution: this function may take a long time (like 1 second)
+ 282:Drivers/STM32/stm32_nvm.c **** //
+ 283:Drivers/STM32/stm32_nvm.c **** // @returns 0 on success or a non-zero error code otherwise
+ 284:Drivers/STM32/stm32_nvm.c **** int NVM_erase(void) {
+ 599              		.loc 1 284 21 is_stmt 1 view -0
+ 600              		.cfi_startproc
+ 601              		@ args = 0, pretend = 0, frame = 0
+ 602              		@ frame_needed = 0, uses_anonymous_args = 0
+ 603 0000 38B5     		push	{r3, r4, r5, lr}
+ 604              	.LCFI9:
+ 605              		.cfi_def_cfa_offset 16
+ 606              		.cfi_offset 3, -16
+ 607              		.cfi_offset 4, -12
+ 608              		.cfi_offset 5, -8
+ 609              		.cfi_offset 14, -4
+ 285:Drivers/STM32/stm32_nvm.c ****     read_sector_ = 0;
+ 610              		.loc 1 285 5 view .LVU176
+ 611              		.loc 1 285 18 is_stmt 0 view .LVU177
+ 612 0002 094B     		ldr	r3, .L36
+ 613 0004 0022     		movs	r2, #0
+ 614 0006 1A70     		strb	r2, [r3]
+ 286:Drivers/STM32/stm32_nvm.c ****     sectors[0].index = sectors[0].n_reserved;
+ 615              		.loc 1 286 5 is_stmt 1 view .LVU178
+ 616              		.loc 1 286 34 is_stmt 0 view .LVU179
+ 617 0008 084C     		ldr	r4, .L36+4
+ 618 000a E368     		ldr	r3, [r4, #12]
+ 619              		.loc 1 286 22 view .LVU180
+ 620 000c 2360     		str	r3, [r4]
+ 287:Drivers/STM32/stm32_nvm.c ****     sectors[1].index = sectors[1].n_reserved;
+ 621              		.loc 1 287 5 is_stmt 1 view .LVU181
+ 622              		.loc 1 287 34 is_stmt 0 view .LVU182
+ 623 000e 636A     		ldr	r3, [r4, #36]
+ 624              		.loc 1 287 22 view .LVU183
+ 625 0010 A361     		str	r3, [r4, #24]
+ 288:Drivers/STM32/stm32_nvm.c **** 
+ 289:Drivers/STM32/stm32_nvm.c ****     int state = 0;
+ 626              		.loc 1 289 5 is_stmt 1 view .LVU184
+ARM GAS  /tmp/ccJf7vwm.s 			page 18
+
+
+ 627              	.LVL61:
+ 290:Drivers/STM32/stm32_nvm.c ****     state |= erase(&sectors[0]);
+ 628              		.loc 1 290 5 view .LVU185
+ 629              		.loc 1 290 14 is_stmt 0 view .LVU186
+ 630 0012 2046     		mov	r0, r4
+ 631 0014 FFF7FEFF 		bl	erase
+ 632              	.LVL62:
+ 633 0018 0546     		mov	r5, r0
+ 634              	.LVL63:
+ 291:Drivers/STM32/stm32_nvm.c ****     state |= erase(&sectors[1]);
+ 635              		.loc 1 291 5 is_stmt 1 view .LVU187
+ 636              		.loc 1 291 14 is_stmt 0 view .LVU188
+ 637 001a 04F11800 		add	r0, r4, #24
+ 638              	.LVL64:
+ 639              		.loc 1 291 14 view .LVU189
+ 640 001e FFF7FEFF 		bl	erase
+ 641              	.LVL65:
+ 292:Drivers/STM32/stm32_nvm.c ****     return state;
+ 642              		.loc 1 292 5 is_stmt 1 view .LVU190
+ 293:Drivers/STM32/stm32_nvm.c **** }
+ 643              		.loc 1 293 1 is_stmt 0 view .LVU191
+ 644 0022 2843     		orrs	r0, r0, r5
+ 645              	.LVL66:
+ 646              		.loc 1 293 1 view .LVU192
+ 647 0024 38BD     		pop	{r3, r4, r5, pc}
+ 648              	.L37:
+ 649 0026 00BF     		.align	2
+ 650              	.L36:
+ 651 0028 00000000 		.word	.LANCHOR1
+ 652 002c 00000000 		.word	.LANCHOR0
+ 653              		.cfi_endproc
+ 654              	.LFE138:
+ 656              		.section	.text.NVM_get_max_read_length,"ax",%progbits
+ 657              		.align	1
+ 658              		.global	NVM_get_max_read_length
+ 659              		.syntax unified
+ 660              		.thumb
+ 661              		.thumb_func
+ 663              	NVM_get_max_read_length:
+ 664              	.LFB139:
+ 294:Drivers/STM32/stm32_nvm.c **** 
+ 295:Drivers/STM32/stm32_nvm.c **** // @brief Returns the maximum number of bytes that can be read using NVM_read.
+ 296:Drivers/STM32/stm32_nvm.c **** // This holds until NVM_commit is called.
+ 297:Drivers/STM32/stm32_nvm.c **** size_t NVM_get_max_read_length(void) {
+ 665              		.loc 1 297 38 is_stmt 1 view -0
+ 666              		.cfi_startproc
+ 667              		@ args = 0, pretend = 0, frame = 0
+ 668              		@ frame_needed = 0, uses_anonymous_args = 0
+ 669              		@ link register save eliminated.
+ 298:Drivers/STM32/stm32_nvm.c ****     return n_valid_ << 3;
+ 670              		.loc 1 298 5 view .LVU194
+ 671              		.loc 1 298 21 is_stmt 0 view .LVU195
+ 672 0000 014B     		ldr	r3, .L39
+ 673 0002 1868     		ldr	r0, [r3]
+ 299:Drivers/STM32/stm32_nvm.c **** }
+ 674              		.loc 1 299 1 view .LVU196
+ 675 0004 C000     		lsls	r0, r0, #3
+ARM GAS  /tmp/ccJf7vwm.s 			page 19
+
+
+ 676 0006 7047     		bx	lr
+ 677              	.L40:
+ 678              		.align	2
+ 679              	.L39:
+ 680 0008 00000000 		.word	.LANCHOR2
+ 681              		.cfi_endproc
+ 682              	.LFE139:
+ 684              		.section	.text.NVM_get_max_write_length,"ax",%progbits
+ 685              		.align	1
+ 686              		.global	NVM_get_max_write_length
+ 687              		.syntax unified
+ 688              		.thumb
+ 689              		.thumb_func
+ 691              	NVM_get_max_write_length:
+ 692              	.LFB140:
+ 300:Drivers/STM32/stm32_nvm.c **** 
+ 301:Drivers/STM32/stm32_nvm.c **** // @brief Returns the maximum length (in bytes) that can passed to NVM_start_write.
+ 302:Drivers/STM32/stm32_nvm.c **** // This holds until NVM_commit is called.
+ 303:Drivers/STM32/stm32_nvm.c **** size_t NVM_get_max_write_length(void) {
+ 693              		.loc 1 303 39 is_stmt 1 view -0
+ 694              		.cfi_startproc
+ 695              		@ args = 0, pretend = 0, frame = 0
+ 696              		@ frame_needed = 0, uses_anonymous_args = 0
+ 697              		@ link register save eliminated.
+ 304:Drivers/STM32/stm32_nvm.c ****     sector_t *target = &sectors[1 - read_sector_];
+ 698              		.loc 1 304 5 view .LVU198
+ 699              		.loc 1 304 35 is_stmt 0 view .LVU199
+ 700 0000 084B     		ldr	r3, .L42
+ 701 0002 1B78     		ldrb	r3, [r3]	@ zero_extendqisi2
+ 702 0004 C3F10103 		rsb	r3, r3, #1
+ 703              	.LVL67:
+ 305:Drivers/STM32/stm32_nvm.c ****     return (target->n_data - target->n_reserved) << 3;
+ 704              		.loc 1 305 5 is_stmt 1 view .LVU200
+ 705              		.loc 1 305 19 is_stmt 0 view .LVU201
+ 706 0008 074A     		ldr	r2, .L42+4
+ 707 000a 03EB4300 		add	r0, r3, r3, lsl #1
+ 708 000e C100     		lsls	r1, r0, #3
+ 709 0010 1144     		add	r1, r1, r2
+ 710 0012 8868     		ldr	r0, [r1, #8]
+ 711              		.loc 1 305 36 view .LVU202
+ 712 0014 03EB4303 		add	r3, r3, r3, lsl #1
+ 713              	.LVL68:
+ 714              		.loc 1 305 36 view .LVU203
+ 715 0018 D900     		lsls	r1, r3, #3
+ 716 001a 0A44     		add	r2, r2, r1
+ 717 001c D368     		ldr	r3, [r2, #12]
+ 718              		.loc 1 305 28 view .LVU204
+ 719 001e C01A     		subs	r0, r0, r3
+ 306:Drivers/STM32/stm32_nvm.c **** }
+ 720              		.loc 1 306 1 view .LVU205
+ 721 0020 C000     		lsls	r0, r0, #3
+ 722 0022 7047     		bx	lr
+ 723              	.L43:
+ 724              		.align	2
+ 725              	.L42:
+ 726 0024 00000000 		.word	.LANCHOR1
+ 727 0028 00000000 		.word	.LANCHOR0
+ARM GAS  /tmp/ccJf7vwm.s 			page 20
+
+
+ 728              		.cfi_endproc
+ 729              	.LFE140:
+ 731              		.section	.text.NVM_read,"ax",%progbits
+ 732              		.align	1
+ 733              		.global	NVM_read
+ 734              		.syntax unified
+ 735              		.thumb
+ 736              		.thumb_func
+ 738              	NVM_read:
+ 739              	.LVL69:
+ 740              	.LFB141:
+ 307:Drivers/STM32/stm32_nvm.c **** 
+ 308:Drivers/STM32/stm32_nvm.c **** // @brief Reads from the latest committed block in the non-volatile memory.
+ 309:Drivers/STM32/stm32_nvm.c **** // The function either succeeds or leaves the provided buffer unmodified.
+ 310:Drivers/STM32/stm32_nvm.c **** // @param offset: offset in bytes (0 meaning the beginning of the valid area)
+ 311:Drivers/STM32/stm32_nvm.c **** // @param data: buffer to write to
+ 312:Drivers/STM32/stm32_nvm.c **** // @param length: length in bytes (if (offset + length) is out of range, the function fails)
+ 313:Drivers/STM32/stm32_nvm.c **** // @returns 0 on success or a non-zero error code otherwise
+ 314:Drivers/STM32/stm32_nvm.c **** int NVM_read(size_t offset, uint8_t *data, size_t length) {
+ 741              		.loc 1 314 59 is_stmt 1 view -0
+ 742              		.cfi_startproc
+ 743              		@ args = 0, pretend = 0, frame = 0
+ 744              		@ frame_needed = 0, uses_anonymous_args = 0
+ 745              		.loc 1 314 59 is_stmt 0 view .LVU207
+ 746 0000 70B5     		push	{r4, r5, r6, lr}
+ 747              	.LCFI10:
+ 748              		.cfi_def_cfa_offset 16
+ 749              		.cfi_offset 4, -16
+ 750              		.cfi_offset 5, -12
+ 751              		.cfi_offset 6, -8
+ 752              		.cfi_offset 14, -4
+ 753 0002 0346     		mov	r3, r0
+ 754 0004 0846     		mov	r0, r1
+ 755              	.LVL70:
+ 315:Drivers/STM32/stm32_nvm.c ****     if (offset + length > (n_valid_ << 3))
+ 756              		.loc 1 315 5 is_stmt 1 view .LVU208
+ 757              		.loc 1 315 16 is_stmt 0 view .LVU209
+ 758 0006 9918     		adds	r1, r3, r2
+ 759              	.LVL71:
+ 760              		.loc 1 315 37 view .LVU210
+ 761 0008 0E4C     		ldr	r4, .L48
+ 762 000a 2568     		ldr	r5, [r4]
+ 763              		.loc 1 315 8 view .LVU211
+ 764 000c B1EBC50F 		cmp	r1, r5, lsl #3
+ 765 0010 15D8     		bhi	.L46
+ 316:Drivers/STM32/stm32_nvm.c ****         return -1;
+ 317:Drivers/STM32/stm32_nvm.c ****     sector_t *read_sector = &sectors[read_sector_];
+ 766              		.loc 1 317 5 is_stmt 1 view .LVU212
+ 767              		.loc 1 317 37 is_stmt 0 view .LVU213
+ 768 0012 0D49     		ldr	r1, .L48+4
+ 769 0014 91F800C0 		ldrb	ip, [r1]	@ zero_extendqisi2
+ 770              	.LVL72:
+ 318:Drivers/STM32/stm32_nvm.c ****     const uint8_t *src_ptr = ((const uint8_t *)&read_sector->data[read_sector->index - n_valid_]) +
+ 771              		.loc 1 318 5 is_stmt 1 view .LVU214
+ 772              		.loc 1 318 60 is_stmt 0 view .LVU215
+ 773 0018 0C4E     		ldr	r6, .L48+8
+ 774 001a 0CEB4C04 		add	r4, ip, ip, lsl #1
+ARM GAS  /tmp/ccJf7vwm.s 			page 21
+
+
+ 775 001e 06EBC404 		add	r4, r6, r4, lsl #3
+ 776 0022 6169     		ldr	r1, [r4, #20]
+ 777              		.loc 1 318 78 view .LVU216
+ 778 0024 0CEB4C0C 		add	ip, ip, ip, lsl #1
+ 779              	.LVL73:
+ 780              		.loc 1 318 78 view .LVU217
+ 781 0028 56F83C40 		ldr	r4, [r6, ip, lsl #3]
+ 782              		.loc 1 318 86 view .LVU218
+ 783 002c A4EB050C 		sub	ip, r4, r5
+ 784              		.loc 1 318 20 view .LVU219
+ 785 0030 03EBCC03 		add	r3, r3, ip, lsl #3
+ 786              	.LVL74:
+ 319:Drivers/STM32/stm32_nvm.c ****     memcpy(data, src_ptr, length);
+ 787              		.loc 1 319 5 is_stmt 1 view .LVU220
+ 788 0034 1944     		add	r1, r1, r3
+ 789              	.LVL75:
+ 790              		.loc 1 319 5 is_stmt 0 view .LVU221
+ 791 0036 FFF7FEFF 		bl	memcpy
+ 792              	.LVL76:
+ 320:Drivers/STM32/stm32_nvm.c ****     return 0;
+ 793              		.loc 1 320 5 is_stmt 1 view .LVU222
+ 794              		.loc 1 320 12 is_stmt 0 view .LVU223
+ 795 003a 0020     		movs	r0, #0
+ 796              	.L44:
+ 321:Drivers/STM32/stm32_nvm.c **** }
+ 797              		.loc 1 321 1 view .LVU224
+ 798 003c 70BD     		pop	{r4, r5, r6, pc}
+ 799              	.LVL77:
+ 800              	.L46:
+ 316:Drivers/STM32/stm32_nvm.c ****     sector_t *read_sector = &sectors[read_sector_];
+ 801              		.loc 1 316 16 view .LVU225
+ 802 003e 4FF0FF30 		mov	r0, #-1
+ 803              	.LVL78:
+ 316:Drivers/STM32/stm32_nvm.c ****     sector_t *read_sector = &sectors[read_sector_];
+ 804              		.loc 1 316 16 view .LVU226
+ 805 0042 FBE7     		b	.L44
+ 806              	.L49:
+ 807              		.align	2
+ 808              	.L48:
+ 809 0044 00000000 		.word	.LANCHOR2
+ 810 0048 00000000 		.word	.LANCHOR1
+ 811 004c 00000000 		.word	.LANCHOR0
+ 812              		.cfi_endproc
+ 813              	.LFE141:
+ 815              		.section	.text.NVM_start_write,"ax",%progbits
+ 816              		.align	1
+ 817              		.global	NVM_start_write
+ 818              		.syntax unified
+ 819              		.thumb
+ 820              		.thumb_func
+ 822              	NVM_start_write:
+ 823              	.LVL79:
+ 824              	.LFB142:
+ 322:Drivers/STM32/stm32_nvm.c **** 
+ 323:Drivers/STM32/stm32_nvm.c **** // @brief Starts an atomic write operation.
+ 324:Drivers/STM32/stm32_nvm.c **** //
+ 325:Drivers/STM32/stm32_nvm.c **** // The most recent valid NVM data is not modified or invalidated until NVM_commit is called.
+ARM GAS  /tmp/ccJf7vwm.s 			page 22
+
+
+ 326:Drivers/STM32/stm32_nvm.c **** // The length must be at most equal to the size indicated by NVM_get_max_write_length().
+ 327:Drivers/STM32/stm32_nvm.c **** //
+ 328:Drivers/STM32/stm32_nvm.c **** // @param length: Length of the staging block that should be created
+ 329:Drivers/STM32/stm32_nvm.c **** int NVM_start_write(size_t length) {
+ 825              		.loc 1 329 36 is_stmt 1 view -0
+ 826              		.cfi_startproc
+ 827              		@ args = 0, pretend = 0, frame = 0
+ 828              		@ frame_needed = 0, uses_anonymous_args = 0
+ 829              		.loc 1 329 36 is_stmt 0 view .LVU228
+ 830 0000 70B5     		push	{r4, r5, r6, lr}
+ 831              	.LCFI11:
+ 832              		.cfi_def_cfa_offset 16
+ 833              		.cfi_offset 4, -16
+ 834              		.cfi_offset 5, -12
+ 835              		.cfi_offset 6, -8
+ 836              		.cfi_offset 14, -4
+ 330:Drivers/STM32/stm32_nvm.c ****     int status = 0;
+ 837              		.loc 1 330 5 is_stmt 1 view .LVU229
+ 838              	.LVL80:
+ 331:Drivers/STM32/stm32_nvm.c ****     sector_t *target = &sectors[1 - read_sector_];
+ 839              		.loc 1 331 5 view .LVU230
+ 840              		.loc 1 331 35 is_stmt 0 view .LVU231
+ 841 0002 174B     		ldr	r3, .L55
+ 842 0004 1C78     		ldrb	r4, [r3]	@ zero_extendqisi2
+ 843 0006 C4F10104 		rsb	r4, r4, #1
+ 844              		.loc 1 331 15 view .LVU232
+ 845 000a 04EB4403 		add	r3, r4, r4, lsl #1
+ 846 000e 154D     		ldr	r5, .L55+4
+ 847 0010 05EBC305 		add	r5, r5, r3, lsl #3
+ 848              	.LVL81:
+ 332:Drivers/STM32/stm32_nvm.c **** 
+ 333:Drivers/STM32/stm32_nvm.c ****     length = (length + 7) >> 3; // round to multiple of 64 bit
+ 849              		.loc 1 333 5 is_stmt 1 view .LVU233
+ 850              		.loc 1 333 22 is_stmt 0 view .LVU234
+ 851 0014 0730     		adds	r0, r0, #7
+ 852              	.LVL82:
+ 334:Drivers/STM32/stm32_nvm.c ****     if (length > target->n_data - target->n_reserved)
+ 853              		.loc 1 334 5 is_stmt 1 view .LVU235
+ 854              		.loc 1 334 24 is_stmt 0 view .LVU236
+ 855 0016 AB68     		ldr	r3, [r5, #8]
+ 856              		.loc 1 334 41 view .LVU237
+ 857 0018 EA68     		ldr	r2, [r5, #12]
+ 858              		.loc 1 334 33 view .LVU238
+ 859 001a 9A1A     		subs	r2, r3, r2
+ 860              		.loc 1 334 8 view .LVU239
+ 861 001c B2EBD00F 		cmp	r2, r0, lsr #3
+ 862 0020 1AD3     		bcc	.L53
+ 863 0022 C608     		lsrs	r6, r0, #3
+ 864              	.LVL83:
+ 335:Drivers/STM32/stm32_nvm.c ****         return -1;
+ 336:Drivers/STM32/stm32_nvm.c **** 
+ 337:Drivers/STM32/stm32_nvm.c ****     // make room for the new data
+ 338:Drivers/STM32/stm32_nvm.c ****     if (length > target->n_data - target->index)
+ 865              		.loc 1 338 5 is_stmt 1 view .LVU240
+ 866              		.loc 1 338 41 is_stmt 0 view .LVU241
+ 867 0024 04EB4402 		add	r2, r4, r4, lsl #1
+ 868 0028 0E49     		ldr	r1, .L55+4
+ARM GAS  /tmp/ccJf7vwm.s 			page 23
+
+
+ 869 002a 51F83220 		ldr	r2, [r1, r2, lsl #3]
+ 870              		.loc 1 338 33 view .LVU242
+ 871 002e 9B1A     		subs	r3, r3, r2
+ 872              		.loc 1 338 8 view .LVU243
+ 873 0030 B342     		cmp	r3, r6
+ 874 0032 03D2     		bcs	.L52
+ 339:Drivers/STM32/stm32_nvm.c ****         if ((status = erase(target)))
+ 875              		.loc 1 339 9 is_stmt 1 view .LVU244
+ 876              		.loc 1 339 23 is_stmt 0 view .LVU245
+ 877 0034 2846     		mov	r0, r5
+ 878 0036 FFF7FEFF 		bl	erase
+ 879              	.LVL84:
+ 880              		.loc 1 339 12 view .LVU246
+ 881 003a 60B9     		cbnz	r0, .L50
+ 882              	.LVL85:
+ 883              	.L52:
+ 340:Drivers/STM32/stm32_nvm.c ****             return status;
+ 341:Drivers/STM32/stm32_nvm.c **** 
+ 342:Drivers/STM32/stm32_nvm.c ****     // invalidate the fields we're about to write
+ 343:Drivers/STM32/stm32_nvm.c ****     status = set_allocation_state(target, target->index, length, INVALID);
+ 884              		.loc 1 343 5 is_stmt 1 view .LVU247
+ 885              		.loc 1 343 14 is_stmt 0 view .LVU248
+ 886 003c 04EB4404 		add	r4, r4, r4, lsl #1
+ 887 0040 0123     		movs	r3, #1
+ 888 0042 3246     		mov	r2, r6
+ 889 0044 0749     		ldr	r1, .L55+4
+ 890 0046 51F83410 		ldr	r1, [r1, r4, lsl #3]
+ 891 004a 2846     		mov	r0, r5
+ 892 004c FFF7FEFF 		bl	set_allocation_state
+ 893              	.LVL86:
+ 344:Drivers/STM32/stm32_nvm.c ****     if (status)
+ 894              		.loc 1 344 5 is_stmt 1 view .LVU249
+ 895              		.loc 1 344 8 is_stmt 0 view .LVU250
+ 896 0050 08B9     		cbnz	r0, .L50
+ 345:Drivers/STM32/stm32_nvm.c ****         return status;
+ 346:Drivers/STM32/stm32_nvm.c **** 
+ 347:Drivers/STM32/stm32_nvm.c ****     n_staging_area_ = length;
+ 897              		.loc 1 347 5 is_stmt 1 view .LVU251
+ 898              		.loc 1 347 21 is_stmt 0 view .LVU252
+ 899 0052 054B     		ldr	r3, .L55+8
+ 900 0054 1E60     		str	r6, [r3]
+ 348:Drivers/STM32/stm32_nvm.c ****     return 0;
+ 901              		.loc 1 348 5 is_stmt 1 view .LVU253
+ 902              	.LVL87:
+ 903              	.L50:
+ 349:Drivers/STM32/stm32_nvm.c **** }
+ 904              		.loc 1 349 1 is_stmt 0 view .LVU254
+ 905 0056 70BD     		pop	{r4, r5, r6, pc}
+ 906              	.LVL88:
+ 907              	.L53:
+ 335:Drivers/STM32/stm32_nvm.c **** 
+ 908              		.loc 1 335 16 view .LVU255
+ 909 0058 4FF0FF30 		mov	r0, #-1
+ 910              	.LVL89:
+ 335:Drivers/STM32/stm32_nvm.c **** 
+ 911              		.loc 1 335 16 view .LVU256
+ 912 005c FBE7     		b	.L50
+ARM GAS  /tmp/ccJf7vwm.s 			page 24
+
+
+ 913              	.L56:
+ 914 005e 00BF     		.align	2
+ 915              	.L55:
+ 916 0060 00000000 		.word	.LANCHOR1
+ 917 0064 00000000 		.word	.LANCHOR0
+ 918 0068 00000000 		.word	.LANCHOR3
+ 919              		.cfi_endproc
+ 920              	.LFE142:
+ 922              		.section	.text.NVM_write,"ax",%progbits
+ 923              		.align	1
+ 924              		.global	NVM_write
+ 925              		.syntax unified
+ 926              		.thumb
+ 927              		.thumb_func
+ 929              	NVM_write:
+ 930              	.LVL90:
+ 931              	.LFB143:
+ 350:Drivers/STM32/stm32_nvm.c **** 
+ 351:Drivers/STM32/stm32_nvm.c **** // @brief Writes to the current data block that was opened with NVM_start_write.
+ 352:Drivers/STM32/stm32_nvm.c **** //
+ 353:Drivers/STM32/stm32_nvm.c **** // The operation fails if (offset + length) is larger than the length passed to NVM_start_write.
+ 354:Drivers/STM32/stm32_nvm.c **** // The most recent valid NVM data is not modified or invalidated until NVM_commit is called.
+ 355:Drivers/STM32/stm32_nvm.c **** // Warning: Writing different data to the same area multiple times during a single transaction
+ 356:Drivers/STM32/stm32_nvm.c **** // will cause data corruption.
+ 357:Drivers/STM32/stm32_nvm.c **** //
+ 358:Drivers/STM32/stm32_nvm.c **** // @param offset: The offset in bytes, 0 being the beginning of the staging block.
+ 359:Drivers/STM32/stm32_nvm.c **** // @param data: Pointer to the data that should be written
+ 360:Drivers/STM32/stm32_nvm.c **** // @param length: Data length in bytes
+ 361:Drivers/STM32/stm32_nvm.c **** int NVM_write(size_t offset, uint8_t *data, size_t length) {
+ 932              		.loc 1 361 60 is_stmt 1 view -0
+ 933              		.cfi_startproc
+ 934              		@ args = 0, pretend = 0, frame = 0
+ 935              		@ frame_needed = 0, uses_anonymous_args = 0
+ 936              		.loc 1 361 60 is_stmt 0 view .LVU258
+ 937 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 938              	.LCFI12:
+ 939              		.cfi_def_cfa_offset 24
+ 940              		.cfi_offset 3, -24
+ 941              		.cfi_offset 4, -20
+ 942              		.cfi_offset 5, -16
+ 943              		.cfi_offset 6, -12
+ 944              		.cfi_offset 7, -8
+ 945              		.cfi_offset 14, -4
+ 946 0002 1546     		mov	r5, r2
+ 362:Drivers/STM32/stm32_nvm.c ****     if (offset + length > (n_staging_area_ << 3))
+ 947              		.loc 1 362 5 is_stmt 1 view .LVU259
+ 948              		.loc 1 362 16 is_stmt 0 view .LVU260
+ 949 0004 8318     		adds	r3, r0, r2
+ 950              		.loc 1 362 44 view .LVU261
+ 951 0006 304A     		ldr	r2, .L70
+ 952              	.LVL91:
+ 953              		.loc 1 362 44 view .LVU262
+ 954 0008 1268     		ldr	r2, [r2]
+ 955              		.loc 1 362 8 view .LVU263
+ 956 000a B3EBC20F 		cmp	r3, r2, lsl #3
+ 957 000e 58D8     		bhi	.L67
+ 958 0010 0446     		mov	r4, r0
+ARM GAS  /tmp/ccJf7vwm.s 			page 25
+
+
+ 959 0012 0E46     		mov	r6, r1
+ 363:Drivers/STM32/stm32_nvm.c ****         return -1;
+ 364:Drivers/STM32/stm32_nvm.c ****     sector_t *target = &sectors[1 - read_sector_];
+ 960              		.loc 1 364 5 is_stmt 1 view .LVU264
+ 961              		.loc 1 364 35 is_stmt 0 view .LVU265
+ 962 0014 2D4B     		ldr	r3, .L70+4
+ 963 0016 1F78     		ldrb	r7, [r3]	@ zero_extendqisi2
+ 964 0018 C7F10107 		rsb	r7, r7, #1
+ 965              	.LVL92:
+ 365:Drivers/STM32/stm32_nvm.c **** 
+ 366:Drivers/STM32/stm32_nvm.c ****     HAL_FLASH_Unlock();
+ 966              		.loc 1 366 5 is_stmt 1 view .LVU266
+ 967 001c FFF7FEFF 		bl	HAL_FLASH_Unlock
+ 968              	.LVL93:
+ 367:Drivers/STM32/stm32_nvm.c ****     HAL_FLASH_ClearError();
+ 969              		.loc 1 367 5 view .LVU267
+ 970 0020 FFF7FEFF 		bl	HAL_FLASH_ClearError
+ 971              	.LVL94:
+ 368:Drivers/STM32/stm32_nvm.c **** 
+ 369:Drivers/STM32/stm32_nvm.c ****     // handle unaligned start
+ 370:Drivers/STM32/stm32_nvm.c ****     for (; (offset & 0x3) && length; ++data, ++offset, --length)
+ 972              		.loc 1 370 5 view .LVU268
+ 973              	.L59:
+ 974              		.loc 1 370 12 discriminator 1 view .LVU269
+ 975              		.loc 1 370 5 is_stmt 0 discriminator 1 view .LVU270
+ 976 0024 14F0030F 		tst	r4, #3
+ 977 0028 15D0     		beq	.L63
+ 978              		.loc 1 370 27 discriminator 2 view .LVU271
+ 979 002a A5B1     		cbz	r5, .L63
+ 371:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
+ 980              		.loc 1 371 9 is_stmt 1 view .LVU272
+ 372:Drivers/STM32/stm32_nvm.c ****                 ((uintptr_t)&target->data[target->index]) + offset, *data) != HAL_OK)
+ 981              		.loc 1 372 36 is_stmt 0 view .LVU273
+ 982 002c 284B     		ldr	r3, .L70+8
+ 983 002e 07EB4702 		add	r2, r7, r7, lsl #1
+ 984 0032 03EBC201 		add	r1, r3, r2, lsl #3
+ 985 0036 4969     		ldr	r1, [r1, #20]
+ 986              		.loc 1 372 49 view .LVU274
+ 987 0038 53F83230 		ldr	r3, [r3, r2, lsl #3]
+ 988              		.loc 1 372 29 view .LVU275
+ 989 003c 01EBC301 		add	r1, r1, r3, lsl #3
+ 371:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
+ 990              		.loc 1 371 13 view .LVU276
+ 991 0040 0020     		movs	r0, #0
+ 992 0042 3278     		ldrb	r2, [r6]	@ zero_extendqisi2
+ 993 0044 0346     		mov	r3, r0
+ 994 0046 2144     		add	r1, r1, r4
+ 995 0048 FFF7FEFF 		bl	HAL_FLASH_Program
+ 996              	.LVL95:
+ 371:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
+ 997              		.loc 1 371 12 view .LVU277
+ 998 004c A0BB     		cbnz	r0, .L60
+ 370:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
+ 999              		.loc 1 370 38 is_stmt 1 view .LVU278
+ 1000 004e 0136     		adds	r6, r6, #1
+ 1001              	.LVL96:
+ 370:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
+ARM GAS  /tmp/ccJf7vwm.s 			page 26
+
+
+ 1002              		.loc 1 370 46 is_stmt 0 view .LVU279
+ 1003 0050 0134     		adds	r4, r4, #1
+ 1004              	.LVL97:
+ 370:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
+ 1005              		.loc 1 370 56 view .LVU280
+ 1006 0052 013D     		subs	r5, r5, #1
+ 1007              	.LVL98:
+ 370:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
+ 1008              		.loc 1 370 56 view .LVU281
+ 1009 0054 E6E7     		b	.L59
+ 1010              	.L63:
+ 373:Drivers/STM32/stm32_nvm.c ****             goto fail;
+ 374:Drivers/STM32/stm32_nvm.c **** 
+ 375:Drivers/STM32/stm32_nvm.c ****     // write 32-bit values (64-bit doesn't work)
+ 376:Drivers/STM32/stm32_nvm.c ****     for (; length >= 4; data += 4, offset += 4, length -=4)
+ 1011              		.loc 1 376 12 is_stmt 1 discriminator 1 view .LVU282
+ 1012              		.loc 1 376 5 is_stmt 0 discriminator 1 view .LVU283
+ 1013 0056 032D     		cmp	r5, #3
+ 1014 0058 14D9     		bls	.L65
+ 377:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,
+ 1015              		.loc 1 377 9 is_stmt 1 view .LVU284
+ 378:Drivers/STM32/stm32_nvm.c ****                 ((uintptr_t)&target->data[target->index]) + offset, *(uint32_t*)data) != HAL_OK)
+ 1016              		.loc 1 378 36 is_stmt 0 view .LVU285
+ 1017 005a 1D4B     		ldr	r3, .L70+8
+ 1018 005c 07EB4702 		add	r2, r7, r7, lsl #1
+ 1019 0060 03EBC201 		add	r1, r3, r2, lsl #3
+ 1020 0064 4969     		ldr	r1, [r1, #20]
+ 1021              		.loc 1 378 49 view .LVU286
+ 1022 0066 53F83230 		ldr	r3, [r3, r2, lsl #3]
+ 1023              		.loc 1 378 29 view .LVU287
+ 1024 006a 01EBC301 		add	r1, r1, r3, lsl #3
+ 377:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,
+ 1025              		.loc 1 377 13 view .LVU288
+ 1026 006e 3268     		ldr	r2, [r6]
+ 1027 0070 0023     		movs	r3, #0
+ 1028 0072 2144     		add	r1, r1, r4
+ 1029 0074 0220     		movs	r0, #2
+ 1030 0076 FFF7FEFF 		bl	HAL_FLASH_Program
+ 1031              	.LVL99:
+ 377:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,
+ 1032              		.loc 1 377 12 view .LVU289
+ 1033 007a E8B9     		cbnz	r0, .L60
+ 376:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,
+ 1034              		.loc 1 376 25 is_stmt 1 view .LVU290
+ 376:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,
+ 1035              		.loc 1 376 30 is_stmt 0 view .LVU291
+ 1036 007c 0436     		adds	r6, r6, #4
+ 1037              	.LVL100:
+ 376:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,
+ 1038              		.loc 1 376 43 view .LVU292
+ 1039 007e 0434     		adds	r4, r4, #4
+ 1040              	.LVL101:
+ 376:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,
+ 1041              		.loc 1 376 56 view .LVU293
+ 1042 0080 043D     		subs	r5, r5, #4
+ 1043              	.LVL102:
+ 376:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_WORD,
+ARM GAS  /tmp/ccJf7vwm.s 			page 27
+
+
+ 1044              		.loc 1 376 56 view .LVU294
+ 1045 0082 E8E7     		b	.L63
+ 1046              	.L65:
+ 379:Drivers/STM32/stm32_nvm.c ****             goto fail;
+ 380:Drivers/STM32/stm32_nvm.c **** 
+ 381:Drivers/STM32/stm32_nvm.c ****     // handle unaligned end
+ 382:Drivers/STM32/stm32_nvm.c ****     for (; length; ++data, ++offset, --length)
+ 1047              		.loc 1 382 12 is_stmt 1 discriminator 1 view .LVU295
+ 1048              		.loc 1 382 5 is_stmt 0 discriminator 1 view .LVU296
+ 1049 0084 A5B1     		cbz	r5, .L69
+ 383:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
+ 1050              		.loc 1 383 9 is_stmt 1 view .LVU297
+ 384:Drivers/STM32/stm32_nvm.c ****                 ((uintptr_t)&target->data[target->index]) + offset, *data) != HAL_OK)
+ 1051              		.loc 1 384 36 is_stmt 0 view .LVU298
+ 1052 0086 124B     		ldr	r3, .L70+8
+ 1053 0088 07EB4702 		add	r2, r7, r7, lsl #1
+ 1054 008c 03EBC201 		add	r1, r3, r2, lsl #3
+ 1055 0090 4969     		ldr	r1, [r1, #20]
+ 1056              		.loc 1 384 49 view .LVU299
+ 1057 0092 53F83230 		ldr	r3, [r3, r2, lsl #3]
+ 1058              		.loc 1 384 29 view .LVU300
+ 1059 0096 01EBC301 		add	r1, r1, r3, lsl #3
+ 383:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
+ 1060              		.loc 1 383 13 view .LVU301
+ 1061 009a 0020     		movs	r0, #0
+ 1062 009c 3278     		ldrb	r2, [r6]	@ zero_extendqisi2
+ 1063 009e 0346     		mov	r3, r0
+ 1064 00a0 2144     		add	r1, r1, r4
+ 1065 00a2 FFF7FEFF 		bl	HAL_FLASH_Program
+ 1066              	.LVL103:
+ 383:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
+ 1067              		.loc 1 383 12 view .LVU302
+ 1068 00a6 38B9     		cbnz	r0, .L60
+ 382:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
+ 1069              		.loc 1 382 20 is_stmt 1 view .LVU303
+ 1070 00a8 0136     		adds	r6, r6, #1
+ 1071              	.LVL104:
+ 382:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
+ 1072              		.loc 1 382 28 is_stmt 0 view .LVU304
+ 1073 00aa 0134     		adds	r4, r4, #1
+ 1074              	.LVL105:
+ 382:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
+ 1075              		.loc 1 382 38 view .LVU305
+ 1076 00ac 013D     		subs	r5, r5, #1
+ 1077              	.LVL106:
+ 382:Drivers/STM32/stm32_nvm.c ****         if (HAL_FLASH_Program(FLASH_TYPEPROGRAM_BYTE,
+ 1078              		.loc 1 382 38 view .LVU306
+ 1079 00ae E9E7     		b	.L65
+ 1080              	.L69:
+ 385:Drivers/STM32/stm32_nvm.c ****             goto fail;
+ 386:Drivers/STM32/stm32_nvm.c **** 
+ 387:Drivers/STM32/stm32_nvm.c ****     HAL_FLASH_Lock();
+ 1081              		.loc 1 387 5 is_stmt 1 view .LVU307
+ 1082 00b0 FFF7FEFF 		bl	HAL_FLASH_Lock
+ 1083              	.LVL107:
+ 388:Drivers/STM32/stm32_nvm.c ****     return 0;
+ 1084              		.loc 1 388 5 view .LVU308
+ARM GAS  /tmp/ccJf7vwm.s 			page 28
+
+
+ 1085              		.loc 1 388 12 is_stmt 0 view .LVU309
+ 1086 00b4 0020     		movs	r0, #0
+ 1087 00b6 03E0     		b	.L57
+ 1088              	.L60:
+ 389:Drivers/STM32/stm32_nvm.c **** fail:
+ 390:Drivers/STM32/stm32_nvm.c ****     HAL_FLASH_Lock();
+ 1089              		.loc 1 390 5 is_stmt 1 view .LVU310
+ 1090 00b8 FFF7FEFF 		bl	HAL_FLASH_Lock
+ 1091              	.LVL108:
+ 391:Drivers/STM32/stm32_nvm.c ****     return HAL_FLASH_GetError(); // non-zero
+ 1092              		.loc 1 391 5 view .LVU311
+ 1093              		.loc 1 391 12 is_stmt 0 view .LVU312
+ 1094 00bc FFF7FEFF 		bl	HAL_FLASH_GetError
+ 1095              	.LVL109:
+ 1096              	.L57:
+ 392:Drivers/STM32/stm32_nvm.c **** }
+ 1097              		.loc 1 392 1 view .LVU313
+ 1098 00c0 F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ 1099              	.LVL110:
+ 1100              	.L67:
+ 363:Drivers/STM32/stm32_nvm.c ****     sector_t *target = &sectors[1 - read_sector_];
+ 1101              		.loc 1 363 16 view .LVU314
+ 1102 00c2 4FF0FF30 		mov	r0, #-1
+ 1103              	.LVL111:
+ 363:Drivers/STM32/stm32_nvm.c ****     sector_t *target = &sectors[1 - read_sector_];
+ 1104              		.loc 1 363 16 view .LVU315
+ 1105 00c6 FBE7     		b	.L57
+ 1106              	.L71:
+ 1107              		.align	2
+ 1108              	.L70:
+ 1109 00c8 00000000 		.word	.LANCHOR3
+ 1110 00cc 00000000 		.word	.LANCHOR1
+ 1111 00d0 00000000 		.word	.LANCHOR0
+ 1112              		.cfi_endproc
+ 1113              	.LFE143:
+ 1115              		.section	.text.NVM_commit,"ax",%progbits
+ 1116              		.align	1
+ 1117              		.global	NVM_commit
+ 1118              		.syntax unified
+ 1119              		.thumb
+ 1120              		.thumb_func
+ 1122              	NVM_commit:
+ 1123              	.LFB144:
+ 393:Drivers/STM32/stm32_nvm.c **** 
+ 394:Drivers/STM32/stm32_nvm.c **** // @brief Commits the new data to NVM atomically.
+ 395:Drivers/STM32/stm32_nvm.c **** int NVM_commit(void) {
+ 1124              		.loc 1 395 22 is_stmt 1 view -0
+ 1125              		.cfi_startproc
+ 1126              		@ args = 0, pretend = 0, frame = 0
+ 1127              		@ frame_needed = 0, uses_anonymous_args = 0
+ 1128 0000 F8B5     		push	{r3, r4, r5, r6, r7, lr}
+ 1129              	.LCFI13:
+ 1130              		.cfi_def_cfa_offset 24
+ 1131              		.cfi_offset 3, -24
+ 1132              		.cfi_offset 4, -20
+ 1133              		.cfi_offset 5, -16
+ 1134              		.cfi_offset 6, -12
+ARM GAS  /tmp/ccJf7vwm.s 			page 29
+
+
+ 1135              		.cfi_offset 7, -8
+ 1136              		.cfi_offset 14, -4
+ 396:Drivers/STM32/stm32_nvm.c ****     sector_t *read_sector = &sectors[read_sector_];
+ 1137              		.loc 1 396 5 view .LVU317
+ 1138              		.loc 1 396 37 is_stmt 0 view .LVU318
+ 1139 0002 204B     		ldr	r3, .L76
+ 1140 0004 1C78     		ldrb	r4, [r3]	@ zero_extendqisi2
+ 1141              		.loc 1 396 15 view .LVU319
+ 1142 0006 204E     		ldr	r6, .L76+4
+ 1143 0008 04EB4407 		add	r7, r4, r4, lsl #1
+ 1144 000c 06EBC707 		add	r7, r6, r7, lsl #3
+ 1145              	.LVL112:
+ 397:Drivers/STM32/stm32_nvm.c ****     sector_t *write_sector = &sectors[1 - read_sector_];
+ 1146              		.loc 1 397 5 is_stmt 1 view .LVU320
+ 1147              		.loc 1 397 41 is_stmt 0 view .LVU321
+ 1148 0010 C4F10105 		rsb	r5, r4, #1
+ 1149              		.loc 1 397 15 view .LVU322
+ 1150 0014 05EB4500 		add	r0, r5, r5, lsl #1
+ 1151              	.LVL113:
+ 398:Drivers/STM32/stm32_nvm.c **** 
+ 399:Drivers/STM32/stm32_nvm.c ****     // mark the newly-written fields as valid
+ 400:Drivers/STM32/stm32_nvm.c ****     int status = set_allocation_state(write_sector, write_sector->index, n_staging_area_, VALID);
+ 1152              		.loc 1 400 5 is_stmt 1 view .LVU323
+ 1153              		.loc 1 400 18 is_stmt 0 view .LVU324
+ 1154 0018 0023     		movs	r3, #0
+ 1155 001a 1C4A     		ldr	r2, .L76+8
+ 1156 001c 1268     		ldr	r2, [r2]
+ 1157 001e 56F83010 		ldr	r1, [r6, r0, lsl #3]
+ 1158 0022 06EBC000 		add	r0, r6, r0, lsl #3
+ 1159              	.LVL114:
+ 1160              		.loc 1 400 18 view .LVU325
+ 1161 0026 FFF7FEFF 		bl	set_allocation_state
+ 1162              	.LVL115:
+ 401:Drivers/STM32/stm32_nvm.c ****     if (status)
+ 1163              		.loc 1 401 5 is_stmt 1 view .LVU326
+ 1164              		.loc 1 401 8 is_stmt 0 view .LVU327
+ 1165 002a 30BB     		cbnz	r0, .L72
+ 402:Drivers/STM32/stm32_nvm.c ****         return status;
+ 403:Drivers/STM32/stm32_nvm.c **** 
+ 404:Drivers/STM32/stm32_nvm.c ****     write_sector->index += n_staging_area_;
+ 1166              		.loc 1 404 5 is_stmt 1 view .LVU328
+ 1167              		.loc 1 404 25 is_stmt 0 view .LVU329
+ 1168 002c 1749     		ldr	r1, .L76+8
+ 1169 002e 0868     		ldr	r0, [r1]
+ 1170 0030 3346     		mov	r3, r6
+ 1171 0032 05EB4506 		add	r6, r5, r5, lsl #1
+ 1172              	.LVL116:
+ 1173              		.loc 1 404 25 view .LVU330
+ 1174 0036 53F83620 		ldr	r2, [r3, r6, lsl #3]
+ 1175 003a 0244     		add	r2, r2, r0
+ 1176 003c 43F83620 		str	r2, [r3, r6, lsl #3]
+ 405:Drivers/STM32/stm32_nvm.c ****     n_valid_ = n_staging_area_;
+ 1177              		.loc 1 405 5 is_stmt 1 view .LVU331
+ 1178              		.loc 1 405 14 is_stmt 0 view .LVU332
+ 1179 0040 134A     		ldr	r2, .L76+12
+ 1180 0042 1060     		str	r0, [r2]
+ 406:Drivers/STM32/stm32_nvm.c ****     n_staging_area_ = 0;
+ARM GAS  /tmp/ccJf7vwm.s 			page 30
+
+
+ 1181              		.loc 1 406 5 is_stmt 1 view .LVU333
+ 1182              		.loc 1 406 21 is_stmt 0 view .LVU334
+ 1183 0044 0022     		movs	r2, #0
+ 1184              	.LVL117:
+ 1185              		.loc 1 406 21 view .LVU335
+ 1186 0046 0A60     		str	r2, [r1]
+ 407:Drivers/STM32/stm32_nvm.c ****     read_sector_ = 1 - read_sector_;
+ 1187              		.loc 1 407 5 is_stmt 1 view .LVU336
+ 1188              		.loc 1 407 22 is_stmt 0 view .LVU337
+ 1189 0048 0E49     		ldr	r1, .L76
+ 1190 004a 0A78     		ldrb	r2, [r1]	@ zero_extendqisi2
+ 1191              	.LVL118:
+ 1192              		.loc 1 407 22 view .LVU338
+ 1193 004c C2F10102 		rsb	r2, r2, #1
+ 1194              		.loc 1 407 18 view .LVU339
+ 1195 0050 0A70     		strb	r2, [r1]
+ 408:Drivers/STM32/stm32_nvm.c **** 
+ 409:Drivers/STM32/stm32_nvm.c ****     // invalidate the other sector
+ 410:Drivers/STM32/stm32_nvm.c ****     if (read_sector->index < read_sector->n_data) {
+ 1196              		.loc 1 410 5 is_stmt 1 view .LVU340
+ 1197              		.loc 1 410 20 is_stmt 0 view .LVU341
+ 1198 0052 04EB4402 		add	r2, r4, r4, lsl #1
+ 1199 0056 3846     		mov	r0, r7
+ 1200 0058 53F83210 		ldr	r1, [r3, r2, lsl #3]
+ 1201              		.loc 1 410 41 view .LVU342
+ 1202 005c BB68     		ldr	r3, [r7, #8]
+ 1203              	.LVL119:
+ 1204              		.loc 1 410 8 view .LVU343
+ 1205 005e 9942     		cmp	r1, r3
+ 1206 0060 0CD2     		bcs	.L74
+ 411:Drivers/STM32/stm32_nvm.c ****         status = set_allocation_state(read_sector, read_sector->index, 1, INVALID);
+ 1207              		.loc 1 411 9 is_stmt 1 view .LVU344
+ 1208              		.loc 1 411 18 is_stmt 0 view .LVU345
+ 1209 0062 0123     		movs	r3, #1
+ 1210 0064 1A46     		mov	r2, r3
+ 1211 0066 FFF7FEFF 		bl	set_allocation_state
+ 1212              	.LVL120:
+ 412:Drivers/STM32/stm32_nvm.c ****         read_sector->index += 1;
+ 1213              		.loc 1 412 9 is_stmt 1 view .LVU346
+ 1214              		.loc 1 412 28 is_stmt 0 view .LVU347
+ 1215 006a 074A     		ldr	r2, .L76+4
+ 1216              	.LVL121:
+ 1217              		.loc 1 412 28 view .LVU348
+ 1218 006c 04EB4401 		add	r1, r4, r4, lsl #1
+ 1219 0070 52F83130 		ldr	r3, [r2, r1, lsl #3]
+ 1220 0074 0133     		adds	r3, r3, #1
+ 1221 0076 42F83130 		str	r3, [r2, r1, lsl #3]
+ 1222              	.LVL122:
+ 1223              	.L72:
+ 413:Drivers/STM32/stm32_nvm.c ****     } else {
+ 414:Drivers/STM32/stm32_nvm.c ****         status = erase(read_sector);
+ 415:Drivers/STM32/stm32_nvm.c ****     }
+ 416:Drivers/STM32/stm32_nvm.c **** 
+ 417:Drivers/STM32/stm32_nvm.c ****     return status;
+ 418:Drivers/STM32/stm32_nvm.c **** }
+ 1224              		.loc 1 418 1 view .LVU349
+ 1225 007a F8BD     		pop	{r3, r4, r5, r6, r7, pc}
+ARM GAS  /tmp/ccJf7vwm.s 			page 31
+
+
+ 1226              	.LVL123:
+ 1227              	.L74:
+ 414:Drivers/STM32/stm32_nvm.c ****     }
+ 1228              		.loc 1 414 9 is_stmt 1 view .LVU350
+ 414:Drivers/STM32/stm32_nvm.c ****     }
+ 1229              		.loc 1 414 18 is_stmt 0 view .LVU351
+ 1230 007c FFF7FEFF 		bl	erase
+ 1231              	.LVL124:
+ 414:Drivers/STM32/stm32_nvm.c ****     }
+ 1232              		.loc 1 414 18 view .LVU352
+ 1233 0080 FBE7     		b	.L72
+ 1234              	.L77:
+ 1235 0082 00BF     		.align	2
+ 1236              	.L76:
+ 1237 0084 00000000 		.word	.LANCHOR1
+ 1238 0088 00000000 		.word	.LANCHOR0
+ 1239 008c 00000000 		.word	.LANCHOR3
+ 1240 0090 00000000 		.word	.LANCHOR2
+ 1241              		.cfi_endproc
+ 1242              	.LFE144:
+ 1244              		.section	.rodata.NVM_demo.str1.4,"aMS",%progbits,1
+ 1245              		.align	2
+ 1246              	.LC0:
+ 1247 0000 3D3D3D20 		.ascii	"=== NVM TEST ===\015\000"
+ 1247      4E564D20 
+ 1247      54455354 
+ 1247      203D3D3D 
+ 1247      0D00
+ 1248 0012 0000     		.align	2
+ 1249              	.LC1:
+ 1250 0014 4E564D20 		.ascii	"NVM contains %d valid bytes:\015\012\000"
+ 1250      636F6E74 
+ 1250      61696E73 
+ 1250      20256420 
+ 1250      76616C69 
+ 1251 0033 00       		.align	2
+ 1252              	.LC2:
+ 1253 0034 20253032 		.ascii	" %02x\000"
+ 1253      7800
+ 1254 003a 0000     		.align	2
+ 1255              	.LC3:
+ 1256 003c 0D00     		.ascii	"\015\000"
+ 1257 003e 0000     		.align	2
+ 1258              	.LC4:
+ 1259 0040 4E564D20 		.ascii	"NVM is empty\015\000"
+ 1259      69732065 
+ 1259      6D707479 
+ 1259      0D00
+ 1260 004e 0000     		.align	2
+ 1261              	.LC5:
+ 1262 0050 77726974 		.ascii	"write 0x%02x, ..., 0x%02x to NVM\015\012\000"
+ 1262      65203078 
+ 1262      25303278 
+ 1262      2C202E2E 
+ 1262      2E2C2030 
+ 1263 0073 00       		.align	2
+ 1264              	.LC6:
+ARM GAS  /tmp/ccJf7vwm.s 			page 32
+
+
+ 1265 0074 6E657720 		.ascii	"new data committed to NVM\015\000"
+ 1265      64617461 
+ 1265      20636F6D 
+ 1265      6D697474 
+ 1265      65642074 
+ 1266 008f 00       		.align	2
+ 1267              	.LC7:
+ 1268 0090 4E564D20 		.ascii	"NVM test failed at %d!\015\012\000"
+ 1268      74657374 
+ 1268      20666169 
+ 1268      6C656420 
+ 1268      61742025 
+ 1269              		.section	.text.NVM_demo,"ax",%progbits
+ 1270              		.align	1
+ 1271              		.global	NVM_demo
+ 1272              		.syntax unified
+ 1273              		.thumb
+ 1274              		.thumb_func
+ 1276              	NVM_demo:
+ 1277              	.LFB150:
+ 419:Drivers/STM32/stm32_nvm.c **** 
+ 420:Drivers/STM32/stm32_nvm.c **** 
+ 421:Drivers/STM32/stm32_nvm.c **** #include <cmsis_os.h>
+ 422:Drivers/STM32/stm32_nvm.c **** #include <stdio.h>
+ 423:Drivers/STM32/stm32_nvm.c **** /** @brief Call this at startup to test/demo the NVM driver
+ 424:Drivers/STM32/stm32_nvm.c **** 
+ 425:Drivers/STM32/stm32_nvm.c ****  Expected output when starting with a fully erased NVM
+ 426:Drivers/STM32/stm32_nvm.c **** 
+ 427:Drivers/STM32/stm32_nvm.c ****     [1st boot]
+ 428:Drivers/STM32/stm32_nvm.c ****     === NVM TEST ===
+ 429:Drivers/STM32/stm32_nvm.c ****     NVM is empty
+ 430:Drivers/STM32/stm32_nvm.c ****     write 0x00, ..., 0x25 to NVM
+ 431:Drivers/STM32/stm32_nvm.c ****     new data committed to NVM
+ 432:Drivers/STM32/stm32_nvm.c ****     
+ 433:Drivers/STM32/stm32_nvm.c ****     [2nd boot]
+ 434:Drivers/STM32/stm32_nvm.c ****     === NVM TEST ===
+ 435:Drivers/STM32/stm32_nvm.c ****     NVM contains 40 valid bytes:
+ 436:Drivers/STM32/stm32_nvm.c ****     00 01 02 03 04 05 06 07 08 09 0a 0b 0c 0d 0e 0f
+ 437:Drivers/STM32/stm32_nvm.c ****     10 11 12 13 14 15 16 17 18 19 1a 1b 1c 1d 1e 1f
+ 438:Drivers/STM32/stm32_nvm.c ****     20 21 22 23 24 25 ff ff
+ 439:Drivers/STM32/stm32_nvm.c ****     write 0xbd, ..., 0xe2 to NVM
+ 440:Drivers/STM32/stm32_nvm.c ****     new data committed to NVM
+ 441:Drivers/STM32/stm32_nvm.c **** 
+ 442:Drivers/STM32/stm32_nvm.c ****     [3rd boot]
+ 443:Drivers/STM32/stm32_nvm.c ****     === NVM TEST ===
+ 444:Drivers/STM32/stm32_nvm.c ****     NVM contains 40 valid bytes:
+ 445:Drivers/STM32/stm32_nvm.c ****     bd be bf c0 c1 c2 c3 c4 c5 c6 c7 c8 c9 ca cb cc
+ 446:Drivers/STM32/stm32_nvm.c ****     cd ce cf d0 d1 d2 d3 d4 d5 d6 d7 d8 d9 da db dc
+ 447:Drivers/STM32/stm32_nvm.c ****     dd de df e0 e1 e2 ff ff
+ 448:Drivers/STM32/stm32_nvm.c ****     write 0xcb, ..., 0xf0 to NVM
+ 449:Drivers/STM32/stm32_nvm.c ****     new data committed to NVM
+ 450:Drivers/STM32/stm32_nvm.c **** */
+ 451:Drivers/STM32/stm32_nvm.c **** void NVM_demo(void) {
+ 1278              		.loc 1 451 21 is_stmt 1 view -0
+ 1279              		.cfi_startproc
+ 1280              		@ args = 0, pretend = 0, frame = 40
+ 1281              		@ frame_needed = 1, uses_anonymous_args = 0
+ARM GAS  /tmp/ccJf7vwm.s 			page 33
+
+
+ 1282 0000 2DE9F047 		push	{r4, r5, r6, r7, r8, r9, r10, lr}
+ 1283              	.LCFI14:
+ 1284              		.cfi_def_cfa_offset 32
+ 1285              		.cfi_offset 4, -32
+ 1286              		.cfi_offset 5, -28
+ 1287              		.cfi_offset 6, -24
+ 1288              		.cfi_offset 7, -20
+ 1289              		.cfi_offset 8, -16
+ 1290              		.cfi_offset 9, -12
+ 1291              		.cfi_offset 10, -8
+ 1292              		.cfi_offset 14, -4
+ 1293 0004 8AB0     		sub	sp, sp, #40
+ 1294              	.LCFI15:
+ 1295              		.cfi_def_cfa_offset 72
+ 1296 0006 00AF     		add	r7, sp, #0
+ 1297              	.LCFI16:
+ 1298              		.cfi_def_cfa_register 7
+ 1299              		.loc 1 451 21 is_stmt 0 view .LVU354
+ 1300 0008 6E46     		mov	r6, sp
+ 452:Drivers/STM32/stm32_nvm.c ****     const size_t len = 38;
+ 1301              		.loc 1 452 5 is_stmt 1 view .LVU355
+ 1302              	.LVL125:
+ 453:Drivers/STM32/stm32_nvm.c ****     uint8_t data[len];
+ 1303              		.loc 1 453 5 view .LVU356
+ 454:Drivers/STM32/stm32_nvm.c ****     int progress = 0;
+ 1304              		.loc 1 454 5 view .LVU357
+ 455:Drivers/STM32/stm32_nvm.c ****     uint8_t seed = 0;
+ 1305              		.loc 1 455 5 view .LVU358
+ 456:Drivers/STM32/stm32_nvm.c **** 
+ 457:Drivers/STM32/stm32_nvm.c ****     osDelay(100);
+ 1306              		.loc 1 457 5 view .LVU359
+ 1307 000a 6420     		movs	r0, #100
+ 1308 000c FFF7FEFF 		bl	osDelay
+ 1309              	.LVL126:
+ 458:Drivers/STM32/stm32_nvm.c ****     printf("=== NVM TEST ===\r\n"); osDelay(5);
+ 1310              		.loc 1 458 5 view .LVU360
+ 1311 0010 4348     		ldr	r0, .L94
+ 1312 0012 FFF7FEFF 		bl	puts
+ 1313              	.LVL127:
+ 1314              		.loc 1 458 37 view .LVU361
+ 1315 0016 0520     		movs	r0, #5
+ 1316 0018 FFF7FEFF 		bl	osDelay
+ 1317              	.LVL128:
+ 459:Drivers/STM32/stm32_nvm.c ****     //NVM_erase();
+ 460:Drivers/STM32/stm32_nvm.c ****     if (progress++, NVM_init() != 0)
+ 1318              		.loc 1 460 5 view .LVU362
+ 1319              		.loc 1 460 21 is_stmt 0 view .LVU363
+ 1320 001c FFF7FEFF 		bl	NVM_init
+ 1321              	.LVL129:
+ 1322              		.loc 1 460 8 view .LVU364
+ 1323 0020 0028     		cmp	r0, #0
+ 1324 0022 72D1     		bne	.L89
+ 461:Drivers/STM32/stm32_nvm.c ****         goto fail;
+ 462:Drivers/STM32/stm32_nvm.c ****     
+ 463:Drivers/STM32/stm32_nvm.c ****     // load bytes from NVM and print them
+ 464:Drivers/STM32/stm32_nvm.c ****     size_t available = NVM_get_max_read_length();
+ 1325              		.loc 1 464 5 is_stmt 1 view .LVU365
+ARM GAS  /tmp/ccJf7vwm.s 			page 34
+
+
+ 1326              		.loc 1 464 24 is_stmt 0 view .LVU366
+ 1327 0024 FFF7FEFF 		bl	NVM_get_max_read_length
+ 1328              	.LVL130:
+ 465:Drivers/STM32/stm32_nvm.c ****     if (available) {
+ 1329              		.loc 1 465 5 is_stmt 1 view .LVU367
+ 1330              		.loc 1 465 8 is_stmt 0 view .LVU368
+ 1331 0028 8046     		mov	r8, r0
+ 1332 002a 98B3     		cbz	r0, .L80
+ 1333              	.LBB3:
+ 1334              		.loc 1 465 20 discriminator 1 view .LVU369
+ 1335 002c EA46     		mov	r10, sp
+ 466:Drivers/STM32/stm32_nvm.c ****         printf("NVM contains %d valid bytes:\r\n", available); osDelay(5);
+ 1336              		.loc 1 466 9 is_stmt 1 discriminator 1 view .LVU370
+ 1337 002e 0146     		mov	r1, r0
+ 1338 0030 3C48     		ldr	r0, .L94+4
+ 1339              	.LVL131:
+ 1340              		.loc 1 466 9 is_stmt 0 discriminator 1 view .LVU371
+ 1341 0032 FFF7FEFF 		bl	printf
+ 1342              	.LVL132:
+ 1343              		.loc 1 466 64 is_stmt 1 discriminator 1 view .LVU372
+ 1344 0036 0520     		movs	r0, #5
+ 1345 0038 FFF7FEFF 		bl	osDelay
+ 1346              	.LVL133:
+ 467:Drivers/STM32/stm32_nvm.c ****         uint8_t buf[available];
+ 1347              		.loc 1 467 9 discriminator 1 view .LVU373
+ 1348              		.loc 1 467 17 is_stmt 0 discriminator 1 view .LVU374
+ 1349 003c 08F10703 		add	r3, r8, #7
+ 1350 0040 23F00703 		bic	r3, r3, #7
+ 1351 0044 ADEB030D 		sub	sp, sp, r3
+ 1352 0048 E946     		mov	r9, sp
+ 1353              	.LVL134:
+ 468:Drivers/STM32/stm32_nvm.c ****         if (progress++, NVM_read(0, buf, available) != 0)
+ 1354              		.loc 1 468 9 is_stmt 1 discriminator 1 view .LVU375
+ 1355              		.loc 1 468 25 is_stmt 0 discriminator 1 view .LVU376
+ 1356 004a 4246     		mov	r2, r8
+ 1357 004c 6946     		mov	r1, sp
+ 1358 004e 0020     		movs	r0, #0
+ 1359 0050 FFF7FEFF 		bl	NVM_read
+ 1360              	.LVL135:
+ 1361              		.loc 1 468 12 discriminator 1 view .LVU377
+ 1362 0054 10B9     		cbnz	r0, .L92
+ 1363              	.LBB4:
+ 469:Drivers/STM32/stm32_nvm.c ****             goto fail;
+ 470:Drivers/STM32/stm32_nvm.c ****         for (size_t pos = 0; pos < available; ++pos) {
+ 1364              		.loc 1 470 21 view .LVU378
+ 1365 0056 0025     		movs	r5, #0
+ 1366              	.LBE4:
+ 1367              	.LBE3:
+ 455:Drivers/STM32/stm32_nvm.c **** 
+ 1368              		.loc 1 455 13 view .LVU379
+ 1369 0058 2C46     		mov	r4, r5
+ 1370 005a 08E0     		b	.L81
+ 1371              	.L92:
+ 1372              	.LBB6:
+ 469:Drivers/STM32/stm32_nvm.c ****             goto fail;
+ 1373              		.loc 1 469 13 is_stmt 1 view .LVU380
+ 1374 005c B546     		mov	sp, r6
+ARM GAS  /tmp/ccJf7vwm.s 			page 35
+
+
+ 468:Drivers/STM32/stm32_nvm.c ****         if (progress++, NVM_read(0, buf, available) != 0)
+ 1375              		.loc 1 468 21 is_stmt 0 view .LVU381
+ 1376 005e 0224     		movs	r4, #2
+ 1377 0060 54E0     		b	.L79
+ 1378              	.LVL136:
+ 1379              	.L82:
+ 1380              	.LBB5:
+ 471:Drivers/STM32/stm32_nvm.c ****             seed += buf[pos];
+ 472:Drivers/STM32/stm32_nvm.c ****             printf(" %02x", buf[pos]);
+ 473:Drivers/STM32/stm32_nvm.c ****             if ((((pos + 1) % 16) == 0) || ((pos + 1) == available))
+ 474:Drivers/STM32/stm32_nvm.c ****                 printf("\r\n");
+ 1381              		.loc 1 474 17 is_stmt 1 view .LVU382
+ 1382 0062 3148     		ldr	r0, .L94+8
+ 1383 0064 FFF7FEFF 		bl	puts
+ 1384              	.LVL137:
+ 1385              	.L83:
+ 475:Drivers/STM32/stm32_nvm.c ****             osDelay(2);
+ 1386              		.loc 1 475 13 discriminator 2 view .LVU383
+ 1387 0068 0220     		movs	r0, #2
+ 1388 006a FFF7FEFF 		bl	osDelay
+ 1389              	.LVL138:
+ 470:Drivers/STM32/stm32_nvm.c ****             seed += buf[pos];
+ 1390              		.loc 1 470 47 discriminator 2 view .LVU384
+ 1391              	.L81:
+ 470:Drivers/STM32/stm32_nvm.c ****             seed += buf[pos];
+ 1392              		.loc 1 470 30 discriminator 1 view .LVU385
+ 470:Drivers/STM32/stm32_nvm.c ****             seed += buf[pos];
+ 1393              		.loc 1 470 9 is_stmt 0 discriminator 1 view .LVU386
+ 1394 006e 4545     		cmp	r5, r8
+ 1395 0070 0DD2     		bcs	.L93
+ 471:Drivers/STM32/stm32_nvm.c ****             seed += buf[pos];
+ 1396              		.loc 1 471 13 is_stmt 1 view .LVU387
+ 471:Drivers/STM32/stm32_nvm.c ****             seed += buf[pos];
+ 1397              		.loc 1 471 24 is_stmt 0 view .LVU388
+ 1398 0072 19F80510 		ldrb	r1, [r9, r5]	@ zero_extendqisi2
+ 471:Drivers/STM32/stm32_nvm.c ****             seed += buf[pos];
+ 1399              		.loc 1 471 18 view .LVU389
+ 1400 0076 0C44     		add	r4, r4, r1
+ 1401              	.LVL139:
+ 471:Drivers/STM32/stm32_nvm.c ****             seed += buf[pos];
+ 1402              		.loc 1 471 18 view .LVU390
+ 1403 0078 E4B2     		uxtb	r4, r4
+ 1404              	.LVL140:
+ 472:Drivers/STM32/stm32_nvm.c ****             if ((((pos + 1) % 16) == 0) || ((pos + 1) == available))
+ 1405              		.loc 1 472 13 is_stmt 1 view .LVU391
+ 1406 007a 2C48     		ldr	r0, .L94+12
+ 1407 007c FFF7FEFF 		bl	printf
+ 1408              	.LVL141:
+ 473:Drivers/STM32/stm32_nvm.c ****                 printf("\r\n");
+ 1409              		.loc 1 473 13 view .LVU392
+ 473:Drivers/STM32/stm32_nvm.c ****                 printf("\r\n");
+ 1410              		.loc 1 473 24 is_stmt 0 view .LVU393
+ 1411 0080 0135     		adds	r5, r5, #1
+ 1412              	.LVL142:
+ 473:Drivers/STM32/stm32_nvm.c ****                 printf("\r\n");
+ 1413              		.loc 1 473 16 view .LVU394
+ 1414 0082 15F00F0F 		tst	r5, #15
+ARM GAS  /tmp/ccJf7vwm.s 			page 36
+
+
+ 1415 0086 ECD0     		beq	.L82
+ 473:Drivers/STM32/stm32_nvm.c ****                 printf("\r\n");
+ 1416              		.loc 1 473 41 discriminator 1 view .LVU395
+ 1417 0088 4545     		cmp	r5, r8
+ 1418 008a EDD1     		bne	.L83
+ 1419 008c E9E7     		b	.L82
+ 1420              	.LVL143:
+ 1421              	.L93:
+ 473:Drivers/STM32/stm32_nvm.c ****                 printf("\r\n");
+ 1422              		.loc 1 473 41 discriminator 1 view .LVU396
+ 1423 008e D546     		mov	sp, r10
+ 1424              	.LBE5:
+ 468:Drivers/STM32/stm32_nvm.c ****             goto fail;
+ 1425              		.loc 1 468 21 view .LVU397
+ 1426 0090 0225     		movs	r5, #2
+ 1427              	.LVL144:
+ 468:Drivers/STM32/stm32_nvm.c ****             goto fail;
+ 1428              		.loc 1 468 21 view .LVU398
+ 1429              	.LBE6:
+ 1430 0092 07E0     		b	.L85
+ 1431              	.LVL145:
+ 1432              	.L80:
+ 476:Drivers/STM32/stm32_nvm.c ****         }
+ 477:Drivers/STM32/stm32_nvm.c ****     } else {
+ 478:Drivers/STM32/stm32_nvm.c ****         printf("NVM is empty\r\n"); osDelay(5);
+ 1433              		.loc 1 478 9 is_stmt 1 view .LVU399
+ 1434 0094 2648     		ldr	r0, .L94+16
+ 1435              	.LVL146:
+ 1436              		.loc 1 478 9 is_stmt 0 view .LVU400
+ 1437 0096 FFF7FEFF 		bl	puts
+ 1438              	.LVL147:
+ 1439              		.loc 1 478 37 is_stmt 1 view .LVU401
+ 1440 009a 0520     		movs	r0, #5
+ 1441 009c FFF7FEFF 		bl	osDelay
+ 1442              	.LVL148:
+ 455:Drivers/STM32/stm32_nvm.c **** 
+ 1443              		.loc 1 455 13 is_stmt 0 view .LVU402
+ 1444 00a0 0024     		movs	r4, #0
+ 460:Drivers/STM32/stm32_nvm.c ****         goto fail;
+ 1445              		.loc 1 460 17 view .LVU403
+ 1446 00a2 0125     		movs	r5, #1
+ 1447              	.LVL149:
+ 1448              	.L85:
+ 479:Drivers/STM32/stm32_nvm.c ****     }
+ 480:Drivers/STM32/stm32_nvm.c **** 
+ 481:Drivers/STM32/stm32_nvm.c ****     // store new bytes in NVM (data based on seed)
+ 482:Drivers/STM32/stm32_nvm.c ****     printf("write 0x%02x, ..., 0x%02x to NVM\r\n", seed, seed + len - 1); osDelay(5);
+ 1449              		.loc 1 482 5 is_stmt 1 view .LVU404
+ 1450 00a4 04F12502 		add	r2, r4, #37
+ 1451 00a8 2146     		mov	r1, r4
+ 1452 00aa 2248     		ldr	r0, .L94+20
+ 1453 00ac FFF7FEFF 		bl	printf
+ 1454              	.LVL150:
+ 1455              		.loc 1 482 75 view .LVU405
+ 1456 00b0 0520     		movs	r0, #5
+ 1457 00b2 FFF7FEFF 		bl	osDelay
+ 1458              	.LVL151:
+ARM GAS  /tmp/ccJf7vwm.s 			page 37
+
+
+ 483:Drivers/STM32/stm32_nvm.c ****     for (size_t i = 0; i < len; i++)
+ 1459              		.loc 1 483 5 view .LVU406
+ 1460              	.LBB7:
+ 1461              		.loc 1 483 10 view .LVU407
+ 1462              		.loc 1 483 17 is_stmt 0 view .LVU408
+ 1463 00b6 0023     		movs	r3, #0
+ 1464              		.loc 1 483 5 view .LVU409
+ 1465 00b8 07E0     		b	.L86
+ 1466              	.LVL152:
+ 1467              	.L87:
+ 484:Drivers/STM32/stm32_nvm.c ****         data[i] = seed++;
+ 1468              		.loc 1 484 9 is_stmt 1 discriminator 3 view .LVU410
+ 1469              		.loc 1 484 23 is_stmt 0 discriminator 3 view .LVU411
+ 1470 00ba 621C     		adds	r2, r4, #1
+ 1471              	.LVL153:
+ 1472              		.loc 1 484 17 discriminator 3 view .LVU412
+ 1473 00bc 03F12801 		add	r1, r3, #40
+ 1474 00c0 3944     		add	r1, r1, r7
+ 1475 00c2 01F8284C 		strb	r4, [r1, #-40]
+ 483:Drivers/STM32/stm32_nvm.c ****     for (size_t i = 0; i < len; i++)
+ 1476              		.loc 1 483 33 is_stmt 1 discriminator 3 view .LVU413
+ 483:Drivers/STM32/stm32_nvm.c ****     for (size_t i = 0; i < len; i++)
+ 1477              		.loc 1 483 34 is_stmt 0 discriminator 3 view .LVU414
+ 1478 00c6 0133     		adds	r3, r3, #1
+ 1479              	.LVL154:
+ 1480              		.loc 1 484 23 discriminator 3 view .LVU415
+ 1481 00c8 D4B2     		uxtb	r4, r2
+ 1482              	.LVL155:
+ 1483              	.L86:
+ 483:Drivers/STM32/stm32_nvm.c ****     for (size_t i = 0; i < len; i++)
+ 1484              		.loc 1 483 24 is_stmt 1 discriminator 1 view .LVU416
+ 483:Drivers/STM32/stm32_nvm.c ****     for (size_t i = 0; i < len; i++)
+ 1485              		.loc 1 483 5 is_stmt 0 discriminator 1 view .LVU417
+ 1486 00ca 252B     		cmp	r3, #37
+ 1487 00cc F5D9     		bls	.L87
+ 1488              	.LBE7:
+ 485:Drivers/STM32/stm32_nvm.c ****     if (progress++, NVM_start_write(len) != 0)
+ 1489              		.loc 1 485 5 is_stmt 1 view .LVU418
+ 1490              		.loc 1 485 17 is_stmt 0 view .LVU419
+ 1491 00ce 6C1C     		adds	r4, r5, #1
+ 1492              	.LVL156:
+ 1493              		.loc 1 485 21 view .LVU420
+ 1494 00d0 2620     		movs	r0, #38
+ 1495 00d2 FFF7FEFF 		bl	NVM_start_write
+ 1496              	.LVL157:
+ 1497              		.loc 1 485 8 view .LVU421
+ 1498 00d6 C8B9     		cbnz	r0, .L79
+ 486:Drivers/STM32/stm32_nvm.c ****         goto fail;
+ 487:Drivers/STM32/stm32_nvm.c ****     if (progress++, NVM_write(0, data, len / 2))
+ 1499              		.loc 1 487 5 is_stmt 1 view .LVU422
+ 1500              		.loc 1 487 17 is_stmt 0 view .LVU423
+ 1501 00d8 AC1C     		adds	r4, r5, #2
+ 1502              	.LVL158:
+ 1503              		.loc 1 487 21 view .LVU424
+ 1504 00da 1322     		movs	r2, #19
+ 1505 00dc 3946     		mov	r1, r7
+ 1506              	.LVL159:
+ARM GAS  /tmp/ccJf7vwm.s 			page 38
+
+
+ 1507              		.loc 1 487 21 view .LVU425
+ 1508 00de FFF7FEFF 		bl	NVM_write
+ 1509              	.LVL160:
+ 1510              		.loc 1 487 8 view .LVU426
+ 1511 00e2 98B9     		cbnz	r0, .L79
+ 488:Drivers/STM32/stm32_nvm.c ****         goto fail;
+ 489:Drivers/STM32/stm32_nvm.c ****     if (progress++, NVM_write(len / 2, &data[len / 2], len - (len / 2)))
+ 1512              		.loc 1 489 5 is_stmt 1 view .LVU427
+ 1513              		.loc 1 489 17 is_stmt 0 view .LVU428
+ 1514 00e4 EC1C     		adds	r4, r5, #3
+ 1515              	.LVL161:
+ 1516              		.loc 1 489 21 view .LVU429
+ 1517 00e6 1322     		movs	r2, #19
+ 1518 00e8 B918     		adds	r1, r7, r2
+ 1519 00ea 1046     		mov	r0, r2
+ 1520 00ec FFF7FEFF 		bl	NVM_write
+ 1521              	.LVL162:
+ 1522              		.loc 1 489 8 view .LVU430
+ 1523 00f0 60B9     		cbnz	r0, .L79
+ 490:Drivers/STM32/stm32_nvm.c ****         goto fail;
+ 491:Drivers/STM32/stm32_nvm.c ****     if (progress++, NVM_commit())
+ 1524              		.loc 1 491 5 is_stmt 1 view .LVU431
+ 1525              		.loc 1 491 17 is_stmt 0 view .LVU432
+ 1526 00f2 2C1D     		adds	r4, r5, #4
+ 1527              	.LVL163:
+ 1528              		.loc 1 491 21 view .LVU433
+ 1529 00f4 FFF7FEFF 		bl	NVM_commit
+ 1530              	.LVL164:
+ 1531              		.loc 1 491 8 view .LVU434
+ 1532 00f8 40B9     		cbnz	r0, .L79
+ 492:Drivers/STM32/stm32_nvm.c ****         goto fail;
+ 493:Drivers/STM32/stm32_nvm.c ****     printf("new data committed to NVM\r\n"); osDelay(5);
+ 1533              		.loc 1 493 5 is_stmt 1 view .LVU435
+ 1534 00fa 0F48     		ldr	r0, .L94+24
+ 1535 00fc FFF7FEFF 		bl	puts
+ 1536              	.LVL165:
+ 1537              		.loc 1 493 46 view .LVU436
+ 1538 0100 0520     		movs	r0, #5
+ 1539 0102 FFF7FEFF 		bl	osDelay
+ 1540              	.LVL166:
+ 494:Drivers/STM32/stm32_nvm.c **** 
+ 495:Drivers/STM32/stm32_nvm.c ****     return;
+ 1541              		.loc 1 495 5 view .LVU437
+ 1542 0106 B546     		mov	sp, r6
+ 1543 0108 05E0     		b	.L78
+ 1544              	.LVL167:
+ 1545              	.L89:
+ 460:Drivers/STM32/stm32_nvm.c ****         goto fail;
+ 1546              		.loc 1 460 17 is_stmt 0 view .LVU438
+ 1547 010a 0124     		movs	r4, #1
+ 1548              	.LVL168:
+ 1549              	.L79:
+ 496:Drivers/STM32/stm32_nvm.c **** 
+ 497:Drivers/STM32/stm32_nvm.c **** fail:
+ 498:Drivers/STM32/stm32_nvm.c ****     printf("NVM test failed at %d!\r\n", progress);
+ 1550              		.loc 1 498 5 is_stmt 1 view .LVU439
+ 1551 010c 2146     		mov	r1, r4
+ARM GAS  /tmp/ccJf7vwm.s 			page 39
+
+
+ 1552 010e 0B48     		ldr	r0, .L94+28
+ 1553 0110 FFF7FEFF 		bl	printf
+ 1554              	.LVL169:
+ 1555 0114 B546     		mov	sp, r6
+ 1556              	.L78:
+ 499:Drivers/STM32/stm32_nvm.c **** }
+ 1557              		.loc 1 499 1 is_stmt 0 view .LVU440
+ 1558 0116 2837     		adds	r7, r7, #40
+ 1559              	.LCFI17:
+ 1560              		.cfi_def_cfa_offset 32
+ 1561 0118 BD46     		mov	sp, r7
+ 1562              	.LCFI18:
+ 1563              		.cfi_def_cfa_register 13
+ 1564              	.LVL170:
+ 1565              		.loc 1 499 1 view .LVU441
+ 1566              		@ sp needed
+ 1567 011a BDE8F087 		pop	{r4, r5, r6, r7, r8, r9, r10, pc}
+ 1568              	.LVL171:
+ 1569              	.L95:
+ 1570              		.loc 1 499 1 view .LVU442
+ 1571 011e 00BF     		.align	2
+ 1572              	.L94:
+ 1573 0120 00000000 		.word	.LC0
+ 1574 0124 14000000 		.word	.LC1
+ 1575 0128 3C000000 		.word	.LC3
+ 1576 012c 34000000 		.word	.LC2
+ 1577 0130 40000000 		.word	.LC4
+ 1578 0134 50000000 		.word	.LC5
+ 1579 0138 74000000 		.word	.LC6
+ 1580 013c 90000000 		.word	.LC7
+ 1581              		.cfi_endproc
+ 1582              	.LFE150:
+ 1584              		.global	n_valid_
+ 1585              		.global	n_staging_area_
+ 1586              		.global	read_sector_
+ 1587              		.global	sectors
+ 1588              		.section	.bss.n_staging_area_,"aw",%nobits
+ 1589              		.align	2
+ 1590              		.set	.LANCHOR3,. + 0
+ 1593              	n_staging_area_:
+ 1594 0000 00000000 		.space	4
+ 1595              		.section	.bss.n_valid_,"aw",%nobits
+ 1596              		.align	2
+ 1597              		.set	.LANCHOR2,. + 0
+ 1600              	n_valid_:
+ 1601 0000 00000000 		.space	4
+ 1602              		.section	.bss.read_sector_,"aw",%nobits
+ 1603              		.set	.LANCHOR1,. + 0
+ 1606              	read_sector_:
+ 1607 0000 00       		.space	1
+ 1608              		.section	.data.sectors,"aw"
+ 1609              		.align	2
+ 1610              		.set	.LANCHOR0,. + 0
+ 1613              	sectors:
+ 1614 0000 00000000 		.space	4
+ 1615 0004 0A000000 		.word	10
+ 1616 0008 00400000 		.word	16384
+ARM GAS  /tmp/ccJf7vwm.s 			page 40
+
+
+ 1617 000c 00020000 		.word	512
+ 1618 0010 00000C08 		.word	135004160
+ 1619 0014 00000C08 		.word	135004160
+ 1620 0018 00000000 		.space	4
+ 1621 001c 0B000000 		.word	11
+ 1622 0020 00400000 		.word	16384
+ 1623 0024 00020000 		.word	512
+ 1624 0028 00000E08 		.word	135135232
+ 1625 002c 00000E08 		.word	135135232
+ 1626              		.text
+ 1627              	.Letext0:
+ 1628              		.file 2 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 1629              		.file 3 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 1630              		.file 4 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h"
+ 1631              		.file 5 "ThirdParty/CMSIS/Device/ST/STM32F4xx/Include/stm32f405xx.h"
+ 1632              		.file 6 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash_ex.h"
+ 1633              		.file 7 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 1634              		.file 8 "ThirdParty/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
+ 1635              		.file 9 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdio.h"
+ 1636              		.file 10 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_flash.h"
+ 1637              		.file 11 "<built-in>"
+ARM GAS  /tmp/ccJf7vwm.s 			page 41
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 stm32_nvm.c
+     /tmp/ccJf7vwm.s:20     .text.HAL_FLASH_ClearError:0000000000000000 $t
+     /tmp/ccJf7vwm.s:25     .text.HAL_FLASH_ClearError:0000000000000000 HAL_FLASH_ClearError
+     /tmp/ccJf7vwm.s:42     .text.HAL_FLASH_ClearError:0000000000000008 $d
+     /tmp/ccJf7vwm.s:47     .text.erase:0000000000000000 $t
+     /tmp/ccJf7vwm.s:53     .text.erase:0000000000000000 erase
+     /tmp/ccJf7vwm.s:138    .text.set_allocation_state:0000000000000000 $t
+     /tmp/ccJf7vwm.s:144    .text.set_allocation_state:0000000000000000 set_allocation_state
+     /tmp/ccJf7vwm.s:318    .text.scan_allocation_table:0000000000000000 $t
+     /tmp/ccJf7vwm.s:324    .text.scan_allocation_table:0000000000000000 scan_allocation_table
+     /tmp/ccJf7vwm.s:471    .text.NVM_init:0000000000000000 $t
+     /tmp/ccJf7vwm.s:477    .text.NVM_init:0000000000000000 NVM_init
+     /tmp/ccJf7vwm.s:583    .text.NVM_init:0000000000000070 $d
+     /tmp/ccJf7vwm.s:591    .text.NVM_erase:0000000000000000 $t
+     /tmp/ccJf7vwm.s:597    .text.NVM_erase:0000000000000000 NVM_erase
+     /tmp/ccJf7vwm.s:651    .text.NVM_erase:0000000000000028 $d
+     /tmp/ccJf7vwm.s:657    .text.NVM_get_max_read_length:0000000000000000 $t
+     /tmp/ccJf7vwm.s:663    .text.NVM_get_max_read_length:0000000000000000 NVM_get_max_read_length
+     /tmp/ccJf7vwm.s:680    .text.NVM_get_max_read_length:0000000000000008 $d
+     /tmp/ccJf7vwm.s:685    .text.NVM_get_max_write_length:0000000000000000 $t
+     /tmp/ccJf7vwm.s:691    .text.NVM_get_max_write_length:0000000000000000 NVM_get_max_write_length
+     /tmp/ccJf7vwm.s:726    .text.NVM_get_max_write_length:0000000000000024 $d
+     /tmp/ccJf7vwm.s:732    .text.NVM_read:0000000000000000 $t
+     /tmp/ccJf7vwm.s:738    .text.NVM_read:0000000000000000 NVM_read
+     /tmp/ccJf7vwm.s:809    .text.NVM_read:0000000000000044 $d
+     /tmp/ccJf7vwm.s:816    .text.NVM_start_write:0000000000000000 $t
+     /tmp/ccJf7vwm.s:822    .text.NVM_start_write:0000000000000000 NVM_start_write
+     /tmp/ccJf7vwm.s:916    .text.NVM_start_write:0000000000000060 $d
+     /tmp/ccJf7vwm.s:923    .text.NVM_write:0000000000000000 $t
+     /tmp/ccJf7vwm.s:929    .text.NVM_write:0000000000000000 NVM_write
+     /tmp/ccJf7vwm.s:1109   .text.NVM_write:00000000000000c8 $d
+     /tmp/ccJf7vwm.s:1116   .text.NVM_commit:0000000000000000 $t
+     /tmp/ccJf7vwm.s:1122   .text.NVM_commit:0000000000000000 NVM_commit
+     /tmp/ccJf7vwm.s:1237   .text.NVM_commit:0000000000000084 $d
+     /tmp/ccJf7vwm.s:1245   .rodata.NVM_demo.str1.4:0000000000000000 $d
+     /tmp/ccJf7vwm.s:1270   .text.NVM_demo:0000000000000000 $t
+     /tmp/ccJf7vwm.s:1276   .text.NVM_demo:0000000000000000 NVM_demo
+     /tmp/ccJf7vwm.s:1573   .text.NVM_demo:0000000000000120 $d
+     /tmp/ccJf7vwm.s:1600   .bss.n_valid_:0000000000000000 n_valid_
+     /tmp/ccJf7vwm.s:1593   .bss.n_staging_area_:0000000000000000 n_staging_area_
+     /tmp/ccJf7vwm.s:1606   .bss.read_sector_:0000000000000000 read_sector_
+     /tmp/ccJf7vwm.s:1613   .data.sectors:0000000000000000 sectors
+     /tmp/ccJf7vwm.s:1589   .bss.n_staging_area_:0000000000000000 $d
+     /tmp/ccJf7vwm.s:1596   .bss.n_valid_:0000000000000000 $d
+     /tmp/ccJf7vwm.s:1607   .bss.read_sector_:0000000000000000 $d
+     /tmp/ccJf7vwm.s:1609   .data.sectors:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+HAL_FLASH_Unlock
+HAL_FLASHEx_Erase
+HAL_FLASH_Lock
+HAL_FLASH_GetError
+HAL_FLASH_Program
+memcpy
+osDelay
+puts
+ARM GAS  /tmp/ccJf7vwm.s 			page 42
+
+
+printf

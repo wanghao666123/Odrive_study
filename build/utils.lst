@@ -1,0 +1,2588 @@
+ARM GAS  /tmp/ccUmEDDo.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"utils.cpp"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text._Z3SVMff,"ax",%progbits
+  20              		.align	1
+  21              		.global	_Z3SVMff
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	_Z3SVMff:
+  27              		.fnstart
+  28              	.LVL0:
+  29              	.LFB4271:
+  30              		.file 1 "MotorControl/utils.cpp"
+   1:MotorControl/utils.cpp **** 
+   2:MotorControl/utils.cpp **** #include <utils.hpp>
+   3:MotorControl/utils.cpp **** #include <board.h>
+   4:MotorControl/utils.cpp **** 
+   5:MotorControl/utils.cpp **** 
+   6:MotorControl/utils.cpp **** // Compute rising edge timings (0.0 - 1.0) as a function of alpha-beta
+   7:MotorControl/utils.cpp **** // as per the magnitude invariant clarke transform
+   8:MotorControl/utils.cpp **** // The magnitude of the alpha-beta vector may not be larger than sqrt(3)/2
+   9:MotorControl/utils.cpp **** // Returns true on success, and false if the input was out of range
+  10:MotorControl/utils.cpp **** std::tuple<float, float, float, bool> SVM(float alpha, float beta) {
+  31              		.loc 1 10 68 view -0
+  32              		.cfi_startproc
+  33              		@ args = 0, pretend = 0, frame = 0
+  34              		@ frame_needed = 0, uses_anonymous_args = 0
+  35              		@ link register save eliminated.
+  11:MotorControl/utils.cpp ****     float tA, tB, tC;
+  36              		.loc 1 11 5 view .LVU1
+  12:MotorControl/utils.cpp ****     int Sextant;
+  37              		.loc 1 12 5 view .LVU2
+  13:MotorControl/utils.cpp **** 
+  14:MotorControl/utils.cpp ****     if (beta >= 0.0f) {
+  38              		.loc 1 14 5 view .LVU3
+  39 0000 F5EEC00A 		vcmpe.f32	s1, #0
+  40 0004 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+  41 0008 46DB     		blt	.L36
+  15:MotorControl/utils.cpp ****         if (alpha >= 0.0f) {
+  42              		.loc 1 15 9 view .LVU4
+  43 000a B5EEC00A 		vcmpe.f32	s0, #0
+ARM GAS  /tmp/ccUmEDDo.s 			page 2
+
+
+  44 000e F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+  45 0012 1DDB     		blt	.L37
+  16:MotorControl/utils.cpp ****             //quadrant I
+  17:MotorControl/utils.cpp ****             if (one_by_sqrt3 * beta > alpha)
+  46              		.loc 1 17 13 view .LVU5
+  47              		.loc 1 17 30 is_stmt 0 view .LVU6
+  48 0014 DFED757A 		vldr.32	s15, .L47
+  49 0018 60EEA77A 		vmul.f32	s15, s1, s15
+  50              		.loc 1 17 13 view .LVU7
+  51 001c F4EEC07A 		vcmpe.f32	s15, s0
+  52 0020 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+  53 0024 7DDC     		bgt	.L6
+  18:MotorControl/utils.cpp ****                 Sextant = 2; //sextant v2-v3
+  19:MotorControl/utils.cpp ****             else
+  20:MotorControl/utils.cpp ****                 Sextant = 1; //sextant v1-v2
+  54              		.loc 1 20 17 is_stmt 1 view .LVU8
+  55              	.LVL1:
+  21:MotorControl/utils.cpp ****         } else {
+  22:MotorControl/utils.cpp ****             //quadrant II
+  23:MotorControl/utils.cpp ****             if (-one_by_sqrt3 * beta > alpha)
+  24:MotorControl/utils.cpp ****                 Sextant = 3; //sextant v3-v4
+  25:MotorControl/utils.cpp ****             else
+  26:MotorControl/utils.cpp ****                 Sextant = 2; //sextant v2-v3
+  27:MotorControl/utils.cpp ****         }
+  28:MotorControl/utils.cpp ****     } else {
+  29:MotorControl/utils.cpp ****         if (alpha >= 0.0f) {
+  30:MotorControl/utils.cpp ****             //quadrant IV
+  31:MotorControl/utils.cpp ****             if (-one_by_sqrt3 * beta > alpha)
+  32:MotorControl/utils.cpp ****                 Sextant = 5; //sextant v5-v6
+  33:MotorControl/utils.cpp ****             else
+  34:MotorControl/utils.cpp ****                 Sextant = 6; //sextant v6-v1
+  35:MotorControl/utils.cpp ****         } else {
+  36:MotorControl/utils.cpp ****             //quadrant III
+  37:MotorControl/utils.cpp ****             if (one_by_sqrt3 * beta > alpha)
+  38:MotorControl/utils.cpp ****                 Sextant = 4; //sextant v4-v5
+  39:MotorControl/utils.cpp ****             else
+  40:MotorControl/utils.cpp ****                 Sextant = 5; //sextant v5-v6
+  41:MotorControl/utils.cpp ****         }
+  42:MotorControl/utils.cpp ****     }
+  43:MotorControl/utils.cpp **** 
+  44:MotorControl/utils.cpp ****     switch (Sextant) {
+  56              		.loc 1 44 5 view .LVU9
+  57              	.LBB199:
+  45:MotorControl/utils.cpp ****         // sextant v1-v2
+  46:MotorControl/utils.cpp ****         case 1: {
+  58              		.loc 1 46 9 view .LVU10
+  59              		.loc 1 46 17 view .LVU11
+  60              	.LBB200:
+  47:MotorControl/utils.cpp ****             // Vector on-times
+  48:MotorControl/utils.cpp ****             float t1 = alpha - one_by_sqrt3 * beta;
+  61              		.loc 1 48 13 view .LVU12
+  62              		.loc 1 48 19 is_stmt 0 view .LVU13
+  63 0026 70EE677A 		vsub.f32	s15, s0, s15
+  64              	.LVL2:
+  49:MotorControl/utils.cpp ****             float t2 = two_by_sqrt3 * beta;
+  65              		.loc 1 49 13 is_stmt 1 view .LVU14
+  66              		.loc 1 49 19 is_stmt 0 view .LVU15
+ARM GAS  /tmp/ccUmEDDo.s 			page 3
+
+
+  67 002a 9FED717A 		vldr.32	s14, .L47+4
+  68 002e 20EE877A 		vmul.f32	s14, s1, s14
+  69              	.LVL3:
+  50:MotorControl/utils.cpp **** 
+  51:MotorControl/utils.cpp ****             // PWM timings
+  52:MotorControl/utils.cpp ****             tA = (1.0f - t1 - t2) * 0.5f;
+  70              		.loc 1 52 13 is_stmt 1 view .LVU16
+  71              		.loc 1 52 24 is_stmt 0 view .LVU17
+  72 0032 B7EE000A 		vmov.f32	s0, #1.0e+0
+  73              	.LVL4:
+  74              		.loc 1 52 24 view .LVU18
+  75 0036 30EE670A 		vsub.f32	s0, s0, s15
+  76              		.loc 1 52 29 view .LVU19
+  77 003a 30EE470A 		vsub.f32	s0, s0, s14
+  78              		.loc 1 52 35 view .LVU20
+  79 003e F6EE006A 		vmov.f32	s13, #5.0e-1
+  80 0042 20EE260A 		vmul.f32	s0, s0, s13
+  81              	.LVL5:
+  53:MotorControl/utils.cpp ****             tB = tA + t1;
+  82              		.loc 1 53 13 is_stmt 1 view .LVU21
+  83              		.loc 1 53 21 is_stmt 0 view .LVU22
+  84 0046 70EE270A 		vadd.f32	s1, s0, s15
+  85              	.LVL6:
+  54:MotorControl/utils.cpp ****             tC = tB + t2;
+  86              		.loc 1 54 13 is_stmt 1 view .LVU23
+  87              		.loc 1 54 21 is_stmt 0 view .LVU24
+  88 004a 70EE877A 		vadd.f32	s15, s1, s14
+  89              	.LVL7:
+  90              		.loc 1 54 21 view .LVU25
+  91              	.LBE200:
+  55:MotorControl/utils.cpp ****         } break;
+  92              		.loc 1 55 11 is_stmt 1 view .LVU26
+  93 004e 7EE0     		b	.L7
+  94              	.LVL8:
+  95              	.L37:
+  96              		.loc 1 55 11 is_stmt 0 view .LVU27
+  97              	.LBE199:
+  23:MotorControl/utils.cpp ****                 Sextant = 3; //sextant v3-v4
+  98              		.loc 1 23 13 is_stmt 1 view .LVU28
+  23:MotorControl/utils.cpp ****                 Sextant = 3; //sextant v3-v4
+  99              		.loc 1 23 31 is_stmt 0 view .LVU29
+ 100 0050 DFED687A 		vldr.32	s15, .L47+8
+ 101 0054 60EEA77A 		vmul.f32	s15, s1, s15
+  23:MotorControl/utils.cpp ****                 Sextant = 3; //sextant v3-v4
+ 102              		.loc 1 23 13 view .LVU30
+ 103 0058 F4EEC07A 		vcmpe.f32	s15, s0
+ 104 005c F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 105 0060 5FDD     		ble	.L6
+ 106              	.LVL9:
+  44:MotorControl/utils.cpp ****         // sextant v1-v2
+ 107              		.loc 1 44 5 is_stmt 1 view .LVU31
+ 108              	.LBB206:
+  56:MotorControl/utils.cpp **** 
+  57:MotorControl/utils.cpp ****         // sextant v2-v3
+  58:MotorControl/utils.cpp ****         case 2: {
+  59:MotorControl/utils.cpp ****             // Vector on-times
+  60:MotorControl/utils.cpp ****             float t2 = alpha + one_by_sqrt3 * beta;
+ARM GAS  /tmp/ccUmEDDo.s 			page 4
+
+
+  61:MotorControl/utils.cpp ****             float t3 = -alpha + one_by_sqrt3 * beta;
+  62:MotorControl/utils.cpp **** 
+  63:MotorControl/utils.cpp ****             // PWM timings
+  64:MotorControl/utils.cpp ****             tB = (1.0f - t2 - t3) * 0.5f;
+  65:MotorControl/utils.cpp ****             tA = tB + t3;
+  66:MotorControl/utils.cpp ****             tC = tA + t2;
+  67:MotorControl/utils.cpp ****         } break;
+  68:MotorControl/utils.cpp **** 
+  69:MotorControl/utils.cpp ****         // sextant v3-v4
+  70:MotorControl/utils.cpp ****         case 3: {
+ 109              		.loc 1 70 9 view .LVU32
+ 110              		.loc 1 70 17 view .LVU33
+ 111              	.LBB201:
+  71:MotorControl/utils.cpp ****             // Vector on-times
+  72:MotorControl/utils.cpp ****             float t3 = two_by_sqrt3 * beta;
+ 112              		.loc 1 72 13 view .LVU34
+ 113              		.loc 1 72 19 is_stmt 0 view .LVU35
+ 114 0062 DFED637A 		vldr.32	s15, .L47+4
+ 115 0066 20EEA77A 		vmul.f32	s14, s1, s15
+ 116              	.LVL10:
+  73:MotorControl/utils.cpp ****             float t4 = -alpha - one_by_sqrt3 * beta;
+ 117              		.loc 1 73 13 is_stmt 1 view .LVU36
+ 118              		.loc 1 73 24 is_stmt 0 view .LVU37
+ 119 006a F1EE407A 		vneg.f32	s15, s0
+ 120              		.loc 1 73 46 view .LVU38
+ 121 006e 9FED5F0A 		vldr.32	s0, .L47
+ 122              	.LVL11:
+ 123              		.loc 1 73 46 view .LVU39
+ 124 0072 20EE800A 		vmul.f32	s0, s1, s0
+ 125              		.loc 1 73 19 view .LVU40
+ 126 0076 37EEC00A 		vsub.f32	s0, s15, s0
+ 127              	.LVL12:
+  74:MotorControl/utils.cpp **** 
+  75:MotorControl/utils.cpp ****             // PWM timings
+  76:MotorControl/utils.cpp ****             tB = (1.0f - t3 - t4) * 0.5f;
+ 128              		.loc 1 76 13 is_stmt 1 view .LVU41
+ 129              		.loc 1 76 24 is_stmt 0 view .LVU42
+ 130 007a F7EE000A 		vmov.f32	s1, #1.0e+0
+ 131              	.LVL13:
+ 132              		.loc 1 76 24 view .LVU43
+ 133 007e 70EEC70A 		vsub.f32	s1, s1, s14
+ 134              		.loc 1 76 29 view .LVU44
+ 135 0082 70EEC00A 		vsub.f32	s1, s1, s0
+ 136              		.loc 1 76 35 view .LVU45
+ 137 0086 F6EE007A 		vmov.f32	s15, #5.0e-1
+ 138 008a 60EEA70A 		vmul.f32	s1, s1, s15
+ 139              	.LVL14:
+  77:MotorControl/utils.cpp ****             tC = tB + t3;
+ 140              		.loc 1 77 13 is_stmt 1 view .LVU46
+ 141              		.loc 1 77 21 is_stmt 0 view .LVU47
+ 142 008e 70EE877A 		vadd.f32	s15, s1, s14
+ 143              	.LVL15:
+  78:MotorControl/utils.cpp ****             tA = tC + t4;
+ 144              		.loc 1 78 13 is_stmt 1 view .LVU48
+ 145              		.loc 1 78 21 is_stmt 0 view .LVU49
+ 146 0092 37EE800A 		vadd.f32	s0, s15, s0
+ 147              	.LVL16:
+ARM GAS  /tmp/ccUmEDDo.s 			page 5
+
+
+ 148              		.loc 1 78 21 view .LVU50
+ 149              	.LBE201:
+  79:MotorControl/utils.cpp ****         } break;
+ 150              		.loc 1 79 11 is_stmt 1 view .LVU51
+ 151 0096 5AE0     		b	.L7
+ 152              	.LVL17:
+ 153              	.L36:
+ 154              		.loc 1 79 11 is_stmt 0 view .LVU52
+ 155              	.LBE206:
+  29:MotorControl/utils.cpp ****             //quadrant IV
+ 156              		.loc 1 29 9 is_stmt 1 view .LVU53
+ 157 0098 B5EEC00A 		vcmpe.f32	s0, #0
+ 158 009c F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 159 00a0 21DB     		blt	.L38
+  31:MotorControl/utils.cpp ****                 Sextant = 5; //sextant v5-v6
+ 160              		.loc 1 31 13 view .LVU54
+  31:MotorControl/utils.cpp ****                 Sextant = 5; //sextant v5-v6
+ 161              		.loc 1 31 31 is_stmt 0 view .LVU55
+ 162 00a2 DFED547A 		vldr.32	s15, .L47+8
+ 163 00a6 60EEA77A 		vmul.f32	s15, s1, s15
+  31:MotorControl/utils.cpp ****                 Sextant = 5; //sextant v5-v6
+ 164              		.loc 1 31 13 view .LVU56
+ 165 00aa F4EEC07A 		vcmpe.f32	s15, s0
+ 166 00ae F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 167 00b2 5ADC     		bgt	.L11
+  34:MotorControl/utils.cpp ****         } else {
+ 168              		.loc 1 34 17 is_stmt 1 view .LVU57
+ 169              	.LVL18:
+  44:MotorControl/utils.cpp ****         // sextant v1-v2
+ 170              		.loc 1 44 5 view .LVU58
+ 171              	.LBB207:
+  80:MotorControl/utils.cpp **** 
+  81:MotorControl/utils.cpp ****         // sextant v4-v5
+  82:MotorControl/utils.cpp ****         case 4: {
+  83:MotorControl/utils.cpp ****             // Vector on-times
+  84:MotorControl/utils.cpp ****             float t4 = -alpha + one_by_sqrt3 * beta;
+  85:MotorControl/utils.cpp ****             float t5 = -two_by_sqrt3 * beta;
+  86:MotorControl/utils.cpp **** 
+  87:MotorControl/utils.cpp ****             // PWM timings
+  88:MotorControl/utils.cpp ****             tC = (1.0f - t4 - t5) * 0.5f;
+  89:MotorControl/utils.cpp ****             tB = tC + t5;
+  90:MotorControl/utils.cpp ****             tA = tB + t4;
+  91:MotorControl/utils.cpp ****         } break;
+  92:MotorControl/utils.cpp **** 
+  93:MotorControl/utils.cpp ****         // sextant v5-v6
+  94:MotorControl/utils.cpp ****         case 5: {
+  95:MotorControl/utils.cpp ****             // Vector on-times
+  96:MotorControl/utils.cpp ****             float t5 = -alpha - one_by_sqrt3 * beta;
+  97:MotorControl/utils.cpp ****             float t6 = alpha - one_by_sqrt3 * beta;
+  98:MotorControl/utils.cpp **** 
+  99:MotorControl/utils.cpp ****             // PWM timings
+ 100:MotorControl/utils.cpp ****             tC = (1.0f - t5 - t6) * 0.5f;
+ 101:MotorControl/utils.cpp ****             tA = tC + t5;
+ 102:MotorControl/utils.cpp ****             tB = tA + t6;
+ 103:MotorControl/utils.cpp ****         } break;
+ 104:MotorControl/utils.cpp **** 
+ 105:MotorControl/utils.cpp ****         // sextant v6-v1
+ARM GAS  /tmp/ccUmEDDo.s 			page 6
+
+
+ 106:MotorControl/utils.cpp ****         case 6: {
+ 172              		.loc 1 106 9 view .LVU59
+ 173              		.loc 1 106 17 view .LVU60
+ 174              	.LBB202:
+ 107:MotorControl/utils.cpp ****             // Vector on-times
+ 108:MotorControl/utils.cpp ****             float t6 = -two_by_sqrt3 * beta;
+ 175              		.loc 1 108 13 view .LVU61
+ 176              		.loc 1 108 19 is_stmt 0 view .LVU62
+ 177 00b4 9FED507A 		vldr.32	s14, .L47+12
+ 178 00b8 20EE877A 		vmul.f32	s14, s1, s14
+ 179              	.LVL19:
+ 109:MotorControl/utils.cpp ****             float t1 = alpha + one_by_sqrt3 * beta;
+ 180              		.loc 1 109 13 is_stmt 1 view .LVU63
+ 181              		.loc 1 109 45 is_stmt 0 view .LVU64
+ 182 00bc DFED4B7A 		vldr.32	s15, .L47
+ 183 00c0 60EEA70A 		vmul.f32	s1, s1, s15
+ 184              	.LVL20:
+ 185              		.loc 1 109 19 view .LVU65
+ 186 00c4 70EE800A 		vadd.f32	s1, s1, s0
+ 187              	.LVL21:
+ 110:MotorControl/utils.cpp **** 
+ 111:MotorControl/utils.cpp ****             // PWM timings
+ 112:MotorControl/utils.cpp ****             tA = (1.0f - t6 - t1) * 0.5f;
+ 188              		.loc 1 112 13 is_stmt 1 view .LVU66
+ 189              		.loc 1 112 24 is_stmt 0 view .LVU67
+ 190 00c8 B7EE000A 		vmov.f32	s0, #1.0e+0
+ 191              	.LVL22:
+ 192              		.loc 1 112 24 view .LVU68
+ 193 00cc 30EE470A 		vsub.f32	s0, s0, s14
+ 194              		.loc 1 112 29 view .LVU69
+ 195 00d0 30EE600A 		vsub.f32	s0, s0, s1
+ 196              		.loc 1 112 35 view .LVU70
+ 197 00d4 F6EE007A 		vmov.f32	s15, #5.0e-1
+ 198 00d8 20EE270A 		vmul.f32	s0, s0, s15
+ 199              	.LVL23:
+ 113:MotorControl/utils.cpp ****             tC = tA + t1;
+ 200              		.loc 1 113 13 is_stmt 1 view .LVU71
+ 201              		.loc 1 113 21 is_stmt 0 view .LVU72
+ 202 00dc 70EE207A 		vadd.f32	s15, s0, s1
+ 203              	.LVL24:
+ 114:MotorControl/utils.cpp ****             tB = tC + t6;
+ 204              		.loc 1 114 13 is_stmt 1 view .LVU73
+ 205              		.loc 1 114 21 is_stmt 0 view .LVU74
+ 206 00e0 77EE870A 		vadd.f32	s1, s15, s14
+ 207              	.LVL25:
+ 208              		.loc 1 114 21 view .LVU75
+ 209              	.LBE202:
+ 115:MotorControl/utils.cpp ****         } break;
+ 210              		.loc 1 115 11 is_stmt 1 view .LVU76
+ 211 00e4 33E0     		b	.L7
+ 212              	.LVL26:
+ 213              	.L38:
+ 214              		.loc 1 115 11 is_stmt 0 view .LVU77
+ 215              	.LBE207:
+  37:MotorControl/utils.cpp ****                 Sextant = 4; //sextant v4-v5
+ 216              		.loc 1 37 13 is_stmt 1 view .LVU78
+  37:MotorControl/utils.cpp ****                 Sextant = 4; //sextant v4-v5
+ARM GAS  /tmp/ccUmEDDo.s 			page 7
+
+
+ 217              		.loc 1 37 30 is_stmt 0 view .LVU79
+ 218 00e6 DFED417A 		vldr.32	s15, .L47
+ 219 00ea 60EEA77A 		vmul.f32	s15, s1, s15
+  37:MotorControl/utils.cpp ****                 Sextant = 4; //sextant v4-v5
+ 220              		.loc 1 37 13 view .LVU80
+ 221 00ee F4EEC07A 		vcmpe.f32	s15, s0
+ 222 00f2 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 223 00f6 38DD     		ble	.L11
+ 224              	.LVL27:
+  44:MotorControl/utils.cpp ****         // sextant v1-v2
+ 225              		.loc 1 44 5 is_stmt 1 view .LVU81
+ 226              	.LBB208:
+  82:MotorControl/utils.cpp ****             // Vector on-times
+ 227              		.loc 1 82 9 view .LVU82
+  82:MotorControl/utils.cpp ****             // Vector on-times
+ 228              		.loc 1 82 17 view .LVU83
+ 229              	.LBB203:
+  84:MotorControl/utils.cpp ****             float t5 = -two_by_sqrt3 * beta;
+ 230              		.loc 1 84 13 view .LVU84
+  84:MotorControl/utils.cpp ****             float t5 = -two_by_sqrt3 * beta;
+ 231              		.loc 1 84 19 is_stmt 0 view .LVU85
+ 232 00f8 37EEC00A 		vsub.f32	s0, s15, s0
+ 233              	.LVL28:
+  85:MotorControl/utils.cpp **** 
+ 234              		.loc 1 85 13 is_stmt 1 view .LVU86
+  85:MotorControl/utils.cpp **** 
+ 235              		.loc 1 85 19 is_stmt 0 view .LVU87
+ 236 00fc DFED3E7A 		vldr.32	s15, .L47+12
+ 237 0100 60EEA70A 		vmul.f32	s1, s1, s15
+ 238              	.LVL29:
+  88:MotorControl/utils.cpp ****             tB = tC + t5;
+ 239              		.loc 1 88 13 is_stmt 1 view .LVU88
+  88:MotorControl/utils.cpp ****             tB = tC + t5;
+ 240              		.loc 1 88 24 is_stmt 0 view .LVU89
+ 241 0104 F7EE007A 		vmov.f32	s15, #1.0e+0
+ 242 0108 77EEC07A 		vsub.f32	s15, s15, s0
+  88:MotorControl/utils.cpp ****             tB = tC + t5;
+ 243              		.loc 1 88 29 view .LVU90
+ 244 010c 77EEE07A 		vsub.f32	s15, s15, s1
+  88:MotorControl/utils.cpp ****             tB = tC + t5;
+ 245              		.loc 1 88 35 view .LVU91
+ 246 0110 B6EE007A 		vmov.f32	s14, #5.0e-1
+ 247 0114 67EE877A 		vmul.f32	s15, s15, s14
+ 248              	.LVL30:
+  89:MotorControl/utils.cpp ****             tA = tB + t4;
+ 249              		.loc 1 89 13 is_stmt 1 view .LVU92
+  89:MotorControl/utils.cpp ****             tA = tB + t4;
+ 250              		.loc 1 89 21 is_stmt 0 view .LVU93
+ 251 0118 77EEA00A 		vadd.f32	s1, s15, s1
+ 252              	.LVL31:
+  90:MotorControl/utils.cpp ****         } break;
+ 253              		.loc 1 90 13 is_stmt 1 view .LVU94
+  90:MotorControl/utils.cpp ****         } break;
+ 254              		.loc 1 90 21 is_stmt 0 view .LVU95
+ 255 011c 30EE800A 		vadd.f32	s0, s1, s0
+ 256              	.LVL32:
+  90:MotorControl/utils.cpp ****         } break;
+ARM GAS  /tmp/ccUmEDDo.s 			page 8
+
+
+ 257              		.loc 1 90 21 view .LVU96
+ 258              	.LBE203:
+  91:MotorControl/utils.cpp **** 
+ 259              		.loc 1 91 11 is_stmt 1 view .LVU97
+ 260 0120 15E0     		b	.L7
+ 261              	.LVL33:
+ 262              	.L6:
+  58:MotorControl/utils.cpp ****             // Vector on-times
+ 263              		.loc 1 58 9 view .LVU98
+  58:MotorControl/utils.cpp ****             // Vector on-times
+ 264              		.loc 1 58 17 view .LVU99
+ 265              	.LBB204:
+  60:MotorControl/utils.cpp ****             float t3 = -alpha + one_by_sqrt3 * beta;
+ 266              		.loc 1 60 13 view .LVU100
+  60:MotorControl/utils.cpp ****             float t3 = -alpha + one_by_sqrt3 * beta;
+ 267              		.loc 1 60 45 is_stmt 0 view .LVU101
+ 268 0122 DFED327A 		vldr.32	s15, .L47
+ 269 0126 60EEA70A 		vmul.f32	s1, s1, s15
+ 270              	.LVL34:
+  60:MotorControl/utils.cpp ****             float t3 = -alpha + one_by_sqrt3 * beta;
+ 271              		.loc 1 60 19 view .LVU102
+ 272 012a 70EE807A 		vadd.f32	s15, s1, s0
+ 273              	.LVL35:
+  61:MotorControl/utils.cpp **** 
+ 274              		.loc 1 61 13 is_stmt 1 view .LVU103
+  61:MotorControl/utils.cpp **** 
+ 275              		.loc 1 61 19 is_stmt 0 view .LVU104
+ 276 012e 30EEC00A 		vsub.f32	s0, s1, s0
+ 277              	.LVL36:
+  64:MotorControl/utils.cpp ****             tA = tB + t3;
+ 278              		.loc 1 64 13 is_stmt 1 view .LVU105
+  64:MotorControl/utils.cpp ****             tA = tB + t3;
+ 279              		.loc 1 64 24 is_stmt 0 view .LVU106
+ 280 0132 F7EE000A 		vmov.f32	s1, #1.0e+0
+ 281 0136 70EEE70A 		vsub.f32	s1, s1, s15
+  64:MotorControl/utils.cpp ****             tA = tB + t3;
+ 282              		.loc 1 64 29 view .LVU107
+ 283 013a 70EEC00A 		vsub.f32	s1, s1, s0
+  64:MotorControl/utils.cpp ****             tA = tB + t3;
+ 284              		.loc 1 64 35 view .LVU108
+ 285 013e B6EE007A 		vmov.f32	s14, #5.0e-1
+ 286 0142 60EE870A 		vmul.f32	s1, s1, s14
+ 287              	.LVL37:
+  65:MotorControl/utils.cpp ****             tC = tA + t2;
+ 288              		.loc 1 65 13 is_stmt 1 view .LVU109
+  65:MotorControl/utils.cpp ****             tC = tA + t2;
+ 289              		.loc 1 65 21 is_stmt 0 view .LVU110
+ 290 0146 30EE800A 		vadd.f32	s0, s1, s0
+ 291              	.LVL38:
+  66:MotorControl/utils.cpp ****         } break;
+ 292              		.loc 1 66 13 is_stmt 1 view .LVU111
+  66:MotorControl/utils.cpp ****         } break;
+ 293              		.loc 1 66 21 is_stmt 0 view .LVU112
+ 294 014a 70EE277A 		vadd.f32	s15, s0, s15
+ 295              	.LVL39:
+  66:MotorControl/utils.cpp ****         } break;
+ 296              		.loc 1 66 21 view .LVU113
+ARM GAS  /tmp/ccUmEDDo.s 			page 9
+
+
+ 297              	.LBE204:
+  67:MotorControl/utils.cpp **** 
+ 298              		.loc 1 67 11 is_stmt 1 view .LVU114
+ 299              	.L7:
+  67:MotorControl/utils.cpp **** 
+ 300              		.loc 1 67 11 is_stmt 0 view .LVU115
+ 301              	.LBE208:
+ 116:MotorControl/utils.cpp ****     }
+ 117:MotorControl/utils.cpp **** 
+ 118:MotorControl/utils.cpp ****     bool result_valid =
+ 302              		.loc 1 118 5 is_stmt 1 view .LVU116
+ 119:MotorControl/utils.cpp ****             tA >= 0.0f && tA <= 1.0f
+ 120:MotorControl/utils.cpp ****          && tB >= 0.0f && tB <= 1.0f
+ 121:MotorControl/utils.cpp ****          && tC >= 0.0f && tC <= 1.0f;
+ 303              		.loc 1 121 24 is_stmt 0 view .LVU117
+ 304 014e B5EEC00A 		vcmpe.f32	s0, #0
+ 305 0152 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 306 0156 39DB     		blt	.L40
+ 119:MotorControl/utils.cpp ****             tA >= 0.0f && tA <= 1.0f
+ 307              		.loc 1 119 24 view .LVU118
+ 308 0158 B7EE007A 		vmov.f32	s14, #1.0e+0
+ 309 015c B4EEC70A 		vcmpe.f32	s0, s14
+ 310 0160 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 311 0164 1AD9     		bls	.L45
+ 312              		.loc 1 121 24 view .LVU119
+ 313 0166 0023     		movs	r3, #0
+ 314 0168 31E0     		b	.L14
+ 315              	.LVL40:
+ 316              	.L11:
+ 317              	.LBB209:
+  94:MotorControl/utils.cpp ****             // Vector on-times
+ 318              		.loc 1 94 9 is_stmt 1 view .LVU120
+  94:MotorControl/utils.cpp ****             // Vector on-times
+ 319              		.loc 1 94 17 view .LVU121
+ 320              	.LBB205:
+  96:MotorControl/utils.cpp ****             float t6 = alpha - one_by_sqrt3 * beta;
+ 321              		.loc 1 96 13 view .LVU122
+  96:MotorControl/utils.cpp ****             float t6 = alpha - one_by_sqrt3 * beta;
+ 322              		.loc 1 96 24 is_stmt 0 view .LVU123
+ 323 016a B1EE407A 		vneg.f32	s14, s0
+  96:MotorControl/utils.cpp ****             float t6 = alpha - one_by_sqrt3 * beta;
+ 324              		.loc 1 96 46 view .LVU124
+ 325 016e DFED1F7A 		vldr.32	s15, .L47
+ 326 0172 60EEA70A 		vmul.f32	s1, s1, s15
+ 327              	.LVL41:
+  96:MotorControl/utils.cpp ****             float t6 = alpha - one_by_sqrt3 * beta;
+ 328              		.loc 1 96 19 view .LVU125
+ 329 0176 37EE607A 		vsub.f32	s14, s14, s1
+ 330              	.LVL42:
+  97:MotorControl/utils.cpp **** 
+ 331              		.loc 1 97 13 is_stmt 1 view .LVU126
+  97:MotorControl/utils.cpp **** 
+ 332              		.loc 1 97 19 is_stmt 0 view .LVU127
+ 333 017a 70EE600A 		vsub.f32	s1, s0, s1
+ 334              	.LVL43:
+ 100:MotorControl/utils.cpp ****             tA = tC + t5;
+ 335              		.loc 1 100 13 is_stmt 1 view .LVU128
+ARM GAS  /tmp/ccUmEDDo.s 			page 10
+
+
+ 100:MotorControl/utils.cpp ****             tA = tC + t5;
+ 336              		.loc 1 100 24 is_stmt 0 view .LVU129
+ 337 017e F7EE007A 		vmov.f32	s15, #1.0e+0
+ 338 0182 77EEC77A 		vsub.f32	s15, s15, s14
+ 100:MotorControl/utils.cpp ****             tA = tC + t5;
+ 339              		.loc 1 100 29 view .LVU130
+ 340 0186 77EEE07A 		vsub.f32	s15, s15, s1
+ 100:MotorControl/utils.cpp ****             tA = tC + t5;
+ 341              		.loc 1 100 35 view .LVU131
+ 342 018a B6EE000A 		vmov.f32	s0, #5.0e-1
+ 343              	.LVL44:
+ 100:MotorControl/utils.cpp ****             tA = tC + t5;
+ 344              		.loc 1 100 35 view .LVU132
+ 345 018e 67EE807A 		vmul.f32	s15, s15, s0
+ 346              	.LVL45:
+ 101:MotorControl/utils.cpp ****             tB = tA + t6;
+ 347              		.loc 1 101 13 is_stmt 1 view .LVU133
+ 101:MotorControl/utils.cpp ****             tB = tA + t6;
+ 348              		.loc 1 101 21 is_stmt 0 view .LVU134
+ 349 0192 37EE870A 		vadd.f32	s0, s15, s14
+ 350              	.LVL46:
+ 102:MotorControl/utils.cpp ****         } break;
+ 351              		.loc 1 102 13 is_stmt 1 view .LVU135
+ 102:MotorControl/utils.cpp ****         } break;
+ 352              		.loc 1 102 21 is_stmt 0 view .LVU136
+ 353 0196 70EE200A 		vadd.f32	s1, s0, s1
+ 354              	.LVL47:
+ 102:MotorControl/utils.cpp ****         } break;
+ 355              		.loc 1 102 21 view .LVU137
+ 356              	.LBE205:
+ 103:MotorControl/utils.cpp **** 
+ 357              		.loc 1 103 11 is_stmt 1 view .LVU138
+ 358 019a D8E7     		b	.L7
+ 359              	.LVL48:
+ 360              	.L45:
+ 103:MotorControl/utils.cpp **** 
+ 361              		.loc 1 103 11 is_stmt 0 view .LVU139
+ 362              	.LBE209:
+ 120:MotorControl/utils.cpp ****          && tC >= 0.0f && tC <= 1.0f;
+ 363              		.loc 1 120 10 view .LVU140
+ 364 019c F5EEC00A 		vcmpe.f32	s1, #0
+ 365 01a0 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 366 01a4 1BDB     		blt	.L42
+ 120:MotorControl/utils.cpp ****          && tC >= 0.0f && tC <= 1.0f;
+ 367              		.loc 1 120 24 discriminator 1 view .LVU141
+ 368 01a6 F4EEC70A 		vcmpe.f32	s1, s14
+ 369 01aa F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 370 01ae 01D9     		bls	.L46
+ 371              		.loc 1 121 24 view .LVU142
+ 372 01b0 0023     		movs	r3, #0
+ 373 01b2 0CE0     		b	.L14
+ 374              	.L46:
+ 375              		.loc 1 121 10 discriminator 3 view .LVU143
+ 376 01b4 F5EEC07A 		vcmpe.f32	s15, #0
+ 377 01b8 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 378 01bc 11DB     		blt	.L44
+ 379              		.loc 1 121 24 discriminator 2 view .LVU144
+ARM GAS  /tmp/ccUmEDDo.s 			page 11
+
+
+ 380 01be F4EEC77A 		vcmpe.f32	s15, s14
+ 381 01c2 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 382 01c6 0ED9     		bls	.L25
+ 383              		.loc 1 121 24 view .LVU145
+ 384 01c8 0023     		movs	r3, #0
+ 385 01ca 00E0     		b	.L14
+ 386              	.L40:
+ 387              		.loc 1 121 24 view .LVU146
+ 388 01cc 0023     		movs	r3, #0
+ 389              	.L14:
+ 390              	.LVL49:
+ 122:MotorControl/utils.cpp ****     return {tA, tB, tC, result_valid};
+ 391              		.loc 1 122 5 is_stmt 1 view .LVU147
+ 392              	.LBB210:
+ 393              	.LBI210:
+ 394              		.file 2 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple"
+   1:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // <tuple> -*- C++ -*-
+   2:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+   3:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // Copyright (C) 2007-2020 Free Software Foundation, Inc.
+   4:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** //
+   5:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // This file is part of the GNU ISO C++ Library.  This library is free
+   6:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // software; you can redistribute it and/or modify it under the
+   7:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // terms of the GNU General Public License as published by the
+   8:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // Free Software Foundation; either version 3, or (at your option)
+   9:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // any later version.
+  10:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  11:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // This library is distributed in the hope that it will be useful,
+  12:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // but WITHOUT ANY WARRANTY; without even the implied warranty of
+  13:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  14:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // GNU General Public License for more details.
+  15:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  16:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // Under Section 7 of GPL version 3, you are granted additional
+  17:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // permissions described in the GCC Runtime Library Exception, version
+  18:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // 3.1, as published by the Free Software Foundation.
+  19:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  20:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // You should have received a copy of the GNU General Public License and
+  21:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // a copy of the GCC Runtime Library Exception along with this program;
+  22:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+  23:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // <http://www.gnu.org/licenses/>.
+  24:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  25:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** /** @file include/tuple
+  26:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****  *  This is a Standard C++ Library header.
+  27:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****  */
+  28:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  29:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #ifndef _GLIBCXX_TUPLE
+  30:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #define _GLIBCXX_TUPLE 1
+  31:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  32:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #pragma GCC system_header
+  33:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  34:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #if __cplusplus < 201103L
+  35:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** # include <bits/c++0x_warning.h>
+  36:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #else
+  37:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  38:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #include <utility>
+  39:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #include <array>
+  40:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #include <bits/uses_allocator.h>
+  41:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #include <bits/invoke.h>
+ARM GAS  /tmp/ccUmEDDo.s 			page 12
+
+
+  42:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #if __cplusplus > 201703L
+  43:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** # include <compare>
+  44:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** # define __cpp_lib_constexpr_tuple 201811L
+  45:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #endif
+  46:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  47:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** namespace std _GLIBCXX_VISIBILITY(default)
+  48:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** {
+  49:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** _GLIBCXX_BEGIN_NAMESPACE_VERSION
+  50:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  51:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   /**
+  52:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    *  @addtogroup utilities
+  53:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    *  @{
+  54:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    */
+  55:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  56:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<typename... _Elements>
+  57:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     class tuple;
+  58:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  59:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<typename _Tp>
+  60:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     struct __is_empty_non_tuple : is_empty<_Tp> { };
+  61:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  62:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   // Using EBO for elements that are tuples causes ambiguous base errors.
+  63:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<typename _El0, typename... _El>
+  64:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     struct __is_empty_non_tuple<tuple<_El0, _El...>> : false_type { };
+  65:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  66:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   // Use the Empty Base-class Optimization for empty, non-final types.
+  67:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<typename _Tp>
+  68:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     using __empty_not_final
+  69:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     = typename conditional<__is_final(_Tp), false_type,
+  70:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 			   __is_empty_non_tuple<_Tp>>::type;
+  71:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  72:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<std::size_t _Idx, typename _Head,
+  73:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	   bool = __empty_not_final<_Head>::value>
+  74:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     struct _Head_base;
+  75:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  76:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<std::size_t _Idx, typename _Head>
+  77:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     struct _Head_base<_Idx, _Head, true>
+  78:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     : public _Head
+  79:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     {
+  80:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Head_base()
+  81:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _Head() { }
+  82:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  83:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Head_base(const _Head& __h)
+  84:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _Head(__h) { }
+  85:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  86:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Head_base(const _Head_base&) = default;
+  87:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Head_base(_Head_base&&) = default;
+  88:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  89:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead>
+  90:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         constexpr _Head_base(_UHead&& __h)
+  91:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Head(std::forward<_UHead>(__h)) { }
+  92:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  93:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _Head_base(allocator_arg_t, __uses_alloc0)
+  94:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _Head() { }
+  95:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+  96:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
+  97:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Head_base(allocator_arg_t, __uses_alloc1<_Alloc> __a)
+  98:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Head(allocator_arg, *__a._M_a) { }
+ARM GAS  /tmp/ccUmEDDo.s 			page 13
+
+
+  99:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 100:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
+ 101:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Head_base(allocator_arg_t, __uses_alloc2<_Alloc> __a)
+ 102:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Head(*__a._M_a) { }
+ 103:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 104:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead>
+ 105:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Head_base(__uses_alloc0, _UHead&& __uhead)
+ 106:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Head(std::forward<_UHead>(__uhead)) { }
+ 107:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 108:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _UHead>
+ 109:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Head_base(__uses_alloc1<_Alloc> __a, _UHead&& __uhead)
+ 110:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Head(allocator_arg, *__a._M_a, std::forward<_UHead>(__uhead)) { }
+ 111:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 112:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _UHead>
+ 113:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Head_base(__uses_alloc2<_Alloc> __a, _UHead&& __uhead)
+ 114:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Head(std::forward<_UHead>(__uhead), *__a._M_a) { }
+ 115:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 116:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       static constexpr _Head&
+ 117:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _M_head(_Head_base& __b) noexcept { return __b; }
+ 118:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 119:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       static constexpr const _Head&
+ 120:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _M_head(const _Head_base& __b) noexcept { return __b; }
+ 121:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     };
+ 122:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 123:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<std::size_t _Idx, typename _Head>
+ 124:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     struct _Head_base<_Idx, _Head, false>
+ 125:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     {
+ 126:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Head_base()
+ 127:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _M_head_impl() { }
+ 128:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 129:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Head_base(const _Head& __h)
+ 130:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _M_head_impl(__h) { }
+ 131:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 132:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Head_base(const _Head_base&) = default;
+ 133:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Head_base(_Head_base&&) = default;
+ 134:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 135:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead>
+ 136:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         constexpr _Head_base(_UHead&& __h)
+ 137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _M_head_impl(std::forward<_UHead>(__h)) { }
+ 138:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 139:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _GLIBCXX20_CONSTEXPR
+ 140:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _Head_base(allocator_arg_t, __uses_alloc0)
+ 141:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _M_head_impl() { }
+ 142:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 143:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
+ 144:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Head_base(allocator_arg_t, __uses_alloc1<_Alloc> __a)
+ 145:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _M_head_impl(allocator_arg, *__a._M_a) { }
+ 146:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 147:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
+ 148:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Head_base(allocator_arg_t, __uses_alloc2<_Alloc> __a)
+ 149:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _M_head_impl(*__a._M_a) { }
+ 150:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 151:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead>
+ 152:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 153:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Head_base(__uses_alloc0, _UHead&& __uhead)
+ 154:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _M_head_impl(std::forward<_UHead>(__uhead)) { }
+ 155:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ARM GAS  /tmp/ccUmEDDo.s 			page 14
+
+
+ 156:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _UHead>
+ 157:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Head_base(__uses_alloc1<_Alloc> __a, _UHead&& __uhead)
+ 158:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _M_head_impl(allocator_arg, *__a._M_a, std::forward<_UHead>(__uhead))
+ 159:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ }
+ 160:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 161:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _UHead>
+ 162:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Head_base(__uses_alloc2<_Alloc> __a, _UHead&& __uhead)
+ 163:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _M_head_impl(std::forward<_UHead>(__uhead), *__a._M_a) { }
+ 164:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 165:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       static constexpr _Head&
+ 166:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _M_head(_Head_base& __b) noexcept { return __b._M_head_impl; }
+ 167:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 168:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       static constexpr const _Head&
+ 169:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _M_head(const _Head_base& __b) noexcept { return __b._M_head_impl; }
+ 170:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 171:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _Head _M_head_impl;
+ 172:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     };
+ 173:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 174:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   /**
+ 175:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    * Contains the actual implementation of the @c tuple template, stored
+ 176:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    * as a recursive inheritance hierarchy from the first element (most
+ 177:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    * derived class) to the last (least derived class). The @c Idx
+ 178:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    * parameter gives the 0-based index of the element stored at this
+ 179:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    * point in the hierarchy; we use it to implement a constant-time
+ 180:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    * get() operation.
+ 181:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    */
+ 182:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<std::size_t _Idx, typename... _Elements>
+ 183:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     struct _Tuple_impl;
+ 184:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 185:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   /**
+ 186:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    * Recursive tuple implementation. Here we store the @c Head element
+ 187:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    * and derive from a @c Tuple_impl containing the remaining elements
+ 188:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    * (which contains the @c Tail).
+ 189:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    */
+ 190:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<std::size_t _Idx, typename _Head, typename... _Tail>
+ 191:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     struct _Tuple_impl<_Idx, _Head, _Tail...>
+ 192:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     : public _Tuple_impl<_Idx + 1, _Tail...>,
+ 193:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       private _Head_base<_Idx, _Head>
+ 194:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     {
+ 195:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<std::size_t, typename...> friend class _Tuple_impl;
+ 196:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 197:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       typedef _Tuple_impl<_Idx + 1, _Tail...> _Inherited;
+ 198:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       typedef _Head_base<_Idx, _Head> _Base;
+ 199:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 200:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       static constexpr _Head&
+ 201:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _M_head(_Tuple_impl& __t) noexcept { return _Base::_M_head(__t); }
+ 202:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 203:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       static constexpr const _Head&
+ 204:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _M_head(const _Tuple_impl& __t) noexcept { return _Base::_M_head(__t); }
+ 205:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 206:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       static constexpr _Inherited&
+ 207:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _M_tail(_Tuple_impl& __t) noexcept { return __t; }
+ 208:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 209:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       static constexpr const _Inherited&
+ 210:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _M_tail(const _Tuple_impl& __t) noexcept { return __t; }
+ 211:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 212:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Tuple_impl()
+ARM GAS  /tmp/ccUmEDDo.s 			page 15
+
+
+ 213:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _Inherited(), _Base() { }
+ 214:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 215:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       explicit
+ 216:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Tuple_impl(const _Head& __head, const _Tail&... __tail)
+ 217:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _Inherited(__tail...), _Base(__head) { }
+ 218:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 219:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead, typename... _UTail, typename = typename
+ 220:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****                enable_if<sizeof...(_Tail) == sizeof...(_UTail)>::type>
+ 221:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         explicit
+ 222:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         constexpr _Tuple_impl(_UHead&& __head, _UTail&&... __tail)
+ 223:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(std::forward<_UTail>(__tail)...),
+ 224:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _Base(std::forward<_UHead>(__head)) { }
+ 225:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 226:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Tuple_impl(const _Tuple_impl&) = default;
+ 227:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 228:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // _GLIBCXX_RESOLVE_LIB_DEFECTS
+ 229:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // 2729. Missing SFINAE on std::pair::operator=
+ 230:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _Tuple_impl& operator=(const _Tuple_impl&) = delete;
+ 231:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 232:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr
+ 233:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _Tuple_impl(_Tuple_impl&& __in)
+ 234:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       noexcept(__and_<is_nothrow_move_constructible<_Head>,
+ 235:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	              is_nothrow_move_constructible<_Inherited>>::value)
+ 236:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _Inherited(std::move(_M_tail(__in))),
+ 237:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Base(std::forward<_Head>(_M_head(__in))) { }
+ 238:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 239:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename... _UElements>
+ 240:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         constexpr _Tuple_impl(const _Tuple_impl<_Idx, _UElements...>& __in)
+ 241:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(_Tuple_impl<_Idx, _UElements...>::_M_tail(__in)),
+ 242:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _Base(_Tuple_impl<_Idx, _UElements...>::_M_head(__in)) { }
+ 243:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 244:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead, typename... _UTails>
+ 245:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         constexpr _Tuple_impl(_Tuple_impl<_Idx, _UHead, _UTails...>&& __in)
+ 246:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(std::move
+ 247:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		     (_Tuple_impl<_Idx, _UHead, _UTails...>::_M_tail(__in))),
+ 248:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _Base(std::forward<_UHead>
+ 249:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		(_Tuple_impl<_Idx, _UHead, _UTails...>::_M_head(__in))) { }
+ 250:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 251:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
+ 252:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 253:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a)
+ 254:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a),
+ 255:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****           _Base(__tag, __use_alloc<_Head>(__a)) { }
+ 256:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 257:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
+ 258:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
+ 259:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		    const _Head& __head, const _Tail&... __tail)
+ 260:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a, __tail...),
+ 261:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****           _Base(__use_alloc<_Head, _Alloc, _Head>(__a), __head) { }
+ 262:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 263:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _UHead, typename... _UTail,
+ 264:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****                typename = typename enable_if<sizeof...(_Tail)
+ 265:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 					     == sizeof...(_UTail)>::type>
+ 266:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 267:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
+ 268:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	            _UHead&& __head, _UTail&&... __tail)
+ 269:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a, std::forward<_UTail>(__tail)...),
+ARM GAS  /tmp/ccUmEDDo.s 			page 16
+
+
+ 270:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****           _Base(__use_alloc<_Head, _Alloc, _UHead>(__a),
+ 271:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	        std::forward<_UHead>(__head)) { }
+ 272:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 273:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
+ 274:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 275:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         _Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
+ 276:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	            const _Tuple_impl& __in)
+ 277:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a, _M_tail(__in)),
+ 278:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****           _Base(__use_alloc<_Head, _Alloc, _Head>(__a), _M_head(__in)) { }
+ 279:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 280:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
+ 281:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 282:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
+ 283:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	            _Tuple_impl&& __in)
+ 284:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a, std::move(_M_tail(__in))),
+ 285:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _Base(__use_alloc<_Head, _Alloc, _Head>(__a),
+ 286:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	        std::forward<_Head>(_M_head(__in))) { }
+ 287:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 288:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _UHead, typename... _UTails>
+ 289:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 290:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
+ 291:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		    const _Tuple_impl<_Idx, _UHead, _UTails...>& __in)
+ 292:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a,
+ 293:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		     _Tuple_impl<_Idx, _UHead, _UTails...>::_M_tail(__in)),
+ 294:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _Base(__use_alloc<_Head, _Alloc, const _UHead&>(__a),
+ 295:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		_Tuple_impl<_Idx, _UHead, _UTails...>::_M_head(__in)) { }
+ 296:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 297:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _UHead, typename... _UTails>
+ 298:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 299:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
+ 300:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	            _Tuple_impl<_Idx, _UHead, _UTails...>&& __in)
+ 301:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a, std::move
+ 302:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		     (_Tuple_impl<_Idx, _UHead, _UTails...>::_M_tail(__in))),
+ 303:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _Base(__use_alloc<_Head, _Alloc, _UHead>(__a),
+ 304:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****                 std::forward<_UHead>
+ 305:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		(_Tuple_impl<_Idx, _UHead, _UTails...>::_M_head(__in))) { }
+ 306:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 307:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename... _UElements>
+ 308:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 309:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         void
+ 310:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         _M_assign(const _Tuple_impl<_Idx, _UElements...>& __in)
+ 311:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         {
+ 312:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _M_head(*this) = _Tuple_impl<_Idx, _UElements...>::_M_head(__in);
+ 313:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _M_tail(*this)._M_assign(
+ 314:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	      _Tuple_impl<_Idx, _UElements...>::_M_tail(__in));
+ 315:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	}
+ 316:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 317:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead, typename... _UTails>
+ 318:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 319:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         void
+ 320:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         _M_assign(_Tuple_impl<_Idx, _UHead, _UTails...>&& __in)
+ 321:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         {
+ 322:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _M_head(*this) = std::forward<_UHead>
+ 323:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	    (_Tuple_impl<_Idx, _UHead, _UTails...>::_M_head(__in));
+ 324:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _M_tail(*this)._M_assign(
+ 325:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	      std::move(_Tuple_impl<_Idx, _UHead, _UTails...>::_M_tail(__in)));
+ 326:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	}
+ARM GAS  /tmp/ccUmEDDo.s 			page 17
+
+
+ 327:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 328:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     protected:
+ 329:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _GLIBCXX20_CONSTEXPR
+ 330:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       void
+ 331:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _M_swap(_Tuple_impl& __in)
+ 332:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       {
+ 333:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	using std::swap;
+ 334:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	swap(_M_head(*this), _M_head(__in));
+ 335:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Inherited::_M_swap(_M_tail(__in));
+ 336:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       }
+ 337:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     };
+ 338:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 339:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   // Basis case of inheritance recursion.
+ 340:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<std::size_t _Idx, typename _Head>
+ 341:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     struct _Tuple_impl<_Idx, _Head>
+ 342:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     : private _Head_base<_Idx, _Head>
+ 343:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     {
+ 344:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<std::size_t, typename...> friend class _Tuple_impl;
+ 345:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 346:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       typedef _Head_base<_Idx, _Head> _Base;
+ 347:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 348:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       static constexpr _Head&
+ 349:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _M_head(_Tuple_impl& __t) noexcept { return _Base::_M_head(__t); }
+ 350:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 351:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       static constexpr const _Head&
+ 352:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _M_head(const _Tuple_impl& __t) noexcept { return _Base::_M_head(__t); }
+ 353:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 354:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Tuple_impl()
+ 355:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _Base() { }
+ 356:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 357:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       explicit
+ 358:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Tuple_impl(const _Head& __head)
+ 359:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _Base(__head) { }
+ 360:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 361:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead>
+ 362:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         explicit
+ 363:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         constexpr _Tuple_impl(_UHead&& __head)
+ 364:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Base(std::forward<_UHead>(__head)) { }
+ 365:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 366:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Tuple_impl(const _Tuple_impl&) = default;
+ 367:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 368:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // _GLIBCXX_RESOLVE_LIB_DEFECTS
+ 369:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // 2729. Missing SFINAE on std::pair::operator=
+ 370:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _Tuple_impl& operator=(const _Tuple_impl&) = delete;
+ 371:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 372:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr
+ 373:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _Tuple_impl(_Tuple_impl&& __in)
+ 374:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       noexcept(is_nothrow_move_constructible<_Head>::value)
+ 375:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _Base(std::forward<_Head>(_M_head(__in))) { }
+ 376:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 377:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead>
+ 378:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         constexpr _Tuple_impl(const _Tuple_impl<_Idx, _UHead>& __in)
+ 379:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Base(_Tuple_impl<_Idx, _UHead>::_M_head(__in)) { }
+ 380:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 381:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead>
+ 382:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         constexpr _Tuple_impl(_Tuple_impl<_Idx, _UHead>&& __in)
+ 383:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Base(std::forward<_UHead>(_Tuple_impl<_Idx, _UHead>::_M_head(__in)))
+ARM GAS  /tmp/ccUmEDDo.s 			page 18
+
+
+ 384:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ }
+ 385:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 386:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
+ 387:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 388:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a)
+ 389:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Base(__tag, __use_alloc<_Head>(__a)) { }
+ 390:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 391:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
+ 392:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
+ 393:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		    const _Head& __head)
+ 394:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Base(__use_alloc<_Head, _Alloc, _Head>(__a), __head) { }
+ 395:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 396:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _UHead>
+ 397:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 398:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
+ 399:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	            _UHead&& __head)
+ 400:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Base(__use_alloc<_Head, _Alloc, _UHead>(__a),
+ 401:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	        std::forward<_UHead>(__head)) { }
+ 402:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 403:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
+ 404:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 405:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         _Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
+ 406:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	            const _Tuple_impl& __in)
+ 407:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Base(__use_alloc<_Head, _Alloc, _Head>(__a), _M_head(__in)) { }
+ 408:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 409:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
+ 410:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 411:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
+ 412:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	            _Tuple_impl&& __in)
+ 413:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Base(__use_alloc<_Head, _Alloc, _Head>(__a),
+ 414:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	        std::forward<_Head>(_M_head(__in))) { }
+ 415:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 416:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _UHead>
+ 417:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 418:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
+ 419:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	            const _Tuple_impl<_Idx, _UHead>& __in)
+ 420:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Base(__use_alloc<_Head, _Alloc, const _UHead&>(__a),
+ 421:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		_Tuple_impl<_Idx, _UHead>::_M_head(__in)) { }
+ 422:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 423:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _UHead>
+ 424:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 425:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
+ 426:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	            _Tuple_impl<_Idx, _UHead>&& __in)
+ 427:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Base(__use_alloc<_Head, _Alloc, _UHead>(__a),
+ 428:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****                 std::forward<_UHead>(_Tuple_impl<_Idx, _UHead>::_M_head(__in)))
+ 429:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ }
+ 430:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 431:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead>
+ 432:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ 433:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         void
+ 434:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         _M_assign(const _Tuple_impl<_Idx, _UHead>& __in)
+ 435:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         {
+ 436:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _M_head(*this) = _Tuple_impl<_Idx, _UHead>::_M_head(__in);
+ 437:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	}
+ 438:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 439:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead>
+ 440:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
+ARM GAS  /tmp/ccUmEDDo.s 			page 19
+
+
+ 441:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         void
+ 442:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         _M_assign(_Tuple_impl<_Idx, _UHead>&& __in)
+ 443:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         {
+ 444:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _M_head(*this)
+ 445:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	    = std::forward<_UHead>(_Tuple_impl<_Idx, _UHead>::_M_head(__in));
+ 446:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	}
+ 447:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 448:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     protected:
+ 449:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _GLIBCXX20_CONSTEXPR
+ 450:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       void
+ 451:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _M_swap(_Tuple_impl& __in)
+ 452:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       {
+ 453:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	using std::swap;
+ 454:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	swap(_M_head(*this), _M_head(__in));
+ 455:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       }
+ 456:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     };
+ 457:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 458:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   // Concept utility functions, reused in conditionally-explicit
+ 459:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   // constructors.
+ 460:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<bool, typename... _Types>
+ 461:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     struct _TupleConstraints
+ 462:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     {
+ 463:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Tp, typename _Up> // Workaround for PR 96592
+ 464:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	using is_constructible
+ 465:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  = __bool_constant<__is_constructible(_Tp, _Up)>;
+ 466:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 467:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // Constraint for a non-explicit constructor.
+ 468:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // True iff each Ti in _Types... can be constructed from Ui in _UTypes...
+ 469:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // and every Ui is implicitly convertible to Ti.
+ 470:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename... _UTypes>
+ 471:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	static constexpr bool __is_implicitly_constructible()
+ 472:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{
+ 473:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  return __and_<is_constructible<_Types, _UTypes>...,
+ 474:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 			is_convertible<_UTypes, _Types>...
+ 475:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 			>::value;
+ 476:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	}
+ 477:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 478:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // Constraint for a non-explicit constructor.
+ 479:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // True iff each Ti in _Types... can be constructed from Ui in _UTypes...
+ 480:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // but not every Ui is implicitly convertible to Ti.
+ 481:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename... _UTypes>
+ 482:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	static constexpr bool __is_explicitly_constructible()
+ 483:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{
+ 484:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  return __and_<is_constructible<_Types, _UTypes>...,
+ 485:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 			__not_<__and_<is_convertible<_UTypes, _Types>...>>
+ 486:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 			>::value;
+ 487:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	}
+ 488:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 489:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       static constexpr bool __is_implicitly_default_constructible()
+ 490:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       {
+ 491:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	return __and_<std::__is_implicitly_default_constructible<_Types>...
+ 492:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		      >::value;
+ 493:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       }
+ 494:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 495:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       static constexpr bool __is_explicitly_default_constructible()
+ 496:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       {
+ 497:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	return __and_<is_default_constructible<_Types>...,
+ARM GAS  /tmp/ccUmEDDo.s 			page 20
+
+
+ 498:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		      __not_<__and_<
+ 499:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 			std::__is_implicitly_default_constructible<_Types>...>
+ 500:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		      >>::value;
+ 501:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       }
+ 502:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     };
+ 503:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 504:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   // Partial specialization used when a required precondition isn't met,
+ 505:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   // e.g. when sizeof...(_Types) != sizeof...(_UTypes).
+ 506:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<typename... _Types>
+ 507:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     struct _TupleConstraints<false, _Types...>
+ 508:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     {
+ 509:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename... _UTypes>
+ 510:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	static constexpr bool __is_implicitly_constructible()
+ 511:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ return false; }
+ 512:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 513:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename... _UTypes>
+ 514:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	static constexpr bool __is_explicitly_constructible()
+ 515:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ return false; }
+ 516:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     };
+ 517:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 518:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   /// Primary class template, tuple
+ 519:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<typename... _Elements>
+ 520:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     class tuple : public _Tuple_impl<0, _Elements...>
+ 521:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     {
+ 522:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       typedef _Tuple_impl<0, _Elements...> _Inherited;
+ 523:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 524:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<bool _Cond>
+ 525:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	using _TCC = _TupleConstraints<_Cond, _Elements...>;
+ 526:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 527:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // Constraint for non-explicit default constructor
+ 528:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<bool _Dummy>
+ 529:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	using _ImplicitDefaultCtor = __enable_if_t<
+ 530:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _TCC<_Dummy>::__is_implicitly_default_constructible(),
+ 531:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  bool>;
+ 532:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 533:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // Constraint for explicit default constructor
+ 534:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<bool _Dummy>
+ 535:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	using _ExplicitDefaultCtor = __enable_if_t<
+ 536:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _TCC<_Dummy>::__is_explicitly_default_constructible(),
+ 537:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  bool>;
+ 538:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 539:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // Constraint for non-explicit constructors
+ 540:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<bool _Cond, typename... _Args>
+ 541:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	using _ImplicitCtor = __enable_if_t<
+ 542:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _TCC<_Cond>::template __is_implicitly_constructible<_Args...>(),
+ 543:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  bool>;
+ 544:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 545:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // Constraint for non-explicit constructors
+ 546:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<bool _Cond, typename... _Args>
+ 547:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	using _ExplicitCtor = __enable_if_t<
+ 548:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _TCC<_Cond>::template __is_explicitly_constructible<_Args...>(),
+ 549:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  bool>;
+ 550:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 551:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename... _UElements>
+ 552:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	static constexpr
+ 553:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	__enable_if_t<sizeof...(_UElements) == sizeof...(_Elements), bool>
+ 554:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	__assignable()
+ARM GAS  /tmp/ccUmEDDo.s 			page 21
+
+
+ 555:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ return __and_<is_assignable<_Elements&, _UElements>...>::value; }
+ 556:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 557:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // Condition for noexcept-specifier of an assignment operator.
+ 558:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename... _UElements>
+ 559:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	static constexpr bool __nothrow_assignable()
+ 560:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{
+ 561:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  return
+ 562:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	    __and_<is_nothrow_assignable<_Elements&, _UElements>...>::value;
+ 563:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	}
+ 564:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 565:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // Condition for noexcept-specifier of a constructor.
+ 566:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename... _UElements>
+ 567:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	static constexpr bool __nothrow_constructible()
+ 568:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{
+ 569:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  return
+ 570:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	    __and_<is_nothrow_constructible<_Elements, _UElements>...>::value;
+ 571:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	}
+ 572:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 573:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // Constraint for tuple(_UTypes&&...) where sizeof...(_UTypes) == 1.
+ 574:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Up>
+ 575:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	static constexpr bool __valid_args()
+ 576:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{
+ 577:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  return sizeof...(_Elements) == 1
+ 578:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	    && !is_same<tuple, __remove_cvref_t<_Up>>::value;
+ 579:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	}
+ 580:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 581:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // Constraint for tuple(_UTypes&&...) where sizeof...(_UTypes) > 1.
+ 582:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename, typename, typename... _Tail>
+ 583:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	static constexpr bool __valid_args()
+ 584:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ return (sizeof...(_Tail) + 2) == sizeof...(_Elements); }
+ 585:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 586:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       /* Constraint for constructors with a tuple<UTypes...> parameter ensures
+ 587:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****        * that the constructor is only viable when it would not interfere with
+ 588:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****        * tuple(UTypes&&...) or tuple(const tuple&) or tuple(tuple&&).
+ 589:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****        * Such constructors are only viable if:
+ 590:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****        * either sizeof...(Types) != 1,
+ 591:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****        * or (when Types... expands to T and UTypes... expands to U)
+ 592:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****        * is_convertible_v<TUPLE, T>, is_constructible_v<T, TUPLE>,
+ 593:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****        * and is_same_v<T, U> are all false.
+ 594:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****        */
+ 595:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Tuple, typename = tuple,
+ 596:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       typename = __remove_cvref_t<_Tuple>>
+ 597:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	struct _UseOtherCtor
+ 598:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: false_type
+ 599:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ };
+ 600:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // If TUPLE is convertible to the single element in *this,
+ 601:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // then TUPLE should match tuple(UTypes&&...) instead.
+ 602:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Tuple, typename _Tp, typename _Up>
+ 603:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	struct _UseOtherCtor<_Tuple, tuple<_Tp>, tuple<_Up>>
+ 604:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: __or_<is_convertible<_Tuple, _Tp>, is_constructible<_Tp, _Tuple>>
+ 605:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ };
+ 606:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // If TUPLE and *this each have a single element of the same type,
+ 607:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // then TUPLE should match a copy/move constructor instead.
+ 608:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Tuple, typename _Tp>
+ 609:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	struct _UseOtherCtor<_Tuple, tuple<_Tp>, tuple<_Tp>>
+ 610:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: true_type
+ 611:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ };
+ARM GAS  /tmp/ccUmEDDo.s 			page 22
+
+
+ 612:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 613:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // Return true iff sizeof...(Types) == 1 && tuple_size_v<TUPLE> == 1
+ 614:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // and the single element in Types can be initialized from TUPLE,
+ 615:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // or is the same type as tuple_element_t<0, TUPLE>.
+ 616:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Tuple>
+ 617:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	static constexpr bool __use_other_ctor()
+ 618:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ return _UseOtherCtor<_Tuple>::value; }
+ 619:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 620:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     public:
+ 621:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Dummy = void,
+ 622:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ImplicitDefaultCtor<is_void<_Dummy>::value> = true>
+ 623:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	constexpr
+ 624:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	tuple()
+ 625:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	noexcept(__and_<is_nothrow_default_constructible<_Elements>...>::value)
+ 626:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited() { }
+ 627:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 628:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Dummy = void,
+ 629:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ExplicitDefaultCtor<is_void<_Dummy>::value> = false>
+ 630:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	explicit constexpr
+ 631:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	tuple()
+ 632:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	noexcept(__and_<is_nothrow_default_constructible<_Elements>...>::value)
+ 633:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited() { }
+ 634:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 635:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<bool _NotEmpty = (sizeof...(_Elements) >= 1),
+ 636:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ImplicitCtor<_NotEmpty, const _Elements&...> = true>
+ 637:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	constexpr
+ 638:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	tuple(const _Elements&... __elements)
+ 639:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	noexcept(__nothrow_constructible<const _Elements&...>())
+ 640:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__elements...) { }
+ 641:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 642:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<bool _NotEmpty = (sizeof...(_Elements) >= 1),
+ 643:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ExplicitCtor<_NotEmpty, const _Elements&...> = false>
+ 644:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	explicit constexpr
+ 645:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	tuple(const _Elements&... __elements)
+ 646:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	noexcept(__nothrow_constructible<const _Elements&...>())
+ 647:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__elements...) { }
+ 648:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 649:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename... _UElements,
+ 650:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       bool _Valid = __valid_args<_UElements...>(),
+ 651:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ImplicitCtor<_Valid, _UElements...> = true>
+ 652:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	constexpr
+ 653:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	tuple(_UElements&&... __elements)
+ 395              		.loc 2 653 2 view .LVU148
+ 396              	.LBB211:
+ 397              	.LBI211:
+ 398              		.file 3 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h"
+   1:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // Move, forward and identity for C++11 + swap -*- C++ -*-
+   2:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+   3:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // Copyright (C) 2007-2020 Free Software Foundation, Inc.
+   4:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** //
+   5:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // This file is part of the GNU ISO C++ Library.  This library is free
+   6:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // software; you can redistribute it and/or modify it under the
+   7:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // terms of the GNU General Public License as published by the
+   8:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // Free Software Foundation; either version 3, or (at your option)
+   9:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // any later version.
+  10:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+  11:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // This library is distributed in the hope that it will be useful,
+ARM GAS  /tmp/ccUmEDDo.s 			page 23
+
+
+  12:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // but WITHOUT ANY WARRANTY; without even the implied warranty of
+  13:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  14:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // GNU General Public License for more details.
+  15:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+  16:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // Under Section 7 of GPL version 3, you are granted additional
+  17:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // permissions described in the GCC Runtime Library Exception, version
+  18:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // 3.1, as published by the Free Software Foundation.
+  19:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+  20:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // You should have received a copy of the GNU General Public License and
+  21:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // a copy of the GCC Runtime Library Exception along with this program;
+  22:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+  23:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // <http://www.gnu.org/licenses/>.
+  24:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+  25:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** /** @file bits/move.h
+  26:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****  *  This is an internal header file, included by other library headers.
+  27:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****  *  Do not attempt to use it directly. @headername{utility}
+  28:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****  */
+  29:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+  30:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** #ifndef _MOVE_H
+  31:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** #define _MOVE_H 1
+  32:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+  33:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** #include <bits/c++config.h>
+  34:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** #if __cplusplus < 201103L
+  35:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** # include <bits/concept_check.h>
+  36:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** #endif
+  37:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+  38:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** namespace std _GLIBCXX_VISIBILITY(default)
+  39:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** {
+  40:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** _GLIBCXX_BEGIN_NAMESPACE_VERSION
+  41:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+  42:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****   // Used, in C++03 mode too, by allocators, etc.
+  43:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****   /**
+  44:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *  @brief Same as C++11 std::addressof
+  45:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *  @ingroup utilities
+  46:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    */
+  47:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****   template<typename _Tp>
+  48:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****     inline _GLIBCXX_CONSTEXPR _Tp*
+  49:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****     __addressof(_Tp& __r) _GLIBCXX_NOEXCEPT
+  50:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****     { return __builtin_addressof(__r); }
+  51:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+  52:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** #if __cplusplus >= 201103L
+  53:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+  54:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** _GLIBCXX_END_NAMESPACE_VERSION
+  55:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** } // namespace
+  56:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+  57:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** #include <type_traits> // Brings in std::declval too.
+  58:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+  59:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** namespace std _GLIBCXX_VISIBILITY(default)
+  60:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** {
+  61:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** _GLIBCXX_BEGIN_NAMESPACE_VERSION
+  62:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+  63:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****   /**
+  64:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *  @addtogroup utilities
+  65:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *  @{
+  66:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    */
+  67:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
+  68:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****   /**
+ARM GAS  /tmp/ccUmEDDo.s 			page 24
+
+
+  69:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *  @brief  Forward an lvalue.
+  70:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *  @return The parameter cast to the specified type.
+  71:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *
+  72:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *  This function is used to implement "perfect forwarding".
+  73:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    */
+  74:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****   template<typename _Tp>
+  75:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****     constexpr _Tp&&
+  76:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****     forward(typename std::remove_reference<_Tp>::type& __t) noexcept
+ 399              		.loc 3 76 5 view .LVU149
+ 400              		.loc 3 76 5 is_stmt 0 view .LVU150
+ 401              	.LBE211:
+ 402              	.LBB212:
+ 403              	.LBI212:
+ 404              		.loc 3 76 5 is_stmt 1 view .LVU151
+ 405              		.loc 3 76 5 is_stmt 0 view .LVU152
+ 406              	.LBE212:
+ 407              	.LBB213:
+ 408              	.LBI213:
+ 409              		.loc 3 76 5 is_stmt 1 view .LVU153
+ 410              		.loc 3 76 5 is_stmt 0 view .LVU154
+ 411              	.LBE213:
+ 412              	.LBB214:
+ 413              	.LBI214:
+ 414              		.loc 3 76 5 is_stmt 1 view .LVU155
+ 415              		.loc 3 76 5 is_stmt 0 view .LVU156
+ 416              	.LBE214:
+ 417              	.LBB215:
+ 418              	.LBI215:
+ 222:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(std::forward<_UTail>(__tail)...),
+ 419              		.loc 2 222 19 is_stmt 1 view .LVU157
+ 420              	.LBB216:
+ 421              	.LBI216:
+ 422              		.loc 3 76 5 view .LVU158
+ 423              		.loc 3 76 5 is_stmt 0 view .LVU159
+ 424              	.LBE216:
+ 425              	.LBB217:
+ 426              	.LBI217:
+ 427              		.loc 3 76 5 is_stmt 1 view .LVU160
+ 428              		.loc 3 76 5 is_stmt 0 view .LVU161
+ 429              	.LBE217:
+ 430              	.LBB218:
+ 431              	.LBI218:
+ 432              		.loc 3 76 5 is_stmt 1 view .LVU162
+ 433              		.loc 3 76 5 is_stmt 0 view .LVU163
+ 434              	.LBE218:
+ 435              	.LBB219:
+ 436              	.LBI219:
+ 222:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(std::forward<_UTail>(__tail)...),
+ 437              		.loc 2 222 19 is_stmt 1 view .LVU164
+ 438              	.LBB220:
+ 439              	.LBI220:
+ 440              		.loc 3 76 5 view .LVU165
+ 441              		.loc 3 76 5 is_stmt 0 view .LVU166
+ 442              	.LBE220:
+ 443              	.LBB221:
+ 444              	.LBI221:
+ 445              		.loc 3 76 5 is_stmt 1 view .LVU167
+ARM GAS  /tmp/ccUmEDDo.s 			page 25
+
+
+ 446              		.loc 3 76 5 is_stmt 0 view .LVU168
+ 447              	.LBE221:
+ 448              	.LBB222:
+ 449              	.LBI222:
+ 222:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(std::forward<_UTail>(__tail)...),
+ 450              		.loc 2 222 19 is_stmt 1 view .LVU169
+ 451              	.LBB223:
+ 452              	.LBI223:
+ 453              		.loc 3 76 5 view .LVU170
+ 454              		.loc 3 76 5 is_stmt 0 view .LVU171
+ 455              	.LBE223:
+ 456              	.LBB224:
+ 457              	.LBI224:
+ 363:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Base(std::forward<_UHead>(__head)) { }
+ 458              		.loc 2 363 19 is_stmt 1 view .LVU172
+ 459              	.LBB225:
+ 460              	.LBI225:
+ 461              		.loc 3 76 5 view .LVU173
+ 462              		.loc 3 76 5 is_stmt 0 view .LVU174
+ 463              	.LBE225:
+ 464              	.LBB226:
+ 465              	.LBI226:
+ 136:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _M_head_impl(std::forward<_UHead>(__h)) { }
+ 466              		.loc 2 136 19 is_stmt 1 view .LVU175
+ 467              	.LBB227:
+ 468              	.LBB228:
+ 469              	.LBI228:
+ 470              		.loc 3 76 5 view .LVU176
+ 471              		.loc 3 76 5 is_stmt 0 view .LVU177
+ 472              	.LBE228:
+ 137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 473              		.loc 2 137 42 view .LVU178
+ 474 01ce 0370     		strb	r3, [r0]
+ 475              	.LVL50:
+ 137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 476              		.loc 2 137 42 view .LVU179
+ 477              	.LBE227:
+ 478              	.LBE226:
+ 479              	.LBE224:
+ 480              	.LBB229:
+ 481              	.LBI229:
+ 482              		.loc 3 76 5 is_stmt 1 view .LVU180
+ 483              		.loc 3 76 5 is_stmt 0 view .LVU181
+ 484              	.LBE229:
+ 485              	.LBB230:
+ 486              	.LBI230:
+ 136:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _M_head_impl(std::forward<_UHead>(__h)) { }
+ 487              		.loc 2 136 19 is_stmt 1 view .LVU182
+ 488              	.LBB231:
+ 489              	.LBB232:
+ 490              	.LBI232:
+ 491              		.loc 3 76 5 view .LVU183
+ 492              		.loc 3 76 5 is_stmt 0 view .LVU184
+ 493              	.LBE232:
+ 137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 494              		.loc 2 137 42 view .LVU185
+ 495 01d0 C0ED017A 		vstr.32	s15, [r0, #4]
+ARM GAS  /tmp/ccUmEDDo.s 			page 26
+
+
+ 496              	.LVL51:
+ 137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 497              		.loc 2 137 42 view .LVU186
+ 498              	.LBE231:
+ 499              	.LBE230:
+ 500              	.LBE222:
+ 501              	.LBB233:
+ 502              	.LBI233:
+ 503              		.loc 3 76 5 is_stmt 1 view .LVU187
+ 504              		.loc 3 76 5 is_stmt 0 view .LVU188
+ 505              	.LBE233:
+ 506              	.LBB234:
+ 507              	.LBI234:
+ 136:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _M_head_impl(std::forward<_UHead>(__h)) { }
+ 508              		.loc 2 136 19 is_stmt 1 view .LVU189
+ 509              	.LBB235:
+ 510              	.LBB236:
+ 511              	.LBI236:
+ 512              		.loc 3 76 5 view .LVU190
+ 513              		.loc 3 76 5 is_stmt 0 view .LVU191
+ 514              	.LBE236:
+ 137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 515              		.loc 2 137 42 view .LVU192
+ 516 01d4 C0ED020A 		vstr.32	s1, [r0, #8]
+ 517              	.LVL52:
+ 137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 518              		.loc 2 137 42 view .LVU193
+ 519              	.LBE235:
+ 520              	.LBE234:
+ 521              	.LBE219:
+ 522              	.LBB237:
+ 523              	.LBI237:
+ 524              		.loc 3 76 5 is_stmt 1 view .LVU194
+ 525              		.loc 3 76 5 is_stmt 0 view .LVU195
+ 526              	.LBE237:
+ 527              	.LBB238:
+ 528              	.LBI238:
+ 136:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _M_head_impl(std::forward<_UHead>(__h)) { }
+ 529              		.loc 2 136 19 is_stmt 1 view .LVU196
+ 530              	.LBB239:
+ 531              	.LBB240:
+ 532              	.LBI240:
+ 533              		.loc 3 76 5 view .LVU197
+ 534              		.loc 3 76 5 is_stmt 0 view .LVU198
+ 535              	.LBE240:
+ 137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 536              		.loc 2 137 42 view .LVU199
+ 537 01d8 80ED030A 		vstr.32	s0, [r0, #12]
+ 538              	.LVL53:
+ 137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ 539              		.loc 2 137 42 view .LVU200
+ 540              	.LBE239:
+ 541              	.LBE238:
+ 542              	.LBE215:
+ 543              	.LBE210:
+ 123:MotorControl/utils.cpp **** }
+ 544              		.loc 1 123 1 view .LVU201
+ARM GAS  /tmp/ccUmEDDo.s 			page 27
+
+
+ 545 01dc 7047     		bx	lr
+ 546              	.LVL54:
+ 547              	.L42:
+ 121:MotorControl/utils.cpp ****     return {tA, tB, tC, result_valid};
+ 548              		.loc 1 121 24 view .LVU202
+ 549 01de 0023     		movs	r3, #0
+ 550 01e0 F5E7     		b	.L14
+ 551              	.L44:
+ 121:MotorControl/utils.cpp ****     return {tA, tB, tC, result_valid};
+ 552              		.loc 1 121 24 view .LVU203
+ 553 01e2 0023     		movs	r3, #0
+ 554 01e4 F3E7     		b	.L14
+ 555              	.L25:
+ 556 01e6 0123     		movs	r3, #1
+ 557 01e8 F1E7     		b	.L14
+ 558              	.L48:
+ 559 01ea 00BF     		.align	2
+ 560              	.L47:
+ 561 01ec 3ACD133F 		.word	1058262330
+ 562 01f0 3ACD933F 		.word	1066650938
+ 563 01f4 3ACD13BF 		.word	-1089221318
+ 564 01f8 3ACD93BF 		.word	-1080832710
+ 565              		.cfi_endproc
+ 566              	.LFE4271:
+ 567              		.cantunwind
+ 568              		.fnend
+ 570              		.section	.text._Z10fast_atan2ff,"ax",%progbits
+ 571              		.align	1
+ 572              		.global	_Z10fast_atan2ff
+ 573              		.syntax unified
+ 574              		.thumb
+ 575              		.thumb_func
+ 577              	_Z10fast_atan2ff:
+ 578              		.fnstart
+ 579              	.LVL55:
+ 580              	.LFB4281:
+ 124:MotorControl/utils.cpp **** 
+ 125:MotorControl/utils.cpp **** // based on https://math.stackexchange.com/a/1105038/81278
+ 126:MotorControl/utils.cpp **** float fast_atan2(float y, float x) {
+ 581              		.loc 1 126 36 is_stmt 1 view -0
+ 582              		.cfi_startproc
+ 583              		@ args = 0, pretend = 0, frame = 8
+ 584              		@ frame_needed = 0, uses_anonymous_args = 0
+ 585              		@ link register save eliminated.
+ 586              		.loc 1 126 36 is_stmt 0 view .LVU205
+ 587 0000 82B0     		sub	sp, sp, #8
+ 588              	.LCFI0:
+ 589              		.cfi_def_cfa_offset 8
+ 590 0002 B0EE407A 		vmov.f32	s14, s0
+ 127:MotorControl/utils.cpp ****     // a := min (|x|, |y|) / max (|x|, |y|)
+ 128:MotorControl/utils.cpp ****     float abs_y = std::abs(y);
+ 591              		.loc 1 128 5 is_stmt 1 view .LVU206
+ 592              	.LVL56:
+ 593              	.LBB241:
+ 594              	.LBI241:
+ 595              		.file 4 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h"
+   1:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // -*- C++ -*- C library enhancements header.
+ARM GAS  /tmp/ccUmEDDo.s 			page 28
+
+
+   2:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+   3:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // Copyright (C) 2016-2020 Free Software Foundation, Inc.
+   4:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** //
+   5:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // This file is part of the GNU ISO C++ Library.  This library is free
+   6:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // software; you can redistribute it and/or modify it under the
+   7:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // terms of the GNU General Public License as published by the
+   8:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // Free Software Foundation; either version 3, or (at your option)
+   9:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // any later version.
+  10:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  11:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // This library is distributed in the hope that it will be useful,
+  12:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // but WITHOUT ANY WARRANTY; without even the implied warranty of
+  13:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  14:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // GNU General Public License for more details.
+  15:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  16:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // Under Section 7 of GPL version 3, you are granted additional
+  17:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // permissions described in the GCC Runtime Library Exception, version
+  18:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // 3.1, as published by the Free Software Foundation.
+  19:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  20:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // You should have received a copy of the GNU General Public License and
+  21:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // a copy of the GCC Runtime Library Exception along with this program;
+  22:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+  23:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // <http://www.gnu.org/licenses/>.
+  24:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  25:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** /** @file include/bits/std_abs.h
+  26:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****  *  This is an internal header file, included by other library headers.
+  27:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****  *  Do not attempt to use it directly. @headername{cmath, cstdlib}
+  28:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****  */
+  29:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  30:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #ifndef _GLIBCXX_BITS_STD_ABS_H
+  31:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #define _GLIBCXX_BITS_STD_ABS_H
+  32:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  33:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #pragma GCC system_header
+  34:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  35:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #include <bits/c++config.h>
+  36:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  37:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #define _GLIBCXX_INCLUDE_NEXT_C_HEADERS
+  38:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #include_next <stdlib.h>
+  39:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #ifdef __CORRECT_ISO_CPP_MATH_H_PROTO
+  40:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** # include_next <math.h>
+  41:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #endif
+  42:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #undef _GLIBCXX_INCLUDE_NEXT_C_HEADERS
+  43:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  44:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #undef abs
+  45:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  46:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** extern "C++"
+  47:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** {
+  48:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** namespace std _GLIBCXX_VISIBILITY(default)
+  49:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** {
+  50:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** _GLIBCXX_BEGIN_NAMESPACE_VERSION
+  51:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  52:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****   using ::abs;
+  53:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  54:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #ifndef __CORRECT_ISO_CPP_STDLIB_H_PROTO
+  55:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****   inline long
+  56:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****   abs(long __i) { return __builtin_labs(__i); }
+  57:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #endif
+  58:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+ARM GAS  /tmp/ccUmEDDo.s 			page 29
+
+
+  59:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #ifdef _GLIBCXX_USE_LONG_LONG
+  60:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****   inline long long
+  61:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****   abs(long long __x) { return __builtin_llabs (__x); }
+  62:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #endif
+  63:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  64:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // _GLIBCXX_RESOLVE_LIB_DEFECTS
+  65:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // 2192. Validity and return type of std::abs(0u) is unclear
+  66:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // 2294. <cstdlib> should declare abs(double)
+  67:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // 2735. std::abs(short), std::abs(signed char) and others should return int
+  68:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  69:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #ifndef __CORRECT_ISO_CPP_MATH_H_PROTO
+  70:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****   inline _GLIBCXX_CONSTEXPR double
+  71:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****   abs(double __x)
+  72:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****   { return __builtin_fabs(__x); }
+  73:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
+  74:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****   inline _GLIBCXX_CONSTEXPR float
+  75:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****   abs(float __x)
+ 596              		.loc 4 75 3 view .LVU207
+ 597              	.LBB242:
+  76:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****   { return __builtin_fabsf(__x); }
+ 598              		.loc 4 76 5 view .LVU208
+ 599              		.loc 4 76 31 is_stmt 0 view .LVU209
+ 600 0006 F0EEC06A 		vabs.f32	s13, s0
+ 601              	.LVL57:
+ 602              		.loc 4 76 31 view .LVU210
+ 603              	.LBE242:
+ 604              	.LBE241:
+ 605              		.loc 1 128 29 view .LVU211
+ 606 000a CDED016A 		vstr.32	s13, [sp, #4]
+ 129:MotorControl/utils.cpp ****     float abs_x = std::abs(x);
+ 607              		.loc 1 129 5 is_stmt 1 view .LVU212
+ 608              	.LVL58:
+ 609              	.LBB243:
+ 610              	.LBI243:
+  75:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****   { return __builtin_fabsf(__x); }
+ 611              		.loc 4 75 3 view .LVU213
+ 612              	.LBB244:
+ 613              		.loc 4 76 5 view .LVU214
+ 614              		.loc 4 76 31 is_stmt 0 view .LVU215
+ 615 000e B0EEE06A 		vabs.f32	s12, s1
+ 616              	.LVL59:
+ 617              		.loc 4 76 31 view .LVU216
+ 618              	.LBE244:
+ 619              	.LBE243:
+ 620              		.loc 1 129 29 view .LVU217
+ 621 0012 8DED006A 		vstr.32	s12, [sp]
+ 130:MotorControl/utils.cpp ****     // inject FLT_MIN in denominator to avoid division by zero
+ 131:MotorControl/utils.cpp ****     float a = std::min(abs_x, abs_y) / (std::max(abs_x, abs_y) + std::numeric_limits<float>::min())
+ 622              		.loc 1 131 5 is_stmt 1 view .LVU218
+ 623              	.LVL60:
+ 624              	.LBB245:
+ 625              	.LBI245:
+ 626              		.file 5 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h"
+   1:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // Core algorithmic facilities -*- C++ -*-
+   2:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+   3:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // Copyright (C) 2001-2020 Free Software Foundation, Inc.
+   4:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** //
+ARM GAS  /tmp/ccUmEDDo.s 			page 30
+
+
+   5:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // This file is part of the GNU ISO C++ Library.  This library is free
+   6:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // software; you can redistribute it and/or modify it under the
+   7:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // terms of the GNU General Public License as published by the
+   8:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // Free Software Foundation; either version 3, or (at your option)
+   9:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // any later version.
+  10:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  11:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // This library is distributed in the hope that it will be useful,
+  12:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // but WITHOUT ANY WARRANTY; without even the implied warranty of
+  13:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  14:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // GNU General Public License for more details.
+  15:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  16:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // Under Section 7 of GPL version 3, you are granted additional
+  17:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // permissions described in the GCC Runtime Library Exception, version
+  18:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // 3.1, as published by the Free Software Foundation.
+  19:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  20:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // You should have received a copy of the GNU General Public License and
+  21:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // a copy of the GCC Runtime Library Exception along with this program;
+  22:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+  23:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // <http://www.gnu.org/licenses/>.
+  24:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  25:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** /*
+  26:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *
+  27:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Copyright (c) 1994
+  28:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Hewlett-Packard Company
+  29:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *
+  30:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Permission to use, copy, modify, distribute and sell this software
+  31:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * and its documentation for any purpose is hereby granted without fee,
+  32:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * provided that the above copyright notice appear in all copies and
+  33:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * that both that copyright notice and this permission notice appear
+  34:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * in supporting documentation.  Hewlett-Packard Company makes no
+  35:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * representations about the suitability of this software for any
+  36:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * purpose.  It is provided "as is" without express or implied warranty.
+  37:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *
+  38:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *
+  39:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Copyright (c) 1996-1998
+  40:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Silicon Graphics Computer Systems, Inc.
+  41:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *
+  42:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Permission to use, copy, modify, distribute and sell this software
+  43:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * and its documentation for any purpose is hereby granted without fee,
+  44:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * provided that the above copyright notice appear in all copies and
+  45:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * that both that copyright notice and this permission notice appear
+  46:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * in supporting documentation.  Silicon Graphics makes no
+  47:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * representations about the suitability of this software for any
+  48:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * purpose.  It is provided "as is" without express or implied warranty.
+  49:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  */
+  50:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  51:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** /** @file bits/stl_algobase.h
+  52:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *  This is an internal header file, included by other library headers.
+  53:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *  Do not attempt to use it directly. @headername{algorithm}
+  54:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  */
+  55:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  56:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #ifndef _STL_ALGOBASE_H
+  57:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #define _STL_ALGOBASE_H 1
+  58:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  59:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/c++config.h>
+  60:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/functexcept.h>
+  61:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/cpp_type_traits.h>
+ARM GAS  /tmp/ccUmEDDo.s 			page 31
+
+
+  62:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <ext/type_traits.h>
+  63:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <ext/numeric_traits.h>
+  64:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/stl_pair.h>
+  65:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/stl_iterator_base_types.h>
+  66:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/stl_iterator_base_funcs.h>
+  67:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/stl_iterator.h>
+  68:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/concept_check.h>
+  69:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <debug/debug.h>
+  70:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/move.h> // For std::swap
+  71:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/predefined_ops.h>
+  72:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus >= 201103L
+  73:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** # include <type_traits>
+  74:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
+  75:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus > 201703L
+  76:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** # include <compare>
+  77:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
+  78:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  79:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** namespace std _GLIBCXX_VISIBILITY(default)
+  80:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** {
+  81:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** _GLIBCXX_BEGIN_NAMESPACE_VERSION
+  82:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+  83:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /*
+  84:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    * A constexpr wrapper for __builtin_memcmp.
+  85:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    * @param __num The number of elements of type _Tp (not bytes).
+  86:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    */
+  87:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _Tp, typename _Up>
+  88:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX14_CONSTEXPR
+  89:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     inline int
+  90:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     __memcmp(const _Tp* __first1, const _Up* __first2, size_t __num)
+  91:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+  92:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus >= 201103L
+  93:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       static_assert(sizeof(_Tp) == sizeof(_Up), "can be compared with memcmp");
+  94:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
+  95:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #ifdef __cpp_lib_is_constant_evaluated
+  96:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       if (std::is_constant_evaluated())
+  97:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	{
+  98:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  for(; __num > 0; ++__first1, ++__first2, --__num)
+  99:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	    if (*__first1 != *__first2)
+ 100:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	      return *__first1 < *__first2 ? -1 : 1;
+ 101:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  return 0;
+ 102:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	}
+ 103:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       else
+ 104:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
+ 105:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	return __builtin_memcmp(__first1, __first2, sizeof(_Tp) * __num);
+ 106:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
+ 107:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 108:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus < 201103L
+ 109:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // See http://gcc.gnu.org/ml/libstdc++/2004-08/msg00167.html: in a
+ 110:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // nutshell, we are partially implementing the resolution of DR 187,
+ 111:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // when it's safe, i.e., the value_types are equal.
+ 112:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<bool _BoolType>
+ 113:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     struct __iter_swap
+ 114:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ 115:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       template<typename _ForwardIterator1, typename _ForwardIterator2>
+ 116:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	static void
+ 117:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	iter_swap(_ForwardIterator1 __a, _ForwardIterator2 __b)
+ 118:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	{
+ARM GAS  /tmp/ccUmEDDo.s 			page 32
+
+
+ 119:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  typedef typename iterator_traits<_ForwardIterator1>::value_type
+ 120:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	    _ValueType1;
+ 121:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  _ValueType1 __tmp = *__a;
+ 122:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  *__a = *__b;
+ 123:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  *__b = __tmp;
+ 124:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	}
+ 125:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     };
+ 126:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 127:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<>
+ 128:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     struct __iter_swap<true>
+ 129:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ 130:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       template<typename _ForwardIterator1, typename _ForwardIterator2>
+ 131:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	static void
+ 132:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	iter_swap(_ForwardIterator1 __a, _ForwardIterator2 __b)
+ 133:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	{
+ 134:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  swap(*__a, *__b);
+ 135:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	}
+ 136:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     };
+ 137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif // C++03
+ 138:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 139:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /**
+ 140:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @brief Swaps the contents of two iterators.
+ 141:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @ingroup mutating_algorithms
+ 142:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __a  An iterator.
+ 143:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __b  Another iterator.
+ 144:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @return   Nothing.
+ 145:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *
+ 146:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  This function swaps the values pointed to by two iterators, not the
+ 147:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  iterators themselves.
+ 148:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   */
+ 149:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _ForwardIterator1, typename _ForwardIterator2>
+ 150:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX20_CONSTEXPR
+ 151:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     inline void
+ 152:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     iter_swap(_ForwardIterator1 __a, _ForwardIterator2 __b)
+ 153:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ 154:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // concept requirements
+ 155:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_Mutable_ForwardIteratorConcept<
+ 156:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ForwardIterator1>)
+ 157:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_Mutable_ForwardIteratorConcept<
+ 158:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ForwardIterator2>)
+ 159:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 160:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus < 201103L
+ 161:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       typedef typename iterator_traits<_ForwardIterator1>::value_type
+ 162:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	_ValueType1;
+ 163:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       typedef typename iterator_traits<_ForwardIterator2>::value_type
+ 164:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	_ValueType2;
+ 165:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 166:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_ConvertibleConcept<_ValueType1,
+ 167:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ValueType2>)
+ 168:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_ConvertibleConcept<_ValueType2,
+ 169:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ValueType1>)
+ 170:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 171:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       typedef typename iterator_traits<_ForwardIterator1>::reference
+ 172:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	_ReferenceType1;
+ 173:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       typedef typename iterator_traits<_ForwardIterator2>::reference
+ 174:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	_ReferenceType2;
+ 175:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       std::__iter_swap<__are_same<_ValueType1, _ValueType2>::__value
+ARM GAS  /tmp/ccUmEDDo.s 			page 33
+
+
+ 176:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	&& __are_same<_ValueType1&, _ReferenceType1>::__value
+ 177:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	&& __are_same<_ValueType2&, _ReferenceType2>::__value>::
+ 178:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	iter_swap(__a, __b);
+ 179:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #else
+ 180:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // _GLIBCXX_RESOLVE_LIB_DEFECTS
+ 181:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // 187. iter_swap underspecified
+ 182:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       swap(*__a, *__b);
+ 183:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
+ 184:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
+ 185:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 186:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /**
+ 187:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @brief Swap the elements of two sequences.
+ 188:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @ingroup mutating_algorithms
+ 189:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __first1  A forward iterator.
+ 190:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __last1   A forward iterator.
+ 191:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __first2  A forward iterator.
+ 192:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @return   An iterator equal to @p first2+(last1-first1).
+ 193:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *
+ 194:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  Swaps each element in the range @p [first1,last1) with the
+ 195:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  corresponding element in the range @p [first2,(last1-first1)).
+ 196:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  The ranges must not overlap.
+ 197:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   */
+ 198:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _ForwardIterator1, typename _ForwardIterator2>
+ 199:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX20_CONSTEXPR
+ 200:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _ForwardIterator2
+ 201:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     swap_ranges(_ForwardIterator1 __first1, _ForwardIterator1 __last1,
+ 202:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		_ForwardIterator2 __first2)
+ 203:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ 204:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // concept requirements
+ 205:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_Mutable_ForwardIteratorConcept<
+ 206:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ForwardIterator1>)
+ 207:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_Mutable_ForwardIteratorConcept<
+ 208:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ForwardIterator2>)
+ 209:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_requires_valid_range(__first1, __last1);
+ 210:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 211:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       for (; __first1 != __last1; ++__first1, (void)++__first2)
+ 212:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	std::iter_swap(__first1, __first2);
+ 213:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __first2;
+ 214:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
+ 215:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 216:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /**
+ 217:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @brief This does what you think it does.
+ 218:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @ingroup sorting_algorithms
+ 219:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __a  A thing of arbitrary type.
+ 220:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __b  Another thing of arbitrary type.
+ 221:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @return   The lesser of the parameters.
+ 222:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *
+ 223:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  This is the simple classic generic implementation.  It will work on
+ 224:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  temporary expressions, since they are only evaluated once, unlike a
+ 225:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  preprocessor macro.
+ 226:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   */
+ 227:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _Tp>
+ 228:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX14_CONSTEXPR
+ 229:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     inline const _Tp&
+ 230:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     min(const _Tp& __a, const _Tp& __b)
+ 627              		.loc 5 230 5 view .LVU219
+ 628              	.LBB246:
+ARM GAS  /tmp/ccUmEDDo.s 			page 34
+
+
+ 231:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ 232:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // concept requirements
+ 233:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_LessThanComparableConcept<_Tp>)
+ 234:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       //return __b < __a ? __b : __a;
+ 235:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       if (__b < __a)
+ 629              		.loc 5 235 7 is_stmt 0 view .LVU220
+ 630 0016 B4EEE66A 		vcmpe.f32	s12, s13
+ 631 001a F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 632 001e 3BDC     		bgt	.L58
+ 236:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	return __b;
+ 237:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __a;
+ 633              		.loc 5 237 14 view .LVU221
+ 634 0020 6B46     		mov	r3, sp
+ 635              	.L50:
+ 636              	.LVL61:
+ 637              		.loc 5 237 14 view .LVU222
+ 638              	.LBE246:
+ 639              	.LBE245:
+ 640              		.loc 1 131 23 view .LVU223
+ 641 0022 D3ED005A 		vldr.32	s11, [r3]
+ 642              	.LVL62:
+ 643              	.LBB248:
+ 644              	.LBI248:
+ 238:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
+ 239:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ 240:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /**
+ 241:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @brief This does what you think it does.
+ 242:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @ingroup sorting_algorithms
+ 243:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __a  A thing of arbitrary type.
+ 244:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __b  Another thing of arbitrary type.
+ 245:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @return   The greater of the parameters.
+ 246:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *
+ 247:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  This is the simple classic generic implementation.  It will work on
+ 248:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  temporary expressions, since they are only evaluated once, unlike a
+ 249:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  preprocessor macro.
+ 250:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   */
+ 251:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _Tp>
+ 252:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX14_CONSTEXPR
+ 253:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     inline const _Tp&
+ 254:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     max(const _Tp& __a, const _Tp& __b)
+ 645              		.loc 5 254 5 is_stmt 1 view .LVU224
+ 646              	.LBB249:
+ 255:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ 256:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // concept requirements
+ 257:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_LessThanComparableConcept<_Tp>)
+ 258:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       //return  __a < __b ? __b : __a;
+ 259:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       if (__a < __b)
+ 647              		.loc 5 259 7 is_stmt 0 view .LVU225
+ 648 0026 B4EEE66A 		vcmpe.f32	s12, s13
+ 649 002a F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 650 002e 35D4     		bmi	.L59
+ 260:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	return __b;
+ 261:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __a;
+ 651              		.loc 5 261 14 view .LVU226
+ 652 0030 6B46     		mov	r3, sp
+ 653              	.L51:
+ 654              	.LVL63:
+ARM GAS  /tmp/ccUmEDDo.s 			page 35
+
+
+ 655              		.loc 5 261 14 view .LVU227
+ 656              	.LBE249:
+ 657              	.LBE248:
+ 658              		.loc 1 131 49 view .LVU228
+ 659 0032 D3ED007A 		vldr.32	s15, [r3]
+ 660              		.loc 1 131 64 view .LVU229
+ 661 0036 9FED1E5A 		vldr.32	s10, .L66
+ 662 003a 77EE857A 		vadd.f32	s15, s15, s10
+ 663              		.loc 1 131 99 view .LVU230
+ 664 003e 85EEA70A 		vdiv.f32	s0, s11, s15
+ 665              	.LVL64:
+ 132:MotorControl/utils.cpp ****     // s := a * a
+ 133:MotorControl/utils.cpp ****     float s = a * a;
+ 666              		.loc 1 133 5 is_stmt 1 view .LVU231
+ 667              		.loc 1 133 11 is_stmt 0 view .LVU232
+ 668 0042 60EE005A 		vmul.f32	s11, s0, s0
+ 669              	.LVL65:
+ 134:MotorControl/utils.cpp ****     // r := ((-0.0464964749 * s + 0.15931422) * s - 0.327622764) * s * a + a
+ 135:MotorControl/utils.cpp ****     float r = ((-0.0464964749f * s + 0.15931422f) * s - 0.327622764f) * s * a + a;
+ 670              		.loc 1 135 5 is_stmt 1 view .LVU233
+ 671              		.loc 1 135 32 is_stmt 0 view .LVU234
+ 672 0046 DFED1B7A 		vldr.32	s15, .L66+4
+ 673 004a 65EEA77A 		vmul.f32	s15, s11, s15
+ 674              		.loc 1 135 36 view .LVU235
+ 675 004e 9FED1A5A 		vldr.32	s10, .L66+8
+ 676 0052 77EE857A 		vadd.f32	s15, s15, s10
+ 677              		.loc 1 135 51 view .LVU236
+ 678 0056 67EEA57A 		vmul.f32	s15, s15, s11
+ 679              		.loc 1 135 55 view .LVU237
+ 680 005a 9FED185A 		vldr.32	s10, .L66+12
+ 681 005e 77EEC57A 		vsub.f32	s15, s15, s10
+ 682              		.loc 1 135 71 view .LVU238
+ 683 0062 67EEA57A 		vmul.f32	s15, s15, s11
+ 684              		.loc 1 135 75 view .LVU239
+ 685 0066 67EE807A 		vmul.f32	s15, s15, s0
+ 686              		.loc 1 135 11 view .LVU240
+ 687 006a 37EE800A 		vadd.f32	s0, s15, s0
+ 688              	.LVL66:
+ 136:MotorControl/utils.cpp ****     // if |y| > |x| then r := 1.57079637 - r
+ 137:MotorControl/utils.cpp ****     if (abs_y > abs_x)
+ 689              		.loc 1 137 5 is_stmt 1 view .LVU241
+ 690 006e B4EEE66A 		vcmpe.f32	s12, s13
+ 691 0072 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 692 0076 03D5     		bpl	.L52
+ 138:MotorControl/utils.cpp ****         r = 1.57079637f - r;
+ 693              		.loc 1 138 9 view .LVU242
+ 694              		.loc 1 138 11 is_stmt 0 view .LVU243
+ 695 0078 DFED117A 		vldr.32	s15, .L66+16
+ 696 007c 37EEC00A 		vsub.f32	s0, s15, s0
+ 697              	.LVL67:
+ 698              	.L52:
+ 139:MotorControl/utils.cpp ****     // if x < 0 then r := 3.14159274 - r
+ 140:MotorControl/utils.cpp ****     if (x < 0.0f)
+ 699              		.loc 1 140 5 is_stmt 1 view .LVU244
+ 700 0080 F5EEC00A 		vcmpe.f32	s1, #0
+ 701 0084 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 702 0088 0AD4     		bmi	.L64
+ARM GAS  /tmp/ccUmEDDo.s 			page 36
+
+
+ 703              	.L54:
+ 141:MotorControl/utils.cpp ****         r = 3.14159274f - r;
+ 142:MotorControl/utils.cpp ****     // if y < 0 then r := -r
+ 143:MotorControl/utils.cpp ****     if (y < 0.0f)
+ 704              		.loc 1 143 5 view .LVU245
+ 705 008a B5EEC07A 		vcmpe.f32	s14, #0
+ 706 008e F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+ 707 0092 0AD4     		bmi	.L65
+ 708              	.L49:
+ 144:MotorControl/utils.cpp ****         r = -r;
+ 145:MotorControl/utils.cpp **** 
+ 146:MotorControl/utils.cpp ****     return r;
+ 147:MotorControl/utils.cpp **** }
+ 709              		.loc 1 147 1 is_stmt 0 view .LVU246
+ 710 0094 02B0     		add	sp, sp, #8
+ 711              	.LCFI1:
+ 712              		.cfi_remember_state
+ 713              		.cfi_def_cfa_offset 0
+ 714              		@ sp needed
+ 715 0096 7047     		bx	lr
+ 716              	.LVL68:
+ 717              	.L58:
+ 718              	.LCFI2:
+ 719              		.cfi_restore_state
+ 720              	.LBB251:
+ 721              	.LBB247:
+ 236:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __a;
+ 722              		.loc 5 236 9 view .LVU247
+ 723 0098 01AB     		add	r3, sp, #4
+ 724              	.LVL69:
+ 236:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __a;
+ 725              		.loc 5 236 9 view .LVU248
+ 726 009a C2E7     		b	.L50
+ 727              	.LVL70:
+ 728              	.L59:
+ 236:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __a;
+ 729              		.loc 5 236 9 view .LVU249
+ 730              	.LBE247:
+ 731              	.LBE251:
+ 732              	.LBB252:
+ 733              	.LBB250:
+ 260:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __a;
+ 734              		.loc 5 260 9 view .LVU250
+ 735 009c 01AB     		add	r3, sp, #4
+ 736              	.LVL71:
+ 260:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __a;
+ 737              		.loc 5 260 9 view .LVU251
+ 738 009e C8E7     		b	.L51
+ 739              	.LVL72:
+ 740              	.L64:
+ 260:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __a;
+ 741              		.loc 5 260 9 view .LVU252
+ 742              	.LBE250:
+ 743              	.LBE252:
+ 141:MotorControl/utils.cpp ****     // if y < 0 then r := -r
+ 744              		.loc 1 141 9 is_stmt 1 view .LVU253
+ 141:MotorControl/utils.cpp ****     // if y < 0 then r := -r
+ARM GAS  /tmp/ccUmEDDo.s 			page 37
+
+
+ 745              		.loc 1 141 11 is_stmt 0 view .LVU254
+ 746 00a0 DFED087A 		vldr.32	s15, .L66+20
+ 747 00a4 37EEC00A 		vsub.f32	s0, s15, s0
+ 748              	.LVL73:
+ 141:MotorControl/utils.cpp ****     // if y < 0 then r := -r
+ 749              		.loc 1 141 11 view .LVU255
+ 750 00a8 EFE7     		b	.L54
+ 751              	.L65:
+ 144:MotorControl/utils.cpp **** 
+ 752              		.loc 1 144 9 is_stmt 1 view .LVU256
+ 144:MotorControl/utils.cpp **** 
+ 753              		.loc 1 144 11 is_stmt 0 view .LVU257
+ 754 00aa B1EE400A 		vneg.f32	s0, s0
+ 755              	.LVL74:
+ 146:MotorControl/utils.cpp **** }
+ 756              		.loc 1 146 5 is_stmt 1 view .LVU258
+ 146:MotorControl/utils.cpp **** }
+ 757              		.loc 1 146 12 is_stmt 0 view .LVU259
+ 758 00ae F1E7     		b	.L49
+ 759              	.L67:
+ 760              		.align	2
+ 761              	.L66:
+ 762 00b0 00008000 		.word	8388608
+ 763 00b4 16733EBD 		.word	-1119980778
+ 764 00b8 4423233E 		.word	1042490180
+ 765 00bc 2CBEA73E 		.word	1051180588
+ 766 00c0 DB0FC93F 		.word	1070141403
+ 767 00c4 DB0F4940 		.word	1078530011
+ 768              		.cfi_endproc
+ 769              	.LFE4281:
+ 770              		.cantunwind
+ 771              		.fnend
+ 773              		.global	__aeabi_uldivmod
+ 774              		.section	.text._Z19deadline_to_timeoutm,"ax",%progbits
+ 775              		.align	1
+ 776              		.global	_Z19deadline_to_timeoutm
+ 777              		.syntax unified
+ 778              		.thumb
+ 779              		.thumb_func
+ 781              	_Z19deadline_to_timeoutm:
+ 782              		.fnstart
+ 783              	.LVL75:
+ 784              	.LFB4284:
+ 148:MotorControl/utils.cpp **** 
+ 149:MotorControl/utils.cpp **** // @brief: Returns how much time is left until the deadline is reached.
+ 150:MotorControl/utils.cpp **** // If the deadline has already passed, the return value is 0 (except if
+ 151:MotorControl/utils.cpp **** // the deadline is very far in the past)
+ 152:MotorControl/utils.cpp **** uint32_t deadline_to_timeout(uint32_t deadline_ms) {
+ 785              		.loc 1 152 52 is_stmt 1 view -0
+ 786              		.cfi_startproc
+ 787              		@ args = 0, pretend = 0, frame = 0
+ 788              		@ frame_needed = 0, uses_anonymous_args = 0
+ 789              		.loc 1 152 52 is_stmt 0 view .LVU261
+ 790 0000 10B5     		push	{r4, lr}
+ 791              		.save {r4, lr}
+ 792              	.LCFI3:
+ 793              		.cfi_def_cfa_offset 8
+ARM GAS  /tmp/ccUmEDDo.s 			page 38
+
+
+ 794              		.cfi_offset 4, -8
+ 795              		.cfi_offset 14, -4
+ 796 0002 0446     		mov	r4, r0
+ 153:MotorControl/utils.cpp ****     uint32_t now_ms = (uint32_t)((1000ull * (uint64_t)osKernelSysTick()) / osKernelSysTickFrequency
+ 797              		.loc 1 153 5 is_stmt 1 view .LVU262
+ 798              		.loc 1 153 70 is_stmt 0 view .LVU263
+ 799 0004 FFF7FEFF 		bl	osKernelSysTick
+ 800              	.LVL76:
+ 801              		.loc 1 153 43 view .LVU264
+ 802 0008 C30E     		lsrs	r3, r0, #27
+ 803 000a 4101     		lsls	r1, r0, #5
+ 804 000c 091A     		subs	r1, r1, r0
+ 805 000e 63F10003 		sbc	r3, r3, #0
+ 806 0012 9B00     		lsls	r3, r3, #2
+ 807 0014 43EA9173 		orr	r3, r3, r1, lsr #30
+ 808 0018 8900     		lsls	r1, r1, #2
+ 809 001a 0918     		adds	r1, r1, r0
+ 810 001c 43F10003 		adc	r3, r3, #0
+ 811 0020 4FEAC30C 		lsl	ip, r3, #3
+ 812              		.loc 1 153 74 view .LVU265
+ 813 0024 4FF47A72 		mov	r2, #1000
+ 814 0028 0023     		movs	r3, #0
+ 815 002a C800     		lsls	r0, r1, #3
+ 816 002c 4CEA5171 		orr	r1, ip, r1, lsr #29
+ 817 0030 FFF7FEFF 		bl	__aeabi_uldivmod
+ 818              	.LVL77:
+ 154:MotorControl/utils.cpp ****     uint32_t timeout_ms = deadline_ms - now_ms;
+ 819              		.loc 1 154 5 is_stmt 1 view .LVU266
+ 820              		.loc 1 154 14 is_stmt 0 view .LVU267
+ 821 0034 201A     		subs	r0, r4, r0
+ 822              	.LVL78:
+ 155:MotorControl/utils.cpp ****     return (timeout_ms & 0x80000000) ? 0 : timeout_ms;
+ 823              		.loc 1 155 5 is_stmt 1 view .LVU268
+ 156:MotorControl/utils.cpp **** }
+ 824              		.loc 1 156 1 is_stmt 0 view .LVU269
+ 825 0036 20EAE070 		bic	r0, r0, r0, asr #31
+ 826              	.LVL79:
+ 827              		.loc 1 156 1 view .LVU270
+ 828 003a 10BD     		pop	{r4, pc}
+ 829              		.loc 1 156 1 view .LVU271
+ 830              		.cfi_endproc
+ 831              	.LFE4284:
+ 832              		.fnend
+ 834              		.section	.text._Z19timeout_to_deadlinem,"ax",%progbits
+ 835              		.align	1
+ 836              		.global	_Z19timeout_to_deadlinem
+ 837              		.syntax unified
+ 838              		.thumb
+ 839              		.thumb_func
+ 841              	_Z19timeout_to_deadlinem:
+ 842              		.fnstart
+ 843              	.LVL80:
+ 844              	.LFB4285:
+ 157:MotorControl/utils.cpp **** 
+ 158:MotorControl/utils.cpp **** // @brief: Converts a timeout to a deadline based on the current time.
+ 159:MotorControl/utils.cpp **** uint32_t timeout_to_deadline(uint32_t timeout_ms) {
+ 845              		.loc 1 159 51 is_stmt 1 view -0
+ARM GAS  /tmp/ccUmEDDo.s 			page 39
+
+
+ 846              		.cfi_startproc
+ 847              		@ args = 0, pretend = 0, frame = 0
+ 848              		@ frame_needed = 0, uses_anonymous_args = 0
+ 849              		.loc 1 159 51 is_stmt 0 view .LVU273
+ 850 0000 10B5     		push	{r4, lr}
+ 851              		.save {r4, lr}
+ 852              	.LCFI4:
+ 853              		.cfi_def_cfa_offset 8
+ 854              		.cfi_offset 4, -8
+ 855              		.cfi_offset 14, -4
+ 856 0002 0446     		mov	r4, r0
+ 160:MotorControl/utils.cpp ****     uint32_t now_ms = (uint32_t)((1000ull * (uint64_t)osKernelSysTick()) / osKernelSysTickFrequency
+ 857              		.loc 1 160 5 is_stmt 1 view .LVU274
+ 858              		.loc 1 160 70 is_stmt 0 view .LVU275
+ 859 0004 FFF7FEFF 		bl	osKernelSysTick
+ 860              	.LVL81:
+ 861              		.loc 1 160 43 view .LVU276
+ 862 0008 C30E     		lsrs	r3, r0, #27
+ 863 000a 4101     		lsls	r1, r0, #5
+ 864 000c 091A     		subs	r1, r1, r0
+ 865 000e 63F10003 		sbc	r3, r3, #0
+ 866 0012 9B00     		lsls	r3, r3, #2
+ 867 0014 43EA9173 		orr	r3, r3, r1, lsr #30
+ 868 0018 8900     		lsls	r1, r1, #2
+ 869 001a 0918     		adds	r1, r1, r0
+ 870 001c 43F10003 		adc	r3, r3, #0
+ 871 0020 4FEAC30C 		lsl	ip, r3, #3
+ 872              		.loc 1 160 74 view .LVU277
+ 873 0024 4FF47A72 		mov	r2, #1000
+ 874 0028 0023     		movs	r3, #0
+ 875 002a C800     		lsls	r0, r1, #3
+ 876 002c 4CEA5171 		orr	r1, ip, r1, lsr #29
+ 877 0030 FFF7FEFF 		bl	__aeabi_uldivmod
+ 878              	.LVL82:
+ 161:MotorControl/utils.cpp ****     return now_ms + timeout_ms;
+ 879              		.loc 1 161 5 is_stmt 1 view .LVU278
+ 162:MotorControl/utils.cpp **** }
+ 880              		.loc 1 162 1 is_stmt 0 view .LVU279
+ 881 0034 2044     		add	r0, r0, r4
+ 882              	.LVL83:
+ 883              		.loc 1 162 1 view .LVU280
+ 884 0036 10BD     		pop	{r4, pc}
+ 885              		.loc 1 162 1 view .LVU281
+ 886              		.cfi_endproc
+ 887              	.LFE4285:
+ 888              		.fnend
+ 890              		.section	.text._Z16is_in_the_futurem,"ax",%progbits
+ 891              		.align	1
+ 892              		.global	_Z16is_in_the_futurem
+ 893              		.syntax unified
+ 894              		.thumb
+ 895              		.thumb_func
+ 897              	_Z16is_in_the_futurem:
+ 898              		.fnstart
+ 899              	.LVL84:
+ 900              	.LFB4286:
+ 163:MotorControl/utils.cpp **** 
+ARM GAS  /tmp/ccUmEDDo.s 			page 40
+
+
+ 164:MotorControl/utils.cpp **** // @brief: Returns a non-zero value if the specified system time (in ms)
+ 165:MotorControl/utils.cpp **** // is in the future or 0 otherwise.
+ 166:MotorControl/utils.cpp **** // If the time lies far in the past this may falsely return a non-zero value.
+ 167:MotorControl/utils.cpp **** int is_in_the_future(uint32_t time_ms) {
+ 901              		.loc 1 167 40 is_stmt 1 view -0
+ 902              		.cfi_startproc
+ 903              		@ args = 0, pretend = 0, frame = 0
+ 904              		@ frame_needed = 0, uses_anonymous_args = 0
+ 905              		.loc 1 167 40 is_stmt 0 view .LVU283
+ 906 0000 08B5     		push	{r3, lr}
+ 907              		.save {r3, lr}
+ 908              	.LCFI5:
+ 909              		.cfi_def_cfa_offset 8
+ 910              		.cfi_offset 3, -8
+ 911              		.cfi_offset 14, -4
+ 168:MotorControl/utils.cpp ****     return deadline_to_timeout(time_ms);
+ 912              		.loc 1 168 5 is_stmt 1 view .LVU284
+ 913              		.loc 1 168 31 is_stmt 0 view .LVU285
+ 914 0002 FFF7FEFF 		bl	_Z19deadline_to_timeoutm
+ 915              	.LVL85:
+ 169:MotorControl/utils.cpp **** }
+ 916              		.loc 1 169 1 view .LVU286
+ 917 0006 08BD     		pop	{r3, pc}
+ 918              		.cfi_endproc
+ 919              	.LFE4286:
+ 920              		.fnend
+ 922              		.section	.text._Z6microsv,"ax",%progbits
+ 923              		.align	1
+ 924              		.global	_Z6microsv
+ 925              		.syntax unified
+ 926              		.thumb
+ 927              		.thumb_func
+ 929              	_Z6microsv:
+ 930              		.fnstart
+ 931              	.LFB4287:
+ 170:MotorControl/utils.cpp **** 
+ 171:MotorControl/utils.cpp **** // @brief: Returns number of microseconds since system startup
+ 172:MotorControl/utils.cpp **** uint32_t micros(void) {
+ 932              		.loc 1 172 23 is_stmt 1 view -0
+ 933              		.cfi_startproc
+ 934              		@ args = 0, pretend = 0, frame = 0
+ 935              		@ frame_needed = 0, uses_anonymous_args = 0
+ 936 0000 38B5     		push	{r3, r4, r5, lr}
+ 937              		.save {r3, r4, r5, lr}
+ 938              	.LCFI6:
+ 939              		.cfi_def_cfa_offset 16
+ 940              		.cfi_offset 3, -16
+ 941              		.cfi_offset 4, -12
+ 942              		.cfi_offset 5, -8
+ 943              		.cfi_offset 14, -4
+ 944              	.L75:
+ 173:MotorControl/utils.cpp ****     register uint32_t ms, cycle_cnt;
+ 945              		.loc 1 173 5 view .LVU288
+ 174:MotorControl/utils.cpp ****     do {
+ 946              		.loc 1 174 5 view .LVU289
+ 175:MotorControl/utils.cpp ****         ms = HAL_GetTick();
+ 947              		.loc 1 175 9 view .LVU290
+ARM GAS  /tmp/ccUmEDDo.s 			page 41
+
+
+ 948              		.loc 1 175 25 is_stmt 0 view .LVU291
+ 949 0002 FFF7FEFF 		bl	HAL_GetTick
+ 950              	.LVL86:
+ 951 0006 0446     		mov	r4, r0
+ 952              	.LVL87:
+ 176:MotorControl/utils.cpp ****         cycle_cnt = TIM_TIME_BASE->CNT;
+ 953              		.loc 1 176 9 is_stmt 1 view .LVU292
+ 954              		.loc 1 176 19 is_stmt 0 view .LVU293
+ 955 0008 054B     		ldr	r3, .L77
+ 956 000a 5D6A     		ldr	r5, [r3, #36]
+ 957              	.LVL88:
+ 177:MotorControl/utils.cpp ****      } while (ms != HAL_GetTick());
+ 958              		.loc 1 177 18 is_stmt 1 view .LVU294
+ 959              		.loc 1 177 32 is_stmt 0 view .LVU295
+ 960 000c FFF7FEFF 		bl	HAL_GetTick
+ 961              	.LVL89:
+ 962              		.loc 1 177 18 view .LVU296
+ 963 0010 8442     		cmp	r4, r0
+ 964 0012 F6D1     		bne	.L75
+ 178:MotorControl/utils.cpp **** 
+ 179:MotorControl/utils.cpp ****     return (ms * 1000) + cycle_cnt;
+ 965              		.loc 1 179 5 is_stmt 1 view .LVU297
+ 180:MotorControl/utils.cpp **** }
+ 966              		.loc 1 180 1 is_stmt 0 view .LVU298
+ 967 0014 4FF47A70 		mov	r0, #1000
+ 968 0018 00FB0450 		mla	r0, r0, r4, r5
+ 969 001c 38BD     		pop	{r3, r4, r5, pc}
+ 970              	.LVL90:
+ 971              	.L78:
+ 972              		.loc 1 180 1 view .LVU299
+ 973 001e 00BF     		.align	2
+ 974              	.L77:
+ 975 0020 00200040 		.word	1073750016
+ 976              		.cfi_endproc
+ 977              	.LFE4287:
+ 978              		.fnend
+ 980              		.section	.text._Z8delay_usm,"ax",%progbits
+ 981              		.align	1
+ 982              		.global	_Z8delay_usm
+ 983              		.syntax unified
+ 984              		.thumb
+ 985              		.thumb_func
+ 987              	_Z8delay_usm:
+ 988              		.fnstart
+ 989              	.LVL91:
+ 990              	.LFB4288:
+ 181:MotorControl/utils.cpp **** 
+ 182:MotorControl/utils.cpp **** // @brief: Busy wait delay for given amount of microseconds (us)
+ 183:MotorControl/utils.cpp **** void delay_us(uint32_t us)
+ 184:MotorControl/utils.cpp **** {
+ 991              		.loc 1 184 1 is_stmt 1 view -0
+ 992              		.cfi_startproc
+ 993              		@ args = 0, pretend = 0, frame = 0
+ 994              		@ frame_needed = 0, uses_anonymous_args = 0
+ 995              		.loc 1 184 1 is_stmt 0 view .LVU301
+ 996 0000 38B5     		push	{r3, r4, r5, lr}
+ 997              		.save {r3, r4, r5, lr}
+ARM GAS  /tmp/ccUmEDDo.s 			page 42
+
+
+ 998              	.LCFI7:
+ 999              		.cfi_def_cfa_offset 16
+ 1000              		.cfi_offset 3, -16
+ 1001              		.cfi_offset 4, -12
+ 1002              		.cfi_offset 5, -8
+ 1003              		.cfi_offset 14, -4
+ 1004 0002 0546     		mov	r5, r0
+ 185:MotorControl/utils.cpp ****     uint32_t start = micros();
+ 1005              		.loc 1 185 5 is_stmt 1 view .LVU302
+ 1006              		.loc 1 185 28 is_stmt 0 view .LVU303
+ 1007 0004 FFF7FEFF 		bl	_Z6microsv
+ 1008              	.LVL92:
+ 1009              		.loc 1 185 28 view .LVU304
+ 1010 0008 0446     		mov	r4, r0
+ 1011              	.LVL93:
+ 1012              		.loc 1 185 28 view .LVU305
+ 1013 000a 00E0     		b	.L81
+ 1014              	.LVL94:
+ 1015              	.L83:
+ 186:MotorControl/utils.cpp ****     while (micros() - start < (uint32_t) us) {
+ 187:MotorControl/utils.cpp ****         asm volatile ("nop");
+ 1016              		.loc 1 187 9 is_stmt 1 view .LVU306
+ 1017              		.syntax unified
+ 1018              	@ 187 "MotorControl/utils.cpp" 1
+ 1019 000c 00BF     		nop
+ 1020              	@ 0 "" 2
+ 1021              		.thumb
+ 1022              		.syntax unified
+ 1023              	.L81:
+ 186:MotorControl/utils.cpp ****     while (micros() - start < (uint32_t) us) {
+ 1024              		.loc 1 186 5 view .LVU307
+ 186:MotorControl/utils.cpp ****     while (micros() - start < (uint32_t) us) {
+ 1025              		.loc 1 186 29 view .LVU308
+ 186:MotorControl/utils.cpp ****     while (micros() - start < (uint32_t) us) {
+ 1026              		.loc 1 186 18 is_stmt 0 view .LVU309
+ 1027 000e FFF7FEFF 		bl	_Z6microsv
+ 1028              	.LVL95:
+ 186:MotorControl/utils.cpp ****     while (micros() - start < (uint32_t) us) {
+ 1029              		.loc 1 186 21 view .LVU310
+ 1030 0012 001B     		subs	r0, r0, r4
+ 186:MotorControl/utils.cpp ****     while (micros() - start < (uint32_t) us) {
+ 1031              		.loc 1 186 29 view .LVU311
+ 1032 0014 A842     		cmp	r0, r5
+ 1033 0016 F9D3     		bcc	.L83
+ 188:MotorControl/utils.cpp ****     }
+ 189:MotorControl/utils.cpp **** }
+ 1034              		.loc 1 189 1 view .LVU312
+ 1035 0018 38BD     		pop	{r3, r4, r5, pc}
+ 1036              		.loc 1 189 1 view .LVU313
+ 1037              		.cfi_endproc
+ 1038              	.LFE4288:
+ 1039              		.fnend
+ 1041              		.text
+ 1042              	.Letext0:
+ 1043              		.file 6 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 1044              		.file 7 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 1045              		.file 8 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/type_traits"
+ARM GAS  /tmp/ccUmEDDo.s 			page 43
+
+
+ 1046              		.file 9 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/debug/debug.h"
+ 1047              		.file 10 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstdlib"
+ 1048              		.file 11 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/har
+ 1049              		.file 12 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/algorithmfwd.h"
+ 1050              		.file 13 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/exception_ptr.h"
+ 1051              		.file 14 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/uses_allocator.h"
+ 1052              		.file 15 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_iterator.h"
+ 1053              		.file 16 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_function.h"
+ 1054              		.file 17 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/functional"
+ 1055              		.file 18 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath"
+ 1056              		.file 19 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstring"
+ 1057              		.file 20 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/parse_numbers.h"
+ 1058              		.file 21 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h"
+ 1059              		.file 22 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h"
+ 1060              		.file 23 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdlib.h"
+ 1061              		.file 24 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/pstl/execution_defs.h"
+ 1062              		.file 25 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/math.h"
+ 1063              		.file 26 "MotorControl/utils.hpp"
+ 1064              		.file 27 "ThirdParty/CMSIS/Device/ST/STM32F4xx/Include/stm32f405xx.h"
+ 1065              		.file 28 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/stdlib.h"
+ 1066              		.file 29 "ThirdParty/FreeRTOS/Source/portable/GCC/ARM_CM4F/portmacro.h"
+ 1067              		.file 30 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/math.h"
+ 1068              		.file 31 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/string.h"
+ 1069              		.file 32 "fibre-cpp/include/fibre/cpp_utils.hpp"
+ 1070              		.file 33 "Board/v3/Inc/board.h"
+ 1071              		.file 34 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
+ 1072              		.file 35 "ThirdParty/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
+ 1073              		.file 36 "<built-in>"
+ARM GAS  /tmp/ccUmEDDo.s 			page 44
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 utils.cpp
+     /tmp/ccUmEDDo.s:20     .text._Z3SVMff:0000000000000000 $t
+     /tmp/ccUmEDDo.s:26     .text._Z3SVMff:0000000000000000 _Z3SVMff
+     /tmp/ccUmEDDo.s:561    .text._Z3SVMff:00000000000001ec $d
+         .ARM.exidx.text._Z3SVMff:0000000000000000 $d
+     /tmp/ccUmEDDo.s:571    .text._Z10fast_atan2ff:0000000000000000 $t
+     /tmp/ccUmEDDo.s:577    .text._Z10fast_atan2ff:0000000000000000 _Z10fast_atan2ff
+     /tmp/ccUmEDDo.s:762    .text._Z10fast_atan2ff:00000000000000b0 $d
+ .ARM.exidx.text._Z10fast_atan2ff:0000000000000000 $d
+     /tmp/ccUmEDDo.s:775    .text._Z19deadline_to_timeoutm:0000000000000000 $t
+     /tmp/ccUmEDDo.s:781    .text._Z19deadline_to_timeoutm:0000000000000000 _Z19deadline_to_timeoutm
+.ARM.exidx.text._Z19deadline_to_timeoutm:0000000000000000 $d
+     /tmp/ccUmEDDo.s:835    .text._Z19timeout_to_deadlinem:0000000000000000 $t
+     /tmp/ccUmEDDo.s:841    .text._Z19timeout_to_deadlinem:0000000000000000 _Z19timeout_to_deadlinem
+.ARM.exidx.text._Z19timeout_to_deadlinem:0000000000000000 $d
+     /tmp/ccUmEDDo.s:891    .text._Z16is_in_the_futurem:0000000000000000 $t
+     /tmp/ccUmEDDo.s:897    .text._Z16is_in_the_futurem:0000000000000000 _Z16is_in_the_futurem
+.ARM.extab.text._Z16is_in_the_futurem:0000000000000000 $d
+.ARM.exidx.text._Z16is_in_the_futurem:0000000000000000 $d
+     /tmp/ccUmEDDo.s:923    .text._Z6microsv:0000000000000000 $t
+     /tmp/ccUmEDDo.s:929    .text._Z6microsv:0000000000000000 _Z6microsv
+     /tmp/ccUmEDDo.s:975    .text._Z6microsv:0000000000000020 $d
+       .ARM.exidx.text._Z6microsv:0000000000000000 $d
+     /tmp/ccUmEDDo.s:981    .text._Z8delay_usm:0000000000000000 $t
+     /tmp/ccUmEDDo.s:987    .text._Z8delay_usm:0000000000000000 _Z8delay_usm
+     .ARM.exidx.text._Z8delay_usm:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+__aeabi_uldivmod
+osKernelSysTick
+__aeabi_unwind_cpp_pr0
+__aeabi_unwind_cpp_pr1
+HAL_GetTick

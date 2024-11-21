@@ -1,0 +1,1046 @@
+ARM GAS  /tmp/ccCmJQOM.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"usbd_desc.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.USBD_FS_DeviceDescriptor,"ax",%progbits
+  20              		.align	1
+  21              		.global	USBD_FS_DeviceDescriptor
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	USBD_FS_DeviceDescriptor:
+  27              	.LVL0:
+  28              	.LFB179:
+  29              		.file 1 "Board/v3/Src/usbd_desc.c"
+   1:Board/v3/Src/usbd_desc.c **** /**
+   2:Board/v3/Src/usbd_desc.c ****   ******************************************************************************
+   3:Board/v3/Src/usbd_desc.c ****   * @file           : usbd_desc.c
+   4:Board/v3/Src/usbd_desc.c ****   * @version        : v1.0_Cube
+   5:Board/v3/Src/usbd_desc.c ****   * @brief          : This file implements the USB device descriptors.
+   6:Board/v3/Src/usbd_desc.c ****   ******************************************************************************
+   7:Board/v3/Src/usbd_desc.c ****   * This notice applies to any and all portions of this file
+   8:Board/v3/Src/usbd_desc.c ****   * that are not between comment pairs USER CODE BEGIN and
+   9:Board/v3/Src/usbd_desc.c ****   * USER CODE END. Other portions of this file, whether 
+  10:Board/v3/Src/usbd_desc.c ****   * inserted by the user or by software development tools
+  11:Board/v3/Src/usbd_desc.c ****   * are owned by their respective copyright owners.
+  12:Board/v3/Src/usbd_desc.c ****   *
+  13:Board/v3/Src/usbd_desc.c ****   * Copyright (c) 2018 STMicroelectronics International N.V. 
+  14:Board/v3/Src/usbd_desc.c ****   * All rights reserved.
+  15:Board/v3/Src/usbd_desc.c ****   *
+  16:Board/v3/Src/usbd_desc.c ****   * Redistribution and use in source and binary forms, with or without 
+  17:Board/v3/Src/usbd_desc.c ****   * modification, are permitted, provided that the following conditions are met:
+  18:Board/v3/Src/usbd_desc.c ****   *
+  19:Board/v3/Src/usbd_desc.c ****   * 1. Redistribution of source code must retain the above copyright notice, 
+  20:Board/v3/Src/usbd_desc.c ****   *    this list of conditions and the following disclaimer.
+  21:Board/v3/Src/usbd_desc.c ****   * 2. Redistributions in binary form must reproduce the above copyright notice,
+  22:Board/v3/Src/usbd_desc.c ****   *    this list of conditions and the following disclaimer in the documentation
+  23:Board/v3/Src/usbd_desc.c ****   *    and/or other materials provided with the distribution.
+  24:Board/v3/Src/usbd_desc.c ****   * 3. Neither the name of STMicroelectronics nor the names of other 
+  25:Board/v3/Src/usbd_desc.c ****   *    contributors to this software may be used to endorse or promote products 
+  26:Board/v3/Src/usbd_desc.c ****   *    derived from this software without specific written permission.
+  27:Board/v3/Src/usbd_desc.c ****   * 4. This software, including modifications and/or derivative works of this 
+  28:Board/v3/Src/usbd_desc.c ****   *    software, must execute solely and exclusively on microcontroller or
+  29:Board/v3/Src/usbd_desc.c ****   *    microprocessor devices manufactured by or for STMicroelectronics.
+ARM GAS  /tmp/ccCmJQOM.s 			page 2
+
+
+  30:Board/v3/Src/usbd_desc.c ****   * 5. Redistribution and use of this software other than as permitted under 
+  31:Board/v3/Src/usbd_desc.c ****   *    this license is void and will automatically terminate your rights under 
+  32:Board/v3/Src/usbd_desc.c ****   *    this license. 
+  33:Board/v3/Src/usbd_desc.c ****   *
+  34:Board/v3/Src/usbd_desc.c ****   * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS" 
+  35:Board/v3/Src/usbd_desc.c ****   * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT 
+  36:Board/v3/Src/usbd_desc.c ****   * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+  37:Board/v3/Src/usbd_desc.c ****   * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
+  38:Board/v3/Src/usbd_desc.c ****   * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT 
+  39:Board/v3/Src/usbd_desc.c ****   * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  40:Board/v3/Src/usbd_desc.c ****   * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  41:Board/v3/Src/usbd_desc.c ****   * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+  42:Board/v3/Src/usbd_desc.c ****   * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+  43:Board/v3/Src/usbd_desc.c ****   * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+  44:Board/v3/Src/usbd_desc.c ****   * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+  45:Board/v3/Src/usbd_desc.c ****   * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  46:Board/v3/Src/usbd_desc.c ****   *
+  47:Board/v3/Src/usbd_desc.c ****   ******************************************************************************
+  48:Board/v3/Src/usbd_desc.c ****   */
+  49:Board/v3/Src/usbd_desc.c **** 
+  50:Board/v3/Src/usbd_desc.c **** /* Includes ------------------------------------------------------------------*/
+  51:Board/v3/Src/usbd_desc.c **** #include "usbd_core.h"
+  52:Board/v3/Src/usbd_desc.c **** #include "usbd_desc.h"
+  53:Board/v3/Src/usbd_desc.c **** #include "usbd_conf.h"
+  54:Board/v3/Src/usbd_desc.c **** 
+  55:Board/v3/Src/usbd_desc.c **** /* USER CODE BEGIN INCLUDE */
+  56:Board/v3/Src/usbd_desc.c **** #include <MotorControl/odrive_main.h>
+  57:Board/v3/Src/usbd_desc.c **** /* USER CODE END INCLUDE */
+  58:Board/v3/Src/usbd_desc.c **** 
+  59:Board/v3/Src/usbd_desc.c **** /* Private typedef -----------------------------------------------------------*/
+  60:Board/v3/Src/usbd_desc.c **** /* Private define ------------------------------------------------------------*/
+  61:Board/v3/Src/usbd_desc.c **** /* Private macro -------------------------------------------------------------*/
+  62:Board/v3/Src/usbd_desc.c **** 
+  63:Board/v3/Src/usbd_desc.c **** /* USER CODE BEGIN PV */
+  64:Board/v3/Src/usbd_desc.c **** /* Private variables ---------------------------------------------------------*/
+  65:Board/v3/Src/usbd_desc.c **** 
+  66:Board/v3/Src/usbd_desc.c **** /* USER CODE END PV */
+  67:Board/v3/Src/usbd_desc.c **** 
+  68:Board/v3/Src/usbd_desc.c **** /** @addtogroup STM32_USB_OTG_DEVICE_LIBRARY
+  69:Board/v3/Src/usbd_desc.c ****   * @{
+  70:Board/v3/Src/usbd_desc.c ****   */
+  71:Board/v3/Src/usbd_desc.c **** 
+  72:Board/v3/Src/usbd_desc.c **** /** @addtogroup USBD_DESC
+  73:Board/v3/Src/usbd_desc.c ****   * @{
+  74:Board/v3/Src/usbd_desc.c ****   */
+  75:Board/v3/Src/usbd_desc.c **** 
+  76:Board/v3/Src/usbd_desc.c **** /** @defgroup USBD_DESC_Private_TypesDefinitions USBD_DESC_Private_TypesDefinitions
+  77:Board/v3/Src/usbd_desc.c ****   * @brief Private types.
+  78:Board/v3/Src/usbd_desc.c ****   * @{
+  79:Board/v3/Src/usbd_desc.c ****   */
+  80:Board/v3/Src/usbd_desc.c **** 
+  81:Board/v3/Src/usbd_desc.c **** /* USER CODE BEGIN PRIVATE_TYPES */
+  82:Board/v3/Src/usbd_desc.c **** 
+  83:Board/v3/Src/usbd_desc.c **** /* USER CODE END PRIVATE_TYPES */
+  84:Board/v3/Src/usbd_desc.c **** 
+  85:Board/v3/Src/usbd_desc.c **** /**
+  86:Board/v3/Src/usbd_desc.c ****   * @}
+ARM GAS  /tmp/ccCmJQOM.s 			page 3
+
+
+  87:Board/v3/Src/usbd_desc.c ****   */
+  88:Board/v3/Src/usbd_desc.c **** 
+  89:Board/v3/Src/usbd_desc.c **** /** @defgroup USBD_DESC_Private_Defines USBD_DESC_Private_Defines
+  90:Board/v3/Src/usbd_desc.c ****   * @brief Private defines.
+  91:Board/v3/Src/usbd_desc.c ****   * @{
+  92:Board/v3/Src/usbd_desc.c ****   */
+  93:Board/v3/Src/usbd_desc.c **** 
+  94:Board/v3/Src/usbd_desc.c **** #define USBD_VID     0x1209
+  95:Board/v3/Src/usbd_desc.c **** #define USBD_LANGID_STRING     1033
+  96:Board/v3/Src/usbd_desc.c **** #define USBD_MANUFACTURER_STRING     "ODrive Robotics"
+  97:Board/v3/Src/usbd_desc.c **** #define USBD_PID_FS     0x0D32
+  98:Board/v3/Src/usbd_desc.c **** #define USBD_PRODUCT_XSTR(s) USBD_PRODUCT_STR(s)
+  99:Board/v3/Src/usbd_desc.c **** #define USBD_PRODUCT_STR(s) #s
+ 100:Board/v3/Src/usbd_desc.c **** #define USBD_PRODUCT_STRING_FS ODrive HW_VERSION_MAJOR.HW_VERSION_MINOR CDC Interface
+ 101:Board/v3/Src/usbd_desc.c **** #define NATIVE_STRING ODrive HW_VERSION_MAJOR.HW_VERSION_MINOR Native Interface
+ 102:Board/v3/Src/usbd_desc.c **** #define USBD_CONFIGURATION_STRING_FS     "CDC Config"
+ 103:Board/v3/Src/usbd_desc.c **** #define USBD_INTERFACE_STRING_FS     "CDC Interface"
+ 104:Board/v3/Src/usbd_desc.c **** 
+ 105:Board/v3/Src/usbd_desc.c **** #define USB_SIZ_BOS_DESC            0x0C
+ 106:Board/v3/Src/usbd_desc.c **** 
+ 107:Board/v3/Src/usbd_desc.c **** /* USER CODE BEGIN PRIVATE_DEFINES */
+ 108:Board/v3/Src/usbd_desc.c **** 
+ 109:Board/v3/Src/usbd_desc.c **** /* USER CODE END PRIVATE_DEFINES */
+ 110:Board/v3/Src/usbd_desc.c **** 
+ 111:Board/v3/Src/usbd_desc.c **** /**
+ 112:Board/v3/Src/usbd_desc.c ****   * @}
+ 113:Board/v3/Src/usbd_desc.c ****   */
+ 114:Board/v3/Src/usbd_desc.c **** 
+ 115:Board/v3/Src/usbd_desc.c **** /* USER CODE BEGIN 0 */
+ 116:Board/v3/Src/usbd_desc.c **** 
+ 117:Board/v3/Src/usbd_desc.c **** // MS OS String descriptor to tell Windows that it may query for other descriptors
+ 118:Board/v3/Src/usbd_desc.c **** // It's a standard string descriptor.
+ 119:Board/v3/Src/usbd_desc.c **** // Windows will only query for OS descriptors once!
+ 120:Board/v3/Src/usbd_desc.c **** // Delete the information about already queried devices in registry by deleting:
+ 121:Board/v3/Src/usbd_desc.c **** // HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\usbflags\VVVVPPPPRRRR
+ 122:Board/v3/Src/usbd_desc.c **** __ALIGN_BEGIN uint8_t USBD_MS_OS_StringDescriptor[]  __ALIGN_END =
+ 123:Board/v3/Src/usbd_desc.c **** {
+ 124:Board/v3/Src/usbd_desc.c ****   0x12,           //  bLength           1 0x12  Length of the descriptor
+ 125:Board/v3/Src/usbd_desc.c ****   0x03,           //  bDescriptorType   1 0x03  Descriptor type
+ 126:Board/v3/Src/usbd_desc.c ****                   //  qwSignature      14 ‘MSFT100’ Signature field
+ 127:Board/v3/Src/usbd_desc.c ****   0x4D, 0x00,     //  'M'
+ 128:Board/v3/Src/usbd_desc.c ****   0x53, 0x00,     //  'S'
+ 129:Board/v3/Src/usbd_desc.c ****   0x46, 0x00,     //  'F'
+ 130:Board/v3/Src/usbd_desc.c ****   0x54, 0x00,     //  'T'
+ 131:Board/v3/Src/usbd_desc.c ****   0x31, 0x00,     //  '1'
+ 132:Board/v3/Src/usbd_desc.c ****   0x30, 0x00,     //  '0'
+ 133:Board/v3/Src/usbd_desc.c ****   0x30, 0x00,     //  '0'
+ 134:Board/v3/Src/usbd_desc.c ****   MS_VendorCode,  //  bMS_VendorCode    1 Vendor-specific Vendor code
+ 135:Board/v3/Src/usbd_desc.c ****   0x00            //  bPad              1 0x00  Pad field
+ 136:Board/v3/Src/usbd_desc.c **** };
+ 137:Board/v3/Src/usbd_desc.c **** 
+ 138:Board/v3/Src/usbd_desc.c **** // redefined further down
+ 139:Board/v3/Src/usbd_desc.c **** __ALIGN_BEGIN uint8_t USBD_StrDesc[USBD_MAX_STR_DESC_SIZ] __ALIGN_END;
+ 140:Board/v3/Src/usbd_desc.c **** /**
+ 141:Board/v3/Src/usbd_desc.c **** * @brief  UsrStrDescriptor
+ 142:Board/v3/Src/usbd_desc.c **** *         return non standard string descriptor
+ 143:Board/v3/Src/usbd_desc.c **** * @param  pdev: device instance
+ARM GAS  /tmp/ccCmJQOM.s 			page 4
+
+
+ 144:Board/v3/Src/usbd_desc.c **** * @param  index : descriptor index (0xEE for MS OS String Descriptor)
+ 145:Board/v3/Src/usbd_desc.c **** * @param  length : pointer data length
+ 146:Board/v3/Src/usbd_desc.c **** * @retval pointer to descriptor buffer
+ 147:Board/v3/Src/usbd_desc.c **** */
+ 148:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_UsrStrDescriptor(struct _USBD_HandleTypeDef *pdev, uint8_t index,  uint16_t *length)
+ 149:Board/v3/Src/usbd_desc.c **** {
+ 150:Board/v3/Src/usbd_desc.c ****   *length = 0;
+ 151:Board/v3/Src/usbd_desc.c ****   if (USBD_IDX_MICROSOFT_DESC_STR == index) {
+ 152:Board/v3/Src/usbd_desc.c ****     *length = sizeof (USBD_MS_OS_StringDescriptor);
+ 153:Board/v3/Src/usbd_desc.c ****     return USBD_MS_OS_StringDescriptor;
+ 154:Board/v3/Src/usbd_desc.c ****   } else if (USBD_IDX_ODRIVE_INTF_STR == index) {
+ 155:Board/v3/Src/usbd_desc.c ****     USBD_GetString((uint8_t *)USBD_PRODUCT_XSTR(NATIVE_STRING), USBD_StrDesc, length);
+ 156:Board/v3/Src/usbd_desc.c ****     return USBD_StrDesc;
+ 157:Board/v3/Src/usbd_desc.c ****   }
+ 158:Board/v3/Src/usbd_desc.c ****   return NULL;
+ 159:Board/v3/Src/usbd_desc.c **** }
+ 160:Board/v3/Src/usbd_desc.c **** 
+ 161:Board/v3/Src/usbd_desc.c **** /* USER CODE END 0 */
+ 162:Board/v3/Src/usbd_desc.c **** 
+ 163:Board/v3/Src/usbd_desc.c **** /** @defgroup USBD_DESC_Private_Macros USBD_DESC_Private_Macros
+ 164:Board/v3/Src/usbd_desc.c ****   * @brief Private macros.
+ 165:Board/v3/Src/usbd_desc.c ****   * @{
+ 166:Board/v3/Src/usbd_desc.c ****   */
+ 167:Board/v3/Src/usbd_desc.c **** 
+ 168:Board/v3/Src/usbd_desc.c **** /* USER CODE BEGIN PRIVATE_MACRO */
+ 169:Board/v3/Src/usbd_desc.c **** 
+ 170:Board/v3/Src/usbd_desc.c **** /* USER CODE END PRIVATE_MACRO */
+ 171:Board/v3/Src/usbd_desc.c **** 
+ 172:Board/v3/Src/usbd_desc.c **** /**
+ 173:Board/v3/Src/usbd_desc.c ****   * @}
+ 174:Board/v3/Src/usbd_desc.c ****   */
+ 175:Board/v3/Src/usbd_desc.c **** 
+ 176:Board/v3/Src/usbd_desc.c **** /** @defgroup USBD_DESC_Private_FunctionPrototypes USBD_DESC_Private_FunctionPrototypes
+ 177:Board/v3/Src/usbd_desc.c ****   * @brief Private functions declaration.
+ 178:Board/v3/Src/usbd_desc.c ****   * @{
+ 179:Board/v3/Src/usbd_desc.c ****   */
+ 180:Board/v3/Src/usbd_desc.c **** 
+ 181:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_DeviceDescriptor(USBD_SpeedTypeDef speed, uint16_t *length);
+ 182:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_LangIDStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length);
+ 183:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_ManufacturerStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length);
+ 184:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_ProductStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length);
+ 185:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_SerialStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length);
+ 186:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_ConfigStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length);
+ 187:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_InterfaceStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length);
+ 188:Board/v3/Src/usbd_desc.c **** 
+ 189:Board/v3/Src/usbd_desc.c **** #ifdef USB_SUPPORT_USER_STRING_DESC
+ 190:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_USRStringDesc(USBD_SpeedTypeDef speed, uint8_t idx, uint16_t *length);
+ 191:Board/v3/Src/usbd_desc.c **** #endif /* USB_SUPPORT_USER_STRING_DESC */
+ 192:Board/v3/Src/usbd_desc.c **** 
+ 193:Board/v3/Src/usbd_desc.c **** #if (USBD_LPM_ENABLED == 1)
+ 194:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_USR_BOSDescriptor(USBD_SpeedTypeDef speed, uint16_t *length);
+ 195:Board/v3/Src/usbd_desc.c **** #endif /* (USBD_LPM_ENABLED == 1) */
+ 196:Board/v3/Src/usbd_desc.c **** 
+ 197:Board/v3/Src/usbd_desc.c **** /**
+ 198:Board/v3/Src/usbd_desc.c ****   * @}
+ 199:Board/v3/Src/usbd_desc.c ****   */
+ 200:Board/v3/Src/usbd_desc.c **** 
+ARM GAS  /tmp/ccCmJQOM.s 			page 5
+
+
+ 201:Board/v3/Src/usbd_desc.c **** /** @defgroup USBD_DESC_Private_Variables USBD_DESC_Private_Variables
+ 202:Board/v3/Src/usbd_desc.c ****   * @brief Private variables.
+ 203:Board/v3/Src/usbd_desc.c ****   * @{
+ 204:Board/v3/Src/usbd_desc.c ****   */
+ 205:Board/v3/Src/usbd_desc.c **** 
+ 206:Board/v3/Src/usbd_desc.c **** USBD_DescriptorsTypeDef FS_Desc =
+ 207:Board/v3/Src/usbd_desc.c **** {
+ 208:Board/v3/Src/usbd_desc.c ****   USBD_FS_DeviceDescriptor
+ 209:Board/v3/Src/usbd_desc.c **** , USBD_FS_LangIDStrDescriptor
+ 210:Board/v3/Src/usbd_desc.c **** , USBD_FS_ManufacturerStrDescriptor
+ 211:Board/v3/Src/usbd_desc.c **** , USBD_FS_ProductStrDescriptor
+ 212:Board/v3/Src/usbd_desc.c **** , USBD_FS_SerialStrDescriptor
+ 213:Board/v3/Src/usbd_desc.c **** , USBD_FS_ConfigStrDescriptor
+ 214:Board/v3/Src/usbd_desc.c **** , USBD_FS_InterfaceStrDescriptor
+ 215:Board/v3/Src/usbd_desc.c **** #if (USBD_LPM_ENABLED == 1)
+ 216:Board/v3/Src/usbd_desc.c **** , USBD_FS_USR_BOSDescriptor
+ 217:Board/v3/Src/usbd_desc.c **** #endif /* (USBD_LPM_ENABLED == 1) */
+ 218:Board/v3/Src/usbd_desc.c **** };
+ 219:Board/v3/Src/usbd_desc.c **** 
+ 220:Board/v3/Src/usbd_desc.c **** #if defined ( __ICCARM__ ) /* IAR Compiler */
+ 221:Board/v3/Src/usbd_desc.c ****   #pragma data_alignment=4
+ 222:Board/v3/Src/usbd_desc.c **** #endif /* defined ( __ICCARM__ ) */
+ 223:Board/v3/Src/usbd_desc.c **** /** USB standard device descriptor. */
+ 224:Board/v3/Src/usbd_desc.c **** __ALIGN_BEGIN uint8_t USBD_FS_DeviceDesc[USB_LEN_DEV_DESC] __ALIGN_END =
+ 225:Board/v3/Src/usbd_desc.c **** {
+ 226:Board/v3/Src/usbd_desc.c ****   0x12,                       /*bLength */
+ 227:Board/v3/Src/usbd_desc.c ****   USB_DESC_TYPE_DEVICE,       /*bDescriptorType*/
+ 228:Board/v3/Src/usbd_desc.c **** #if (USBD_LPM_ENABLED == 1)
+ 229:Board/v3/Src/usbd_desc.c ****   0x01,                       /*bcdUSB */ /* changed to USB version 2.01
+ 230:Board/v3/Src/usbd_desc.c ****                                              in order to support LPM L1 suspend
+ 231:Board/v3/Src/usbd_desc.c ****                                              resume test of USBCV3.0*/
+ 232:Board/v3/Src/usbd_desc.c **** #else
+ 233:Board/v3/Src/usbd_desc.c ****   0x00,                       /*bcdUSB */
+ 234:Board/v3/Src/usbd_desc.c **** #endif /* (USBD_LPM_ENABLED == 1) */
+ 235:Board/v3/Src/usbd_desc.c ****   0x02,
+ 236:Board/v3/Src/usbd_desc.c ****   // Notify OS that this is a composite device
+ 237:Board/v3/Src/usbd_desc.c ****   0xEF,                       /*bDeviceClass*/
+ 238:Board/v3/Src/usbd_desc.c ****   0x02,                       /*bDeviceSubClass*/
+ 239:Board/v3/Src/usbd_desc.c ****   0x01,                       /*bDeviceProtocol*/
+ 240:Board/v3/Src/usbd_desc.c ****   USB_MAX_EP0_SIZE,           /*bMaxPacketSize*/
+ 241:Board/v3/Src/usbd_desc.c ****   LOBYTE(USBD_VID),           /*idVendor*/
+ 242:Board/v3/Src/usbd_desc.c ****   HIBYTE(USBD_VID),           /*idVendor*/
+ 243:Board/v3/Src/usbd_desc.c ****   LOBYTE(USBD_PID_FS),        /*idProduct*/
+ 244:Board/v3/Src/usbd_desc.c ****   HIBYTE(USBD_PID_FS),        /*idProduct*/
+ 245:Board/v3/Src/usbd_desc.c ****   0x00,                       /*bcdDevice rel. 2.00*/
+ 246:Board/v3/Src/usbd_desc.c ****   0x03,                       /* bNumInterfaces */
+ 247:Board/v3/Src/usbd_desc.c ****   USBD_IDX_MFC_STR,           /*Index of manufacturer  string*/
+ 248:Board/v3/Src/usbd_desc.c ****   USBD_IDX_PRODUCT_STR,       /*Index of product string*/
+ 249:Board/v3/Src/usbd_desc.c ****   USBD_IDX_SERIAL_STR,        /*Index of serial number string*/
+ 250:Board/v3/Src/usbd_desc.c ****   USBD_MAX_NUM_CONFIGURATION  /*bNumConfigurations*/
+ 251:Board/v3/Src/usbd_desc.c **** };
+ 252:Board/v3/Src/usbd_desc.c **** 
+ 253:Board/v3/Src/usbd_desc.c **** /* USB_DeviceDescriptor */
+ 254:Board/v3/Src/usbd_desc.c **** /** BOS descriptor. */
+ 255:Board/v3/Src/usbd_desc.c **** #if (USBD_LPM_ENABLED == 1)
+ 256:Board/v3/Src/usbd_desc.c **** #if defined ( __ICCARM__ ) /* IAR Compiler */
+ 257:Board/v3/Src/usbd_desc.c ****   #pragma data_alignment=4
+ARM GAS  /tmp/ccCmJQOM.s 			page 6
+
+
+ 258:Board/v3/Src/usbd_desc.c **** #endif /* defined ( __ICCARM__ ) */
+ 259:Board/v3/Src/usbd_desc.c **** __ALIGN_BEGIN uint8_t USBD_FS_BOSDesc[USB_SIZ_BOS_DESC] __ALIGN_END =
+ 260:Board/v3/Src/usbd_desc.c **** {
+ 261:Board/v3/Src/usbd_desc.c ****   0x5,
+ 262:Board/v3/Src/usbd_desc.c ****   USB_DESC_TYPE_BOS,
+ 263:Board/v3/Src/usbd_desc.c ****   0xC,
+ 264:Board/v3/Src/usbd_desc.c ****   0x0,
+ 265:Board/v3/Src/usbd_desc.c ****   0x1,  /* 1 device capability*/
+ 266:Board/v3/Src/usbd_desc.c ****         /* device capability*/
+ 267:Board/v3/Src/usbd_desc.c ****   0x7,
+ 268:Board/v3/Src/usbd_desc.c ****   USB_DEVICE_CAPABITY_TYPE,
+ 269:Board/v3/Src/usbd_desc.c ****   0x2,
+ 270:Board/v3/Src/usbd_desc.c ****   0x2,  /* LPM capability bit set*/
+ 271:Board/v3/Src/usbd_desc.c ****   0x0,
+ 272:Board/v3/Src/usbd_desc.c ****   0x0,
+ 273:Board/v3/Src/usbd_desc.c ****   0x0
+ 274:Board/v3/Src/usbd_desc.c **** };
+ 275:Board/v3/Src/usbd_desc.c **** #endif /* (USBD_LPM_ENABLED == 1) */
+ 276:Board/v3/Src/usbd_desc.c **** 
+ 277:Board/v3/Src/usbd_desc.c **** /**
+ 278:Board/v3/Src/usbd_desc.c ****   * @}
+ 279:Board/v3/Src/usbd_desc.c ****   */
+ 280:Board/v3/Src/usbd_desc.c **** 
+ 281:Board/v3/Src/usbd_desc.c **** /** @defgroup USBD_DESC_Private_Variables USBD_DESC_Private_Variables
+ 282:Board/v3/Src/usbd_desc.c ****   * @brief Private variables.
+ 283:Board/v3/Src/usbd_desc.c ****   * @{
+ 284:Board/v3/Src/usbd_desc.c ****   */
+ 285:Board/v3/Src/usbd_desc.c **** 
+ 286:Board/v3/Src/usbd_desc.c **** #if defined ( __ICCARM__ ) /* IAR Compiler */
+ 287:Board/v3/Src/usbd_desc.c ****   #pragma data_alignment=4
+ 288:Board/v3/Src/usbd_desc.c **** #endif /* defined ( __ICCARM__ ) */
+ 289:Board/v3/Src/usbd_desc.c **** 
+ 290:Board/v3/Src/usbd_desc.c **** /** USB lang indentifier descriptor. */
+ 291:Board/v3/Src/usbd_desc.c **** __ALIGN_BEGIN uint8_t USBD_LangIDDesc[USB_LEN_LANGID_STR_DESC] __ALIGN_END =
+ 292:Board/v3/Src/usbd_desc.c **** {
+ 293:Board/v3/Src/usbd_desc.c ****      USB_LEN_LANGID_STR_DESC,
+ 294:Board/v3/Src/usbd_desc.c ****      USB_DESC_TYPE_STRING,
+ 295:Board/v3/Src/usbd_desc.c ****      LOBYTE(USBD_LANGID_STRING),
+ 296:Board/v3/Src/usbd_desc.c ****      HIBYTE(USBD_LANGID_STRING)
+ 297:Board/v3/Src/usbd_desc.c **** };
+ 298:Board/v3/Src/usbd_desc.c **** 
+ 299:Board/v3/Src/usbd_desc.c **** #if defined ( __ICCARM__ ) /* IAR Compiler */
+ 300:Board/v3/Src/usbd_desc.c ****   #pragma data_alignment=4
+ 301:Board/v3/Src/usbd_desc.c **** #endif /* defined ( __ICCARM__ ) */
+ 302:Board/v3/Src/usbd_desc.c **** /* Internal string descriptor. */
+ 303:Board/v3/Src/usbd_desc.c **** __ALIGN_BEGIN uint8_t USBD_StrDesc[USBD_MAX_STR_DESC_SIZ] __ALIGN_END;
+ 304:Board/v3/Src/usbd_desc.c **** 
+ 305:Board/v3/Src/usbd_desc.c **** /**
+ 306:Board/v3/Src/usbd_desc.c ****   * @}
+ 307:Board/v3/Src/usbd_desc.c ****   */
+ 308:Board/v3/Src/usbd_desc.c **** 
+ 309:Board/v3/Src/usbd_desc.c **** /** @defgroup USBD_DESC_Private_Functions USBD_DESC_Private_Functions
+ 310:Board/v3/Src/usbd_desc.c ****   * @brief Private functions.
+ 311:Board/v3/Src/usbd_desc.c ****   * @{
+ 312:Board/v3/Src/usbd_desc.c ****   */
+ 313:Board/v3/Src/usbd_desc.c **** 
+ 314:Board/v3/Src/usbd_desc.c **** /**
+ARM GAS  /tmp/ccCmJQOM.s 			page 7
+
+
+ 315:Board/v3/Src/usbd_desc.c ****   * @brief  Return the device descriptor
+ 316:Board/v3/Src/usbd_desc.c ****   * @param  speed : Current device speed
+ 317:Board/v3/Src/usbd_desc.c ****   * @param  length : Pointer to data length variable
+ 318:Board/v3/Src/usbd_desc.c ****   * @retval Pointer to descriptor buffer
+ 319:Board/v3/Src/usbd_desc.c ****   */
+ 320:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_DeviceDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
+ 321:Board/v3/Src/usbd_desc.c **** {
+  30              		.loc 1 321 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+ 322:Board/v3/Src/usbd_desc.c ****   *length = sizeof(USBD_FS_DeviceDesc);
+  35              		.loc 1 322 3 view .LVU1
+  36              		.loc 1 322 11 is_stmt 0 view .LVU2
+  37 0000 1223     		movs	r3, #18
+  38 0002 0B80     		strh	r3, [r1]	@ movhi
+ 323:Board/v3/Src/usbd_desc.c ****   return USBD_FS_DeviceDesc;
+  39              		.loc 1 323 3 is_stmt 1 view .LVU3
+ 324:Board/v3/Src/usbd_desc.c **** }
+  40              		.loc 1 324 1 is_stmt 0 view .LVU4
+  41 0004 0048     		ldr	r0, .L2
+  42              	.LVL1:
+  43              		.loc 1 324 1 view .LVU5
+  44 0006 7047     		bx	lr
+  45              	.L3:
+  46              		.align	2
+  47              	.L2:
+  48 0008 00000000 		.word	.LANCHOR0
+  49              		.cfi_endproc
+  50              	.LFE179:
+  52              		.section	.text.USBD_FS_LangIDStrDescriptor,"ax",%progbits
+  53              		.align	1
+  54              		.global	USBD_FS_LangIDStrDescriptor
+  55              		.syntax unified
+  56              		.thumb
+  57              		.thumb_func
+  59              	USBD_FS_LangIDStrDescriptor:
+  60              	.LVL2:
+  61              	.LFB180:
+ 325:Board/v3/Src/usbd_desc.c **** 
+ 326:Board/v3/Src/usbd_desc.c **** /**
+ 327:Board/v3/Src/usbd_desc.c ****   * @brief  Return the LangID string descriptor
+ 328:Board/v3/Src/usbd_desc.c ****   * @param  speed : Current device speed
+ 329:Board/v3/Src/usbd_desc.c ****   * @param  length : Pointer to data length variable
+ 330:Board/v3/Src/usbd_desc.c ****   * @retval Pointer to descriptor buffer
+ 331:Board/v3/Src/usbd_desc.c ****   */
+ 332:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_LangIDStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
+ 333:Board/v3/Src/usbd_desc.c **** {
+  62              		.loc 1 333 1 is_stmt 1 view -0
+  63              		.cfi_startproc
+  64              		@ args = 0, pretend = 0, frame = 0
+  65              		@ frame_needed = 0, uses_anonymous_args = 0
+  66              		@ link register save eliminated.
+ 334:Board/v3/Src/usbd_desc.c ****   *length = sizeof(USBD_LangIDDesc);
+  67              		.loc 1 334 3 view .LVU7
+  68              		.loc 1 334 11 is_stmt 0 view .LVU8
+ARM GAS  /tmp/ccCmJQOM.s 			page 8
+
+
+  69 0000 0423     		movs	r3, #4
+  70 0002 0B80     		strh	r3, [r1]	@ movhi
+ 335:Board/v3/Src/usbd_desc.c ****   return USBD_LangIDDesc;
+  71              		.loc 1 335 3 is_stmt 1 view .LVU9
+ 336:Board/v3/Src/usbd_desc.c **** }
+  72              		.loc 1 336 1 is_stmt 0 view .LVU10
+  73 0004 0048     		ldr	r0, .L5
+  74              	.LVL3:
+  75              		.loc 1 336 1 view .LVU11
+  76 0006 7047     		bx	lr
+  77              	.L6:
+  78              		.align	2
+  79              	.L5:
+  80 0008 00000000 		.word	.LANCHOR1
+  81              		.cfi_endproc
+  82              	.LFE180:
+  84              		.section	.rodata.USBD_FS_ProductStrDescriptor.str1.4,"aMS",%progbits,1
+  85              		.align	2
+  86              	.LC0:
+  87 0000 4F447269 		.ascii	"ODrive 3.6 CDC Interface\000"
+  87      76652033 
+  87      2E362043 
+  87      44432049 
+  87      6E746572 
+  88              		.section	.text.USBD_FS_ProductStrDescriptor,"ax",%progbits
+  89              		.align	1
+  90              		.global	USBD_FS_ProductStrDescriptor
+  91              		.syntax unified
+  92              		.thumb
+  93              		.thumb_func
+  95              	USBD_FS_ProductStrDescriptor:
+  96              	.LVL4:
+  97              	.LFB181:
+ 337:Board/v3/Src/usbd_desc.c **** 
+ 338:Board/v3/Src/usbd_desc.c **** /**
+ 339:Board/v3/Src/usbd_desc.c ****   * @brief  Return the product string descriptor
+ 340:Board/v3/Src/usbd_desc.c ****   * @param  speed : Current device speed
+ 341:Board/v3/Src/usbd_desc.c ****   * @param  length : Pointer to data length variable
+ 342:Board/v3/Src/usbd_desc.c ****   * @retval Pointer to descriptor buffer
+ 343:Board/v3/Src/usbd_desc.c ****   */
+ 344:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_ProductStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
+ 345:Board/v3/Src/usbd_desc.c **** {
+  98              		.loc 1 345 1 is_stmt 1 view -0
+  99              		.cfi_startproc
+ 100              		@ args = 0, pretend = 0, frame = 0
+ 101              		@ frame_needed = 0, uses_anonymous_args = 0
+ 102              		.loc 1 345 1 is_stmt 0 view .LVU13
+ 103 0000 08B5     		push	{r3, lr}
+ 104              	.LCFI0:
+ 105              		.cfi_def_cfa_offset 8
+ 106              		.cfi_offset 3, -8
+ 107              		.cfi_offset 14, -4
+ 108 0002 0A46     		mov	r2, r1
+ 346:Board/v3/Src/usbd_desc.c ****   if(speed == 0)
+ 109              		.loc 1 346 3 is_stmt 1 view .LVU14
+ 110              		.loc 1 346 5 is_stmt 0 view .LVU15
+ 111 0004 28B9     		cbnz	r0, .L8
+ARM GAS  /tmp/ccCmJQOM.s 			page 9
+
+
+ 347:Board/v3/Src/usbd_desc.c ****   {
+ 348:Board/v3/Src/usbd_desc.c ****     USBD_GetString((uint8_t *)USBD_PRODUCT_XSTR(USBD_PRODUCT_STRING_FS), USBD_StrDesc, length);
+ 112              		.loc 1 348 5 is_stmt 1 view .LVU16
+ 113 0006 0549     		ldr	r1, .L11
+ 114              	.LVL5:
+ 115              		.loc 1 348 5 is_stmt 0 view .LVU17
+ 116 0008 0548     		ldr	r0, .L11+4
+ 117              	.LVL6:
+ 118              		.loc 1 348 5 view .LVU18
+ 119 000a FFF7FEFF 		bl	USBD_GetString
+ 120              	.LVL7:
+ 121              	.L9:
+ 349:Board/v3/Src/usbd_desc.c ****   }
+ 350:Board/v3/Src/usbd_desc.c ****   else
+ 351:Board/v3/Src/usbd_desc.c ****   {
+ 352:Board/v3/Src/usbd_desc.c ****     USBD_GetString((uint8_t *)USBD_PRODUCT_XSTR(USBD_PRODUCT_STRING_FS), USBD_StrDesc, length);
+ 353:Board/v3/Src/usbd_desc.c ****   }
+ 354:Board/v3/Src/usbd_desc.c ****   return USBD_StrDesc;
+ 122              		.loc 1 354 3 is_stmt 1 view .LVU19
+ 355:Board/v3/Src/usbd_desc.c **** }
+ 123              		.loc 1 355 1 is_stmt 0 view .LVU20
+ 124 000e 0348     		ldr	r0, .L11
+ 125 0010 08BD     		pop	{r3, pc}
+ 126              	.LVL8:
+ 127              	.L8:
+ 352:Board/v3/Src/usbd_desc.c ****   }
+ 128              		.loc 1 352 5 is_stmt 1 view .LVU21
+ 129 0012 0249     		ldr	r1, .L11
+ 130              	.LVL9:
+ 352:Board/v3/Src/usbd_desc.c ****   }
+ 131              		.loc 1 352 5 is_stmt 0 view .LVU22
+ 132 0014 0248     		ldr	r0, .L11+4
+ 133              	.LVL10:
+ 352:Board/v3/Src/usbd_desc.c ****   }
+ 134              		.loc 1 352 5 view .LVU23
+ 135 0016 FFF7FEFF 		bl	USBD_GetString
+ 136              	.LVL11:
+ 352:Board/v3/Src/usbd_desc.c ****   }
+ 137              		.loc 1 352 5 view .LVU24
+ 138 001a F8E7     		b	.L9
+ 139              	.L12:
+ 140              		.align	2
+ 141              	.L11:
+ 142 001c 00000000 		.word	.LANCHOR2
+ 143 0020 00000000 		.word	.LC0
+ 144              		.cfi_endproc
+ 145              	.LFE181:
+ 147              		.section	.rodata.USBD_FS_ManufacturerStrDescriptor.str1.4,"aMS",%progbits,1
+ 148              		.align	2
+ 149              	.LC1:
+ 150 0000 4F447269 		.ascii	"ODrive Robotics\000"
+ 150      76652052 
+ 150      6F626F74 
+ 150      69637300 
+ 151              		.section	.text.USBD_FS_ManufacturerStrDescriptor,"ax",%progbits
+ 152              		.align	1
+ 153              		.global	USBD_FS_ManufacturerStrDescriptor
+ARM GAS  /tmp/ccCmJQOM.s 			page 10
+
+
+ 154              		.syntax unified
+ 155              		.thumb
+ 156              		.thumb_func
+ 158              	USBD_FS_ManufacturerStrDescriptor:
+ 159              	.LVL12:
+ 160              	.LFB182:
+ 356:Board/v3/Src/usbd_desc.c **** 
+ 357:Board/v3/Src/usbd_desc.c **** /**
+ 358:Board/v3/Src/usbd_desc.c ****   * @brief  Return the manufacturer string descriptor
+ 359:Board/v3/Src/usbd_desc.c ****   * @param  speed : Current device speed
+ 360:Board/v3/Src/usbd_desc.c ****   * @param  length : Pointer to data length variable
+ 361:Board/v3/Src/usbd_desc.c ****   * @retval Pointer to descriptor buffer
+ 362:Board/v3/Src/usbd_desc.c ****   */
+ 363:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_ManufacturerStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
+ 364:Board/v3/Src/usbd_desc.c **** {
+ 161              		.loc 1 364 1 is_stmt 1 view -0
+ 162              		.cfi_startproc
+ 163              		@ args = 0, pretend = 0, frame = 0
+ 164              		@ frame_needed = 0, uses_anonymous_args = 0
+ 165              		.loc 1 364 1 is_stmt 0 view .LVU26
+ 166 0000 10B5     		push	{r4, lr}
+ 167              	.LCFI1:
+ 168              		.cfi_def_cfa_offset 8
+ 169              		.cfi_offset 4, -8
+ 170              		.cfi_offset 14, -4
+ 171 0002 0A46     		mov	r2, r1
+ 365:Board/v3/Src/usbd_desc.c ****   USBD_GetString((uint8_t *)USBD_MANUFACTURER_STRING, USBD_StrDesc, length);
+ 172              		.loc 1 365 3 is_stmt 1 view .LVU27
+ 173 0004 034C     		ldr	r4, .L15
+ 174 0006 2146     		mov	r1, r4
+ 175              	.LVL13:
+ 176              		.loc 1 365 3 is_stmt 0 view .LVU28
+ 177 0008 0348     		ldr	r0, .L15+4
+ 178              	.LVL14:
+ 179              		.loc 1 365 3 view .LVU29
+ 180 000a FFF7FEFF 		bl	USBD_GetString
+ 181              	.LVL15:
+ 366:Board/v3/Src/usbd_desc.c ****   return USBD_StrDesc;
+ 182              		.loc 1 366 3 is_stmt 1 view .LVU30
+ 367:Board/v3/Src/usbd_desc.c **** }
+ 183              		.loc 1 367 1 is_stmt 0 view .LVU31
+ 184 000e 2046     		mov	r0, r4
+ 185 0010 10BD     		pop	{r4, pc}
+ 186              	.L16:
+ 187 0012 00BF     		.align	2
+ 188              	.L15:
+ 189 0014 00000000 		.word	.LANCHOR2
+ 190 0018 00000000 		.word	.LC1
+ 191              		.cfi_endproc
+ 192              	.LFE182:
+ 194              		.section	.text.USBD_FS_SerialStrDescriptor,"ax",%progbits
+ 195              		.align	1
+ 196              		.global	USBD_FS_SerialStrDescriptor
+ 197              		.syntax unified
+ 198              		.thumb
+ 199              		.thumb_func
+ 201              	USBD_FS_SerialStrDescriptor:
+ARM GAS  /tmp/ccCmJQOM.s 			page 11
+
+
+ 202              	.LVL16:
+ 203              	.LFB183:
+ 368:Board/v3/Src/usbd_desc.c **** 
+ 369:Board/v3/Src/usbd_desc.c **** /**
+ 370:Board/v3/Src/usbd_desc.c ****   * @brief  Return the serial number string descriptor
+ 371:Board/v3/Src/usbd_desc.c ****   * @param  speed : Current device speed
+ 372:Board/v3/Src/usbd_desc.c ****   * @param  length : Pointer to data length variable
+ 373:Board/v3/Src/usbd_desc.c ****   * @retval Pointer to descriptor buffer
+ 374:Board/v3/Src/usbd_desc.c ****   */
+ 375:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_SerialStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
+ 376:Board/v3/Src/usbd_desc.c **** {
+ 204              		.loc 1 376 1 is_stmt 1 view -0
+ 205              		.cfi_startproc
+ 206              		@ args = 0, pretend = 0, frame = 0
+ 207              		@ frame_needed = 0, uses_anonymous_args = 0
+ 208              		.loc 1 376 1 is_stmt 0 view .LVU33
+ 209 0000 10B5     		push	{r4, lr}
+ 210              	.LCFI2:
+ 211              		.cfi_def_cfa_offset 8
+ 212              		.cfi_offset 4, -8
+ 213              		.cfi_offset 14, -4
+ 214 0002 0A46     		mov	r2, r1
+ 377:Board/v3/Src/usbd_desc.c ****   USBD_GetString ((uint8_t *)serial_number_str, USBD_StrDesc, length);
+ 215              		.loc 1 377 3 is_stmt 1 view .LVU34
+ 216 0004 034C     		ldr	r4, .L19
+ 217 0006 2146     		mov	r1, r4
+ 218              	.LVL17:
+ 219              		.loc 1 377 3 is_stmt 0 view .LVU35
+ 220 0008 0348     		ldr	r0, .L19+4
+ 221              	.LVL18:
+ 222              		.loc 1 377 3 view .LVU36
+ 223 000a FFF7FEFF 		bl	USBD_GetString
+ 224              	.LVL19:
+ 378:Board/v3/Src/usbd_desc.c ****   return USBD_StrDesc;
+ 225              		.loc 1 378 3 is_stmt 1 view .LVU37
+ 379:Board/v3/Src/usbd_desc.c **** }
+ 226              		.loc 1 379 1 is_stmt 0 view .LVU38
+ 227 000e 2046     		mov	r0, r4
+ 228 0010 10BD     		pop	{r4, pc}
+ 229              	.L20:
+ 230 0012 00BF     		.align	2
+ 231              	.L19:
+ 232 0014 00000000 		.word	.LANCHOR2
+ 233 0018 00000000 		.word	serial_number_str
+ 234              		.cfi_endproc
+ 235              	.LFE183:
+ 237              		.section	.rodata.USBD_FS_ConfigStrDescriptor.str1.4,"aMS",%progbits,1
+ 238              		.align	2
+ 239              	.LC2:
+ 240 0000 43444320 		.ascii	"CDC Config\000"
+ 240      436F6E66 
+ 240      696700
+ 241              		.section	.text.USBD_FS_ConfigStrDescriptor,"ax",%progbits
+ 242              		.align	1
+ 243              		.global	USBD_FS_ConfigStrDescriptor
+ 244              		.syntax unified
+ 245              		.thumb
+ARM GAS  /tmp/ccCmJQOM.s 			page 12
+
+
+ 246              		.thumb_func
+ 248              	USBD_FS_ConfigStrDescriptor:
+ 249              	.LVL20:
+ 250              	.LFB184:
+ 380:Board/v3/Src/usbd_desc.c **** 
+ 381:Board/v3/Src/usbd_desc.c **** /**
+ 382:Board/v3/Src/usbd_desc.c ****   * @brief  Return the configuration string descriptor
+ 383:Board/v3/Src/usbd_desc.c ****   * @param  speed : Current device speed
+ 384:Board/v3/Src/usbd_desc.c ****   * @param  length : Pointer to data length variable
+ 385:Board/v3/Src/usbd_desc.c ****   * @retval Pointer to descriptor buffer
+ 386:Board/v3/Src/usbd_desc.c ****   */
+ 387:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_ConfigStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
+ 388:Board/v3/Src/usbd_desc.c **** {
+ 251              		.loc 1 388 1 is_stmt 1 view -0
+ 252              		.cfi_startproc
+ 253              		@ args = 0, pretend = 0, frame = 0
+ 254              		@ frame_needed = 0, uses_anonymous_args = 0
+ 255              		.loc 1 388 1 is_stmt 0 view .LVU40
+ 256 0000 08B5     		push	{r3, lr}
+ 257              	.LCFI3:
+ 258              		.cfi_def_cfa_offset 8
+ 259              		.cfi_offset 3, -8
+ 260              		.cfi_offset 14, -4
+ 261 0002 0A46     		mov	r2, r1
+ 389:Board/v3/Src/usbd_desc.c ****   if(speed == USBD_SPEED_HIGH)
+ 262              		.loc 1 389 3 is_stmt 1 view .LVU41
+ 263              		.loc 1 389 5 is_stmt 0 view .LVU42
+ 264 0004 28B9     		cbnz	r0, .L22
+ 390:Board/v3/Src/usbd_desc.c ****   {
+ 391:Board/v3/Src/usbd_desc.c ****     USBD_GetString((uint8_t *)USBD_CONFIGURATION_STRING_FS, USBD_StrDesc, length);
+ 265              		.loc 1 391 5 is_stmt 1 view .LVU43
+ 266 0006 0549     		ldr	r1, .L25
+ 267              	.LVL21:
+ 268              		.loc 1 391 5 is_stmt 0 view .LVU44
+ 269 0008 0548     		ldr	r0, .L25+4
+ 270              	.LVL22:
+ 271              		.loc 1 391 5 view .LVU45
+ 272 000a FFF7FEFF 		bl	USBD_GetString
+ 273              	.LVL23:
+ 274              	.L23:
+ 392:Board/v3/Src/usbd_desc.c ****   }
+ 393:Board/v3/Src/usbd_desc.c ****   else
+ 394:Board/v3/Src/usbd_desc.c ****   {
+ 395:Board/v3/Src/usbd_desc.c ****     USBD_GetString((uint8_t *)USBD_CONFIGURATION_STRING_FS, USBD_StrDesc, length);
+ 396:Board/v3/Src/usbd_desc.c ****   }
+ 397:Board/v3/Src/usbd_desc.c ****   return USBD_StrDesc;
+ 275              		.loc 1 397 3 is_stmt 1 view .LVU46
+ 398:Board/v3/Src/usbd_desc.c **** }
+ 276              		.loc 1 398 1 is_stmt 0 view .LVU47
+ 277 000e 0348     		ldr	r0, .L25
+ 278 0010 08BD     		pop	{r3, pc}
+ 279              	.LVL24:
+ 280              	.L22:
+ 395:Board/v3/Src/usbd_desc.c ****   }
+ 281              		.loc 1 395 5 is_stmt 1 view .LVU48
+ 282 0012 0249     		ldr	r1, .L25
+ 283              	.LVL25:
+ARM GAS  /tmp/ccCmJQOM.s 			page 13
+
+
+ 395:Board/v3/Src/usbd_desc.c ****   }
+ 284              		.loc 1 395 5 is_stmt 0 view .LVU49
+ 285 0014 0248     		ldr	r0, .L25+4
+ 286              	.LVL26:
+ 395:Board/v3/Src/usbd_desc.c ****   }
+ 287              		.loc 1 395 5 view .LVU50
+ 288 0016 FFF7FEFF 		bl	USBD_GetString
+ 289              	.LVL27:
+ 395:Board/v3/Src/usbd_desc.c ****   }
+ 290              		.loc 1 395 5 view .LVU51
+ 291 001a F8E7     		b	.L23
+ 292              	.L26:
+ 293              		.align	2
+ 294              	.L25:
+ 295 001c 00000000 		.word	.LANCHOR2
+ 296 0020 00000000 		.word	.LC2
+ 297              		.cfi_endproc
+ 298              	.LFE184:
+ 300              		.section	.rodata.USBD_FS_InterfaceStrDescriptor.str1.4,"aMS",%progbits,1
+ 301              		.align	2
+ 302              	.LC3:
+ 303 0000 43444320 		.ascii	"CDC Interface\000"
+ 303      496E7465 
+ 303      72666163 
+ 303      6500
+ 304              		.section	.text.USBD_FS_InterfaceStrDescriptor,"ax",%progbits
+ 305              		.align	1
+ 306              		.global	USBD_FS_InterfaceStrDescriptor
+ 307              		.syntax unified
+ 308              		.thumb
+ 309              		.thumb_func
+ 311              	USBD_FS_InterfaceStrDescriptor:
+ 312              	.LVL28:
+ 313              	.LFB185:
+ 399:Board/v3/Src/usbd_desc.c **** 
+ 400:Board/v3/Src/usbd_desc.c **** /**
+ 401:Board/v3/Src/usbd_desc.c ****   * @brief  Return the interface string descriptor
+ 402:Board/v3/Src/usbd_desc.c ****   * @param  speed : Current device speed
+ 403:Board/v3/Src/usbd_desc.c ****   * @param  length : Pointer to data length variable
+ 404:Board/v3/Src/usbd_desc.c ****   * @retval Pointer to descriptor buffer
+ 405:Board/v3/Src/usbd_desc.c ****   */
+ 406:Board/v3/Src/usbd_desc.c **** uint8_t * USBD_FS_InterfaceStrDescriptor(USBD_SpeedTypeDef speed, uint16_t *length)
+ 407:Board/v3/Src/usbd_desc.c **** {
+ 314              		.loc 1 407 1 is_stmt 1 view -0
+ 315              		.cfi_startproc
+ 316              		@ args = 0, pretend = 0, frame = 0
+ 317              		@ frame_needed = 0, uses_anonymous_args = 0
+ 318              		.loc 1 407 1 is_stmt 0 view .LVU53
+ 319 0000 08B5     		push	{r3, lr}
+ 320              	.LCFI4:
+ 321              		.cfi_def_cfa_offset 8
+ 322              		.cfi_offset 3, -8
+ 323              		.cfi_offset 14, -4
+ 324 0002 0A46     		mov	r2, r1
+ 408:Board/v3/Src/usbd_desc.c ****   if(speed == 0)
+ 325              		.loc 1 408 3 is_stmt 1 view .LVU54
+ 326              		.loc 1 408 5 is_stmt 0 view .LVU55
+ARM GAS  /tmp/ccCmJQOM.s 			page 14
+
+
+ 327 0004 28B9     		cbnz	r0, .L28
+ 409:Board/v3/Src/usbd_desc.c ****   {
+ 410:Board/v3/Src/usbd_desc.c ****     USBD_GetString((uint8_t *)USBD_INTERFACE_STRING_FS, USBD_StrDesc, length);
+ 328              		.loc 1 410 5 is_stmt 1 view .LVU56
+ 329 0006 0549     		ldr	r1, .L31
+ 330              	.LVL29:
+ 331              		.loc 1 410 5 is_stmt 0 view .LVU57
+ 332 0008 0548     		ldr	r0, .L31+4
+ 333              	.LVL30:
+ 334              		.loc 1 410 5 view .LVU58
+ 335 000a FFF7FEFF 		bl	USBD_GetString
+ 336              	.LVL31:
+ 337              	.L29:
+ 411:Board/v3/Src/usbd_desc.c ****   }
+ 412:Board/v3/Src/usbd_desc.c ****   else
+ 413:Board/v3/Src/usbd_desc.c ****   {
+ 414:Board/v3/Src/usbd_desc.c ****     USBD_GetString((uint8_t *)USBD_INTERFACE_STRING_FS, USBD_StrDesc, length);
+ 415:Board/v3/Src/usbd_desc.c ****   }
+ 416:Board/v3/Src/usbd_desc.c ****   return USBD_StrDesc;
+ 338              		.loc 1 416 3 is_stmt 1 view .LVU59
+ 417:Board/v3/Src/usbd_desc.c **** }
+ 339              		.loc 1 417 1 is_stmt 0 view .LVU60
+ 340 000e 0348     		ldr	r0, .L31
+ 341 0010 08BD     		pop	{r3, pc}
+ 342              	.LVL32:
+ 343              	.L28:
+ 414:Board/v3/Src/usbd_desc.c ****   }
+ 344              		.loc 1 414 5 is_stmt 1 view .LVU61
+ 345 0012 0249     		ldr	r1, .L31
+ 346              	.LVL33:
+ 414:Board/v3/Src/usbd_desc.c ****   }
+ 347              		.loc 1 414 5 is_stmt 0 view .LVU62
+ 348 0014 0248     		ldr	r0, .L31+4
+ 349              	.LVL34:
+ 414:Board/v3/Src/usbd_desc.c ****   }
+ 350              		.loc 1 414 5 view .LVU63
+ 351 0016 FFF7FEFF 		bl	USBD_GetString
+ 352              	.LVL35:
+ 414:Board/v3/Src/usbd_desc.c ****   }
+ 353              		.loc 1 414 5 view .LVU64
+ 354 001a F8E7     		b	.L29
+ 355              	.L32:
+ 356              		.align	2
+ 357              	.L31:
+ 358 001c 00000000 		.word	.LANCHOR2
+ 359 0020 00000000 		.word	.LC3
+ 360              		.cfi_endproc
+ 361              	.LFE185:
+ 363              		.section	.rodata.USBD_UsrStrDescriptor.str1.4,"aMS",%progbits,1
+ 364              		.align	2
+ 365              	.LC4:
+ 366 0000 4F447269 		.ascii	"ODrive 3.6 Native Interface\000"
+ 366      76652033 
+ 366      2E36204E 
+ 366      61746976 
+ 366      6520496E 
+ 367              		.section	.text.USBD_UsrStrDescriptor,"ax",%progbits
+ARM GAS  /tmp/ccCmJQOM.s 			page 15
+
+
+ 368              		.align	1
+ 369              		.global	USBD_UsrStrDescriptor
+ 370              		.syntax unified
+ 371              		.thumb
+ 372              		.thumb_func
+ 374              	USBD_UsrStrDescriptor:
+ 375              	.LVL36:
+ 376              	.LFB178:
+ 149:Board/v3/Src/usbd_desc.c ****   *length = 0;
+ 377              		.loc 1 149 1 is_stmt 1 view -0
+ 378              		.cfi_startproc
+ 379              		@ args = 0, pretend = 0, frame = 0
+ 380              		@ frame_needed = 0, uses_anonymous_args = 0
+ 150:Board/v3/Src/usbd_desc.c ****   if (USBD_IDX_MICROSOFT_DESC_STR == index) {
+ 381              		.loc 1 150 3 view .LVU66
+ 150:Board/v3/Src/usbd_desc.c ****   if (USBD_IDX_MICROSOFT_DESC_STR == index) {
+ 382              		.loc 1 150 11 is_stmt 0 view .LVU67
+ 383 0000 0023     		movs	r3, #0
+ 384 0002 1380     		strh	r3, [r2]	@ movhi
+ 151:Board/v3/Src/usbd_desc.c ****     *length = sizeof (USBD_MS_OS_StringDescriptor);
+ 385              		.loc 1 151 3 is_stmt 1 view .LVU68
+ 151:Board/v3/Src/usbd_desc.c ****     *length = sizeof (USBD_MS_OS_StringDescriptor);
+ 386              		.loc 1 151 6 is_stmt 0 view .LVU69
+ 387 0004 EE29     		cmp	r1, #238
+ 388 0006 03D0     		beq	.L41
+ 154:Board/v3/Src/usbd_desc.c ****     USBD_GetString((uint8_t *)USBD_PRODUCT_XSTR(NATIVE_STRING), USBD_StrDesc, length);
+ 389              		.loc 1 154 10 is_stmt 1 view .LVU70
+ 154:Board/v3/Src/usbd_desc.c ****     USBD_GetString((uint8_t *)USBD_PRODUCT_XSTR(NATIVE_STRING), USBD_StrDesc, length);
+ 390              		.loc 1 154 13 is_stmt 0 view .LVU71
+ 391 0008 0629     		cmp	r1, #6
+ 392 000a 05D0     		beq	.L42
+ 158:Board/v3/Src/usbd_desc.c **** }
+ 393              		.loc 1 158 10 view .LVU72
+ 394 000c 0020     		movs	r0, #0
+ 395              	.LVL37:
+ 159:Board/v3/Src/usbd_desc.c **** 
+ 396              		.loc 1 159 1 view .LVU73
+ 397 000e 7047     		bx	lr
+ 398              	.LVL38:
+ 399              	.L41:
+ 152:Board/v3/Src/usbd_desc.c ****     return USBD_MS_OS_StringDescriptor;
+ 400              		.loc 1 152 5 is_stmt 1 view .LVU74
+ 152:Board/v3/Src/usbd_desc.c ****     return USBD_MS_OS_StringDescriptor;
+ 401              		.loc 1 152 13 is_stmt 0 view .LVU75
+ 402 0010 1223     		movs	r3, #18
+ 403 0012 1380     		strh	r3, [r2]	@ movhi
+ 153:Board/v3/Src/usbd_desc.c ****   } else if (USBD_IDX_ODRIVE_INTF_STR == index) {
+ 404              		.loc 1 153 5 is_stmt 1 view .LVU76
+ 153:Board/v3/Src/usbd_desc.c ****   } else if (USBD_IDX_ODRIVE_INTF_STR == index) {
+ 405              		.loc 1 153 12 is_stmt 0 view .LVU77
+ 406 0014 0448     		ldr	r0, .L43
+ 407              	.LVL39:
+ 153:Board/v3/Src/usbd_desc.c ****   } else if (USBD_IDX_ODRIVE_INTF_STR == index) {
+ 408              		.loc 1 153 12 view .LVU78
+ 409 0016 7047     		bx	lr
+ 410              	.LVL40:
+ 411              	.L42:
+ARM GAS  /tmp/ccCmJQOM.s 			page 16
+
+
+ 149:Board/v3/Src/usbd_desc.c ****   *length = 0;
+ 412              		.loc 1 149 1 view .LVU79
+ 413 0018 10B5     		push	{r4, lr}
+ 414              	.LCFI5:
+ 415              		.cfi_def_cfa_offset 8
+ 416              		.cfi_offset 4, -8
+ 417              		.cfi_offset 14, -4
+ 155:Board/v3/Src/usbd_desc.c ****     return USBD_StrDesc;
+ 418              		.loc 1 155 5 is_stmt 1 view .LVU80
+ 419 001a 044C     		ldr	r4, .L43+4
+ 420 001c 2146     		mov	r1, r4
+ 421              	.LVL41:
+ 155:Board/v3/Src/usbd_desc.c ****     return USBD_StrDesc;
+ 422              		.loc 1 155 5 is_stmt 0 view .LVU81
+ 423 001e 0448     		ldr	r0, .L43+8
+ 424              	.LVL42:
+ 155:Board/v3/Src/usbd_desc.c ****     return USBD_StrDesc;
+ 425              		.loc 1 155 5 view .LVU82
+ 426 0020 FFF7FEFF 		bl	USBD_GetString
+ 427              	.LVL43:
+ 156:Board/v3/Src/usbd_desc.c ****   }
+ 428              		.loc 1 156 5 is_stmt 1 view .LVU83
+ 156:Board/v3/Src/usbd_desc.c ****   }
+ 429              		.loc 1 156 12 is_stmt 0 view .LVU84
+ 430 0024 2046     		mov	r0, r4
+ 159:Board/v3/Src/usbd_desc.c **** 
+ 431              		.loc 1 159 1 view .LVU85
+ 432 0026 10BD     		pop	{r4, pc}
+ 433              	.L44:
+ 434              		.align	2
+ 435              	.L43:
+ 436 0028 00000000 		.word	.LANCHOR3
+ 437 002c 00000000 		.word	.LANCHOR2
+ 438 0030 00000000 		.word	.LC4
+ 439              		.cfi_endproc
+ 440              	.LFE178:
+ 442              		.global	USBD_LangIDDesc
+ 443              		.global	USBD_FS_DeviceDesc
+ 444              		.global	FS_Desc
+ 445              		.global	USBD_StrDesc
+ 446              		.global	USBD_MS_OS_StringDescriptor
+ 447              		.section	.bss.USBD_StrDesc,"aw",%nobits
+ 448              		.align	2
+ 449              		.set	.LANCHOR2,. + 0
+ 452              	USBD_StrDesc:
+ 453 0000 00000000 		.space	512
+ 453      00000000 
+ 453      00000000 
+ 453      00000000 
+ 453      00000000 
+ 454              		.section	.data.FS_Desc,"aw"
+ 455              		.align	2
+ 458              	FS_Desc:
+ 459 0000 00000000 		.word	USBD_FS_DeviceDescriptor
+ 460 0004 00000000 		.word	USBD_FS_LangIDStrDescriptor
+ 461 0008 00000000 		.word	USBD_FS_ManufacturerStrDescriptor
+ 462 000c 00000000 		.word	USBD_FS_ProductStrDescriptor
+ARM GAS  /tmp/ccCmJQOM.s 			page 17
+
+
+ 463 0010 00000000 		.word	USBD_FS_SerialStrDescriptor
+ 464 0014 00000000 		.word	USBD_FS_ConfigStrDescriptor
+ 465 0018 00000000 		.word	USBD_FS_InterfaceStrDescriptor
+ 466              		.section	.data.USBD_FS_DeviceDesc,"aw"
+ 467              		.align	2
+ 468              		.set	.LANCHOR0,. + 0
+ 471              	USBD_FS_DeviceDesc:
+ 472 0000 12010002 		.ascii	"\022\001\000\002\357\002\001@\011\0222\015\000\003\001"
+ 472      EF020140 
+ 472      0912320D 
+ 472      000301
+ 473 000f 020301   		.ascii	"\002\003\001"
+ 474              		.section	.data.USBD_LangIDDesc,"aw"
+ 475              		.align	2
+ 476              		.set	.LANCHOR1,. + 0
+ 479              	USBD_LangIDDesc:
+ 480 0000 04030904 		.ascii	"\004\003\011\004"
+ 481              		.section	.data.USBD_MS_OS_StringDescriptor,"aw"
+ 482              		.align	2
+ 483              		.set	.LANCHOR3,. + 0
+ 486              	USBD_MS_OS_StringDescriptor:
+ 487 0000 12034D00 		.ascii	"\022\003M\000S\000F\000T\0001\0000\0000\000P\000"
+ 487      53004600 
+ 487      54003100 
+ 487      30003000 
+ 487      5000
+ 488              		.text
+ 489              	.Letext0:
+ 490              		.file 2 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 491              		.file 3 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 492              		.file 4 "ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h"
+ 493              		.file 5 "Board/v3/Inc/board.h"
+ 494              		.file 6 "Board/v3/Inc/usbd_desc.h"
+ 495              		.file 7 "./MotorControl/odrive_main.h"
+ 496              		.file 8 "ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_ctlreq.h"
+ARM GAS  /tmp/ccCmJQOM.s 			page 18
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 usbd_desc.c
+     /tmp/ccCmJQOM.s:20     .text.USBD_FS_DeviceDescriptor:0000000000000000 $t
+     /tmp/ccCmJQOM.s:26     .text.USBD_FS_DeviceDescriptor:0000000000000000 USBD_FS_DeviceDescriptor
+     /tmp/ccCmJQOM.s:48     .text.USBD_FS_DeviceDescriptor:0000000000000008 $d
+     /tmp/ccCmJQOM.s:53     .text.USBD_FS_LangIDStrDescriptor:0000000000000000 $t
+     /tmp/ccCmJQOM.s:59     .text.USBD_FS_LangIDStrDescriptor:0000000000000000 USBD_FS_LangIDStrDescriptor
+     /tmp/ccCmJQOM.s:80     .text.USBD_FS_LangIDStrDescriptor:0000000000000008 $d
+     /tmp/ccCmJQOM.s:85     .rodata.USBD_FS_ProductStrDescriptor.str1.4:0000000000000000 $d
+     /tmp/ccCmJQOM.s:89     .text.USBD_FS_ProductStrDescriptor:0000000000000000 $t
+     /tmp/ccCmJQOM.s:95     .text.USBD_FS_ProductStrDescriptor:0000000000000000 USBD_FS_ProductStrDescriptor
+     /tmp/ccCmJQOM.s:142    .text.USBD_FS_ProductStrDescriptor:000000000000001c $d
+     /tmp/ccCmJQOM.s:148    .rodata.USBD_FS_ManufacturerStrDescriptor.str1.4:0000000000000000 $d
+     /tmp/ccCmJQOM.s:152    .text.USBD_FS_ManufacturerStrDescriptor:0000000000000000 $t
+     /tmp/ccCmJQOM.s:158    .text.USBD_FS_ManufacturerStrDescriptor:0000000000000000 USBD_FS_ManufacturerStrDescriptor
+     /tmp/ccCmJQOM.s:189    .text.USBD_FS_ManufacturerStrDescriptor:0000000000000014 $d
+     /tmp/ccCmJQOM.s:195    .text.USBD_FS_SerialStrDescriptor:0000000000000000 $t
+     /tmp/ccCmJQOM.s:201    .text.USBD_FS_SerialStrDescriptor:0000000000000000 USBD_FS_SerialStrDescriptor
+     /tmp/ccCmJQOM.s:232    .text.USBD_FS_SerialStrDescriptor:0000000000000014 $d
+     /tmp/ccCmJQOM.s:238    .rodata.USBD_FS_ConfigStrDescriptor.str1.4:0000000000000000 $d
+     /tmp/ccCmJQOM.s:242    .text.USBD_FS_ConfigStrDescriptor:0000000000000000 $t
+     /tmp/ccCmJQOM.s:248    .text.USBD_FS_ConfigStrDescriptor:0000000000000000 USBD_FS_ConfigStrDescriptor
+     /tmp/ccCmJQOM.s:295    .text.USBD_FS_ConfigStrDescriptor:000000000000001c $d
+     /tmp/ccCmJQOM.s:301    .rodata.USBD_FS_InterfaceStrDescriptor.str1.4:0000000000000000 $d
+     /tmp/ccCmJQOM.s:305    .text.USBD_FS_InterfaceStrDescriptor:0000000000000000 $t
+     /tmp/ccCmJQOM.s:311    .text.USBD_FS_InterfaceStrDescriptor:0000000000000000 USBD_FS_InterfaceStrDescriptor
+     /tmp/ccCmJQOM.s:358    .text.USBD_FS_InterfaceStrDescriptor:000000000000001c $d
+     /tmp/ccCmJQOM.s:364    .rodata.USBD_UsrStrDescriptor.str1.4:0000000000000000 $d
+     /tmp/ccCmJQOM.s:368    .text.USBD_UsrStrDescriptor:0000000000000000 $t
+     /tmp/ccCmJQOM.s:374    .text.USBD_UsrStrDescriptor:0000000000000000 USBD_UsrStrDescriptor
+     /tmp/ccCmJQOM.s:436    .text.USBD_UsrStrDescriptor:0000000000000028 $d
+     /tmp/ccCmJQOM.s:479    .data.USBD_LangIDDesc:0000000000000000 USBD_LangIDDesc
+     /tmp/ccCmJQOM.s:471    .data.USBD_FS_DeviceDesc:0000000000000000 USBD_FS_DeviceDesc
+     /tmp/ccCmJQOM.s:458    .data.FS_Desc:0000000000000000 FS_Desc
+     /tmp/ccCmJQOM.s:452    .bss.USBD_StrDesc:0000000000000000 USBD_StrDesc
+     /tmp/ccCmJQOM.s:486    .data.USBD_MS_OS_StringDescriptor:0000000000000000 USBD_MS_OS_StringDescriptor
+     /tmp/ccCmJQOM.s:448    .bss.USBD_StrDesc:0000000000000000 $d
+     /tmp/ccCmJQOM.s:455    .data.FS_Desc:0000000000000000 $d
+     /tmp/ccCmJQOM.s:467    .data.USBD_FS_DeviceDesc:0000000000000000 $d
+     /tmp/ccCmJQOM.s:475    .data.USBD_LangIDDesc:0000000000000000 $d
+     /tmp/ccCmJQOM.s:482    .data.USBD_MS_OS_StringDescriptor:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+USBD_GetString
+serial_number_str

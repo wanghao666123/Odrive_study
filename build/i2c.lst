@@ -1,0 +1,667 @@
+ARM GAS  /tmp/ccpECnZ8.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"i2c.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.rodata.MX_I2C1_Init.str1.4,"aMS",%progbits,1
+  20              		.align	2
+  21              	.LC0:
+  22 0000 426F6172 		.ascii	"Board/v3/Src/i2c.c\000"
+  22      642F7633 
+  22      2F537263 
+  22      2F693263 
+  22      2E6300
+  23              		.section	.text.MX_I2C1_Init,"ax",%progbits
+  24              		.align	1
+  25              		.global	MX_I2C1_Init
+  26              		.syntax unified
+  27              		.thumb
+  28              		.thumb_func
+  30              	MX_I2C1_Init:
+  31              	.LVL0:
+  32              	.LFB133:
+  33              		.file 1 "Board/v3/Src/i2c.c"
+   1:Board/v3/Src/i2c.c **** /**
+   2:Board/v3/Src/i2c.c ****   ******************************************************************************
+   3:Board/v3/Src/i2c.c ****   * File Name          : I2C.c
+   4:Board/v3/Src/i2c.c ****   * Description        : This file provides code for the configuration
+   5:Board/v3/Src/i2c.c ****   *                      of the I2C instances.
+   6:Board/v3/Src/i2c.c ****   ******************************************************************************
+   7:Board/v3/Src/i2c.c ****   * This notice applies to any and all portions of this file
+   8:Board/v3/Src/i2c.c ****   * that are not between comment pairs USER CODE BEGIN and
+   9:Board/v3/Src/i2c.c ****   * USER CODE END. Other portions of this file, whether 
+  10:Board/v3/Src/i2c.c ****   * inserted by the user or by software development tools
+  11:Board/v3/Src/i2c.c ****   * are owned by their respective copyright owners.
+  12:Board/v3/Src/i2c.c ****   *
+  13:Board/v3/Src/i2c.c ****   * Copyright (c) 2018 STMicroelectronics International N.V. 
+  14:Board/v3/Src/i2c.c ****   * All rights reserved.
+  15:Board/v3/Src/i2c.c ****   *
+  16:Board/v3/Src/i2c.c ****   * Redistribution and use in source and binary forms, with or without 
+  17:Board/v3/Src/i2c.c ****   * modification, are permitted, provided that the following conditions are met:
+  18:Board/v3/Src/i2c.c ****   *
+  19:Board/v3/Src/i2c.c ****   * 1. Redistribution of source code must retain the above copyright notice, 
+  20:Board/v3/Src/i2c.c ****   *    this list of conditions and the following disclaimer.
+  21:Board/v3/Src/i2c.c ****   * 2. Redistributions in binary form must reproduce the above copyright notice,
+ARM GAS  /tmp/ccpECnZ8.s 			page 2
+
+
+  22:Board/v3/Src/i2c.c ****   *    this list of conditions and the following disclaimer in the documentation
+  23:Board/v3/Src/i2c.c ****   *    and/or other materials provided with the distribution.
+  24:Board/v3/Src/i2c.c ****   * 3. Neither the name of STMicroelectronics nor the names of other 
+  25:Board/v3/Src/i2c.c ****   *    contributors to this software may be used to endorse or promote products 
+  26:Board/v3/Src/i2c.c ****   *    derived from this software without specific written permission.
+  27:Board/v3/Src/i2c.c ****   * 4. This software, including modifications and/or derivative works of this 
+  28:Board/v3/Src/i2c.c ****   *    software, must execute solely and exclusively on microcontroller or
+  29:Board/v3/Src/i2c.c ****   *    microprocessor devices manufactured by or for STMicroelectronics.
+  30:Board/v3/Src/i2c.c ****   * 5. Redistribution and use of this software other than as permitted under 
+  31:Board/v3/Src/i2c.c ****   *    this license is void and will automatically terminate your rights under 
+  32:Board/v3/Src/i2c.c ****   *    this license. 
+  33:Board/v3/Src/i2c.c ****   *
+  34:Board/v3/Src/i2c.c ****   * THIS SOFTWARE IS PROVIDED BY STMICROELECTRONICS AND CONTRIBUTORS "AS IS" 
+  35:Board/v3/Src/i2c.c ****   * AND ANY EXPRESS, IMPLIED OR STATUTORY WARRANTIES, INCLUDING, BUT NOT 
+  36:Board/v3/Src/i2c.c ****   * LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+  37:Board/v3/Src/i2c.c ****   * PARTICULAR PURPOSE AND NON-INFRINGEMENT OF THIRD PARTY INTELLECTUAL PROPERTY
+  38:Board/v3/Src/i2c.c ****   * RIGHTS ARE DISCLAIMED TO THE FULLEST EXTENT PERMITTED BY LAW. IN NO EVENT 
+  39:Board/v3/Src/i2c.c ****   * SHALL STMICROELECTRONICS OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  40:Board/v3/Src/i2c.c ****   * INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+  41:Board/v3/Src/i2c.c ****   * LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, 
+  42:Board/v3/Src/i2c.c ****   * OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
+  43:Board/v3/Src/i2c.c ****   * LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
+  44:Board/v3/Src/i2c.c ****   * NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+  45:Board/v3/Src/i2c.c ****   * EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+  46:Board/v3/Src/i2c.c ****   *
+  47:Board/v3/Src/i2c.c ****   ******************************************************************************
+  48:Board/v3/Src/i2c.c ****   */
+  49:Board/v3/Src/i2c.c **** 
+  50:Board/v3/Src/i2c.c **** /* Includes ------------------------------------------------------------------*/
+  51:Board/v3/Src/i2c.c **** #include "i2c.h"
+  52:Board/v3/Src/i2c.c **** 
+  53:Board/v3/Src/i2c.c **** #include "gpio.h"
+  54:Board/v3/Src/i2c.c **** #include "dma.h"
+  55:Board/v3/Src/i2c.c **** 
+  56:Board/v3/Src/i2c.c **** /* USER CODE BEGIN 0 */
+  57:Board/v3/Src/i2c.c **** 
+  58:Board/v3/Src/i2c.c **** /* USER CODE END 0 */
+  59:Board/v3/Src/i2c.c **** 
+  60:Board/v3/Src/i2c.c **** I2C_HandleTypeDef hi2c1;
+  61:Board/v3/Src/i2c.c **** DMA_HandleTypeDef hdma_i2c1_rx;
+  62:Board/v3/Src/i2c.c **** DMA_HandleTypeDef hdma_i2c1_tx;
+  63:Board/v3/Src/i2c.c **** 
+  64:Board/v3/Src/i2c.c **** /* I2C1 init function */
+  65:Board/v3/Src/i2c.c **** void MX_I2C1_Init(uint8_t addr)
+  66:Board/v3/Src/i2c.c **** {
+  34              		.loc 1 66 1 view -0
+  35              		.cfi_startproc
+  36              		@ args = 0, pretend = 0, frame = 0
+  37              		@ frame_needed = 0, uses_anonymous_args = 0
+  38              		.loc 1 66 1 is_stmt 0 view .LVU1
+  39 0000 08B5     		push	{r3, lr}
+  40              	.LCFI0:
+  41              		.cfi_def_cfa_offset 8
+  42              		.cfi_offset 3, -8
+  43              		.cfi_offset 14, -4
+  67:Board/v3/Src/i2c.c **** 
+  68:Board/v3/Src/i2c.c ****   hi2c1.Instance = I2C1;
+ARM GAS  /tmp/ccpECnZ8.s 			page 3
+
+
+  44              		.loc 1 68 3 is_stmt 1 view .LVU2
+  45              		.loc 1 68 18 is_stmt 0 view .LVU3
+  46 0002 0D4B     		ldr	r3, .L5
+  47 0004 0D4A     		ldr	r2, .L5+4
+  48 0006 1A60     		str	r2, [r3]
+  69:Board/v3/Src/i2c.c ****   hi2c1.Init.ClockSpeed = 100000;
+  49              		.loc 1 69 3 is_stmt 1 view .LVU4
+  50              		.loc 1 69 25 is_stmt 0 view .LVU5
+  51 0008 0D4A     		ldr	r2, .L5+8
+  52 000a 5A60     		str	r2, [r3, #4]
+  70:Board/v3/Src/i2c.c ****   hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  53              		.loc 1 70 3 is_stmt 1 view .LVU6
+  54              		.loc 1 70 24 is_stmt 0 view .LVU7
+  55 000c 0022     		movs	r2, #0
+  56 000e 9A60     		str	r2, [r3, #8]
+  71:Board/v3/Src/i2c.c ****   hi2c1.Init.OwnAddress1 = addr << 1;
+  57              		.loc 1 71 3 is_stmt 1 view .LVU8
+  58              		.loc 1 71 33 is_stmt 0 view .LVU9
+  59 0010 4000     		lsls	r0, r0, #1
+  60              	.LVL1:
+  61              		.loc 1 71 26 view .LVU10
+  62 0012 D860     		str	r0, [r3, #12]
+  72:Board/v3/Src/i2c.c ****   hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  63              		.loc 1 72 3 is_stmt 1 view .LVU11
+  64              		.loc 1 72 29 is_stmt 0 view .LVU12
+  65 0014 4FF48041 		mov	r1, #16384
+  66 0018 1961     		str	r1, [r3, #16]
+  73:Board/v3/Src/i2c.c ****   hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  67              		.loc 1 73 3 is_stmt 1 view .LVU13
+  68              		.loc 1 73 30 is_stmt 0 view .LVU14
+  69 001a 5A61     		str	r2, [r3, #20]
+  74:Board/v3/Src/i2c.c ****   hi2c1.Init.OwnAddress2 = 0;
+  70              		.loc 1 74 3 is_stmt 1 view .LVU15
+  71              		.loc 1 74 26 is_stmt 0 view .LVU16
+  72 001c 9A61     		str	r2, [r3, #24]
+  75:Board/v3/Src/i2c.c ****   hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  73              		.loc 1 75 3 is_stmt 1 view .LVU17
+  74              		.loc 1 75 30 is_stmt 0 view .LVU18
+  75 001e DA61     		str	r2, [r3, #28]
+  76:Board/v3/Src/i2c.c ****   hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  76              		.loc 1 76 3 is_stmt 1 view .LVU19
+  77              		.loc 1 76 28 is_stmt 0 view .LVU20
+  78 0020 1A62     		str	r2, [r3, #32]
+  77:Board/v3/Src/i2c.c ****   if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  79              		.loc 1 77 3 is_stmt 1 view .LVU21
+  80              		.loc 1 77 7 is_stmt 0 view .LVU22
+  81 0022 1846     		mov	r0, r3
+  82 0024 FFF7FEFF 		bl	HAL_I2C_Init
+  83              	.LVL2:
+  84              		.loc 1 77 6 view .LVU23
+  85 0028 00B9     		cbnz	r0, .L4
+  86              	.L1:
+  78:Board/v3/Src/i2c.c ****   {
+  79:Board/v3/Src/i2c.c ****     _Error_Handler(__FILE__, __LINE__);
+  80:Board/v3/Src/i2c.c ****   }
+  81:Board/v3/Src/i2c.c **** 
+  82:Board/v3/Src/i2c.c **** }
+ARM GAS  /tmp/ccpECnZ8.s 			page 4
+
+
+  87              		.loc 1 82 1 view .LVU24
+  88 002a 08BD     		pop	{r3, pc}
+  89              	.L4:
+  79:Board/v3/Src/i2c.c ****   }
+  90              		.loc 1 79 5 is_stmt 1 view .LVU25
+  91 002c 4F21     		movs	r1, #79
+  92 002e 0548     		ldr	r0, .L5+12
+  93 0030 FFF7FEFF 		bl	_Error_Handler
+  94              	.LVL3:
+  95              		.loc 1 82 1 is_stmt 0 view .LVU26
+  96 0034 F9E7     		b	.L1
+  97              	.L6:
+  98 0036 00BF     		.align	2
+  99              	.L5:
+ 100 0038 00000000 		.word	.LANCHOR0
+ 101 003c 00540040 		.word	1073763328
+ 102 0040 A0860100 		.word	100000
+ 103 0044 00000000 		.word	.LC0
+ 104              		.cfi_endproc
+ 105              	.LFE133:
+ 107              		.section	.text.HAL_I2C_MspInit,"ax",%progbits
+ 108              		.align	1
+ 109              		.global	HAL_I2C_MspInit
+ 110              		.syntax unified
+ 111              		.thumb
+ 112              		.thumb_func
+ 114              	HAL_I2C_MspInit:
+ 115              	.LVL4:
+ 116              	.LFB134:
+  83:Board/v3/Src/i2c.c **** 
+  84:Board/v3/Src/i2c.c **** void HAL_I2C_MspInit(I2C_HandleTypeDef* i2cHandle)
+  85:Board/v3/Src/i2c.c **** {
+ 117              		.loc 1 85 1 is_stmt 1 view -0
+ 118              		.cfi_startproc
+ 119              		@ args = 0, pretend = 0, frame = 8
+ 120              		@ frame_needed = 0, uses_anonymous_args = 0
+  86:Board/v3/Src/i2c.c **** 
+  87:Board/v3/Src/i2c.c ****   if(i2cHandle->Instance==I2C1)
+ 121              		.loc 1 87 3 view .LVU28
+ 122              		.loc 1 87 15 is_stmt 0 view .LVU29
+ 123 0000 0268     		ldr	r2, [r0]
+ 124              		.loc 1 87 5 view .LVU30
+ 125 0002 2F4B     		ldr	r3, .L18
+ 126 0004 9A42     		cmp	r2, r3
+ 127 0006 00D0     		beq	.L15
+ 128 0008 7047     		bx	lr
+ 129              	.L15:
+  85:Board/v3/Src/i2c.c **** 
+ 130              		.loc 1 85 1 view .LVU31
+ 131 000a 10B5     		push	{r4, lr}
+ 132              	.LCFI1:
+ 133              		.cfi_def_cfa_offset 8
+ 134              		.cfi_offset 4, -8
+ 135              		.cfi_offset 14, -4
+ 136 000c 82B0     		sub	sp, sp, #8
+ 137              	.LCFI2:
+ 138              		.cfi_def_cfa_offset 16
+ARM GAS  /tmp/ccpECnZ8.s 			page 5
+
+
+ 139 000e 0446     		mov	r4, r0
+  88:Board/v3/Src/i2c.c ****   {
+  89:Board/v3/Src/i2c.c ****   /* USER CODE BEGIN I2C1_MspInit 0 */
+  90:Board/v3/Src/i2c.c **** 
+  91:Board/v3/Src/i2c.c ****   /* USER CODE END I2C1_MspInit 0 */
+  92:Board/v3/Src/i2c.c **** 
+  93:Board/v3/Src/i2c.c ****     /* I2C1 clock enable */
+  94:Board/v3/Src/i2c.c ****     __HAL_RCC_I2C1_CLK_ENABLE();
+ 140              		.loc 1 94 5 is_stmt 1 view .LVU32
+ 141              	.LBB2:
+ 142              		.loc 1 94 5 view .LVU33
+ 143 0010 0023     		movs	r3, #0
+ 144 0012 0193     		str	r3, [sp, #4]
+ 145              		.loc 1 94 5 view .LVU34
+ 146 0014 2B4A     		ldr	r2, .L18+4
+ 147 0016 116C     		ldr	r1, [r2, #64]
+ 148 0018 41F40011 		orr	r1, r1, #2097152
+ 149 001c 1164     		str	r1, [r2, #64]
+ 150              		.loc 1 94 5 view .LVU35
+ 151 001e 126C     		ldr	r2, [r2, #64]
+ 152 0020 02F40012 		and	r2, r2, #2097152
+ 153 0024 0192     		str	r2, [sp, #4]
+ 154              		.loc 1 94 5 view .LVU36
+ 155 0026 019A     		ldr	r2, [sp, #4]
+ 156              	.LBE2:
+ 157              		.loc 1 94 5 view .LVU37
+  95:Board/v3/Src/i2c.c ****   
+  96:Board/v3/Src/i2c.c ****     /* I2C1 DMA Init */
+  97:Board/v3/Src/i2c.c ****     /* I2C1_RX Init */
+  98:Board/v3/Src/i2c.c ****     hdma_i2c1_rx.Instance = DMA1_Stream0;
+ 158              		.loc 1 98 5 view .LVU38
+ 159              		.loc 1 98 27 is_stmt 0 view .LVU39
+ 160 0028 2748     		ldr	r0, .L18+8
+ 161              	.LVL5:
+ 162              		.loc 1 98 27 view .LVU40
+ 163 002a 284A     		ldr	r2, .L18+12
+ 164 002c 0260     		str	r2, [r0]
+  99:Board/v3/Src/i2c.c ****     hdma_i2c1_rx.Init.Channel = DMA_CHANNEL_1;
+ 165              		.loc 1 99 5 is_stmt 1 view .LVU41
+ 166              		.loc 1 99 31 is_stmt 0 view .LVU42
+ 167 002e 4FF00072 		mov	r2, #33554432
+ 168 0032 4260     		str	r2, [r0, #4]
+ 100:Board/v3/Src/i2c.c ****     hdma_i2c1_rx.Init.Direction = DMA_PERIPH_TO_MEMORY;
+ 169              		.loc 1 100 5 is_stmt 1 view .LVU43
+ 170              		.loc 1 100 33 is_stmt 0 view .LVU44
+ 171 0034 8360     		str	r3, [r0, #8]
+ 101:Board/v3/Src/i2c.c ****     hdma_i2c1_rx.Init.PeriphInc = DMA_PINC_DISABLE;
+ 172              		.loc 1 101 5 is_stmt 1 view .LVU45
+ 173              		.loc 1 101 33 is_stmt 0 view .LVU46
+ 174 0036 C360     		str	r3, [r0, #12]
+ 102:Board/v3/Src/i2c.c ****     hdma_i2c1_rx.Init.MemInc = DMA_MINC_ENABLE;
+ 175              		.loc 1 102 5 is_stmt 1 view .LVU47
+ 176              		.loc 1 102 30 is_stmt 0 view .LVU48
+ 177 0038 4FF48062 		mov	r2, #1024
+ 178 003c 0261     		str	r2, [r0, #16]
+ 103:Board/v3/Src/i2c.c ****     hdma_i2c1_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+ 179              		.loc 1 103 5 is_stmt 1 view .LVU49
+ARM GAS  /tmp/ccpECnZ8.s 			page 6
+
+
+ 180              		.loc 1 103 43 is_stmt 0 view .LVU50
+ 181 003e 4361     		str	r3, [r0, #20]
+ 104:Board/v3/Src/i2c.c ****     hdma_i2c1_rx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+ 182              		.loc 1 104 5 is_stmt 1 view .LVU51
+ 183              		.loc 1 104 40 is_stmt 0 view .LVU52
+ 184 0040 8361     		str	r3, [r0, #24]
+ 105:Board/v3/Src/i2c.c ****     hdma_i2c1_rx.Init.Mode = DMA_CIRCULAR;
+ 185              		.loc 1 105 5 is_stmt 1 view .LVU53
+ 186              		.loc 1 105 28 is_stmt 0 view .LVU54
+ 187 0042 4FF48072 		mov	r2, #256
+ 188 0046 C261     		str	r2, [r0, #28]
+ 106:Board/v3/Src/i2c.c ****     hdma_i2c1_rx.Init.Priority = DMA_PRIORITY_LOW;
+ 189              		.loc 1 106 5 is_stmt 1 view .LVU55
+ 190              		.loc 1 106 32 is_stmt 0 view .LVU56
+ 191 0048 0362     		str	r3, [r0, #32]
+ 107:Board/v3/Src/i2c.c ****     hdma_i2c1_rx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+ 192              		.loc 1 107 5 is_stmt 1 view .LVU57
+ 193              		.loc 1 107 32 is_stmt 0 view .LVU58
+ 194 004a 4362     		str	r3, [r0, #36]
+ 108:Board/v3/Src/i2c.c ****     if (HAL_DMA_Init(&hdma_i2c1_rx) != HAL_OK)
+ 195              		.loc 1 108 5 is_stmt 1 view .LVU59
+ 196              		.loc 1 108 9 is_stmt 0 view .LVU60
+ 197 004c FFF7FEFF 		bl	HAL_DMA_Init
+ 198              	.LVL6:
+ 199              		.loc 1 108 8 view .LVU61
+ 200 0050 60BB     		cbnz	r0, .L16
+ 201              	.L9:
+ 109:Board/v3/Src/i2c.c ****     {
+ 110:Board/v3/Src/i2c.c ****       _Error_Handler(__FILE__, __LINE__);
+ 111:Board/v3/Src/i2c.c ****     }
+ 112:Board/v3/Src/i2c.c **** 
+ 113:Board/v3/Src/i2c.c ****     __HAL_LINKDMA(i2cHandle,hdmarx,hdma_i2c1_rx);
+ 202              		.loc 1 113 5 is_stmt 1 view .LVU62
+ 203              		.loc 1 113 5 view .LVU63
+ 204 0052 1D4B     		ldr	r3, .L18+8
+ 205 0054 A363     		str	r3, [r4, #56]
+ 206              		.loc 1 113 5 view .LVU64
+ 207 0056 9C63     		str	r4, [r3, #56]
+ 208              		.loc 1 113 5 view .LVU65
+ 114:Board/v3/Src/i2c.c **** 
+ 115:Board/v3/Src/i2c.c ****     /* I2C1_TX Init */
+ 116:Board/v3/Src/i2c.c ****     hdma_i2c1_tx.Instance = DMA1_Stream6;
+ 209              		.loc 1 116 5 view .LVU66
+ 210              		.loc 1 116 27 is_stmt 0 view .LVU67
+ 211 0058 1D48     		ldr	r0, .L18+16
+ 212 005a 1E4B     		ldr	r3, .L18+20
+ 213 005c 0360     		str	r3, [r0]
+ 117:Board/v3/Src/i2c.c ****     hdma_i2c1_tx.Init.Channel = DMA_CHANNEL_1;
+ 214              		.loc 1 117 5 is_stmt 1 view .LVU68
+ 215              		.loc 1 117 31 is_stmt 0 view .LVU69
+ 216 005e 4FF00073 		mov	r3, #33554432
+ 217 0062 4360     		str	r3, [r0, #4]
+ 118:Board/v3/Src/i2c.c ****     hdma_i2c1_tx.Init.Direction = DMA_MEMORY_TO_PERIPH;
+ 218              		.loc 1 118 5 is_stmt 1 view .LVU70
+ 219              		.loc 1 118 33 is_stmt 0 view .LVU71
+ 220 0064 4023     		movs	r3, #64
+ 221 0066 8360     		str	r3, [r0, #8]
+ARM GAS  /tmp/ccpECnZ8.s 			page 7
+
+
+ 119:Board/v3/Src/i2c.c ****     hdma_i2c1_tx.Init.PeriphInc = DMA_PINC_DISABLE;
+ 222              		.loc 1 119 5 is_stmt 1 view .LVU72
+ 223              		.loc 1 119 33 is_stmt 0 view .LVU73
+ 224 0068 0023     		movs	r3, #0
+ 225 006a C360     		str	r3, [r0, #12]
+ 120:Board/v3/Src/i2c.c ****     hdma_i2c1_tx.Init.MemInc = DMA_MINC_ENABLE;
+ 226              		.loc 1 120 5 is_stmt 1 view .LVU74
+ 227              		.loc 1 120 30 is_stmt 0 view .LVU75
+ 228 006c 4FF48062 		mov	r2, #1024
+ 229 0070 0261     		str	r2, [r0, #16]
+ 121:Board/v3/Src/i2c.c ****     hdma_i2c1_tx.Init.PeriphDataAlignment = DMA_PDATAALIGN_BYTE;
+ 230              		.loc 1 121 5 is_stmt 1 view .LVU76
+ 231              		.loc 1 121 43 is_stmt 0 view .LVU77
+ 232 0072 4361     		str	r3, [r0, #20]
+ 122:Board/v3/Src/i2c.c ****     hdma_i2c1_tx.Init.MemDataAlignment = DMA_MDATAALIGN_BYTE;
+ 233              		.loc 1 122 5 is_stmt 1 view .LVU78
+ 234              		.loc 1 122 40 is_stmt 0 view .LVU79
+ 235 0074 8361     		str	r3, [r0, #24]
+ 123:Board/v3/Src/i2c.c ****     hdma_i2c1_tx.Init.Mode = DMA_NORMAL;
+ 236              		.loc 1 123 5 is_stmt 1 view .LVU80
+ 237              		.loc 1 123 28 is_stmt 0 view .LVU81
+ 238 0076 C361     		str	r3, [r0, #28]
+ 124:Board/v3/Src/i2c.c ****     hdma_i2c1_tx.Init.Priority = DMA_PRIORITY_LOW;
+ 239              		.loc 1 124 5 is_stmt 1 view .LVU82
+ 240              		.loc 1 124 32 is_stmt 0 view .LVU83
+ 241 0078 0362     		str	r3, [r0, #32]
+ 125:Board/v3/Src/i2c.c ****     hdma_i2c1_tx.Init.FIFOMode = DMA_FIFOMODE_DISABLE;
+ 242              		.loc 1 125 5 is_stmt 1 view .LVU84
+ 243              		.loc 1 125 32 is_stmt 0 view .LVU85
+ 244 007a 4362     		str	r3, [r0, #36]
+ 126:Board/v3/Src/i2c.c ****     if (HAL_DMA_Init(&hdma_i2c1_tx) != HAL_OK)
+ 245              		.loc 1 126 5 is_stmt 1 view .LVU86
+ 246              		.loc 1 126 9 is_stmt 0 view .LVU87
+ 247 007c FFF7FEFF 		bl	HAL_DMA_Init
+ 248              	.LVL7:
+ 249              		.loc 1 126 8 view .LVU88
+ 250 0080 C8B9     		cbnz	r0, .L17
+ 251              	.L10:
+ 127:Board/v3/Src/i2c.c ****     {
+ 128:Board/v3/Src/i2c.c ****       _Error_Handler(__FILE__, __LINE__);
+ 129:Board/v3/Src/i2c.c ****     }
+ 130:Board/v3/Src/i2c.c **** 
+ 131:Board/v3/Src/i2c.c ****     __HAL_LINKDMA(i2cHandle,hdmatx,hdma_i2c1_tx);
+ 252              		.loc 1 131 5 is_stmt 1 view .LVU89
+ 253              		.loc 1 131 5 view .LVU90
+ 254 0082 134B     		ldr	r3, .L18+16
+ 255 0084 6363     		str	r3, [r4, #52]
+ 256              		.loc 1 131 5 view .LVU91
+ 257 0086 9C63     		str	r4, [r3, #56]
+ 258              		.loc 1 131 5 view .LVU92
+ 132:Board/v3/Src/i2c.c **** 
+ 133:Board/v3/Src/i2c.c ****     /* I2C1 interrupt Init */
+ 134:Board/v3/Src/i2c.c ****     HAL_NVIC_SetPriority(I2C1_EV_IRQn, 9, 0);
+ 259              		.loc 1 134 5 view .LVU93
+ 260 0088 0022     		movs	r2, #0
+ 261 008a 0921     		movs	r1, #9
+ 262 008c 1F20     		movs	r0, #31
+ARM GAS  /tmp/ccpECnZ8.s 			page 8
+
+
+ 263 008e FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 264              	.LVL8:
+ 135:Board/v3/Src/i2c.c ****     HAL_NVIC_EnableIRQ(I2C1_EV_IRQn);
+ 265              		.loc 1 135 5 view .LVU94
+ 266 0092 1F20     		movs	r0, #31
+ 267 0094 FFF7FEFF 		bl	HAL_NVIC_EnableIRQ
+ 268              	.LVL9:
+ 136:Board/v3/Src/i2c.c ****     HAL_NVIC_SetPriority(I2C1_ER_IRQn, 9, 0);
+ 269              		.loc 1 136 5 view .LVU95
+ 270 0098 0022     		movs	r2, #0
+ 271 009a 0921     		movs	r1, #9
+ 272 009c 2020     		movs	r0, #32
+ 273 009e FFF7FEFF 		bl	HAL_NVIC_SetPriority
+ 274              	.LVL10:
+ 137:Board/v3/Src/i2c.c ****     HAL_NVIC_EnableIRQ(I2C1_ER_IRQn);
+ 275              		.loc 1 137 5 view .LVU96
+ 276 00a2 2020     		movs	r0, #32
+ 277 00a4 FFF7FEFF 		bl	HAL_NVIC_EnableIRQ
+ 278              	.LVL11:
+ 138:Board/v3/Src/i2c.c ****   /* USER CODE BEGIN I2C1_MspInit 1 */
+ 139:Board/v3/Src/i2c.c **** 
+ 140:Board/v3/Src/i2c.c ****   /* USER CODE END I2C1_MspInit 1 */
+ 141:Board/v3/Src/i2c.c ****   }
+ 142:Board/v3/Src/i2c.c **** }
+ 279              		.loc 1 142 1 is_stmt 0 view .LVU97
+ 280 00a8 02B0     		add	sp, sp, #8
+ 281              	.LCFI3:
+ 282              		.cfi_remember_state
+ 283              		.cfi_def_cfa_offset 8
+ 284              		@ sp needed
+ 285 00aa 10BD     		pop	{r4, pc}
+ 286              	.LVL12:
+ 287              	.L16:
+ 288              	.LCFI4:
+ 289              		.cfi_restore_state
+ 110:Board/v3/Src/i2c.c ****     }
+ 290              		.loc 1 110 7 is_stmt 1 view .LVU98
+ 291 00ac 6E21     		movs	r1, #110
+ 292 00ae 0A48     		ldr	r0, .L18+24
+ 293 00b0 FFF7FEFF 		bl	_Error_Handler
+ 294              	.LVL13:
+ 295 00b4 CDE7     		b	.L9
+ 296              	.L17:
+ 128:Board/v3/Src/i2c.c ****     }
+ 297              		.loc 1 128 7 view .LVU99
+ 298 00b6 8021     		movs	r1, #128
+ 299 00b8 0748     		ldr	r0, .L18+24
+ 300 00ba FFF7FEFF 		bl	_Error_Handler
+ 301              	.LVL14:
+ 302 00be E0E7     		b	.L10
+ 303              	.L19:
+ 304              		.align	2
+ 305              	.L18:
+ 306 00c0 00540040 		.word	1073763328
+ 307 00c4 00380240 		.word	1073887232
+ 308 00c8 00000000 		.word	.LANCHOR1
+ 309 00cc 10600240 		.word	1073897488
+ARM GAS  /tmp/ccpECnZ8.s 			page 9
+
+
+ 310 00d0 00000000 		.word	.LANCHOR2
+ 311 00d4 A0600240 		.word	1073897632
+ 312 00d8 00000000 		.word	.LC0
+ 313              		.cfi_endproc
+ 314              	.LFE134:
+ 316              		.section	.text.HAL_I2C_MspDeInit,"ax",%progbits
+ 317              		.align	1
+ 318              		.global	HAL_I2C_MspDeInit
+ 319              		.syntax unified
+ 320              		.thumb
+ 321              		.thumb_func
+ 323              	HAL_I2C_MspDeInit:
+ 324              	.LVL15:
+ 325              	.LFB135:
+ 143:Board/v3/Src/i2c.c **** 
+ 144:Board/v3/Src/i2c.c **** void HAL_I2C_MspDeInit(I2C_HandleTypeDef* i2cHandle)
+ 145:Board/v3/Src/i2c.c **** {
+ 326              		.loc 1 145 1 view -0
+ 327              		.cfi_startproc
+ 328              		@ args = 0, pretend = 0, frame = 0
+ 329              		@ frame_needed = 0, uses_anonymous_args = 0
+ 146:Board/v3/Src/i2c.c **** 
+ 147:Board/v3/Src/i2c.c ****   if(i2cHandle->Instance==I2C1)
+ 330              		.loc 1 147 3 view .LVU101
+ 331              		.loc 1 147 15 is_stmt 0 view .LVU102
+ 332 0000 0268     		ldr	r2, [r0]
+ 333              		.loc 1 147 5 view .LVU103
+ 334 0002 0E4B     		ldr	r3, .L27
+ 335 0004 9A42     		cmp	r2, r3
+ 336 0006 00D0     		beq	.L26
+ 337 0008 7047     		bx	lr
+ 338              	.L26:
+ 145:Board/v3/Src/i2c.c **** 
+ 339              		.loc 1 145 1 view .LVU104
+ 340 000a 10B5     		push	{r4, lr}
+ 341              	.LCFI5:
+ 342              		.cfi_def_cfa_offset 8
+ 343              		.cfi_offset 4, -8
+ 344              		.cfi_offset 14, -4
+ 345 000c 0446     		mov	r4, r0
+ 148:Board/v3/Src/i2c.c ****   {
+ 149:Board/v3/Src/i2c.c ****   /* USER CODE BEGIN I2C1_MspDeInit 0 */
+ 150:Board/v3/Src/i2c.c **** 
+ 151:Board/v3/Src/i2c.c ****   /* USER CODE END I2C1_MspDeInit 0 */
+ 152:Board/v3/Src/i2c.c ****     /* Peripheral clock disable */
+ 153:Board/v3/Src/i2c.c ****     __HAL_RCC_I2C1_CLK_DISABLE();
+ 346              		.loc 1 153 5 is_stmt 1 view .LVU105
+ 347 000e 0C4A     		ldr	r2, .L27+4
+ 348 0010 136C     		ldr	r3, [r2, #64]
+ 349 0012 23F40013 		bic	r3, r3, #2097152
+ 350 0016 1364     		str	r3, [r2, #64]
+ 154:Board/v3/Src/i2c.c ****   
+ 155:Board/v3/Src/i2c.c ****     /**I2C1 GPIO Configuration    
+ 156:Board/v3/Src/i2c.c ****     PB8     ------> I2C1_SCL
+ 157:Board/v3/Src/i2c.c ****     PB9     ------> I2C1_SDA 
+ 158:Board/v3/Src/i2c.c ****     */
+ 159:Board/v3/Src/i2c.c ****     HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8|GPIO_PIN_9);
+ARM GAS  /tmp/ccpECnZ8.s 			page 10
+
+
+ 351              		.loc 1 159 5 view .LVU106
+ 352 0018 4FF44071 		mov	r1, #768
+ 353 001c 0948     		ldr	r0, .L27+8
+ 354              	.LVL16:
+ 355              		.loc 1 159 5 is_stmt 0 view .LVU107
+ 356 001e FFF7FEFF 		bl	HAL_GPIO_DeInit
+ 357              	.LVL17:
+ 160:Board/v3/Src/i2c.c **** 
+ 161:Board/v3/Src/i2c.c ****     /* I2C1 DMA DeInit */
+ 162:Board/v3/Src/i2c.c ****     HAL_DMA_DeInit(i2cHandle->hdmarx);
+ 358              		.loc 1 162 5 is_stmt 1 view .LVU108
+ 359 0022 A06B     		ldr	r0, [r4, #56]
+ 360 0024 FFF7FEFF 		bl	HAL_DMA_DeInit
+ 361              	.LVL18:
+ 163:Board/v3/Src/i2c.c ****     HAL_DMA_DeInit(i2cHandle->hdmatx);
+ 362              		.loc 1 163 5 view .LVU109
+ 363 0028 606B     		ldr	r0, [r4, #52]
+ 364 002a FFF7FEFF 		bl	HAL_DMA_DeInit
+ 365              	.LVL19:
+ 164:Board/v3/Src/i2c.c **** 
+ 165:Board/v3/Src/i2c.c ****     /* I2C1 interrupt Deinit */
+ 166:Board/v3/Src/i2c.c ****     HAL_NVIC_DisableIRQ(I2C1_EV_IRQn);
+ 366              		.loc 1 166 5 view .LVU110
+ 367 002e 1F20     		movs	r0, #31
+ 368 0030 FFF7FEFF 		bl	HAL_NVIC_DisableIRQ
+ 369              	.LVL20:
+ 167:Board/v3/Src/i2c.c ****     HAL_NVIC_DisableIRQ(I2C1_ER_IRQn);
+ 370              		.loc 1 167 5 view .LVU111
+ 371 0034 2020     		movs	r0, #32
+ 372 0036 FFF7FEFF 		bl	HAL_NVIC_DisableIRQ
+ 373              	.LVL21:
+ 168:Board/v3/Src/i2c.c ****   /* USER CODE BEGIN I2C1_MspDeInit 1 */
+ 169:Board/v3/Src/i2c.c **** 
+ 170:Board/v3/Src/i2c.c ****   /* USER CODE END I2C1_MspDeInit 1 */
+ 171:Board/v3/Src/i2c.c ****   }
+ 172:Board/v3/Src/i2c.c **** } 
+ 374              		.loc 1 172 1 is_stmt 0 view .LVU112
+ 375 003a 10BD     		pop	{r4, pc}
+ 376              	.LVL22:
+ 377              	.L28:
+ 378              		.loc 1 172 1 view .LVU113
+ 379              		.align	2
+ 380              	.L27:
+ 381 003c 00540040 		.word	1073763328
+ 382 0040 00380240 		.word	1073887232
+ 383 0044 00040240 		.word	1073873920
+ 384              		.cfi_endproc
+ 385              	.LFE135:
+ 387              		.global	hdma_i2c1_tx
+ 388              		.global	hdma_i2c1_rx
+ 389              		.global	hi2c1
+ 390              		.section	.bss.hdma_i2c1_rx,"aw",%nobits
+ 391              		.align	2
+ 392              		.set	.LANCHOR1,. + 0
+ 395              	hdma_i2c1_rx:
+ 396 0000 00000000 		.space	96
+ 396      00000000 
+ARM GAS  /tmp/ccpECnZ8.s 			page 11
+
+
+ 396      00000000 
+ 396      00000000 
+ 396      00000000 
+ 397              		.section	.bss.hdma_i2c1_tx,"aw",%nobits
+ 398              		.align	2
+ 399              		.set	.LANCHOR2,. + 0
+ 402              	hdma_i2c1_tx:
+ 403 0000 00000000 		.space	96
+ 403      00000000 
+ 403      00000000 
+ 403      00000000 
+ 403      00000000 
+ 404              		.section	.bss.hi2c1,"aw",%nobits
+ 405              		.align	2
+ 406              		.set	.LANCHOR0,. + 0
+ 409              	hi2c1:
+ 410 0000 00000000 		.space	84
+ 410      00000000 
+ 410      00000000 
+ 410      00000000 
+ 410      00000000 
+ 411              		.text
+ 412              	.Letext0:
+ 413              		.file 2 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 414              		.file 3 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 415              		.file 4 "ThirdParty/CMSIS/Device/ST/STM32F4xx/Include/stm32f405xx.h"
+ 416              		.file 5 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
+ 417              		.file 6 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_dma.h"
+ 418              		.file 7 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_i2c.h"
+ 419              		.file 8 "Board/v3/Inc/i2c.h"
+ 420              		.file 9 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_gpio.h"
+ 421              		.file 10 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h"
+ 422              		.file 11 "Board/v3/Inc/dma.h"
+ARM GAS  /tmp/ccpECnZ8.s 			page 12
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 i2c.c
+     /tmp/ccpECnZ8.s:20     .rodata.MX_I2C1_Init.str1.4:0000000000000000 $d
+     /tmp/ccpECnZ8.s:24     .text.MX_I2C1_Init:0000000000000000 $t
+     /tmp/ccpECnZ8.s:30     .text.MX_I2C1_Init:0000000000000000 MX_I2C1_Init
+     /tmp/ccpECnZ8.s:100    .text.MX_I2C1_Init:0000000000000038 $d
+     /tmp/ccpECnZ8.s:108    .text.HAL_I2C_MspInit:0000000000000000 $t
+     /tmp/ccpECnZ8.s:114    .text.HAL_I2C_MspInit:0000000000000000 HAL_I2C_MspInit
+     /tmp/ccpECnZ8.s:306    .text.HAL_I2C_MspInit:00000000000000c0 $d
+     /tmp/ccpECnZ8.s:317    .text.HAL_I2C_MspDeInit:0000000000000000 $t
+     /tmp/ccpECnZ8.s:323    .text.HAL_I2C_MspDeInit:0000000000000000 HAL_I2C_MspDeInit
+     /tmp/ccpECnZ8.s:381    .text.HAL_I2C_MspDeInit:000000000000003c $d
+     /tmp/ccpECnZ8.s:402    .bss.hdma_i2c1_tx:0000000000000000 hdma_i2c1_tx
+     /tmp/ccpECnZ8.s:395    .bss.hdma_i2c1_rx:0000000000000000 hdma_i2c1_rx
+     /tmp/ccpECnZ8.s:409    .bss.hi2c1:0000000000000000 hi2c1
+     /tmp/ccpECnZ8.s:391    .bss.hdma_i2c1_rx:0000000000000000 $d
+     /tmp/ccpECnZ8.s:398    .bss.hdma_i2c1_tx:0000000000000000 $d
+     /tmp/ccpECnZ8.s:405    .bss.hi2c1:0000000000000000 $d
+
+UNDEFINED SYMBOLS
+HAL_I2C_Init
+_Error_Handler
+HAL_DMA_Init
+HAL_NVIC_SetPriority
+HAL_NVIC_EnableIRQ
+HAL_GPIO_DeInit
+HAL_DMA_DeInit
+HAL_NVIC_DisableIRQ

@@ -644,6 +644,7 @@ extern "C" int main(void) {
     // This procedure of building a USB serial number should be identical
     // to the way the STM's built-in USB bootloader does it. This means
     // that the device will have the same serial number in normal and DFU mode.
+    //!提取芯片唯一标识符的一部分信息并生成一个序列号,并且根据和这个序列号得到一个12位的十六进制字符串，存放在serial_number_str中
     uint32_t uuid0 = *(uint32_t *)(UID_BASE + 0);
     uint32_t uuid1 = *(uint32_t *)(UID_BASE + 4);
     uint32_t uuid2 = *(uint32_t *)(UID_BASE + 8);

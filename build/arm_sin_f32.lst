@@ -1,0 +1,296 @@
+ARM GAS  /tmp/ccp4DMID.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"arm_sin_f32.c"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text.our_arm_sin_f32,"ax",%progbits
+  20              		.align	1
+  21              		.global	our_arm_sin_f32
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	our_arm_sin_f32:
+  27              	.LVL0:
+  28              	.LFB178:
+  29              		.file 1 "MotorControl/arm_sin_f32.c"
+   1:MotorControl/arm_sin_f32.c **** /* ----------------------------------------------------------------------
+   2:MotorControl/arm_sin_f32.c ****  * Project:      CMSIS DSP Library
+   3:MotorControl/arm_sin_f32.c ****  * Title:        arm_sin_f32.c
+   4:MotorControl/arm_sin_f32.c ****  * Description:  Fast sine calculation for floating-point values
+   5:MotorControl/arm_sin_f32.c ****  *
+   6:MotorControl/arm_sin_f32.c ****  * $Date:        27. January 2017
+   7:MotorControl/arm_sin_f32.c ****  * $Revision:    V.1.5.1
+   8:MotorControl/arm_sin_f32.c ****  *
+   9:MotorControl/arm_sin_f32.c ****  * Target Processor: Cortex-M cores
+  10:MotorControl/arm_sin_f32.c ****  * -------------------------------------------------------------------- */
+  11:MotorControl/arm_sin_f32.c **** /*
+  12:MotorControl/arm_sin_f32.c ****  * Copyright (C) 2010-2017 ARM Limited or its affiliates. All rights reserved.
+  13:MotorControl/arm_sin_f32.c ****  *
+  14:MotorControl/arm_sin_f32.c ****  * SPDX-License-Identifier: Apache-2.0
+  15:MotorControl/arm_sin_f32.c ****  *
+  16:MotorControl/arm_sin_f32.c ****  * Licensed under the Apache License, Version 2.0 (the License); you may
+  17:MotorControl/arm_sin_f32.c ****  * not use this file except in compliance with the License.
+  18:MotorControl/arm_sin_f32.c ****  * You may obtain a copy of the License at
+  19:MotorControl/arm_sin_f32.c ****  *
+  20:MotorControl/arm_sin_f32.c ****  * www.apache.org/licenses/LICENSE-2.0
+  21:MotorControl/arm_sin_f32.c ****  *
+  22:MotorControl/arm_sin_f32.c ****  * Unless required by applicable law or agreed to in writing, software
+  23:MotorControl/arm_sin_f32.c ****  * distributed under the License is distributed on an AS IS BASIS, WITHOUT
+  24:MotorControl/arm_sin_f32.c ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  25:MotorControl/arm_sin_f32.c ****  * See the License for the specific language governing permissions and
+  26:MotorControl/arm_sin_f32.c ****  * limitations under the License.
+  27:MotorControl/arm_sin_f32.c ****  */
+  28:MotorControl/arm_sin_f32.c **** 
+  29:MotorControl/arm_sin_f32.c **** #include <board.h>
+ARM GAS  /tmp/ccp4DMID.s 			page 2
+
+
+  30:MotorControl/arm_sin_f32.c **** #include "arm_math.h"
+  31:MotorControl/arm_sin_f32.c **** #include "arm_common_tables.h"
+  32:MotorControl/arm_sin_f32.c **** 
+  33:MotorControl/arm_sin_f32.c **** /**
+  34:MotorControl/arm_sin_f32.c ****  * @ingroup groupFastMath
+  35:MotorControl/arm_sin_f32.c ****  */
+  36:MotorControl/arm_sin_f32.c **** 
+  37:MotorControl/arm_sin_f32.c **** /**
+  38:MotorControl/arm_sin_f32.c ****  * @defgroup sin Sine
+  39:MotorControl/arm_sin_f32.c ****  *
+  40:MotorControl/arm_sin_f32.c ****  * Computes the trigonometric sine function using a combination of table lookup
+  41:MotorControl/arm_sin_f32.c ****  * and linear interpolation.  There are separate functions for
+  42:MotorControl/arm_sin_f32.c ****  * Q15, Q31, and floating-point data types.
+  43:MotorControl/arm_sin_f32.c ****  * The input to the floating-point version is in radians and in the range [0 2*pi) while the
+  44:MotorControl/arm_sin_f32.c ****  * fixed-point Q15 and Q31 have a scaled input with the range
+  45:MotorControl/arm_sin_f32.c ****  * [0 +0.9999] mapping to [0 2*pi).  The fixed-point range is chosen so that a
+  46:MotorControl/arm_sin_f32.c ****  * value of 2*pi wraps around to 0.
+  47:MotorControl/arm_sin_f32.c ****  *
+  48:MotorControl/arm_sin_f32.c ****  * The implementation is based on table lookup using 256 values together with linear interpolation.
+  49:MotorControl/arm_sin_f32.c ****  * The steps used are:
+  50:MotorControl/arm_sin_f32.c ****  *  -# Calculation of the nearest integer table index
+  51:MotorControl/arm_sin_f32.c ****  *  -# Compute the fractional portion (fract) of the table index.
+  52:MotorControl/arm_sin_f32.c ****  *  -# The final result equals <code>(1.0f-fract)*a + fract*b;</code>
+  53:MotorControl/arm_sin_f32.c ****  *
+  54:MotorControl/arm_sin_f32.c ****  * where
+  55:MotorControl/arm_sin_f32.c ****  * <pre>
+  56:MotorControl/arm_sin_f32.c ****  *    b=Table[index+0];
+  57:MotorControl/arm_sin_f32.c ****  *    c=Table[index+1];
+  58:MotorControl/arm_sin_f32.c ****  * </pre>
+  59:MotorControl/arm_sin_f32.c ****  */
+  60:MotorControl/arm_sin_f32.c **** 
+  61:MotorControl/arm_sin_f32.c **** /**
+  62:MotorControl/arm_sin_f32.c ****  * @addtogroup sin
+  63:MotorControl/arm_sin_f32.c ****  * @{
+  64:MotorControl/arm_sin_f32.c ****  */
+  65:MotorControl/arm_sin_f32.c **** 
+  66:MotorControl/arm_sin_f32.c **** /**
+  67:MotorControl/arm_sin_f32.c ****  * @brief  Fast approximation to the trigonometric sine function for floating-point data.
+  68:MotorControl/arm_sin_f32.c ****  * @param[in] x input value in radians.
+  69:MotorControl/arm_sin_f32.c ****  * @return  sin(x).
+  70:MotorControl/arm_sin_f32.c ****  */
+  71:MotorControl/arm_sin_f32.c **** 
+  72:MotorControl/arm_sin_f32.c **** float32_t our_arm_sin_f32(
+  73:MotorControl/arm_sin_f32.c ****   float32_t x)
+  74:MotorControl/arm_sin_f32.c **** {
+  30              		.loc 1 74 1 view -0
+  31              		.cfi_startproc
+  32              		@ args = 0, pretend = 0, frame = 0
+  33              		@ frame_needed = 0, uses_anonymous_args = 0
+  34              		@ link register save eliminated.
+  75:MotorControl/arm_sin_f32.c ****   float32_t sinVal, fract, in;                           /* Temporary variables for input, output *
+  35              		.loc 1 75 3 view .LVU1
+  76:MotorControl/arm_sin_f32.c ****   uint16_t index;                                        /* Index variable */
+  36              		.loc 1 76 3 view .LVU2
+  77:MotorControl/arm_sin_f32.c ****   float32_t a, b;                                        /* Two nearest output values */
+  37              		.loc 1 77 3 view .LVU3
+  78:MotorControl/arm_sin_f32.c ****   int32_t n;
+ARM GAS  /tmp/ccp4DMID.s 			page 3
+
+
+  38              		.loc 1 78 3 view .LVU4
+  79:MotorControl/arm_sin_f32.c ****   float32_t findex;
+  39              		.loc 1 79 3 view .LVU5
+  80:MotorControl/arm_sin_f32.c **** 
+  81:MotorControl/arm_sin_f32.c ****   /* input x is in radians */
+  82:MotorControl/arm_sin_f32.c ****   /* Scale the input to [0 1] range from [0 2*PI] , divide input by 2*pi */
+  83:MotorControl/arm_sin_f32.c ****   in = x * 0.159154943092f;
+  40              		.loc 1 83 3 view .LVU6
+  41              		.loc 1 83 6 is_stmt 0 view .LVU7
+  42 0000 DFED207A 		vldr.32	s15, .L7
+  43 0004 60EE277A 		vmul.f32	s15, s0, s15
+  44              	.LVL1:
+  84:MotorControl/arm_sin_f32.c **** 
+  85:MotorControl/arm_sin_f32.c ****   /* Calculation of floor value of input */
+  86:MotorControl/arm_sin_f32.c ****   n = (int32_t) in;
+  45              		.loc 1 86 3 is_stmt 1 view .LVU8
+  46              		.loc 1 86 5 is_stmt 0 view .LVU9
+  47 0008 BDEEE77A 		vcvt.s32.f32	s14, s15
+  48              	.LVL2:
+  87:MotorControl/arm_sin_f32.c **** 
+  88:MotorControl/arm_sin_f32.c ****   /* Make negative values towards -infinity */
+  89:MotorControl/arm_sin_f32.c ****   if (x < 0.0f)
+  49              		.loc 1 89 3 is_stmt 1 view .LVU10
+  50              		.loc 1 89 6 is_stmt 0 view .LVU11
+  51 000c B5EEC00A 		vcmpe.f32	s0, #0
+  52 0010 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+  53 0014 2FD4     		bmi	.L6
+  54              	.L2:
+  90:MotorControl/arm_sin_f32.c ****   {
+  91:MotorControl/arm_sin_f32.c ****     n--;
+  92:MotorControl/arm_sin_f32.c ****   }
+  93:MotorControl/arm_sin_f32.c **** 
+  94:MotorControl/arm_sin_f32.c ****   /* Map input value to [0 1] */
+  95:MotorControl/arm_sin_f32.c ****   in = in - (float32_t) n;
+  55              		.loc 1 95 3 is_stmt 1 view .LVU12
+  56              		.loc 1 95 13 is_stmt 0 view .LVU13
+  57 0016 B8EEC70A 		vcvt.f32.s32	s0, s14
+  58              	.LVL3:
+  59              		.loc 1 95 6 view .LVU14
+  60 001a 37EEC00A 		vsub.f32	s0, s15, s0
+  61              	.LVL4:
+  96:MotorControl/arm_sin_f32.c **** 
+  97:MotorControl/arm_sin_f32.c ****   /* Calculation of index of the table */
+  98:MotorControl/arm_sin_f32.c ****   findex = (float32_t)FAST_MATH_TABLE_SIZE * in;
+  62              		.loc 1 98 3 is_stmt 1 view .LVU15
+  63              		.loc 1 98 10 is_stmt 0 view .LVU16
+  64 001e DFED1A7A 		vldr.32	s15, .L7+4
+  65 0022 20EE270A 		vmul.f32	s0, s0, s15
+  66              	.LVL5:
+  99:MotorControl/arm_sin_f32.c ****   index = (uint16_t)findex;
+  67              		.loc 1 99 3 is_stmt 1 view .LVU17
+  68              		.loc 1 99 9 is_stmt 0 view .LVU18
+  69 0026 FCEEC07A 		vcvt.u32.f32	s15, s0
+  70 002a 17EE903A 		vmov	r3, s15	@ int
+  71 002e 9BB2     		uxth	r3, r3
+  72              	.LVL6:
+ 100:MotorControl/arm_sin_f32.c **** 
+ARM GAS  /tmp/ccp4DMID.s 			page 4
+
+
+ 101:MotorControl/arm_sin_f32.c ****   /* when "in" is exactly 1, we need to rotate the index down to 0 */
+ 102:MotorControl/arm_sin_f32.c ****   if (index >= FAST_MATH_TABLE_SIZE) {
+  73              		.loc 1 102 3 is_stmt 1 view .LVU19
+  74              		.loc 1 102 6 is_stmt 0 view .LVU20
+  75 0030 B3F5007F 		cmp	r3, #512
+  76 0034 04D3     		bcc	.L4
+ 103:MotorControl/arm_sin_f32.c ****     index = 0;
+  77              		.loc 1 103 5 is_stmt 1 view .LVU21
+  78              	.LVL7:
+ 104:MotorControl/arm_sin_f32.c ****     findex -= (float32_t)FAST_MATH_TABLE_SIZE;
+  79              		.loc 1 104 5 view .LVU22
+  80              		.loc 1 104 12 is_stmt 0 view .LVU23
+  81 0036 DFED147A 		vldr.32	s15, .L7+4
+  82 003a 30EE670A 		vsub.f32	s0, s0, s15
+  83              	.LVL8:
+ 103:MotorControl/arm_sin_f32.c ****     index = 0;
+  84              		.loc 1 103 11 view .LVU24
+  85 003e 0023     		movs	r3, #0
+  86              	.LVL9:
+  87              	.L4:
+ 105:MotorControl/arm_sin_f32.c ****   }
+ 106:MotorControl/arm_sin_f32.c **** 
+ 107:MotorControl/arm_sin_f32.c ****   /* fractional value calculation */
+ 108:MotorControl/arm_sin_f32.c ****   fract = findex - (float32_t) index;
+  88              		.loc 1 108 3 is_stmt 1 view .LVU25
+  89              		.loc 1 108 20 is_stmt 0 view .LVU26
+  90 0040 07EE903A 		vmov	s15, r3	@ int
+  91 0044 F8EE677A 		vcvt.f32.u32	s15, s15
+  92              		.loc 1 108 9 view .LVU27
+  93 0048 30EE670A 		vsub.f32	s0, s0, s15
+  94              	.LVL10:
+ 109:MotorControl/arm_sin_f32.c **** 
+ 110:MotorControl/arm_sin_f32.c ****   /* Read two nearest values of input value from the sin table */
+ 111:MotorControl/arm_sin_f32.c ****   a = sinTable_f32[index];
+  95              		.loc 1 111 3 is_stmt 1 view .LVU28
+  96              		.loc 1 111 5 is_stmt 0 view .LVU29
+  97 004c 0F4A     		ldr	r2, .L7+8
+  98 004e 02EB8301 		add	r1, r2, r3, lsl #2
+  99 0052 D1ED006A 		vldr.32	s13, [r1]
+ 100              	.LVL11:
+ 112:MotorControl/arm_sin_f32.c ****   b = sinTable_f32[index+1];
+ 101              		.loc 1 112 3 is_stmt 1 view .LVU30
+ 102              		.loc 1 112 25 is_stmt 0 view .LVU31
+ 103 0056 0133     		adds	r3, r3, #1
+ 104              	.LVL12:
+ 105              		.loc 1 112 5 view .LVU32
+ 106 0058 02EB8303 		add	r3, r2, r3, lsl #2
+ 107 005c 93ED007A 		vldr.32	s14, [r3]
+ 108              	.LVL13:
+ 113:MotorControl/arm_sin_f32.c **** 
+ 114:MotorControl/arm_sin_f32.c ****   /* Linear interpolation process */
+ 115:MotorControl/arm_sin_f32.c ****   sinVal = (1.0f-fract)*a + fract*b;
+ 109              		.loc 1 115 3 is_stmt 1 view .LVU33
+ 110              		.loc 1 115 17 is_stmt 0 view .LVU34
+ 111 0060 F7EE007A 		vmov.f32	s15, #1.0e+0
+ 112 0064 77EEC07A 		vsub.f32	s15, s15, s0
+ 113              		.loc 1 115 24 view .LVU35
+ARM GAS  /tmp/ccp4DMID.s 			page 5
+
+
+ 114 0068 67EEA67A 		vmul.f32	s15, s15, s13
+ 115              		.loc 1 115 34 view .LVU36
+ 116 006c 20EE070A 		vmul.f32	s0, s0, s14
+ 117              	.LVL14:
+ 116:MotorControl/arm_sin_f32.c **** 
+ 117:MotorControl/arm_sin_f32.c ****   /* Return the output value */
+ 118:MotorControl/arm_sin_f32.c ****   return (sinVal);
+ 118              		.loc 1 118 3 is_stmt 1 view .LVU37
+ 119:MotorControl/arm_sin_f32.c **** }
+ 119              		.loc 1 119 1 is_stmt 0 view .LVU38
+ 120 0070 37EE800A 		vadd.f32	s0, s15, s0
+ 121              	.LVL15:
+ 122              		.loc 1 119 1 view .LVU39
+ 123 0074 7047     		bx	lr
+ 124              	.LVL16:
+ 125              	.L6:
+  91:MotorControl/arm_sin_f32.c ****   }
+ 126              		.loc 1 91 5 is_stmt 1 view .LVU40
+  91:MotorControl/arm_sin_f32.c ****   }
+ 127              		.loc 1 91 6 is_stmt 0 view .LVU41
+ 128 0076 17EE103A 		vmov	r3, s14	@ int
+ 129 007a 013B     		subs	r3, r3, #1
+ 130 007c 07EE103A 		vmov	s14, r3	@ int
+ 131              	.LVL17:
+  91:MotorControl/arm_sin_f32.c ****   }
+ 132              		.loc 1 91 6 view .LVU42
+ 133 0080 C9E7     		b	.L2
+ 134              	.L8:
+ 135 0082 00BF     		.align	2
+ 136              	.L7:
+ 137 0084 83F9223E 		.word	1042479491
+ 138 0088 00000044 		.word	1140850688
+ 139 008c 00000000 		.word	sinTable_f32
+ 140              		.cfi_endproc
+ 141              	.LFE178:
+ 143              		.text
+ 144              	.Letext0:
+ 145              		.file 2 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 146              		.file 3 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 147              		.file 4 "ThirdParty/CMSIS/Include/arm_math.h"
+ 148              		.file 5 "Board/v3/Inc/board.h"
+ 149              		.file 6 "ThirdParty/CMSIS/Include/arm_common_tables.h"
+ARM GAS  /tmp/ccp4DMID.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 arm_sin_f32.c
+     /tmp/ccp4DMID.s:20     .text.our_arm_sin_f32:0000000000000000 $t
+     /tmp/ccp4DMID.s:26     .text.our_arm_sin_f32:0000000000000000 our_arm_sin_f32
+     /tmp/ccp4DMID.s:137    .text.our_arm_sin_f32:0000000000000084 $d
+
+UNDEFINED SYMBOLS
+sinTable_f32

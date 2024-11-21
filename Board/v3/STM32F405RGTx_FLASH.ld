@@ -121,7 +121,7 @@ SECTIONS
   {
     . = ALIGN(4);
     _sdata = .;        /* create a global symbol at data start */
-    *(.testdata)
+    *(.testdata)       /* 在这里从flash中将.testdata段的数据导入ram中*/
     *(.data)           /* .data sections */
     *(.data*)          /* .data* sections */
 

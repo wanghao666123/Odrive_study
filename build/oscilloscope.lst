@@ -1,0 +1,244 @@
+ARM GAS  /tmp/cctoy6v1.s 			page 1
+
+
+   1              		.cpu cortex-m4
+   2              		.arch armv7e-m
+   3              		.fpu fpv4-sp-d16
+   4              		.eabi_attribute 27, 1
+   5              		.eabi_attribute 28, 1
+   6              		.eabi_attribute 20, 1
+   7              		.eabi_attribute 21, 1
+   8              		.eabi_attribute 23, 3
+   9              		.eabi_attribute 24, 1
+  10              		.eabi_attribute 25, 1
+  11              		.eabi_attribute 26, 1
+  12              		.eabi_attribute 30, 1
+  13              		.eabi_attribute 34, 1
+  14              		.eabi_attribute 18, 4
+  15              		.file	"oscilloscope.cpp"
+  16              		.text
+  17              	.Ltext0:
+  18              		.cfi_sections	.debug_frame
+  19              		.section	.text._ZN12Oscilloscope6updateEv,"ax",%progbits
+  20              		.align	1
+  21              		.global	_ZN12Oscilloscope6updateEv
+  22              		.syntax unified
+  23              		.thumb
+  24              		.thumb_func
+  26              	_ZN12Oscilloscope6updateEv:
+  27              		.fnstart
+  28              	.LVL0:
+  29              	.LFB4002:
+  30              		.file 1 "MotorControl/oscilloscope.cpp"
+   1:MotorControl/oscilloscope.cpp **** 
+   2:MotorControl/oscilloscope.cpp **** #include "oscilloscope.hpp"
+   3:MotorControl/oscilloscope.cpp **** 
+   4:MotorControl/oscilloscope.cpp **** // if you use the oscilloscope feature you can bump up this value
+   5:MotorControl/oscilloscope.cpp **** #define OSCILLOSCOPE_SIZE 4096
+   6:MotorControl/oscilloscope.cpp **** 
+   7:MotorControl/oscilloscope.cpp **** void Oscilloscope::update() {
+  31              		.loc 1 7 29 view -0
+  32              		.cfi_startproc
+  33              		@ args = 0, pretend = 0, frame = 0
+  34              		@ frame_needed = 0, uses_anonymous_args = 0
+  35              		@ link register save eliminated.
+   8:MotorControl/oscilloscope.cpp ****     float trigger_data = trigger_src_ ? *trigger_src_ : 0.0f;
+  36              		.loc 1 8 5 view .LVU1
+  37              		.loc 1 8 26 is_stmt 0 view .LVU2
+  38 0000 0369     		ldr	r3, [r0, #16]
+  39              		.loc 1 8 39 view .LVU3
+  40 0002 002B     		cmp	r3, #0
+  41 0004 3AD0     		beq	.L10
+  42              		.loc 1 8 39 discriminator 1 view .LVU4
+  43 0006 93ED007A 		vldr.32	s14, [r3]
+  44              	.L2:
+  45              	.LVL1:
+   9:MotorControl/oscilloscope.cpp ****     float trigger_threshold = trigger_threshold_;
+  46              		.loc 1 9 5 is_stmt 1 discriminator 4 view .LVU5
+  47              		.loc 1 9 11 is_stmt 0 discriminator 4 view .LVU6
+  48 000a D0ED057A 		vldr.32	s15, [r0, #20]
+  49              	.LVL2:
+ARM GAS  /tmp/cctoy6v1.s 			page 2
+
+
+  10:MotorControl/oscilloscope.cpp ****     float sample_data = data_src_ ? **data_src_ : 0.0f;
+  50              		.loc 1 10 5 is_stmt 1 discriminator 4 view .LVU7
+  51              		.loc 1 10 25 is_stmt 0 discriminator 4 view .LVU8
+  52 000e 8369     		ldr	r3, [r0, #24]
+  53              		.loc 1 10 35 discriminator 4 view .LVU9
+  54 0010 BBB3     		cbz	r3, .L11
+  55              		.loc 1 10 38 discriminator 1 view .LVU10
+  56 0012 1B68     		ldr	r3, [r3]
+  57              		.loc 1 10 35 discriminator 1 view .LVU11
+  58 0014 1A68     		ldr	r2, [r3]	@ float
+  59              	.L3:
+  60              	.LVL3:
+  11:MotorControl/oscilloscope.cpp **** 
+  12:MotorControl/oscilloscope.cpp ****     if (trigger_data < trigger_threshold) {
+  61              		.loc 1 12 5 is_stmt 1 discriminator 4 view .LVU12
+  62 0016 B4EEE77A 		vcmpe.f32	s14, s15
+  63 001a F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+  64 001e 04D5     		bpl	.L4
+  13:MotorControl/oscilloscope.cpp ****         ready_ = true;
+  65              		.loc 1 13 9 view .LVU13
+  66              		.loc 1 13 16 is_stmt 0 view .LVU14
+  67 0020 00F58043 		add	r3, r0, #16384
+  68 0024 0121     		movs	r1, #1
+  69 0026 83F82010 		strb	r1, [r3, #32]
+  70              	.L4:
+  14:MotorControl/oscilloscope.cpp ****     }
+  15:MotorControl/oscilloscope.cpp ****     if (ready_ && trigger_data >= trigger_threshold) {
+  71              		.loc 1 15 5 is_stmt 1 view .LVU15
+  72              		.loc 1 15 9 is_stmt 0 view .LVU16
+  73 002a 00F58043 		add	r3, r0, #16384
+  74 002e 93F82030 		ldrb	r3, [r3, #32]	@ zero_extendqisi2
+  75              		.loc 1 15 5 view .LVU17
+  76 0032 63B1     		cbz	r3, .L6
+  77              		.loc 1 15 16 discriminator 1 view .LVU18
+  78 0034 B4EEE77A 		vcmpe.f32	s14, s15
+  79 0038 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
+  80 003c 07DB     		blt	.L6
+  16:MotorControl/oscilloscope.cpp ****         capturing_ = true;
+  81              		.loc 1 16 9 is_stmt 1 view .LVU19
+  82              		.loc 1 16 20 is_stmt 0 view .LVU20
+  83 003e 00F58043 		add	r3, r0, #16384
+  84 0042 0121     		movs	r1, #1
+  85 0044 83F82110 		strb	r1, [r3, #33]
+  17:MotorControl/oscilloscope.cpp ****         ready_ = false;
+  86              		.loc 1 17 9 is_stmt 1 view .LVU21
+  87              		.loc 1 17 16 is_stmt 0 view .LVU22
+  88 0048 0021     		movs	r1, #0
+  89 004a 83F82010 		strb	r1, [r3, #32]
+  90              	.L6:
+  18:MotorControl/oscilloscope.cpp ****     }
+  19:MotorControl/oscilloscope.cpp ****     if (capturing_) {
+  91              		.loc 1 19 5 is_stmt 1 view .LVU23
+  92              		.loc 1 19 9 is_stmt 0 view .LVU24
+  93 004e 00F58043 		add	r3, r0, #16384
+  94 0052 93F82130 		ldrb	r3, [r3, #33]	@ zero_extendqisi2
+  95              		.loc 1 19 5 view .LVU25
+  96 0056 EBB1     		cbz	r3, .L15
+ARM GAS  /tmp/cctoy6v1.s 			page 3
+
+
+  20:MotorControl/oscilloscope.cpp ****         if (pos_ < OSCILLOSCOPE_SIZE) {
+  97              		.loc 1 20 9 is_stmt 1 view .LVU26
+  98              		.loc 1 20 13 is_stmt 0 view .LVU27
+  99 0058 00F58043 		add	r3, r0, #16384
+ 100 005c DB69     		ldr	r3, [r3, #28]
+ 101              		.loc 1 20 9 view .LVU28
+ 102 005e B3F5805F 		cmp	r3, #4096
+ 103 0062 10D2     		bcs	.L9
+   7:MotorControl/oscilloscope.cpp ****     float trigger_data = trigger_src_ ? *trigger_src_ : 0.0f;
+ 104              		.loc 1 7 29 view .LVU29
+ 105 0064 10B4     		push	{r4}
+ 106              	.LCFI0:
+ 107              		.cfi_def_cfa_offset 4
+ 108              		.cfi_offset 4, -4
+  21:MotorControl/oscilloscope.cpp ****             data_[pos_++] = sample_data;
+ 109              		.loc 1 21 13 is_stmt 1 view .LVU30
+ 110              		.loc 1 21 23 is_stmt 0 view .LVU31
+ 111 0066 00F58041 		add	r1, r0, #16384
+ 112 006a 5C1C     		adds	r4, r3, #1
+ 113 006c CC61     		str	r4, [r1, #28]
+ 114              		.loc 1 21 27 view .LVU32
+ 115 006e 0633     		adds	r3, r3, #6
+ 116 0070 00EB8300 		add	r0, r0, r3, lsl #2
+ 117              	.LVL4:
+ 118              		.loc 1 21 27 view .LVU33
+ 119 0074 4260     		str	r2, [r0, #4]	@ float
+  22:MotorControl/oscilloscope.cpp ****         } else {
+  23:MotorControl/oscilloscope.cpp ****             pos_ = 0;
+  24:MotorControl/oscilloscope.cpp ****             capturing_ = false;
+  25:MotorControl/oscilloscope.cpp ****         }
+  26:MotorControl/oscilloscope.cpp ****     }
+  27:MotorControl/oscilloscope.cpp **** }
+ 120              		.loc 1 27 1 view .LVU34
+ 121 0076 5DF8044B 		ldr	r4, [sp], #4
+ 122              	.LCFI1:
+ 123              		.cfi_restore 4
+ 124              		.cfi_def_cfa_offset 0
+ 125 007a 7047     		bx	lr
+ 126              	.LVL5:
+ 127              	.L10:
+   8:MotorControl/oscilloscope.cpp ****     float trigger_threshold = trigger_threshold_;
+ 128              		.loc 1 8 39 view .LVU35
+ 129 007c 9FED067A 		vldr.32	s14, .L18
+ 130 0080 C3E7     		b	.L2
+ 131              	.LVL6:
+ 132              	.L11:
+  10:MotorControl/oscilloscope.cpp **** 
+ 133              		.loc 1 10 35 view .LVU36
+ 134 0082 0022     		movs	r2, #0
+ 135 0084 C7E7     		b	.L3
+ 136              	.LVL7:
+ 137              	.L9:
+  23:MotorControl/oscilloscope.cpp ****             capturing_ = false;
+ 138              		.loc 1 23 13 is_stmt 1 view .LVU37
+  23:MotorControl/oscilloscope.cpp ****             capturing_ = false;
+ 139              		.loc 1 23 18 is_stmt 0 view .LVU38
+ 140 0086 00F58040 		add	r0, r0, #16384
+ARM GAS  /tmp/cctoy6v1.s 			page 4
+
+
+ 141              	.LVL8:
+  23:MotorControl/oscilloscope.cpp ****             capturing_ = false;
+ 142              		.loc 1 23 18 view .LVU39
+ 143 008a 0023     		movs	r3, #0
+ 144 008c C361     		str	r3, [r0, #28]
+  24:MotorControl/oscilloscope.cpp ****         }
+ 145              		.loc 1 24 13 is_stmt 1 view .LVU40
+  24:MotorControl/oscilloscope.cpp ****         }
+ 146              		.loc 1 24 24 is_stmt 0 view .LVU41
+ 147 008e 80F82130 		strb	r3, [r0, #33]
+ 148              		.loc 1 27 1 view .LVU42
+ 149 0092 7047     		bx	lr
+ 150              	.LVL9:
+ 151              	.L15:
+ 152              		.loc 1 27 1 view .LVU43
+ 153 0094 7047     		bx	lr
+ 154              	.L19:
+ 155 0096 00BF     		.align	2
+ 156              	.L18:
+ 157 0098 00000000 		.word	0
+ 158              		.cfi_endproc
+ 159              	.LFE4002:
+ 160              		.cantunwind
+ 161              		.fnend
+ 163              		.text
+ 164              	.Letext0:
+ 165              		.file 2 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/type_traits"
+ 166              		.file 3 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/debug/debug.h"
+ 167              		.file 4 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/exception_ptr.h"
+ 168              		.file 5 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_iterator.h"
+ 169              		.file 6 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_function.h"
+ 170              		.file 7 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstdlib"
+ 171              		.file 8 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/hard
+ 172              		.file 9 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/algorithmfwd.h"
+ 173              		.file 10 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/functional"
+ 174              		.file 11 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath"
+ 175              		.file 12 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstring"
+ 176              		.file 13 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h"
+ 177              		.file 14 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h"
+ 178              		.file 15 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h"
+ 179              		.file 16 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
+ 180              		.file 17 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdlib.h"
+ 181              		.file 18 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/math.h"
+ 182              		.file 19 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
+ 183              		.file 20 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/string.h"
+ 184              		.file 21 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/stdlib.h"
+ 185              		.file 22 "fibre-cpp/include/fibre/cpp_utils.hpp"
+ 186              		.file 23 "./autogen/interfaces.hpp"
+ 187              		.file 24 "MotorControl/oscilloscope.hpp"
+ 188              		.file 25 "<built-in>"
+ARM GAS  /tmp/cctoy6v1.s 			page 5
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 oscilloscope.cpp
+     /tmp/cctoy6v1.s:20     .text._ZN12Oscilloscope6updateEv:0000000000000000 $t
+     /tmp/cctoy6v1.s:26     .text._ZN12Oscilloscope6updateEv:0000000000000000 _ZN12Oscilloscope6updateEv
+     /tmp/cctoy6v1.s:157    .text._ZN12Oscilloscope6updateEv:0000000000000098 $d
+.ARM.exidx.text._ZN12Oscilloscope6updateEv:0000000000000000 $d
+
+NO UNDEFINED SYMBOLS
