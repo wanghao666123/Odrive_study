@@ -57,6 +57,7 @@ public:
      * way through a previous load operation.
      */
     bool start_load() {
+        //!这个NVM需要去了解下
         if (NVM_init() != 0) {
             return (load_state = kLoadStateFailed), false;
         }

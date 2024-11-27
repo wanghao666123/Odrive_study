@@ -659,6 +659,7 @@ extern "C" int main(void) {
     serial_number_str[12] = 0;
 
     // Init low level system functions (clocks, flash interface)
+    //!hal库初始化，系统时钟初始化，检测软件版本（通过makefile传入）
     system_init();
 
     // Load configuration from NVM. This needs to happen after system_init()
