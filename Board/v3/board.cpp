@@ -300,6 +300,7 @@ void system_init() {
 
 bool board_init() {
     // Initialize all configured peripherals
+    //使能GPIOA,B,C,D,H时钟，设置M0_nCS_Pin和M1_nCS_Pin电平状态为高电平，设置EN_GATE_Pin电平状态为低电平，设置M0_nCS_Pin，M1_nCS_Pin，M1_ENC_Z_Pin，M0_ENC_Z_Pin，GPIO_5_Pin，EN_GATE_Pin和nFAULT_Pin的引脚状态
     MX_GPIO_Init();
     MX_DMA_Init();
     MX_ADC1_Init();

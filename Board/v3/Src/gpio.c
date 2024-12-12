@@ -89,6 +89,7 @@ void MX_GPIO_Init(void)
   HAL_GPIO_WritePin(GPIOC, M0_nCS_Pin|M1_nCS_Pin, GPIO_PIN_SET);
 
   /*Configure GPIO pin Output Level */
+  //!弄清楚这个引脚是干啥的  EN_GATE_Pin和nFAULT_Pin和GPIO_5_Pin
   HAL_GPIO_WritePin(EN_GATE_GPIO_Port, EN_GATE_Pin, GPIO_PIN_RESET);
 
   /*Configure GPIO pins : PCPin PCPin */

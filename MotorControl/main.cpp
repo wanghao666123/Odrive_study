@@ -644,6 +644,7 @@ extern "C" int main(void) {
     // This procedure of building a USB serial number should be identical
     // to the way the STM's built-in USB bootloader does it. This means
     // that the device will have the same serial number in normal and DFU mode.
+    //?STEP01:读取uid作为通讯的ID并生成serial_number_str
     //!提取芯片唯一标识符的一部分信息并生成一个序列号,并且根据和这个序列号得到一个12位的十六进制字符串，存放在serial_number_str中
     uint32_t uuid0 = *(uint32_t *)(UID_BASE + 0);
     uint32_t uuid1 = *(uint32_t *)(UID_BASE + 4);
@@ -659,12 +660,14 @@ extern "C" int main(void) {
     serial_number_str[12] = 0;
 
     // Init low level system functions (clocks, flash interface)
-    //!hal库初始化，系统时钟初始化，检测软件版本（通过makefile传入）
+    //?STEP02:hal库初始化，系统时钟初始化，检测软件版本（通过makefile传入）
     system_init();
 
     // Load configuration from NVM. This needs to happen after system_init()
     // since the flash interface must be initialized and before board_init()
     // since board initialization can depend on the config.
+    //?STEP03:配置项的读取和加载，并根据uart_a，uart_b和uart_c更新odrv.misconfigured_的值
+    //!从NVM中读取之前存入的数据？啥时候存的？这个应该是内部flash
     size_t config_size = 0;
     bool success = config_manager.start_load()
             && config_read_all()
@@ -677,12 +680,15 @@ extern "C" int main(void) {
         config_apply_all();
     }
 
+    //!如果从NVM中加载进来的odrv.misconfigured_就为true，则继续保持错误状态
+    //!(odrv.config_.enable_uart_a && !uart_a)代表逐个检查UART A、B、C 的启用配置和硬件初始化状态
     odrv.misconfigured_ = odrv.misconfigured_
             || (odrv.config_.enable_uart_a && !uart_a)
             || (odrv.config_.enable_uart_b && !uart_b)
             || (odrv.config_.enable_uart_c && !uart_c);
 
     // Init board-specific peripherals
+    //?STEP04:各种外设初始化
     if (!board_init()) {
         for (;;); // TODO: handle properly
     }
