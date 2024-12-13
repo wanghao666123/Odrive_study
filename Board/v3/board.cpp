@@ -297,19 +297,25 @@ void system_init() {
         for (;;);
     }
 }
-
+//?搞清楚adc采集之后的数据在哪里处理，并且将tim1和tim8在哪里触发中断搞清楚
 bool board_init() {
     // Initialize all configured peripherals
-    //使能GPIOA,B,C,D,H时钟，设置M0_nCS_Pin和M1_nCS_Pin电平状态为高电平，设置EN_GATE_Pin电平状态为低电平，设置M0_nCS_Pin，M1_nCS_Pin，M1_ENC_Z_Pin，M0_ENC_Z_Pin，GPIO_5_Pin，EN_GATE_Pin和nFAULT_Pin的引脚状态
+    //!使能GPIOA,B,C,D,H时钟，设置M0_nCS_Pin和M1_nCS_Pin电平状态为高电平，设置EN_GATE_Pin电平状态为低电平，设置M0_nCS_Pin，M1_nCS_Pin，M1_ENC_Z_Pin，M0_ENC_Z_Pin，GPIO_5_Pin，EN_GATE_Pin和nFAULT_Pin的引脚状态
     MX_GPIO_Init();
+    //!使能DMA1,DMA2时钟，并设置其各个通道的优先级
     MX_DMA_Init();
+    //!ADC1 channel6 规则组采用软件触发，注入组采用tim1上升沿触发（Vbus）
     MX_ADC1_Init();
+    //!ADC2 channel13 规则组采用tim8上升沿触发（M1 Ib），channel10 注入组采用tim1上升沿触发（M0 Ib）
     MX_ADC2_Init();
+    //!TIM1的更新事件会触发ADC1~ADC3的注入组自动采集，会采集出Vbus，M0电机的B相和C相的电流
     MX_TIM1_Init();
+    //!TIM8的更新事件会触发ADC2和ADC3的规则组的自动采集，会采集出M1电机的B相和C相的电流
     MX_TIM8_Init();
     MX_TIM3_Init();
     MX_TIM4_Init();
     MX_SPI3_Init();
+    //!ADC3 channel12 规则组采用tim8上升沿触发（M1 Ic），channel11 注入组采用tim1上升沿触发（M0 Ic）
     MX_ADC3_Init();
     MX_TIM2_Init();
     MX_TIM5_Init();
