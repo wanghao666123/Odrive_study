@@ -69,7 +69,7 @@
 
 // Run control loop at the same frequency as the current measurements.
 #define CONTROL_TIMER_PERIOD_TICKS  (2 * TIM_1_8_PERIOD_CLOCKS * (TIM_1_8_RCR + 1))
-
+//!这里的 - 128代表的是根据M1电机的下一次中断也就是M1电机的下一次相电流ADC采集，因为M0比M1提前采集（规则组），所哟这里需要减掉128
 #define TIM1_INIT_COUNT (TIM_1_8_PERIOD_CLOCKS / 2 - 1 * 128) // TODO: explain why this offset
 
 // The delta from the control loop timestamp to the current sense timestamp is

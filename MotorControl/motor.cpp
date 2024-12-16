@@ -5,9 +5,10 @@
 #include "odrive_main.h"
 
 #include <algorithm>
-
-static constexpr auto CURRENT_ADC_LOWER_BOUND =        (uint32_t)((float)(1 << 12) * CURRENT_SENSE_MIN_VOLT / 3.3f);
-static constexpr auto CURRENT_ADC_UPPER_BOUND =        (uint32_t)((float)(1 << 12) * CURRENT_SENSE_MAX_VOLT / 3.3f);
+//!当输入电压为 CURRENT_SENSE_MIN_VOLT 时，ADC 的刻度值是多少。如果实际测量值低于这个刻度，就认为电流低于有效范围。
+static constexpr auto CURRENT_ADC_LOWER_BOUND =        (uint32_t)((float)(1 << 12) * CURRENT_SENSE_MIN_VOLT / 3.3f); //!372.363636364
+//!当输入电压为 CURRENT_SENSE_MAX_VOLT 时，ADC 的刻度值是多少。如果实际测量值高于这个刻度，就认为电流高于有效范围。
+static constexpr auto CURRENT_ADC_UPPER_BOUND =        (uint32_t)((float)(1 << 12) * CURRENT_SENSE_MAX_VOLT / 3.3f); //!3723.636363636
 
 /**
  * @brief This control law adjusts the output voltage such that a predefined
@@ -396,15 +397,17 @@ float Motor::max_available_torque() {
 
 std::optional<float> Motor::phase_current_from_adcval(uint32_t ADCValue) {
     // Make sure the measurements don't come too close to the current sensor's hardware limitations
-    if (ADCValue < CURRENT_ADC_LOWER_BOUND || ADCValue > CURRENT_ADC_UPPER_BOUND) {
+    if (ADCValue < CURRENT_ADC_LOWER_BOUND || ADCValue > CURRENT_ADC_UPPER_BOUND) {//!如果采集到的ADC值不在有效范围内
         error_ |= ERROR_CURRENT_SENSE_SATURATION;
-        return std::nullopt;
+        return std::nullopt;//!表示函数没有返回有效值。
     }
-
+    //!通过从原始 ADC 值中减去 2048，可以使 ADC 值围绕零对称，即平衡零点
     int adcval_bal = (int)ADCValue - (1 << 11);
+    //!计算了与 adcval_bal 对应的电压值 amp_out_volt
     float amp_out_volt = (3.3f / (float)(1 << 12)) * (float)adcval_bal;
+    //!计算了通过分流电阻得到的电压
     float shunt_volt = amp_out_volt * phase_current_rev_gain_;
-    float current = shunt_volt * shunt_conductance_;
+    float current = shunt_volt * shunt_conductance_; //!电压/电阻 = 电流，相电流
     return current;
 }
 
@@ -600,10 +603,11 @@ void Motor::update(uint32_t timestamp) {
 void Motor::current_meas_cb(uint32_t timestamp, std::optional<Iph_ABC_t> current) {
     // TODO: this is platform specific
     //const float current_meas_period = static_cast<float>(2 * TIM_1_8_PERIOD_CLOCKS * (TIM_1_8_RCR + 1)) / TIM_1_8_CLOCK_HZ;
+    //!current_sense 可能表示电流测量任务的时间
     TaskTimerContext tmr{axis_->task_times_.current_sense};
 
     n_evt_current_measurement_++;
-
+    //!直流偏置校准（DC Calibration）用于校正三相电流传感器的偏置误差（偏置电压不为零）。
     bool dc_calib_valid = (dc_calib_running_since_ >= config_.dc_calib_tau * 7.5f)
                        && (abs(DC_calib_.phA) < max_dc_calib_)
                        && (abs(DC_calib_.phB) < max_dc_calib_)

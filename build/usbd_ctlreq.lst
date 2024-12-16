@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccgaXtY4.s 			page 1
+ARM GAS  /tmp/ccWbikTo.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
   28:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
   29:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
   30:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** /** @defgroup USBD_REQ
-ARM GAS  /tmp/ccgaXtY4.s 			page 2
+ARM GAS  /tmp/ccWbikTo.s 			page 2
 
 
   31:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   * @brief USB standard requests module
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
   85:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   */
   86:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
   87:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
-ARM GAS  /tmp/ccgaXtY4.s 			page 3
+ARM GAS  /tmp/ccWbikTo.s 			page 3
 
 
   88:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** /** @defgroup USBD_REQ_Private_Functions
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  142:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     default:
  143:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       USBD_CtlError(pdev, req);
  144:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       break;
-ARM GAS  /tmp/ccgaXtY4.s 			page 4
+ARM GAS  /tmp/ccWbikTo.s 			page 4
 
 
  145:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     }
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  199:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   default:
  200:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     USBD_CtlError(pdev, req);
  201:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     break;
-ARM GAS  /tmp/ccgaXtY4.s 			page 5
+ARM GAS  /tmp/ccWbikTo.s 			page 5
 
 
  202:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   }
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  256:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****         break;
  257:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
  258:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       default:
-ARM GAS  /tmp/ccgaXtY4.s 			page 6
+ARM GAS  /tmp/ccWbikTo.s 			page 6
 
 
  259:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****         USBD_CtlError(pdev, req);
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  313:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****         break;
  314:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
  315:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       case USBD_STATE_CONFIGURED:
-ARM GAS  /tmp/ccgaXtY4.s 			page 7
+ARM GAS  /tmp/ccWbikTo.s 			page 7
 
 
  316:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****         if ((ep_addr & 0x80U) == 0x80U)
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  370:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** }
  371:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
  372:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
-ARM GAS  /tmp/ccgaXtY4.s 			page 8
+ARM GAS  /tmp/ccWbikTo.s 			page 8
 
 
  373:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** /**
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  427:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       {
  428:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****         USBD_CtlError(pdev, req);
  429:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****         err++;
-ARM GAS  /tmp/ccgaXtY4.s 			page 9
+ARM GAS  /tmp/ccWbikTo.s 			page 9
 
 
  430:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       }
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  484:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****         pbuf = pdev->pDesc->GetInterfaceStrDescriptor(pdev->dev_speed, &len);
  485:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       }
  486:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       else
-ARM GAS  /tmp/ccgaXtY4.s 			page 10
+ARM GAS  /tmp/ccWbikTo.s 			page 10
 
 
  487:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       {
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  541:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     {
  542:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       USBD_CtlError(pdev, req);
  543:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       err++;
-ARM GAS  /tmp/ccgaXtY4.s 			page 11
+ARM GAS  /tmp/ccWbikTo.s 			page 11
 
 
  544:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     }
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  598:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     {
  599:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       pdev->dev_address = dev_addr;
  600:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       (void)USBD_LL_SetUSBAddress(pdev, dev_addr);
-ARM GAS  /tmp/ccgaXtY4.s 			page 12
+ARM GAS  /tmp/ccWbikTo.s 			page 12
 
 
  601:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       (void)USBD_CtlSendStatus(pdev);
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  655:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****         pdev->dev_state = USBD_STATE_CONFIGURED;
  656:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       }
  657:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     }
-ARM GAS  /tmp/ccgaXtY4.s 			page 13
+ARM GAS  /tmp/ccWbikTo.s 			page 13
 
 
  658:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     else
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  712:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** * @param  pdev: device instance
  713:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** * @param  req: usb request
  714:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** * @retval status
-ARM GAS  /tmp/ccgaXtY4.s 			page 14
+ARM GAS  /tmp/ccWbikTo.s 			page 14
 
 
  715:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** */
@@ -838,7 +838,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  769:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     if (pdev->dev_remote_wakeup != 0U)
  770:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     {
  771:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       pdev->dev_config_status |= USB_CONFIG_REMOTE_WAKEUP;
-ARM GAS  /tmp/ccgaXtY4.s 			page 15
+ARM GAS  /tmp/ccWbikTo.s 			page 15
 
 
  772:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     }
@@ -898,7 +898,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  826:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** }
  827:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
  828:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** /**
-ARM GAS  /tmp/ccgaXtY4.s 			page 16
+ARM GAS  /tmp/ccWbikTo.s 			page 16
 
 
  829:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** * @brief  USBD_ParseSetupRequest
@@ -958,7 +958,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  883:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** {
  884:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   uint8_t idx = 0U;
  885:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   uint8_t *pdesc;
-ARM GAS  /tmp/ccgaXtY4.s 			page 17
+ARM GAS  /tmp/ccWbikTo.s 			page 17
 
 
  886:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
   45              	.LVL3:
   46              	.L3:
  923:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   {
-ARM GAS  /tmp/ccgaXtY4.s 			page 18
+ARM GAS  /tmp/ccWbikTo.s 			page 18
 
 
  924:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     len++;
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  793:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   {
   91              		.loc 1 793 10 is_stmt 0 view .LVU20
   92 0002 4B88     		ldrh	r3, [r1, #2]
-ARM GAS  /tmp/ccgaXtY4.s 			page 19
+ARM GAS  /tmp/ccWbikTo.s 			page 19
 
 
  793:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   {
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  136              	.LVL12:
  843:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
  137              		.loc 1 843 3 view .LVU34
-ARM GAS  /tmp/ccgaXtY4.s 			page 20
+ARM GAS  /tmp/ccWbikTo.s 			page 20
 
 
  843:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
   41:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h ****   * @{
   42:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h ****   */
   43:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h **** 
-ARM GAS  /tmp/ccgaXtY4.s 			page 21
+ARM GAS  /tmp/ccWbikTo.s 			page 21
 
 
   44:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h **** #ifndef NULL
@@ -1258,7 +1258,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
   98:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h **** #define  USB_REQ_RECIPIENT_MASK                         0x03U
   99:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h **** 
  100:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h **** #define  USB_REQ_GET_STATUS                             0x00U
-ARM GAS  /tmp/ccgaXtY4.s 			page 22
+ARM GAS  /tmp/ccWbikTo.s 			page 22
 
 
  101:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h **** #define  USB_REQ_CLEAR_FEATURE                          0x01U
@@ -1318,7 +1318,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  155:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h **** 
  156:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h **** /**
  157:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h ****   * @}
-ARM GAS  /tmp/ccgaXtY4.s 			page 23
+ARM GAS  /tmp/ccWbikTo.s 			page 23
 
 
  158:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h ****   */
@@ -1378,7 +1378,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  212:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h **** 
  213:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h ****   uint8_t  *(*GetHSConfigDescriptor)(uint16_t *length);
  214:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h ****   uint8_t  *(*GetFSConfigDescriptor)(uint16_t *length);
-ARM GAS  /tmp/ccgaXtY4.s 			page 24
+ARM GAS  /tmp/ccWbikTo.s 			page 24
 
 
  215:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h ****   uint8_t  *(*GetOtherSpeedConfigDescriptor)(uint16_t *length);
@@ -1438,7 +1438,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  269:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h **** /* USB Device handle structure */
  270:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h **** typedef struct _USBD_HandleTypeDef
  271:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h **** {
-ARM GAS  /tmp/ccgaXtY4.s 			page 25
+ARM GAS  /tmp/ccWbikTo.s 			page 25
 
 
  272:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h ****   uint8_t                 id;
@@ -1498,7 +1498,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  158              		.loc 2 315 12 is_stmt 0 view .LVU46
  159 000a CA78     		ldrb	r2, [r1, #3]	@ zero_extendqisi2
  160              	.LVL15:
-ARM GAS  /tmp/ccgaXtY4.s 			page 26
+ARM GAS  /tmp/ccWbikTo.s 			page 26
 
 
  316:ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_def.h **** 
@@ -1558,7 +1558,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  197              	.LBE10:
  850:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
  198              		.loc 1 850 15 view .LVU67
-ARM GAS  /tmp/ccgaXtY4.s 			page 27
+ARM GAS  /tmp/ccWbikTo.s 			page 27
 
 
  199 001a 8380     		strh	r3, [r0, #4]	@ movhi
@@ -1618,7 +1618,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  239              		.thumb
  240              		.thumb_func
  242              	USBD_CtlError:
-ARM GAS  /tmp/ccgaXtY4.s 			page 28
+ARM GAS  /tmp/ccWbikTo.s 			page 28
 
 
  243              	.LVL26:
@@ -1678,7 +1678,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  288              		@ frame_needed = 0, uses_anonymous_args = 0
  381:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   uint16_t len = 0U;
  289              		.loc 1 381 1 is_stmt 0 view .LVU96
-ARM GAS  /tmp/ccgaXtY4.s 			page 29
+ARM GAS  /tmp/ccWbikTo.s 			page 29
 
 
  290 0000 30B5     		push	{r4, r5, lr}
@@ -1738,7 +1738,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  333 002a 1B68     		ldr	r3, [r3]
  402:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     break;
  334              		.loc 1 402 12 view .LVU108
-ARM GAS  /tmp/ccgaXtY4.s 			page 30
+ARM GAS  /tmp/ccWbikTo.s 			page 30
 
 
  335 002c 0DF10601 		add	r1, sp, #6
@@ -1798,7 +1798,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  373 0058 03B0     		add	sp, sp, #12
  374              	.LCFI4:
  375              		.cfi_remember_state
-ARM GAS  /tmp/ccgaXtY4.s 			page 31
+ARM GAS  /tmp/ccWbikTo.s 			page 31
 
 
  376              		.cfi_def_cfa_offset 12
@@ -1858,7 +1858,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  413:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       pbuf[1] = USB_DESC_TYPE_CONFIGURATION;
  415              		.loc 1 413 14 view .LVU140
  416 007c 9847     		blx	r3
-ARM GAS  /tmp/ccgaXtY4.s 			page 32
+ARM GAS  /tmp/ccWbikTo.s 			page 32
 
 
  417              	.LVL42:
@@ -1918,7 +1918,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  458              	.LVL46:
  459              	.L29:
  428:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****         err++;
-ARM GAS  /tmp/ccgaXtY4.s 			page 33
+ARM GAS  /tmp/ccWbikTo.s 			page 33
 
 
  460              		.loc 1 428 9 view .LVU154
@@ -1978,7 +1978,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  499 00c8 D0F8B432 		ldr	r3, [r0, #692]
  446:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       {
  500              		.loc 1 446 22 view .LVU170
-ARM GAS  /tmp/ccgaXtY4.s 			page 34
+ARM GAS  /tmp/ccWbikTo.s 			page 34
 
 
  501 00cc DB68     		ldr	r3, [r3, #12]
@@ -2038,7 +2038,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  553:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   {
  540              		.loc 1 553 3 is_stmt 1 view .LVU186
  541 00f2 9FE7     		b	.L19
-ARM GAS  /tmp/ccgaXtY4.s 			page 35
+ARM GAS  /tmp/ccWbikTo.s 			page 35
 
 
  542              	.LVL61:
@@ -2098,7 +2098,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  581              		.loc 1 482 7 view .LVU201
  482:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       {
  582              		.loc 1 482 15 is_stmt 0 view .LVU202
-ARM GAS  /tmp/ccgaXtY4.s 			page 36
+ARM GAS  /tmp/ccWbikTo.s 			page 36
 
 
  583 0116 D0F8B432 		ldr	r3, [r0, #692]
@@ -2158,7 +2158,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  621              		.loc 1 553 3 is_stmt 1 view .LVU218
  622 013e 79E7     		b	.L19
  623              	.LVL75:
-ARM GAS  /tmp/ccgaXtY4.s 			page 37
+ARM GAS  /tmp/ccWbikTo.s 			page 37
 
 
  624              	.L36:
@@ -2218,7 +2218,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  535:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     {
  663              		.loc 1 535 5 view .LVU234
  535:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     {
-ARM GAS  /tmp/ccgaXtY4.s 			page 38
+ARM GAS  /tmp/ccWbikTo.s 			page 38
 
 
  664              		.loc 1 535 13 is_stmt 0 view .LVU235
@@ -2278,7 +2278,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  702              		.loc 1 553 3 view .LVU251
  555:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   }
  703              		.loc 1 555 5 view .LVU252
-ARM GAS  /tmp/ccgaXtY4.s 			page 39
+ARM GAS  /tmp/ccWbikTo.s 			page 39
 
 
  704 0186 67E7     		b	.L11
@@ -2338,7 +2338,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  751              		.loc 1 589 3 view .LVU261
  589:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   {
  752              		.loc 1 589 11 is_stmt 0 view .LVU262
-ARM GAS  /tmp/ccgaXtY4.s 			page 40
+ARM GAS  /tmp/ccWbikTo.s 			page 40
 
 
  753 0004 8B88     		ldrh	r3, [r1, #4]
@@ -2398,7 +2398,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  603:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       {
  790              		.loc 1 603 7 is_stmt 1 view .LVU280
  603:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       {
-ARM GAS  /tmp/ccgaXtY4.s 			page 41
+ARM GAS  /tmp/ccWbikTo.s 			page 41
 
 
  791              		.loc 1 603 10 is_stmt 0 view .LVU281
@@ -2458,7 +2458,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  836              		.cfi_startproc
  837              		@ args = 0, pretend = 0, frame = 0
  838              		@ frame_needed = 0, uses_anonymous_args = 0
-ARM GAS  /tmp/ccgaXtY4.s 			page 42
+ARM GAS  /tmp/ccWbikTo.s 			page 42
 
 
  627:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   USBD_StatusTypeDef ret = USBD_OK;
@@ -2518,7 +2518,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  879              	.LVL108:
  702:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     break;
  880              		.loc 1 702 5 is_stmt 1 view .LVU307
-ARM GAS  /tmp/ccgaXtY4.s 			page 43
+ARM GAS  /tmp/ccWbikTo.s 			page 43
 
 
  703:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   }
@@ -2578,7 +2578,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  919 0048 2046     		mov	r0, r4
  920              	.LVL115:
  650:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       }
-ARM GAS  /tmp/ccgaXtY4.s 			page 44
+ARM GAS  /tmp/ccWbikTo.s 			page 44
 
 
  921              		.loc 1 650 9 is_stmt 0 view .LVU324
@@ -2638,7 +2638,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  960              		.loc 1 675 13 is_stmt 0 view .LVU339
  961 006c C9B2     		uxtb	r1, r1
  962 006e FFF7FEFF 		bl	USBD_ClrClassConfig
-ARM GAS  /tmp/ccgaXtY4.s 			page 45
+ARM GAS  /tmp/ccWbikTo.s 			page 45
 
 
  963              	.LVL124:
@@ -2698,7 +2698,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1002              		.loc 1 668 7 is_stmt 1 view .LVU354
  668:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       (void)USBD_ClrClassConfig(pdev, cfgidx);
  1003              		.loc 1 668 24 is_stmt 0 view .LVU355
-ARM GAS  /tmp/ccgaXtY4.s 			page 46
+ARM GAS  /tmp/ccWbikTo.s 			page 46
 
 
  1004 00a0 4560     		str	r5, [r0, #4]
@@ -2758,7 +2758,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1048              		.thumb_func
  1050              	USBD_GetConfig:
  1051              	.LVL138:
-ARM GAS  /tmp/ccgaXtY4.s 			page 47
+ARM GAS  /tmp/ccWbikTo.s 			page 47
 
 
  1052              	.LFB140:
@@ -2818,7 +2818,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  741:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
  1093              		.loc 1 741 1 is_stmt 0 view .LVU380
  1094 0022 08BD     		pop	{r3, pc}
-ARM GAS  /tmp/ccgaXtY4.s 			page 48
+ARM GAS  /tmp/ccWbikTo.s 			page 48
 
 
  1095              	.LVL143:
@@ -2878,7 +2878,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1139              		.loc 1 751 1 is_stmt 0 view .LVU392
  1140 0000 08B5     		push	{r3, lr}
  1141              	.LCFI9:
-ARM GAS  /tmp/ccgaXtY4.s 			page 49
+ARM GAS  /tmp/ccWbikTo.s 			page 49
 
 
  1142              		.cfi_def_cfa_offset 8
@@ -2938,7 +2938,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  775:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
  1180              		.loc 1 775 5 is_stmt 1 view .LVU409
  1181              	.L79:
-ARM GAS  /tmp/ccgaXtY4.s 			page 50
+ARM GAS  /tmp/ccWbikTo.s 			page 50
 
 
  781:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
@@ -2998,7 +2998,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1227 000a 09D8     		bhi	.L87
  815:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       {
  1228              		.loc 1 815 7 is_stmt 1 view .LVU421
-ARM GAS  /tmp/ccgaXtY4.s 			page 51
+ARM GAS  /tmp/ccWbikTo.s 			page 51
 
 
  815:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****       {
@@ -3058,7 +3058,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1273              		@ args = 0, pretend = 0, frame = 0
  1274              		@ frame_needed = 0, uses_anonymous_args = 0
  101:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   USBD_StatusTypeDef ret = USBD_OK;
-ARM GAS  /tmp/ccgaXtY4.s 			page 52
+ARM GAS  /tmp/ccWbikTo.s 			page 52
 
 
  1275              		.loc 1 101 1 is_stmt 0 view .LVU434
@@ -3118,7 +3118,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  109:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
  1316              		.loc 1 109 5 is_stmt 1 view .LVU448
  1317              	.L95:
-ARM GAS  /tmp/ccgaXtY4.s 			page 53
+ARM GAS  /tmp/ccWbikTo.s 			page 53
 
 
  153:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** }
@@ -3178,7 +3178,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1361              		.loc 1 123 13 view .LVU459
  1362 004c 0446     		mov	r4, r0
  1363              	.LVL173:
-ARM GAS  /tmp/ccgaXtY4.s 			page 54
+ARM GAS  /tmp/ccWbikTo.s 			page 54
 
 
  124:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
@@ -3238,7 +3238,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1405              	.LFE134:
  1407              		.section	.text.USBD_StdItfReq,"ax",%progbits
  1408              		.align	1
-ARM GAS  /tmp/ccgaXtY4.s 			page 55
+ARM GAS  /tmp/ccWbikTo.s 			page 55
 
 
  1409              		.global	USBD_StdItfReq
@@ -3298,7 +3298,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1453 001c 3046     		mov	r0, r6
  1454 001e 70BD     		pop	{r4, r5, r6, pc}
  1455              	.LVL188:
-ARM GAS  /tmp/ccgaXtY4.s 			page 56
+ARM GAS  /tmp/ccWbikTo.s 			page 56
 
 
  1456              	.L109:
@@ -3358,7 +3358,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1494              		.loc 1 184 11 is_stmt 1 view .LVU499
  184:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****         }
  1495              		.loc 1 184 17 is_stmt 0 view .LVU500
-ARM GAS  /tmp/ccgaXtY4.s 			page 57
+ARM GAS  /tmp/ccWbikTo.s 			page 57
 
 
  1496 0048 2846     		mov	r0, r5
@@ -3418,7 +3418,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1540              		.thumb_func
  1542              	USBD_StdEPReq:
  1543              	.LVL203:
-ARM GAS  /tmp/ccgaXtY4.s 			page 58
+ARM GAS  /tmp/ccWbikTo.s 			page 58
 
 
  1544              	.LFB136:
@@ -3478,7 +3478,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  366:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   }
  1586              		.loc 1 366 5 view .LVU524
  218:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   ep_addr = LOBYTE(req->wIndex);
-ARM GAS  /tmp/ccgaXtY4.s 			page 59
+ARM GAS  /tmp/ccWbikTo.s 			page 59
 
 
  1587              		.loc 1 218 22 is_stmt 0 view .LVU525
@@ -3538,7 +3538,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1628 0046 FFF7FEFF 		bl	USBD_CtlError
  1629              	.LVL214:
  360:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****     }
-ARM GAS  /tmp/ccgaXtY4.s 			page 60
+ARM GAS  /tmp/ccWbikTo.s 			page 60
 
 
  1630              		.loc 1 360 7 view .LVU539
@@ -3598,7 +3598,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1671              	.LVL223:
  1672              	.L156:
  237:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****           (void)USBD_LL_StallEP(pdev, 0x80U);
-ARM GAS  /tmp/ccgaXtY4.s 			page 61
+ARM GAS  /tmp/ccWbikTo.s 			page 61
 
 
  1673              		.loc 1 237 11 is_stmt 1 view .LVU553
@@ -3658,7 +3658,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1712              	.L157:
  251:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****           }
  1713              		.loc 1 251 13 view .LVU569
-ARM GAS  /tmp/ccgaXtY4.s 			page 62
+ARM GAS  /tmp/ccWbikTo.s 			page 62
 
 
  251:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****           }
@@ -3718,7 +3718,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1754 00b8 FFF7FEFF 		bl	USBD_CtlError
  1755              	.LVL238:
  276:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****         }
-ARM GAS  /tmp/ccgaXtY4.s 			page 63
+ARM GAS  /tmp/ccWbikTo.s 			page 63
 
 
  1756              		.loc 1 276 11 view .LVU584
@@ -3778,7 +3778,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1795 00e2 9B68     		ldr	r3, [r3, #8]
  288:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****         }
  1796              		.loc 1 288 31 view .LVU600
-ARM GAS  /tmp/ccgaXtY4.s 			page 64
+ARM GAS  /tmp/ccWbikTo.s 			page 64
 
 
  1797 00e4 2946     		mov	r1, r5
@@ -3838,7 +3838,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  307:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****               &pdev->ep_out[ep_addr & 0x7FU];
  1838              		.loc 1 307 76 is_stmt 0 view .LVU614
  1839 010e 13F0800F 		tst	r3, #128
-ARM GAS  /tmp/ccgaXtY4.s 			page 65
+ARM GAS  /tmp/ccWbikTo.s 			page 65
 
 
  1840 0112 15D1     		bne	.L161
@@ -3898,7 +3898,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  305:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****         }
  1880              		.loc 1 305 11 view .LVU629
  1881 013e 78E7     		b	.L119
-ARM GAS  /tmp/ccgaXtY4.s 			page 66
+ARM GAS  /tmp/ccWbikTo.s 			page 66
 
 
  1882              	.LVL258:
@@ -3958,7 +3958,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1923              	.L143:
  1924              	.LVL260:
  336:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****           {
-ARM GAS  /tmp/ccgaXtY4.s 			page 67
+ARM GAS  /tmp/ccWbikTo.s 			page 67
 
 
  1925              		.loc 1 336 11 is_stmt 1 discriminator 4 view .LVU643
@@ -4018,7 +4018,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  1965 01ac FFF7FEFF 		bl	USBD_CtlError
  1966              	.LVL265:
  321:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****           }
-ARM GAS  /tmp/ccgaXtY4.s 			page 68
+ARM GAS  /tmp/ccWbikTo.s 			page 68
 
 
  1967              		.loc 1 321 13 view .LVU658
@@ -4078,7 +4078,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  2007              		.loc 1 342 25 is_stmt 0 view .LVU672
  2008 01d8 0123     		movs	r3, #1
  2009 01da 2360     		str	r3, [r4]
-ARM GAS  /tmp/ccgaXtY4.s 			page 69
+ARM GAS  /tmp/ccWbikTo.s 			page 69
 
 
  2010 01dc D5E7     		b	.L146
@@ -4138,7 +4138,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  2055              	.LVL275:
  893:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c **** 
  2056              		.loc 1 893 46 view .LVU684
-ARM GAS  /tmp/ccgaXtY4.s 			page 70
+ARM GAS  /tmp/ccWbikTo.s 			page 70
 
 
  2057 000e 431C     		adds	r3, r0, #1
@@ -4198,7 +4198,7 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  2093              		.loc 1 906 18 is_stmt 0 view .LVU702
  2094 0028 0021     		movs	r1, #0
  2095 002a A954     		strb	r1, [r5, r2]
-ARM GAS  /tmp/ccgaXtY4.s 			page 71
+ARM GAS  /tmp/ccWbikTo.s 			page 71
 
 
  907:ThirdParty/STM32_USB_Device_Library/Core/Src/usbd_ctlreq.c ****   }
@@ -4244,49 +4244,49 @@ ARM GAS  /tmp/ccgaXtY4.s 			page 1
  2132              		.file 4 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
  2133              		.file 5 "ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_core.h"
  2134              		.file 6 "ThirdParty/STM32_USB_Device_Library/Core/Inc/usbd_ioreq.h"
-ARM GAS  /tmp/ccgaXtY4.s 			page 72
+ARM GAS  /tmp/ccWbikTo.s 			page 72
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 usbd_ctlreq.c
-     /tmp/ccgaXtY4.s:20     .text.USBD_GetLen:0000000000000000 $t
-     /tmp/ccgaXtY4.s:25     .text.USBD_GetLen:0000000000000000 USBD_GetLen
-     /tmp/ccgaXtY4.s:72     .text.USBD_SetFeature:0000000000000000 $t
-     /tmp/ccgaXtY4.s:77     .text.USBD_SetFeature:0000000000000000 USBD_SetFeature
-     /tmp/ccgaXtY4.s:115    .text.USBD_ParseSetupRequest:0000000000000000 $t
-     /tmp/ccgaXtY4.s:121    .text.USBD_ParseSetupRequest:0000000000000000 USBD_ParseSetupRequest
-     /tmp/ccgaXtY4.s:236    .text.USBD_CtlError:0000000000000000 $t
-     /tmp/ccgaXtY4.s:242    .text.USBD_CtlError:0000000000000000 USBD_CtlError
-     /tmp/ccgaXtY4.s:277    .text.USBD_GetDescriptor:0000000000000000 $t
-     /tmp/ccgaXtY4.s:282    .text.USBD_GetDescriptor:0000000000000000 USBD_GetDescriptor
-     /tmp/ccgaXtY4.s:320    .text.USBD_GetDescriptor:000000000000001e $d
-     /tmp/ccgaXtY4.s:433    .text.USBD_GetDescriptor:000000000000008e $d
-     /tmp/ccgaXtY4.s:439    .text.USBD_GetDescriptor:0000000000000094 $t
-     /tmp/ccgaXtY4.s:729    .text.USBD_SetAddress:0000000000000000 $t
-     /tmp/ccgaXtY4.s:734    .text.USBD_SetAddress:0000000000000000 USBD_SetAddress
-     /tmp/ccgaXtY4.s:827    .text.USBD_SetConfig:0000000000000000 $t
-     /tmp/ccgaXtY4.s:832    .text.USBD_SetConfig:0000000000000000 USBD_SetConfig
-     /tmp/ccgaXtY4.s:1040   .text.USBD_SetConfig:00000000000000c0 $d
-     /tmp/ccgaXtY4.s:1045   .text.USBD_GetConfig:0000000000000000 $t
-     /tmp/ccgaXtY4.s:1050   .text.USBD_GetConfig:0000000000000000 USBD_GetConfig
-     /tmp/ccgaXtY4.s:1127   .text.USBD_GetStatus:0000000000000000 $t
-     /tmp/ccgaXtY4.s:1132   .text.USBD_GetStatus:0000000000000000 USBD_GetStatus
-     /tmp/ccgaXtY4.s:1203   .text.USBD_ClrFeature:0000000000000000 $t
-     /tmp/ccgaXtY4.s:1208   .text.USBD_ClrFeature:0000000000000000 USBD_ClrFeature
-     /tmp/ccgaXtY4.s:1262   .text.USBD_StdDevReq:0000000000000000 $t
-     /tmp/ccgaXtY4.s:1268   .text.USBD_StdDevReq:0000000000000000 USBD_StdDevReq
-     /tmp/ccgaXtY4.s:1331   .text.USBD_StdDevReq:0000000000000032 $d
-     /tmp/ccgaXtY4.s:1341   .text.USBD_StdDevReq:000000000000003c $t
-     /tmp/ccgaXtY4.s:1408   .text.USBD_StdItfReq:0000000000000000 $t
-     /tmp/ccgaXtY4.s:1414   .text.USBD_StdItfReq:0000000000000000 USBD_StdItfReq
-     /tmp/ccgaXtY4.s:1536   .text.USBD_StdEPReq:0000000000000000 $t
-     /tmp/ccgaXtY4.s:1542   .text.USBD_StdEPReq:0000000000000000 USBD_StdEPReq
-     /tmp/ccgaXtY4.s:2021   .text.USBD_GetString:0000000000000000 $t
-     /tmp/ccgaXtY4.s:2027   .text.USBD_GetString:0000000000000000 USBD_GetString
-     /tmp/ccgaXtY4.s:2127   .bss.cfgidx.0:0000000000000000 cfgidx.0
-     /tmp/ccgaXtY4.s:2128   .bss.cfgidx.0:0000000000000000 $d
-     /tmp/ccgaXtY4.s:327    .text.USBD_GetDescriptor:0000000000000025 $d
-     /tmp/ccgaXtY4.s:327    .text.USBD_GetDescriptor:0000000000000026 $t
+     /tmp/ccWbikTo.s:20     .text.USBD_GetLen:0000000000000000 $t
+     /tmp/ccWbikTo.s:25     .text.USBD_GetLen:0000000000000000 USBD_GetLen
+     /tmp/ccWbikTo.s:72     .text.USBD_SetFeature:0000000000000000 $t
+     /tmp/ccWbikTo.s:77     .text.USBD_SetFeature:0000000000000000 USBD_SetFeature
+     /tmp/ccWbikTo.s:115    .text.USBD_ParseSetupRequest:0000000000000000 $t
+     /tmp/ccWbikTo.s:121    .text.USBD_ParseSetupRequest:0000000000000000 USBD_ParseSetupRequest
+     /tmp/ccWbikTo.s:236    .text.USBD_CtlError:0000000000000000 $t
+     /tmp/ccWbikTo.s:242    .text.USBD_CtlError:0000000000000000 USBD_CtlError
+     /tmp/ccWbikTo.s:277    .text.USBD_GetDescriptor:0000000000000000 $t
+     /tmp/ccWbikTo.s:282    .text.USBD_GetDescriptor:0000000000000000 USBD_GetDescriptor
+     /tmp/ccWbikTo.s:320    .text.USBD_GetDescriptor:000000000000001e $d
+     /tmp/ccWbikTo.s:433    .text.USBD_GetDescriptor:000000000000008e $d
+     /tmp/ccWbikTo.s:439    .text.USBD_GetDescriptor:0000000000000094 $t
+     /tmp/ccWbikTo.s:729    .text.USBD_SetAddress:0000000000000000 $t
+     /tmp/ccWbikTo.s:734    .text.USBD_SetAddress:0000000000000000 USBD_SetAddress
+     /tmp/ccWbikTo.s:827    .text.USBD_SetConfig:0000000000000000 $t
+     /tmp/ccWbikTo.s:832    .text.USBD_SetConfig:0000000000000000 USBD_SetConfig
+     /tmp/ccWbikTo.s:1040   .text.USBD_SetConfig:00000000000000c0 $d
+     /tmp/ccWbikTo.s:1045   .text.USBD_GetConfig:0000000000000000 $t
+     /tmp/ccWbikTo.s:1050   .text.USBD_GetConfig:0000000000000000 USBD_GetConfig
+     /tmp/ccWbikTo.s:1127   .text.USBD_GetStatus:0000000000000000 $t
+     /tmp/ccWbikTo.s:1132   .text.USBD_GetStatus:0000000000000000 USBD_GetStatus
+     /tmp/ccWbikTo.s:1203   .text.USBD_ClrFeature:0000000000000000 $t
+     /tmp/ccWbikTo.s:1208   .text.USBD_ClrFeature:0000000000000000 USBD_ClrFeature
+     /tmp/ccWbikTo.s:1262   .text.USBD_StdDevReq:0000000000000000 $t
+     /tmp/ccWbikTo.s:1268   .text.USBD_StdDevReq:0000000000000000 USBD_StdDevReq
+     /tmp/ccWbikTo.s:1331   .text.USBD_StdDevReq:0000000000000032 $d
+     /tmp/ccWbikTo.s:1341   .text.USBD_StdDevReq:000000000000003c $t
+     /tmp/ccWbikTo.s:1408   .text.USBD_StdItfReq:0000000000000000 $t
+     /tmp/ccWbikTo.s:1414   .text.USBD_StdItfReq:0000000000000000 USBD_StdItfReq
+     /tmp/ccWbikTo.s:1536   .text.USBD_StdEPReq:0000000000000000 $t
+     /tmp/ccWbikTo.s:1542   .text.USBD_StdEPReq:0000000000000000 USBD_StdEPReq
+     /tmp/ccWbikTo.s:2021   .text.USBD_GetString:0000000000000000 $t
+     /tmp/ccWbikTo.s:2027   .text.USBD_GetString:0000000000000000 USBD_GetString
+     /tmp/ccWbikTo.s:2127   .bss.cfgidx.0:0000000000000000 cfgidx.0
+     /tmp/ccWbikTo.s:2128   .bss.cfgidx.0:0000000000000000 $d
+     /tmp/ccWbikTo.s:327    .text.USBD_GetDescriptor:0000000000000025 $d
+     /tmp/ccWbikTo.s:327    .text.USBD_GetDescriptor:0000000000000026 $t
 
 UNDEFINED SYMBOLS
 USBD_CtlSendStatus

@@ -71,10 +71,10 @@ void MX_TIM1_Init(void)
   TIM_MasterConfigTypeDef sMasterConfig;
   TIM_OC_InitTypeDef sConfigOC;
   TIM_BreakDeadTimeConfigTypeDef sBreakDeadTimeConfig;
-
+  
   htim1.Instance = TIM1;
-  htim1.Init.Prescaler = 0;
-  htim1.Init.CounterMode = TIM_COUNTERMODE_CENTERALIGNED3;
+  htim1.Init.Prescaler = 0;//!预分频器 = 0
+  htim1.Init.CounterMode = TIM_COUNTERMODE_CENTERALIGNED3;//!计数模式为中心对齐，定时器从 0 计数到 Period，然后反向计数回到 0。
   htim1.Init.Period = TIM_1_8_PERIOD_CLOCKS;
   htim1.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim1.Init.RepetitionCounter = TIM_1_8_RCR;
@@ -307,7 +307,7 @@ void MX_TIM8_Init(void)
   htim8.Init.CounterMode = TIM_COUNTERMODE_CENTERALIGNED3;
   htim8.Init.Period = TIM_1_8_PERIOD_CLOCKS;
   htim8.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
-  htim8.Init.RepetitionCounter = TIM_1_8_RCR;
+  htim8.Init.RepetitionCounter = TIM_1_8_RCR;  //!每（2+1）次更新会中断一次。
   if (HAL_TIM_PWM_Init(&htim8) != HAL_OK)
   {
     _Error_Handler(__FILE__, __LINE__);

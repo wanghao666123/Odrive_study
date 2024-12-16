@@ -1,4 +1,4 @@
-ARM GAS  /tmp/cctVPsmX.s 			page 1
+ARM GAS  /tmp/cczMNLaE.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
   27:Drivers/STM32/stm32_gpio.cpp ****         case 6:
   28:Drivers/STM32/stm32_gpio.cpp ****         case 7:
   29:Drivers/STM32/stm32_gpio.cpp ****         case 8:
-ARM GAS  /tmp/cctVPsmX.s 			page 2
+ARM GAS  /tmp/cczMNLaE.s 			page 2
 
 
   30:Drivers/STM32/stm32_gpio.cpp ****         case 9: return EXTI9_5_IRQn;
@@ -118,7 +118,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
   84:Drivers/STM32/stm32_gpio.cpp ****         temp &= ~(GPIO_OSPEEDER_OSPEEDR0 << (position * 2U));
   85:Drivers/STM32/stm32_gpio.cpp ****         temp |= (speed << (position * 2U));
   86:Drivers/STM32/stm32_gpio.cpp ****         port_->OSPEEDR = temp;
-ARM GAS  /tmp/cctVPsmX.s 			page 3
+ARM GAS  /tmp/cczMNLaE.s 			page 3
 
 
   87:Drivers/STM32/stm32_gpio.cpp **** 
@@ -178,7 +178,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  141:Drivers/STM32/stm32_gpio.cpp ****     // Clear any previous triggers
  142:Drivers/STM32/stm32_gpio.cpp ****     __HAL_GPIO_EXTI_CLEAR_IT(pin_mask_);
  143:Drivers/STM32/stm32_gpio.cpp ****     
-ARM GAS  /tmp/cctVPsmX.s 			page 4
+ARM GAS  /tmp/cczMNLaE.s 			page 4
 
 
  144:Drivers/STM32/stm32_gpio.cpp ****     subscription.ctx = ctx;
@@ -238,7 +238,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  198:Drivers/STM32/stm32_gpio.cpp **** }
  199:Drivers/STM32/stm32_gpio.cpp **** 
  200:Drivers/STM32/stm32_gpio.cpp **** /** @brief Entrypoint for the EXTI line 2 interrupt. */
-ARM GAS  /tmp/cctVPsmX.s 			page 5
+ARM GAS  /tmp/cczMNLaE.s 			page 5
 
 
  201:Drivers/STM32/stm32_gpio.cpp **** void EXTI2_IRQHandler(void) {
@@ -298,7 +298,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
    2:Drivers/STM32/stm32_gpio.hpp **** #define __STM32_GPIO_HPP
    3:Drivers/STM32/stm32_gpio.hpp **** 
    4:Drivers/STM32/stm32_gpio.hpp **** #include <gpio.h>
-ARM GAS  /tmp/cctVPsmX.s 			page 6
+ARM GAS  /tmp/cczMNLaE.s 			page 6
 
 
    5:Drivers/STM32/stm32_gpio.hpp **** 
@@ -358,7 +358,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
   96              		.cfi_offset 14, -4
   97 0002 89B0     		sub	sp, sp, #36
   98              	.LCFI1:
-ARM GAS  /tmp/cctVPsmX.s 			page 7
+ARM GAS  /tmp/cczMNLaE.s 			page 7
 
 
   99              		.cfi_def_cfa_offset 56
@@ -418,7 +418,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  146 0020 AC42     		cmp	r4, r5
  147 0022 42D0     		beq	.L26
  148              	.LBE35:
-ARM GAS  /tmp/cctVPsmX.s 			page 8
+ARM GAS  /tmp/cczMNLaE.s 			page 8
 
 
  149              	.LBE60:
@@ -478,7 +478,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  199              		.loc 1 63 16 is_stmt 0 view .LVU19
  200 0036 0020     		movs	r0, #0
  201              	.LVL4:
-ARM GAS  /tmp/cctVPsmX.s 			page 9
+ARM GAS  /tmp/cczMNLaE.s 			page 9
 
 
   63:Drivers/STM32/stm32_gpio.cpp ****     }
@@ -538,7 +538,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
   21:Drivers/STM32/stm32_gpio.hpp ****      */
   22:Drivers/STM32/stm32_gpio.hpp ****     bool config(uint32_t mode, uint32_t pull, uint32_t speed = GPIO_SPEED_FREQ_LOW);
   23:Drivers/STM32/stm32_gpio.hpp **** 
-ARM GAS  /tmp/cctVPsmX.s 			page 10
+ARM GAS  /tmp/cczMNLaE.s 			page 10
 
 
   24:Drivers/STM32/stm32_gpio.hpp ****     void write(bool state) {
@@ -598,7 +598,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  246 0054 6408     		lsrs	r4, r4, #1
  247              	.LVL7:
   69:Drivers/STM32/stm32_gpio.hpp ****         uint16_t pin_number = 0;
-ARM GAS  /tmp/cctVPsmX.s 			page 11
+ARM GAS  /tmp/cczMNLaE.s 			page 11
 
 
  248              		.loc 2 69 18 view .LVU33
@@ -658,7 +658,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  292              		.loc 1 51 9 view .LVU43
  293 0084 246B     		ldr	r4, [r4, #48]
  294 0086 04F00404 		and	r4, r4, #4
-ARM GAS  /tmp/cctVPsmX.s 			page 12
+ARM GAS  /tmp/cczMNLaE.s 			page 12
 
 
  295 008a 0294     		str	r4, [sp, #8]
@@ -718,7 +718,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
   55:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOF) {
  341              		.loc 1 55 9 view .LVU52
  342 00ae 404C     		ldr	r4, .L31+32
-ARM GAS  /tmp/cctVPsmX.s 			page 13
+ARM GAS  /tmp/cczMNLaE.s 			page 13
 
 
  343 00b0 256B     		ldr	r5, [r4, #48]
@@ -778,7 +778,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  390              	.LBE111:
   59:Drivers/STM32/stm32_gpio.cpp ****     } else if (port_ == GPIOH) {
  391              		.loc 1 59 9 view .LVU60
-ARM GAS  /tmp/cctVPsmX.s 			page 14
+ARM GAS  /tmp/cczMNLaE.s 			page 14
 
 
  392              	.LBB112:
@@ -838,7 +838,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  439 00fe 256B     		ldr	r5, [r4, #48]
  440 0100 45F08005 		orr	r5, r5, #128
  441 0104 2563     		str	r5, [r4, #48]
-ARM GAS  /tmp/cctVPsmX.s 			page 15
+ARM GAS  /tmp/cczMNLaE.s 			page 15
 
 
   61:Drivers/STM32/stm32_gpio.cpp ****     } else {
@@ -898,7 +898,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  485 0120 6546     		mov	r5, ip
  486              	.LVL14:
   71:Drivers/STM32/stm32_gpio.cpp ****     temp &= ~(GPIO_MODER_MODER0 << (position * 2U));
-ARM GAS  /tmp/cctVPsmX.s 			page 16
+ARM GAS  /tmp/cczMNLaE.s 			page 16
 
 
  487              		.loc 1 71 5 is_stmt 1 view .LVU81
@@ -958,7 +958,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  524 014c 01D0     		beq	.L18
   78:Drivers/STM32/stm32_gpio.cpp ****     {
  525              		.loc 1 78 38 view .LVU99
-ARM GAS  /tmp/cctVPsmX.s 			page 17
+ARM GAS  /tmp/cczMNLaE.s 			page 17
 
 
  526 014e 1229     		cmp	r1, #18
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  563              	.LVL25:
   91:Drivers/STM32/stm32_gpio.cpp ****         port_->OTYPER = temp;
  564              		.loc 1 91 9 is_stmt 1 view .LVU117
-ARM GAS  /tmp/cctVPsmX.s 			page 18
+ARM GAS  /tmp/cczMNLaE.s 			page 18
 
 
   91:Drivers/STM32/stm32_gpio.cpp ****         port_->OTYPER = temp;
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  102:Drivers/STM32/stm32_gpio.cpp **** 
  602              		.loc 1 102 1 view .LVU135
  603 018c 09B0     		add	sp, sp, #36
-ARM GAS  /tmp/cctVPsmX.s 			page 19
+ARM GAS  /tmp/cczMNLaE.s 			page 19
 
 
  604              	.LCFI2:
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  657              	.LBI115:
   68:Drivers/STM32/stm32_gpio.hpp ****         uint16_t pin_number = 0;
  658              		.loc 2 68 14 view .LVU139
-ARM GAS  /tmp/cctVPsmX.s 			page 20
+ARM GAS  /tmp/cczMNLaE.s 			page 20
 
 
  659              	.LBB116:
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  110:Drivers/STM32/stm32_gpio.cpp **** 
  699              		.loc 1 110 5 view .LVU156
  700              	.LVL42:
-ARM GAS  /tmp/cctVPsmX.s 			page 21
+ARM GAS  /tmp/cczMNLaE.s 			page 21
 
 
  112:Drivers/STM32/stm32_gpio.cpp ****     if (!__atomic_compare_exchange_n(&subscription.port, &no_port, port_, false, __ATOMIC_SEQ_CST, 
@@ -1258,7 +1258,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  743              		.loc 1 118 5 view .LVU168
  744 006e 019D     		ldr	r5, [sp, #4]
  745              	.LBE117:
-ARM GAS  /tmp/cctVPsmX.s 			page 22
+ARM GAS  /tmp/cczMNLaE.s 			page 22
 
 
  120:Drivers/STM32/stm32_gpio.cpp ****     temp &= ~(0x0FU << (4U * (pin_number & 0x03U)));
@@ -1318,7 +1318,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  785 00b0 08F58068 		add	r8, r8, #1024
  786 00b4 4545     		cmp	r5, r8
  787 00b6 48D0     		beq	.L47
-ARM GAS  /tmp/cctVPsmX.s 			page 23
+ARM GAS  /tmp/cczMNLaE.s 			page 23
 
 
  122:Drivers/STM32/stm32_gpio.cpp ****     SYSCFG->EXTICR[pin_number >> 2U] = temp;
@@ -1378,7 +1378,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  829              		.loc 1 127 33 view .LVU196
  830 00f2 BEF80460 		ldrh	r6, [lr, #4]
  831              	.LVL51:
-ARM GAS  /tmp/cctVPsmX.s 			page 24
+ARM GAS  /tmp/cczMNLaE.s 			page 24
 
 
  127:Drivers/STM32/stm32_gpio.cpp ****     } else {
@@ -1438,7 +1438,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  144:Drivers/STM32/stm32_gpio.cpp ****     subscription.callback = callback;
  871              		.loc 1 144 5 view .LVU212
  144:Drivers/STM32/stm32_gpio.cpp ****     subscription.callback = callback;
-ARM GAS  /tmp/cctVPsmX.s 			page 25
+ARM GAS  /tmp/cczMNLaE.s 			page 25
 
 
  872              		.loc 1 144 22 is_stmt 0 view .LVU213
@@ -1498,7 +1498,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  129:Drivers/STM32/stm32_gpio.cpp ****     }
  919              		.loc 1 129 20 view .LVU221
  920 0158 A968     		ldr	r1, [r5, #8]
-ARM GAS  /tmp/cctVPsmX.s 			page 26
+ARM GAS  /tmp/cczMNLaE.s 			page 26
 
 
  921              	.LVL58:
@@ -1558,7 +1558,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  967              		.thumb
  968              		.thumb_func
  970              	_ZN9Stm32Gpio11unsubscribeEv:
-ARM GAS  /tmp/cctVPsmX.s 			page 27
+ARM GAS  /tmp/cczMNLaE.s 			page 27
 
 
  971              		.fnstart
@@ -1618,7 +1618,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  1010 000e 002A     		cmp	r2, #0
  1011 0010 FAD1     		bne	.L66
  1012              		.loc 2 75 9 view .LVU246
-ARM GAS  /tmp/cctVPsmX.s 			page 28
+ARM GAS  /tmp/cczMNLaE.s 			page 28
 
 
  1013              	.LVL70:
@@ -1678,7 +1678,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  1056 0032 1C68     		ldr	r4, [r3]
  1057 0034 2143     		orrs	r1, r1, r4
  1058 0036 1960     		str	r1, [r3]
-ARM GAS  /tmp/cctVPsmX.s 			page 29
+ARM GAS  /tmp/cczMNLaE.s 			page 29
 
 
  162:Drivers/STM32/stm32_gpio.cpp **** 
@@ -1738,7 +1738,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  1104              		.thumb_func
  1106              	_Z12maybe_handlet:
  1107              		.fnstart
-ARM GAS  /tmp/cctVPsmX.s 			page 30
+ARM GAS  /tmp/cczMNLaE.s 			page 30
 
 
  1108              	.LVL78:
@@ -1798,7 +1798,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  1149              	.LVL80:
  184:Drivers/STM32/stm32_gpio.cpp ****     }
  1150              		.loc 1 184 33 view .LVU282
-ARM GAS  /tmp/cctVPsmX.s 			page 31
+ARM GAS  /tmp/cczMNLaE.s 			page 31
 
 
  1151 0028 034B     		ldr	r3, .L73+4
@@ -1858,7 +1858,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  1203              		.thumb
  1204              		.thumb_func
  1206              	EXTI1_IRQHandler:
-ARM GAS  /tmp/cctVPsmX.s 			page 32
+ARM GAS  /tmp/cczMNLaE.s 			page 32
 
 
  1207              		.fnstart
@@ -1918,7 +1918,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  1255              		.loc 1 203 1 view .LVU295
  1256 0008 08BD     		pop	{r3, pc}
  1257              		.cfi_endproc
-ARM GAS  /tmp/cctVPsmX.s 			page 33
+ARM GAS  /tmp/cczMNLaE.s 			page 33
 
 
  1258              	.LFE151:
@@ -1978,7 +1978,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  1311              		.cfi_offset 14, -4
  212:Drivers/STM32/stm32_gpio.cpp **** }
  1312              		.loc 1 212 5 view .LVU301
-ARM GAS  /tmp/cctVPsmX.s 			page 34
+ARM GAS  /tmp/cczMNLaE.s 			page 34
 
 
  212:Drivers/STM32/stm32_gpio.cpp **** }
@@ -2038,7 +2038,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  220:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(9);
  1359              		.loc 1 220 17 is_stmt 0 view .LVU312
  1360 0014 0820     		movs	r0, #8
-ARM GAS  /tmp/cctVPsmX.s 			page 35
+ARM GAS  /tmp/cczMNLaE.s 			page 35
 
 
  1361 0016 FFF7FEFF 		bl	_Z12maybe_handlet
@@ -2098,7 +2098,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  1407 0010 FFF7FEFF 		bl	_Z12maybe_handlet
  1408              	.LVL94:
  229:Drivers/STM32/stm32_gpio.cpp ****     maybe_handle(14);
-ARM GAS  /tmp/cctVPsmX.s 			page 36
+ARM GAS  /tmp/cczMNLaE.s 			page 36
 
 
  1409              		.loc 1 229 5 is_stmt 1 view .LVU323
@@ -2158,7 +2158,7 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  1460              		.align	2
  1461 0000 00000000 		.word	_GLOBAL__sub_I_subscriptions(target1)
  1462              		.global	_ZN9Stm32Gpio4noneE
-ARM GAS  /tmp/cctVPsmX.s 			page 37
+ARM GAS  /tmp/cczMNLaE.s 			page 37
 
 
  1463              		.global	subscriptions
@@ -2185,71 +2185,71 @@ ARM GAS  /tmp/cctVPsmX.s 			page 1
  1483              		.file 6 "ThirdParty/CMSIS/Device/ST/STM32F4xx/Include/stm32f4xx.h"
  1484              		.file 7 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stddef.h"
  1485              		.file 8 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
-ARM GAS  /tmp/cctVPsmX.s 			page 38
+ARM GAS  /tmp/cczMNLaE.s 			page 38
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 stm32_gpio.cpp
-     /tmp/cctVPsmX.s:20     .text._Z41__static_initialization_and_destruction_0ii:0000000000000000 $t
-     /tmp/cctVPsmX.s:25     .text._Z41__static_initialization_and_destruction_0ii:0000000000000000 _Z41__static_initialization_and_destruction_0ii
-     /tmp/cctVPsmX.s:67     .text._Z41__static_initialization_and_destruction_0ii:0000000000000018 $d
+     /tmp/cczMNLaE.s:20     .text._Z41__static_initialization_and_destruction_0ii:0000000000000000 $t
+     /tmp/cczMNLaE.s:25     .text._Z41__static_initialization_and_destruction_0ii:0000000000000000 _Z41__static_initialization_and_destruction_0ii
+     /tmp/cczMNLaE.s:67     .text._Z41__static_initialization_and_destruction_0ii:0000000000000018 $d
 .ARM.exidx.text._Z41__static_initialization_and_destruction_0ii:0000000000000000 $d
-     /tmp/cctVPsmX.s:74     .text._ZN9Stm32Gpio6configEmmm:0000000000000000 $t
-     /tmp/cctVPsmX.s:80     .text._ZN9Stm32Gpio6configEmmm:0000000000000000 _ZN9Stm32Gpio6configEmmm
-     /tmp/cctVPsmX.s:611    .text._ZN9Stm32Gpio6configEmmm:0000000000000190 $d
+     /tmp/cczMNLaE.s:74     .text._ZN9Stm32Gpio6configEmmm:0000000000000000 $t
+     /tmp/cczMNLaE.s:80     .text._ZN9Stm32Gpio6configEmmm:0000000000000000 _ZN9Stm32Gpio6configEmmm
+     /tmp/cczMNLaE.s:611    .text._ZN9Stm32Gpio6configEmmm:0000000000000190 $d
 .ARM.exidx.text._ZN9Stm32Gpio6configEmmm:0000000000000000 $d
-     /tmp/cctVPsmX.s:626    .text._ZN9Stm32Gpio9subscribeEbbPFvPvES0_:0000000000000000 $t
-     /tmp/cctVPsmX.s:632    .text._ZN9Stm32Gpio9subscribeEbbPFvPvES0_:0000000000000000 _ZN9Stm32Gpio9subscribeEbbPFvPvES0_
-     /tmp/cctVPsmX.s:953    .text._ZN9Stm32Gpio9subscribeEbbPFvPvES0_:000000000000017c $d
+     /tmp/cczMNLaE.s:626    .text._ZN9Stm32Gpio9subscribeEbbPFvPvES0_:0000000000000000 $t
+     /tmp/cczMNLaE.s:632    .text._ZN9Stm32Gpio9subscribeEbbPFvPvES0_:0000000000000000 _ZN9Stm32Gpio9subscribeEbbPFvPvES0_
+     /tmp/cczMNLaE.s:953    .text._ZN9Stm32Gpio9subscribeEbbPFvPvES0_:000000000000017c $d
 .ARM.exidx.text._ZN9Stm32Gpio9subscribeEbbPFvPvES0_:0000000000000000 $d
-     /tmp/cctVPsmX.s:964    .text._ZN9Stm32Gpio11unsubscribeEv:0000000000000000 $t
-     /tmp/cctVPsmX.s:970    .text._ZN9Stm32Gpio11unsubscribeEv:0000000000000000 _ZN9Stm32Gpio11unsubscribeEv
-     /tmp/cctVPsmX.s:1092   .text._ZN9Stm32Gpio11unsubscribeEv:0000000000000058 $d
+     /tmp/cczMNLaE.s:964    .text._ZN9Stm32Gpio11unsubscribeEv:0000000000000000 $t
+     /tmp/cczMNLaE.s:970    .text._ZN9Stm32Gpio11unsubscribeEv:0000000000000000 _ZN9Stm32Gpio11unsubscribeEv
+     /tmp/cczMNLaE.s:1092   .text._ZN9Stm32Gpio11unsubscribeEv:0000000000000058 $d
 .ARM.exidx.text._ZN9Stm32Gpio11unsubscribeEv:0000000000000000 $d
-     /tmp/cctVPsmX.s:1100   .text._Z12maybe_handlet:0000000000000000 $t
-     /tmp/cctVPsmX.s:1106   .text._Z12maybe_handlet:0000000000000000 _Z12maybe_handlet
-     /tmp/cctVPsmX.s:1162   .text._Z12maybe_handlet:0000000000000034 $d
+     /tmp/cczMNLaE.s:1100   .text._Z12maybe_handlet:0000000000000000 $t
+     /tmp/cczMNLaE.s:1106   .text._Z12maybe_handlet:0000000000000000 _Z12maybe_handlet
+     /tmp/cczMNLaE.s:1162   .text._Z12maybe_handlet:0000000000000034 $d
 .ARM.extab.text._Z12maybe_handlet:0000000000000000 $d
 .ARM.exidx.text._Z12maybe_handlet:0000000000000000 $d
-     /tmp/cctVPsmX.s:1169   .text.EXTI0_IRQHandler:0000000000000000 $t
-     /tmp/cctVPsmX.s:1175   .text.EXTI0_IRQHandler:0000000000000000 EXTI0_IRQHandler
+     /tmp/cczMNLaE.s:1169   .text.EXTI0_IRQHandler:0000000000000000 $t
+     /tmp/cczMNLaE.s:1175   .text.EXTI0_IRQHandler:0000000000000000 EXTI0_IRQHandler
  .ARM.extab.text.EXTI0_IRQHandler:0000000000000000 $d
  .ARM.exidx.text.EXTI0_IRQHandler:0000000000000000 $d
-     /tmp/cctVPsmX.s:1200   .text.EXTI1_IRQHandler:0000000000000000 $t
-     /tmp/cctVPsmX.s:1206   .text.EXTI1_IRQHandler:0000000000000000 EXTI1_IRQHandler
+     /tmp/cczMNLaE.s:1200   .text.EXTI1_IRQHandler:0000000000000000 $t
+     /tmp/cczMNLaE.s:1206   .text.EXTI1_IRQHandler:0000000000000000 EXTI1_IRQHandler
  .ARM.extab.text.EXTI1_IRQHandler:0000000000000000 $d
  .ARM.exidx.text.EXTI1_IRQHandler:0000000000000000 $d
-     /tmp/cctVPsmX.s:1231   .text.EXTI2_IRQHandler:0000000000000000 $t
-     /tmp/cctVPsmX.s:1237   .text.EXTI2_IRQHandler:0000000000000000 EXTI2_IRQHandler
+     /tmp/cczMNLaE.s:1231   .text.EXTI2_IRQHandler:0000000000000000 $t
+     /tmp/cczMNLaE.s:1237   .text.EXTI2_IRQHandler:0000000000000000 EXTI2_IRQHandler
  .ARM.extab.text.EXTI2_IRQHandler:0000000000000000 $d
  .ARM.exidx.text.EXTI2_IRQHandler:0000000000000000 $d
-     /tmp/cctVPsmX.s:1262   .text.EXTI3_IRQHandler:0000000000000000 $t
-     /tmp/cctVPsmX.s:1268   .text.EXTI3_IRQHandler:0000000000000000 EXTI3_IRQHandler
+     /tmp/cczMNLaE.s:1262   .text.EXTI3_IRQHandler:0000000000000000 $t
+     /tmp/cczMNLaE.s:1268   .text.EXTI3_IRQHandler:0000000000000000 EXTI3_IRQHandler
  .ARM.extab.text.EXTI3_IRQHandler:0000000000000000 $d
  .ARM.exidx.text.EXTI3_IRQHandler:0000000000000000 $d
-     /tmp/cctVPsmX.s:1293   .text.EXTI4_IRQHandler:0000000000000000 $t
-     /tmp/cctVPsmX.s:1299   .text.EXTI4_IRQHandler:0000000000000000 EXTI4_IRQHandler
+     /tmp/cczMNLaE.s:1293   .text.EXTI4_IRQHandler:0000000000000000 $t
+     /tmp/cczMNLaE.s:1299   .text.EXTI4_IRQHandler:0000000000000000 EXTI4_IRQHandler
  .ARM.extab.text.EXTI4_IRQHandler:0000000000000000 $d
  .ARM.exidx.text.EXTI4_IRQHandler:0000000000000000 $d
-     /tmp/cctVPsmX.s:1324   .text.EXTI9_5_IRQHandler:0000000000000000 $t
-     /tmp/cctVPsmX.s:1330   .text.EXTI9_5_IRQHandler:0000000000000000 EXTI9_5_IRQHandler
+     /tmp/cczMNLaE.s:1324   .text.EXTI9_5_IRQHandler:0000000000000000 $t
+     /tmp/cczMNLaE.s:1330   .text.EXTI9_5_IRQHandler:0000000000000000 EXTI9_5_IRQHandler
 .ARM.extab.text.EXTI9_5_IRQHandler:0000000000000000 $d
 .ARM.exidx.text.EXTI9_5_IRQHandler:0000000000000000 $d
-     /tmp/cctVPsmX.s:1375   .text.EXTI15_10_IRQHandler:0000000000000000 $t
-     /tmp/cctVPsmX.s:1381   .text.EXTI15_10_IRQHandler:0000000000000000 EXTI15_10_IRQHandler
+     /tmp/cczMNLaE.s:1375   .text.EXTI15_10_IRQHandler:0000000000000000 $t
+     /tmp/cczMNLaE.s:1381   .text.EXTI15_10_IRQHandler:0000000000000000 EXTI15_10_IRQHandler
 .ARM.extab.text.EXTI15_10_IRQHandler:0000000000000000 $d
 .ARM.exidx.text.EXTI15_10_IRQHandler:0000000000000000 $d
-     /tmp/cctVPsmX.s:1431   .text._GLOBAL__sub_I_subscriptions:0000000000000000 $t
-     /tmp/cctVPsmX.s:1436   .text._GLOBAL__sub_I_subscriptions:0000000000000000 _GLOBAL__sub_I_subscriptions
+     /tmp/cczMNLaE.s:1431   .text._GLOBAL__sub_I_subscriptions:0000000000000000 $t
+     /tmp/cczMNLaE.s:1436   .text._GLOBAL__sub_I_subscriptions:0000000000000000 _GLOBAL__sub_I_subscriptions
 .ARM.exidx.text._GLOBAL__sub_I_subscriptions:0000000000000000 $d
-     /tmp/cctVPsmX.s:1460   .init_array:0000000000000000 $d
-     /tmp/cctVPsmX.s:1469   .bss._ZN9Stm32Gpio4noneE:0000000000000000 _ZN9Stm32Gpio4noneE
-     /tmp/cctVPsmX.s:1476   .bss.subscriptions:0000000000000000 subscriptions
-ARM GAS  /tmp/cctVPsmX.s 			page 39
+     /tmp/cczMNLaE.s:1460   .init_array:0000000000000000 $d
+     /tmp/cczMNLaE.s:1469   .bss._ZN9Stm32Gpio4noneE:0000000000000000 _ZN9Stm32Gpio4noneE
+     /tmp/cczMNLaE.s:1476   .bss.subscriptions:0000000000000000 subscriptions
+ARM GAS  /tmp/cczMNLaE.s 			page 39
 
 
-     /tmp/cctVPsmX.s:1465   .bss._ZN9Stm32Gpio4noneE:0000000000000000 $d
-     /tmp/cctVPsmX.s:1472   .bss.subscriptions:0000000000000000 $d
+     /tmp/cczMNLaE.s:1465   .bss._ZN9Stm32Gpio4noneE:0000000000000000 $d
+     /tmp/cczMNLaE.s:1472   .bss.subscriptions:0000000000000000 $d
 
 UNDEFINED SYMBOLS
 __aeabi_unwind_cpp_pr1

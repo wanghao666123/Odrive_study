@@ -1,4 +1,4 @@
-ARM GAS  /tmp/cc3OAoAK.s 			page 1
+ARM GAS  /tmp/cc6fvD8U.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
   27:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****              (+++) Configure the CAN interrupt priority using
   28:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****                    HAL_NVIC_SetPriority()
   29:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****              (+++) Enable the CAN IRQ handler using HAL_NVIC_EnableIRQ()
-ARM GAS  /tmp/cc3OAoAK.s 			page 2
+ARM GAS  /tmp/cc6fvD8U.s 			page 2
 
 
   30:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****              (+++) In CAN IRQ handler, call HAL_CAN_IRQHandler()
@@ -118,7 +118,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
   84:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       (#) Notifications are activated using HAL_CAN_ActivateNotification()
   85:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****           function. Then, the process can be controlled through the
   86:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****           available user callbacks: HAL_CAN_xxxCallback(), using same APIs
-ARM GAS  /tmp/cc3OAoAK.s 			page 3
+ARM GAS  /tmp/cc6fvD8U.s 			page 3
 
 
   87:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****           HAL_CAN_GetRxMessage() and HAL_CAN_AddTxMessage().
@@ -178,7 +178,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  141:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   *      and/or other materials provided with the distribution.
  142:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   *   3. Neither the name of STMicroelectronics nor the names of its contributors
  143:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   *      may be used to endorse or promote products derived from this software
-ARM GAS  /tmp/cc3OAoAK.s 			page 4
+ARM GAS  /tmp/cc6fvD8U.s 			page 4
 
 
  144:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   *      without specific prior written permission.
@@ -238,7 +238,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  198:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** /** @defgroup CAN_Exported_Functions_Group1 Initialization and de-initialization functions
  199:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****  *  @brief    Initialization and Configuration functions
  200:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****  *
-ARM GAS  /tmp/cc3OAoAK.s 			page 5
+ARM GAS  /tmp/cc6fvD8U.s 			page 5
 
 
  201:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** @verbatim
@@ -298,7 +298,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  255:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   /* Get tick */
  256:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   tickstart = HAL_GetTick();
  257:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
-ARM GAS  /tmp/cc3OAoAK.s 			page 6
+ARM GAS  /tmp/cc6fvD8U.s 			page 6
 
 
  258:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   /* Check Sleep mode leave acknowledge */
@@ -358,7 +358,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  312:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   }
  313:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
  314:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   /* Set the automatic wake-up mode */
-ARM GAS  /tmp/cc3OAoAK.s 			page 7
+ARM GAS  /tmp/cc6fvD8U.s 			page 7
 
 
  315:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   if (hcan->Init.AutoWakeUp == ENABLE)
@@ -418,7 +418,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  369:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** }
  370:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
  371:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** /**
-ARM GAS  /tmp/cc3OAoAK.s 			page 8
+ARM GAS  /tmp/cc6fvD8U.s 			page 8
 
 
  372:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   * @brief  Deinitializes the CAN peripheral registers to their default
@@ -478,7 +478,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  420:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****             the HAL_CAN_MspInit could be implemented in the user file
  421:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****    */
  422:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** }
-ARM GAS  /tmp/cc3OAoAK.s 			page 9
+ARM GAS  /tmp/cc6fvD8U.s 			page 9
 
 
   36              		.loc 1 422 1 is_stmt 0 view .LVU2
@@ -538,7 +538,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  242:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   assert_param(IS_CAN_BS2(hcan->Init.TimeSeg2));
   78              		.loc 1 242 3 view .LVU17
  243:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   assert_param(IS_CAN_PRESCALER(hcan->Init.Prescaler));
-ARM GAS  /tmp/cc3OAoAK.s 			page 10
+ARM GAS  /tmp/cc6fvD8U.s 			page 10
 
 
   79              		.loc 1 243 3 view .LVU18
@@ -598,7 +598,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  117 0032 F5D9     		bls	.L5
  264:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
  118              		.loc 1 264 7 is_stmt 1 view .LVU35
-ARM GAS  /tmp/cc3OAoAK.s 			page 11
+ARM GAS  /tmp/cc6fvD8U.s 			page 11
 
 
  264:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
@@ -658,7 +658,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  158 005c 5A68     		ldr	r2, [r3, #4]
  280:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   {
  159              		.loc 1 280 9 view .LVU51
-ARM GAS  /tmp/cc3OAoAK.s 			page 12
+ARM GAS  /tmp/cc6fvD8U.s 			page 12
 
 
  160 005e 12F0010F 		tst	r2, #1
@@ -718,7 +718,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  198 008e 637E     		ldrb	r3, [r4, #25]	@ zero_extendqisi2
  305:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   {
  199              		.loc 1 305 6 view .LVU68
-ARM GAS  /tmp/cc3OAoAK.s 			page 13
+ARM GAS  /tmp/cc6fvD8U.s 			page 13
 
 
  200 0090 012B     		cmp	r3, #1
@@ -778,7 +778,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  241 00c8 23F00803 		bic	r3, r3, #8
  242 00cc 1360     		str	r3, [r2]
  243              	.L18:
-ARM GAS  /tmp/cc3OAoAK.s 			page 14
+ARM GAS  /tmp/cc6fvD8U.s 			page 14
 
 
  345:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   {
@@ -838,7 +838,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  286              	.L30:
  307:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   }
  287              		.loc 1 307 5 view .LVU94
-ARM GAS  /tmp/cc3OAoAK.s 			page 15
+ARM GAS  /tmp/cc6fvD8U.s 			page 15
 
 
  288 010c 2268     		ldr	r2, [r4]
@@ -898,7 +898,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  337              		.section	.text.HAL_CAN_MspDeInit,"ax",%progbits
  338              		.align	1
  339              		.weak	HAL_CAN_MspDeInit
-ARM GAS  /tmp/cc3OAoAK.s 			page 16
+ARM GAS  /tmp/cc6fvD8U.s 			page 16
 
 
  340              		.syntax unified
@@ -958,7 +958,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  452:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     [..]  This section provides functions allowing to:
  453:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       (+) HAL_CAN_ConfigFilter            : Configure the CAN reception filters
  454:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
-ARM GAS  /tmp/cc3OAoAK.s 			page 17
+ARM GAS  /tmp/cc6fvD8U.s 			page 17
 
 
  455:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** @endverbatim
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  489:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     {
  490:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       /* CAN3 is single instance with 14 dedicated filters banks */
  491:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
-ARM GAS  /tmp/cc3OAoAK.s 			page 18
+ARM GAS  /tmp/cc6fvD8U.s 			page 18
 
 
  492:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       /* Check the parameters */
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  546:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     {
  547:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       /* 16-bit scale for the filter */
  548:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       CLEAR_BIT(can_ip->FS1R, filternbrbitpos);
-ARM GAS  /tmp/cc3OAoAK.s 			page 19
+ARM GAS  /tmp/cc6fvD8U.s 			page 19
 
 
  549:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  603:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     /* Filter activation */
  604:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     if (sFilterConfig->FilterActivation == ENABLE)
  605:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     {
-ARM GAS  /tmp/cc3OAoAK.s 			page 20
+ARM GAS  /tmp/cc6fvD8U.s 			page 20
 
 
  606:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       SET_BIT(can_ip->FA1R, filternbrbitpos);
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  508:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
  415              		.loc 1 508 5 view .LVU126
  416              	.LVL18:
-ARM GAS  /tmp/cc3OAoAK.s 			page 21
+ARM GAS  /tmp/cc6fvD8U.s 			page 21
 
 
  511:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     assert_param(IS_CAN_FILTER_BANK_DUAL(sFilterConfig->SlaveStartFilterBank));
@@ -1258,7 +1258,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  552:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****         ((0x0000FFFFU & (uint32_t)sFilterConfig->FilterMaskIdLow) << 16U) |
  457              		.loc 1 552 7 view .LVU141
  554:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
-ARM GAS  /tmp/cc3OAoAK.s 			page 22
+ARM GAS  /tmp/cc6fvD8U.s 			page 22
 
 
  458              		.loc 1 554 22 is_stmt 0 view .LVU142
@@ -1318,7 +1318,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  497 00aa 0CEA0303 		and	r3, ip, r3
  498 00ae C0F80432 		str	r3, [r0, #516]
  499              	.L42:
-ARM GAS  /tmp/cc3OAoAK.s 			page 23
+ARM GAS  /tmp/cc6fvD8U.s 			page 23
 
 
  592:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     {
@@ -1378,7 +1378,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  540 00ea 4869     		ldr	r0, [r1, #20]
  570:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****         (0x0000FFFFU & (uint32_t)sFilterConfig->FilterIdLow);
  541              		.loc 1 570 72 view .LVU173
-ARM GAS  /tmp/cc3OAoAK.s 			page 24
+ARM GAS  /tmp/cc6fvD8U.s 			page 24
 
 
  542 00ec 0D68     		ldr	r5, [r1]
@@ -1438,7 +1438,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  585              	.L53:
  586 0136 00BF     		.align	2
  587              	.L52:
-ARM GAS  /tmp/cc3OAoAK.s 			page 25
+ARM GAS  /tmp/cc6fvD8U.s 			page 25
 
 
  588 0138 00640040 		.word	1073767424
@@ -1498,7 +1498,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  604              		@ args = 0, pretend = 0, frame = 0
  605              		@ frame_needed = 0, uses_anonymous_args = 0
  606              		.loc 1 662 1 is_stmt 0 view .LVU186
-ARM GAS  /tmp/cc3OAoAK.s 			page 26
+ARM GAS  /tmp/cc6fvD8U.s 			page 26
 
 
  607 0000 70B5     		push	{r4, r5, r6, lr}
@@ -1558,7 +1558,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  700:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     /* Update error code */
  701:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     hcan->ErrorCode |= HAL_CAN_ERROR_NOT_READY;
  624              		.loc 1 701 5 is_stmt 1 view .LVU191
-ARM GAS  /tmp/cc3OAoAK.s 			page 27
+ARM GAS  /tmp/cc6fvD8U.s 			page 27
 
 
  625              		.loc 1 701 21 is_stmt 0 view .LVU192
@@ -1618,7 +1618,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  664 003a 0CD0     		beq	.L61
  680:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       {
  665              		.loc 1 680 7 is_stmt 1 view .LVU207
-ARM GAS  /tmp/cc3OAoAK.s 			page 28
+ARM GAS  /tmp/cc6fvD8U.s 			page 28
 
 
  680:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       {
@@ -1678,7 +1678,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  708:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   * @brief  Stop the CAN module and enable access to configuration registers.
  709:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   * @param  hcan pointer to an CAN_HandleTypeDef structure that contains
  710:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   *         the configuration information for the specified CAN.
-ARM GAS  /tmp/cc3OAoAK.s 			page 29
+ARM GAS  /tmp/cc6fvD8U.s 			page 29
 
 
  711:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   * @retval HAL status
@@ -1738,7 +1738,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  743:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
  744:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     /* Change CAN peripheral state */
  745:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     hcan->State = HAL_CAN_STATE_READY;
-ARM GAS  /tmp/cc3OAoAK.s 			page 30
+ARM GAS  /tmp/cc6fvD8U.s 			page 30
 
 
  746:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
@@ -1798,7 +1798,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  762              		.loc 1 726 11 view .LVU240
  763 002e 12F0010F 		tst	r2, #1
  764 0032 0DD1     		bne	.L69
-ARM GAS  /tmp/cc3OAoAK.s 			page 31
+ARM GAS  /tmp/cc6fvD8U.s 			page 31
 
 
  729:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       {
@@ -1858,7 +1858,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  805              		.global	HAL_CAN_DeInit
  806              		.syntax unified
  807              		.thumb
-ARM GAS  /tmp/cc3OAoAK.s 			page 32
+ARM GAS  /tmp/cc6fvD8U.s 			page 32
 
 
  808              		.thumb_func
@@ -1918,7 +1918,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  849 0022 10BD     		pop	{r4, pc}
  850              	.LVL42:
  851              	.L72:
-ARM GAS  /tmp/cc3OAoAK.s 			page 33
+ARM GAS  /tmp/cc6fvD8U.s 			page 33
 
 
  852              	.LCFI6:
@@ -1978,7 +1978,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  891 0012 05D0     		beq	.L78
  772:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   {
  773:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     /* Request Sleep mode */
-ARM GAS  /tmp/cc3OAoAK.s 			page 34
+ARM GAS  /tmp/cc6fvD8U.s 			page 34
 
 
  774:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     SET_BIT(hcan->Instance->MCR, CAN_MCR_SLEEP);
@@ -2038,7 +2038,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  789:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** /**
  790:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   * @brief  Wake up from sleep mode.
  791:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   *         When returning with HAL_OK status from this function, Sleep mode
-ARM GAS  /tmp/cc3OAoAK.s 			page 35
+ARM GAS  /tmp/cc6fvD8U.s 			page 35
 
 
  792:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   *         is exited.
@@ -2098,7 +2098,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  964              		.loc 1 809 5 view .LVU298
  810:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     {
  811:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       /* Check if timeout is reached */
-ARM GAS  /tmp/cc3OAoAK.s 			page 36
+ARM GAS  /tmp/cc6fvD8U.s 			page 36
 
 
  812:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       if (++count > timeout)
@@ -2158,7 +2158,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  828:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     hcan->ErrorCode |= HAL_CAN_ERROR_NOT_INITIALIZED;
  829:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
  830:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     return HAL_ERROR;
-ARM GAS  /tmp/cc3OAoAK.s 			page 37
+ARM GAS  /tmp/cc6fvD8U.s 			page 37
 
 
  831:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   }
@@ -2218,7 +2218,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  843:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** {
  1038              		.loc 1 843 1 is_stmt 1 view -0
  1039              		.cfi_startproc
-ARM GAS  /tmp/cc3OAoAK.s 			page 38
+ARM GAS  /tmp/cc6fvD8U.s 			page 38
 
 
  1040              		@ args = 0, pretend = 0, frame = 0
@@ -2278,7 +2278,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  857:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   return status;
  1078              		.loc 1 857 3 is_stmt 1 view .LVU332
  858:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** }
-ARM GAS  /tmp/cc3OAoAK.s 			page 39
+ARM GAS  /tmp/cc6fvD8U.s 			page 39
 
 
  1079              		.loc 1 858 1 is_stmt 0 view .LVU333
@@ -2338,7 +2338,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1105              		.loc 1 888 3 view .LVU341
  889:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
  890:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   if ((hcan->State == HAL_CAN_STATE_READY) ||
-ARM GAS  /tmp/cc3OAoAK.s 			page 40
+ARM GAS  /tmp/cc6fvD8U.s 			page 40
 
 
  1106              		.loc 1 890 3 view .LVU342
@@ -2398,7 +2398,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1147 0038 A468     		ldr	r4, [r4, #8]
  1148              		.loc 1 899 23 view .LVU358
  1149 003a C4F3016C 		ubfx	ip, r4, #24, #2
-ARM GAS  /tmp/cc3OAoAK.s 			page 41
+ARM GAS  /tmp/cc6fvD8U.s 			page 41
 
 
  1150              	.LVL61:
@@ -2458,7 +2458,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1182 0060 0C69     		ldr	r4, [r1, #16]
  1183              		.loc 1 918 56 view .LVU374
  1184 0062 0CF11805 		add	r5, ip, #24
-ARM GAS  /tmp/cc3OAoAK.s 			page 42
+ARM GAS  /tmp/cc6fvD8U.s 			page 42
 
 
  1185 0066 03EB0513 		add	r3, r3, r5, lsl #4
@@ -2518,7 +2518,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  937:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
  938:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       /* Request transmission */
  939:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       SET_BIT(hcan->Instance->sTxMailBox[transmitmailbox].TIR, CAN_TI0R_TXRQ);
-ARM GAS  /tmp/cc3OAoAK.s 			page 43
+ARM GAS  /tmp/cc6fvD8U.s 			page 43
 
 
  1221              		.loc 1 939 7 is_stmt 1 view .LVU381
@@ -2578,7 +2578,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  914:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       }
  1252              		.loc 1 914 67 view .LVU389
  1253 00d0 CC68     		ldr	r4, [r1, #12]
-ARM GAS  /tmp/cc3OAoAK.s 			page 44
+ARM GAS  /tmp/cc6fvD8U.s 			page 44
 
 
  912:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****                                                            pHeader->IDE |
@@ -2638,7 +2638,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1295              		.loc 1 955 21 is_stmt 0 view .LVU402
  1296 00fc 436A     		ldr	r3, [r0, #36]
  1297              	.LVL73:
-ARM GAS  /tmp/cc3OAoAK.s 			page 45
+ARM GAS  /tmp/cc6fvD8U.s 			page 45
 
 
  955:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
@@ -2698,7 +2698,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1335 000e DBB2     		uxtb	r3, r3
  974:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       (hcan->State == HAL_CAN_STATE_LISTENING))
  1336              		.loc 1 974 44 discriminator 1 view .LVU413
-ARM GAS  /tmp/cc3OAoAK.s 			page 46
+ARM GAS  /tmp/cc6fvD8U.s 			page 46
 
 
  1337 0010 022B     		cmp	r3, #2
@@ -2758,7 +2758,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  981:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     }
  1356              		.loc 1 981 7 is_stmt 1 view .LVU421
  1357 0026 0268     		ldr	r2, [r0]
-ARM GAS  /tmp/cc3OAoAK.s 			page 47
+ARM GAS  /tmp/cc6fvD8U.s 			page 47
 
 
  1358 0028 9368     		ldr	r3, [r2, #8]
@@ -2818,7 +2818,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1013:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   *         the configuration information for the specified CAN.
 1014:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   * @retval Number of free Tx Mailboxes.
 1015:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   */
-ARM GAS  /tmp/cc3OAoAK.s 			page 48
+ARM GAS  /tmp/cc6fvD8U.s 			page 48
 
 
 1016:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** uint32_t HAL_CAN_GetTxMailboxesFreeLevel(CAN_HandleTypeDef *hcan)
@@ -2878,7 +2878,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1044:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** }
  1425              		.loc 1 1044 1 is_stmt 0 view .LVU440
  1426 0016 7047     		bx	lr
-ARM GAS  /tmp/cc3OAoAK.s 			page 49
+ARM GAS  /tmp/cc6fvD8U.s 			page 49
 
 
  1427              	.LVL81:
@@ -2938,7 +2938,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1465              		.cfi_endproc
  1466              	.LFE145:
  1468              		.section	.text.HAL_CAN_IsTxMessagePending,"ax",%progbits
-ARM GAS  /tmp/cc3OAoAK.s 			page 50
+ARM GAS  /tmp/cc6fvD8U.s 			page 50
 
 
  1469              		.align	1
@@ -2998,7 +2998,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1500              	.LVL87:
 1060:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
  1501              		.loc 1 1060 12 view .LVU466
-ARM GAS  /tmp/cc3OAoAK.s 			page 51
+ARM GAS  /tmp/cc6fvD8U.s 			page 51
 
 
  1502 0016 7047     		bx	lr
@@ -3058,7 +3058,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1082:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   * @param  hcan pointer to a CAN_HandleTypeDef structure that contains
 1083:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   *         the configuration information for the specified CAN.
 1084:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   * @param  TxMailbox Tx Mailbox where the timestamp of message sent will be
-ARM GAS  /tmp/cc3OAoAK.s 			page 52
+ARM GAS  /tmp/cc6fvD8U.s 			page 52
 
 
 1085:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   *         read.
@@ -3118,7 +3118,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1568              	.LVL94:
  1569              	.L130:
 1101:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
-ARM GAS  /tmp/cc3OAoAK.s 			page 53
+ARM GAS  /tmp/cc6fvD8U.s 			page 53
 
 
  1570              		.loc 1 1101 5 is_stmt 1 view .LVU489
@@ -3178,7 +3178,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
   51:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif                                           
   52:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __NO_RETURN
   53:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __NO_RETURN                            __attribute__((__noreturn__))
-ARM GAS  /tmp/cc3OAoAK.s 			page 54
+ARM GAS  /tmp/cc6fvD8U.s 			page 54
 
 
   54:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
@@ -3238,7 +3238,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  108:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __UNALIGNED_UINT32_READ(addr)          (((const struct T_UINT32_READ *)(const void *)(add
  109:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
  110:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __ALIGNED
-ARM GAS  /tmp/cc3OAoAK.s 			page 55
+ARM GAS  /tmp/cc6fvD8U.s 			page 55
 
 
  111:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #define __ALIGNED(x)                           __attribute__((aligned(x)))
@@ -3298,7 +3298,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  165:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
  166:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __TZ_get_CONTROL_NS(void)
  167:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
-ARM GAS  /tmp/cc3OAoAK.s 			page 56
+ARM GAS  /tmp/cc6fvD8U.s 			page 56
 
 
  168:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
@@ -3358,7 +3358,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  222:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
  223:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, apsr" : "=r" (result) );
  224:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
-ARM GAS  /tmp/cc3OAoAK.s 			page 57
+ARM GAS  /tmp/cc6fvD8U.s 			page 57
 
 
  225:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
@@ -3418,7 +3418,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  279:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MSR psp, %0" : : "r" (topOfProcStack) : );
  280:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
  281:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  /tmp/cc3OAoAK.s 			page 58
+ARM GAS  /tmp/cc6fvD8U.s 			page 58
 
 
  282:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
@@ -3478,7 +3478,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  336:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
  337:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE ) && (__ARM_FEATURE_CMSE == 3))
  338:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
-ARM GAS  /tmp/cc3OAoAK.s 			page 59
+ARM GAS  /tmp/cc6fvD8U.s 			page 59
 
 
  339:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Main Stack Pointer (non-secure)
@@ -3538,7 +3538,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  393:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Get Priority Mask (non-secure)
  394:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Returns the current state of the non-secure priority mask bit from the Priority Mask Reg
  395:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \return               Priority Mask value
-ARM GAS  /tmp/cc3OAoAK.s 			page 60
+ARM GAS  /tmp/cc6fvD8U.s 			page 60
 
 
  396:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
@@ -3598,7 +3598,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  450:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __disable_fault_irq(void)
  451:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
  452:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("cpsid f" : : : "memory");
-ARM GAS  /tmp/cc3OAoAK.s 			page 61
+ARM GAS  /tmp/cc6fvD8U.s 			page 61
 
 
  453:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
@@ -3658,7 +3658,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  507:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
  508:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
  509:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  /tmp/cc3OAoAK.s 			page 62
+ARM GAS  /tmp/cc6fvD8U.s 			page 62
 
 
  510:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
@@ -3718,7 +3718,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  564:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
  565:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Set Fault Mask (non-secure)
  566:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Assigns the given value to the non-secure Fault Mask register when in secure state.
-ARM GAS  /tmp/cc3OAoAK.s 			page 63
+ARM GAS  /tmp/cc6fvD8U.s 			page 63
 
 
  567:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    faultMask  Fault Mask value to set
@@ -3778,7 +3778,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  621:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psplim_ns"  : "=r" (result) );
  622:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return result;
  623:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
-ARM GAS  /tmp/cc3OAoAK.s 			page 64
+ARM GAS  /tmp/cc6fvD8U.s 			page 64
 
 
  624:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
@@ -3838,7 +3838,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  678:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
  679:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE uint32_t __get_MSPLIM(void)
  680:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
-ARM GAS  /tmp/cc3OAoAK.s 			page 65
+ARM GAS  /tmp/cc6fvD8U.s 			page 65
 
 
  681:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (!(defined (__ARM_ARCH_8M_MAIN__ ) && (__ARM_ARCH_8M_MAIN__ == 1)) && \
@@ -3898,7 +3898,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  735:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
  736:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
  737:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if (defined (__ARM_FEATURE_CMSE  ) && (__ARM_FEATURE_CMSE   == 3))
-ARM GAS  /tmp/cc3OAoAK.s 			page 66
+ARM GAS  /tmp/cc6fvD8U.s 			page 66
 
 
  738:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
@@ -3958,7 +3958,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  792:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __set_FPSCR(uint32_t fpscr)
  793:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
  794:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #if ((defined (__FPU_PRESENT) && (__FPU_PRESENT == 1U)) && \
-ARM GAS  /tmp/cc3OAoAK.s 			page 67
+ARM GAS  /tmp/cc6fvD8U.s 			page 67
 
 
  795:ThirdParty/CMSIS/Include/cmsis_gcc.h ****      (defined (__FPU_USED   ) && (__FPU_USED    == 1U))     )
@@ -4018,7 +4018,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  849:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
  850:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #define __WFE()                             __ASM volatile ("wfe")
  851:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  /tmp/cc3OAoAK.s 			page 68
+ARM GAS  /tmp/cc6fvD8U.s 			page 68
 
 
  852:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
@@ -4078,7 +4078,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  906:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
  907:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("rev %0, %1" : __CMSIS_GCC_OUT_REG (result) : __CMSIS_GCC_USE_REG (value) );
  908:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return result;
-ARM GAS  /tmp/cc3OAoAK.s 			page 69
+ARM GAS  /tmp/cc6fvD8U.s 			page 69
 
 
  909:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
@@ -4138,7 +4138,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  963:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
  964:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
  965:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
-ARM GAS  /tmp/cc3OAoAK.s 			page 70
+ARM GAS  /tmp/cc6fvD8U.s 			page 70
 
 
  966:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Breakpoint
@@ -4198,7 +4198,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1591              	.LVL96:
 1104:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   }
  1592              		.loc 1 1104 5 is_stmt 1 view .LVU496
-ARM GAS  /tmp/cc3OAoAK.s 			page 71
+ARM GAS  /tmp/cc6fvD8U.s 			page 71
 
 
 1104:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   }
@@ -4258,7 +4258,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1125:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
 1126:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   if ((hcan->State == HAL_CAN_STATE_READY) ||
  1628              		.loc 1 1126 3 view .LVU505
-ARM GAS  /tmp/cc3OAoAK.s 			page 72
+ARM GAS  /tmp/cc6fvD8U.s 			page 72
 
 
  1629              		.loc 1 1126 12 is_stmt 0 view .LVU506
@@ -4318,7 +4318,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1669              	.LVL103:
  1670              		.loc 1 1138 16 view .LVU522
  1671 0036 75E0     		b	.L138
-ARM GAS  /tmp/cc3OAoAK.s 			page 73
+ARM GAS  /tmp/cc6fvD8U.s 			page 73
 
 
  1672              	.LVL104:
@@ -4378,7 +4378,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1710 0060 9460     		str	r4, [r2, #8]
 1155:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     if (pHeader->IDE == CAN_ID_STD)
  1711              		.loc 1 1155 5 is_stmt 1 view .LVU539
-ARM GAS  /tmp/cc3OAoAK.s 			page 74
+ARM GAS  /tmp/cc6fvD8U.s 			page 74
 
 
  1712              		.loc 1 1155 8 is_stmt 0 view .LVU540
@@ -4438,7 +4438,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1756 009e 9461     		str	r4, [r2, #24]
 1166:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     pHeader->Timestamp = (CAN_RDT0R_TIME & hcan->Instance->sFIFOMailBox[RxFifo].RDTR) >> CAN_RDT0R_
  1757              		.loc 1 1166 5 is_stmt 1 view .LVU560
-ARM GAS  /tmp/cc3OAoAK.s 			page 75
+ARM GAS  /tmp/cc6fvD8U.s 			page 75
 
 
  1758              		.loc 1 1166 48 is_stmt 0 view .LVU561
@@ -4498,7 +4498,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1173:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     aData[4] = (CAN_RDH0R_DATA4 & hcan->Instance->sFIFOMailBox[RxFifo].RDHR) >> CAN_RDH0R_DATA4_Pos
  1806              		.loc 1 1173 5 is_stmt 1 view .LVU584
  1807              		.loc 1 1173 39 is_stmt 0 view .LVU585
-ARM GAS  /tmp/cc3OAoAK.s 			page 76
+ARM GAS  /tmp/cc6fvD8U.s 			page 76
 
 
  1808 00e0 0268     		ldr	r2, [r0]
@@ -4558,7 +4558,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1853 0120 D360     		str	r3, [r2, #12]
  1854              	.L142:
 1183:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     }
-ARM GAS  /tmp/cc3OAoAK.s 			page 77
+ARM GAS  /tmp/cc6fvD8U.s 			page 77
 
 
 1184:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     else if (RxFifo == CAN_RX_FIFO1) /* Rx element is assigned to Rx FIFO 1 */
@@ -4618,7 +4618,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1886              		.loc 1 1184 13 is_stmt 0 view .LVU615
  1887 0138 0129     		cmp	r1, #1
  1888 013a F2D1     		bne	.L142
-ARM GAS  /tmp/cc3OAoAK.s 			page 78
+ARM GAS  /tmp/cc6fvD8U.s 			page 78
 
 
 1187:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     }
@@ -4678,7 +4678,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1210:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** uint32_t HAL_CAN_GetRxFifoFillLevel(CAN_HandleTypeDef *hcan, uint32_t RxFifo)
 1211:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** {
  1929              		.loc 1 1211 1 is_stmt 1 view -0
-ARM GAS  /tmp/cc3OAoAK.s 			page 79
+ARM GAS  /tmp/cc6fvD8U.s 			page 79
 
 
  1930              		.cfi_startproc
@@ -4738,7 +4738,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  1959 0018 21B9     		cbnz	r1, .L149
 1222:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     }
  1960              		.loc 1 1222 7 is_stmt 1 view .LVU637
-ARM GAS  /tmp/cc3OAoAK.s 			page 80
+ARM GAS  /tmp/cc6fvD8U.s 			page 80
 
 
 1222:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     }
@@ -4798,7 +4798,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1244:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   ==============================================================================
 1245:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     [..]  This section provides functions allowing to:
 1246:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       (+) HAL_CAN_ActivateNotification      : Enable interrupts
-ARM GAS  /tmp/cc3OAoAK.s 			page 81
+ARM GAS  /tmp/cc6fvD8U.s 			page 81
 
 
 1247:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       (+) HAL_CAN_DeactivateNotification    : Disable interrupts
@@ -4858,7 +4858,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2017              		.loc 1 1279 21 is_stmt 0 view .LVU655
  2018 0014 436A     		ldr	r3, [r0, #36]
  2019 0016 43F48023 		orr	r3, r3, #262144
-ARM GAS  /tmp/cc3OAoAK.s 			page 82
+ARM GAS  /tmp/cc6fvD8U.s 			page 82
 
 
  2020 001a 4362     		str	r3, [r0, #36]
@@ -4918,7 +4918,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2056              		.cfi_startproc
  2057              		@ args = 0, pretend = 0, frame = 0
  2058              		@ frame_needed = 0, uses_anonymous_args = 0
-ARM GAS  /tmp/cc3OAoAK.s 			page 83
+ARM GAS  /tmp/cc6fvD8U.s 			page 83
 
 
  2059              		@ link register save eliminated.
@@ -4978,7 +4978,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2091              	.LVL133:
 1302:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
  2092              		.loc 1 1302 5 is_stmt 0 view .LVU677
-ARM GAS  /tmp/cc3OAoAK.s 			page 84
+ARM GAS  /tmp/cc6fvD8U.s 			page 84
 
 
  2093 0028 5161     		str	r1, [r2, #20]
@@ -5038,7 +5038,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1348:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       {
 1349:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****         if ((tsrflags & CAN_TSR_ALST0) != RESET)
 1350:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****         {
-ARM GAS  /tmp/cc3OAoAK.s 			page 85
+ARM GAS  /tmp/cc6fvD8U.s 			page 85
 
 
 1351:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****           /* Update error code */
@@ -5098,7 +5098,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1405:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       __HAL_CAN_CLEAR_FLAG(hcan, CAN_FLAG_RQCP2);
 1406:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
 1407:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       if ((tsrflags & CAN_TSR_TXOK2) != RESET)
-ARM GAS  /tmp/cc3OAoAK.s 			page 86
+ARM GAS  /tmp/cc6fvD8U.s 			page 86
 
 
 1408:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       {
@@ -5158,7 +5158,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1462:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   /* Receive FIFO 0 message pending interrupt management *********************/
 1463:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   if ((interrupts & CAN_IT_RX_FIFO0_MSG_PENDING) != RESET)
 1464:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   {
-ARM GAS  /tmp/cc3OAoAK.s 			page 87
+ARM GAS  /tmp/cc6fvD8U.s 			page 87
 
 
 1465:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     /* Check if message is still pending */
@@ -5218,7 +5218,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1519:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       __HAL_CAN_CLEAR_FLAG(hcan, CAN_FLAG_SLAKI);
 1520:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
 1521:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       /* Sleep Callback */
-ARM GAS  /tmp/cc3OAoAK.s 			page 88
+ARM GAS  /tmp/cc6fvD8U.s 			page 88
 
 
 1522:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       /* Call weak (surcharged) callback */
@@ -5278,7 +5278,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1576:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       /* Check Last Error Code Flag */
 1577:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       if (((interrupts & CAN_IT_LAST_ERROR_CODE) != RESET) &&
 1578:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****           ((esrflags & CAN_ESR_LEC) != RESET))
-ARM GAS  /tmp/cc3OAoAK.s 			page 89
+ARM GAS  /tmp/cc6fvD8U.s 			page 89
 
 
 1579:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       {
@@ -5338,7 +5338,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1633:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   */
 1634:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
 1635:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** /** @defgroup CAN_Exported_Functions_Group5 Callback functions
-ARM GAS  /tmp/cc3OAoAK.s 			page 90
+ARM GAS  /tmp/cc6fvD8U.s 			page 90
 
 
 1636:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****  *  @brief   CAN Callback functions
@@ -5398,7 +5398,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2126              		.weak	HAL_CAN_TxMailbox1CompleteCallback
  2127              		.syntax unified
  2128              		.thumb
-ARM GAS  /tmp/cc3OAoAK.s 			page 91
+ARM GAS  /tmp/cc6fvD8U.s 			page 91
 
 
  2129              		.thumb_func
@@ -5458,7 +5458,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1704:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   /* Prevent unused argument(s) compilation warning */
 1705:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   UNUSED(hcan);
  2160              		.loc 1 1705 3 view .LVU688
-ARM GAS  /tmp/cc3OAoAK.s 			page 92
+ARM GAS  /tmp/cc6fvD8U.s 			page 92
 
 
 1706:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
@@ -5518,7 +5518,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2196              	.LFB157:
 1729:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
 1730:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** /**
-ARM GAS  /tmp/cc3OAoAK.s 			page 93
+ARM GAS  /tmp/cc6fvD8U.s 			page 93
 
 
 1731:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   * @brief  Transmission Mailbox 1 Cancellation callback.
@@ -5578,7 +5578,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1760:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****             user file
 1761:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****    */
 1762:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** }
-ARM GAS  /tmp/cc3OAoAK.s 			page 94
+ARM GAS  /tmp/cc6fvD8U.s 			page 94
 
 
  2224              		.loc 1 1762 1 is_stmt 0 view .LVU698
@@ -5638,7 +5638,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1785:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   * @retval None
 1786:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   */
 1787:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** __weak void HAL_CAN_RxFifo0FullCallback(CAN_HandleTypeDef *hcan)
-ARM GAS  /tmp/cc3OAoAK.s 			page 95
+ARM GAS  /tmp/cc6fvD8U.s 			page 95
 
 
 1788:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** {
@@ -5698,7 +5698,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2290              	.LFE161:
  2292              		.section	.text.HAL_CAN_RxFifo1FullCallback,"ax",%progbits
  2293              		.align	1
-ARM GAS  /tmp/cc3OAoAK.s 			page 96
+ARM GAS  /tmp/cc6fvD8U.s 			page 96
 
 
  2294              		.weak	HAL_CAN_RxFifo1FullCallback
@@ -5758,7 +5758,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2325              		@ args = 0, pretend = 0, frame = 0
  2326              		@ frame_needed = 0, uses_anonymous_args = 0
  2327              		@ link register save eliminated.
-ARM GAS  /tmp/cc3OAoAK.s 			page 97
+ARM GAS  /tmp/cc6fvD8U.s 			page 97
 
 
 1840:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   /* Prevent unused argument(s) compilation warning */
@@ -5818,7 +5818,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2362              	HAL_CAN_ErrorCallback:
  2363              	.LVL147:
  2364              	.LFB165:
-ARM GAS  /tmp/cc3OAoAK.s 			page 98
+ARM GAS  /tmp/cc6fvD8U.s 			page 98
 
 
 1864:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
@@ -5878,7 +5878,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2403              		.cfi_offset 14, -4
  2404 0004 0546     		mov	r5, r0
 1324:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****   uint32_t interrupts = READ_REG(hcan->Instance->IER);
-ARM GAS  /tmp/cc3OAoAK.s 			page 99
+ARM GAS  /tmp/cc6fvD8U.s 			page 99
 
 
  2405              		.loc 1 1324 3 is_stmt 1 view .LVU722
@@ -5938,7 +5938,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2441              		.loc 1 1339 7 is_stmt 1 view .LVU740
  2442 0028 0122     		movs	r2, #1
  2443 002a 9A60     		str	r2, [r3, #8]
-ARM GAS  /tmp/cc3OAoAK.s 			page 100
+ARM GAS  /tmp/cc6fvD8U.s 			page 100
 
 
 1341:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       {
@@ -5998,7 +5998,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2483              		.loc 1 1372 7 is_stmt 1 view .LVU755
  2484 005c 2B68     		ldr	r3, [r5]
  2485 005e 4FF48072 		mov	r2, #256
-ARM GAS  /tmp/cc3OAoAK.s 			page 101
+ARM GAS  /tmp/cc6fvD8U.s 			page 101
 
 
  2486 0062 9A60     		str	r2, [r3, #8]
@@ -6058,7 +6058,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2523 009a 14F0080F 		tst	r4, #8
  2524 009e 07D0     		beq	.L183
 1438:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     {
-ARM GAS  /tmp/cc3OAoAK.s 			page 102
+ARM GAS  /tmp/cc6fvD8U.s 			page 102
 
 
  2525              		.loc 1 1438 5 is_stmt 1 view .LVU773
@@ -6118,7 +6118,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2563 00d0 07D0     		beq	.L186
 1477:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     {
  2564              		.loc 1 1477 5 is_stmt 1 view .LVU790
-ARM GAS  /tmp/cc3OAoAK.s 			page 103
+ARM GAS  /tmp/cc6fvD8U.s 			page 103
 
 
 1477:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     {
@@ -6178,7 +6178,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1516:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     {
  2603              		.loc 1 1516 5 is_stmt 1 view .LVU807
 1516:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     {
-ARM GAS  /tmp/cc3OAoAK.s 			page 104
+ARM GAS  /tmp/cc6fvD8U.s 			page 104
 
 
  2604              		.loc 1 1516 8 is_stmt 0 view .LVU808
@@ -6238,7 +6238,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2642 0138 19F0020F 		tst	r9, #2
  2643 013c 01D0     		beq	.L194
 1561:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c **** 
-ARM GAS  /tmp/cc3OAoAK.s 			page 105
+ARM GAS  /tmp/cc6fvD8U.s 			page 105
 
 
  2644              		.loc 1 1561 9 is_stmt 1 view .LVU825
@@ -6298,7 +6298,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2684              	.LVL170:
  2685              	.L210:
 1378:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****       }
-ARM GAS  /tmp/cc3OAoAK.s 			page 106
+ARM GAS  /tmp/cc6fvD8U.s 			page 106
 
 
  2686              		.loc 1 1378 9 view .LVU840
@@ -6358,7 +6358,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2727 01a8 2846     		mov	r0, r5
  2728 01aa FFF7FEFF 		bl	HAL_CAN_TxMailbox2AbortCallback
  2729              	.LVL176:
-ARM GAS  /tmp/cc3OAoAK.s 			page 107
+ARM GAS  /tmp/cc6fvD8U.s 			page 107
 
 
  2730 01ae 74E7     		b	.L173
@@ -6418,7 +6418,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2775 01ea 2B68     		ldr	r3, [r5]
  2776 01ec 0822     		movs	r2, #8
  2777 01ee 5A60     		str	r2, [r3, #4]
-ARM GAS  /tmp/cc3OAoAK.s 			page 108
+ARM GAS  /tmp/cc6fvD8U.s 			page 108
 
 
 1537:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     }
@@ -6478,7 +6478,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
 1604:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****             break;
  2820              		.loc 1 1604 23 is_stmt 0 view .LVU875
  2821 0224 46F48076 		orr	r6, r6, #256
-ARM GAS  /tmp/cc3OAoAK.s 			page 109
+ARM GAS  /tmp/cc6fvD8U.s 			page 109
 
 
  2822              	.LVL187:
@@ -6538,7 +6538,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2861              	.LFE152:
  2863              		.section	.text.HAL_CAN_GetState,"ax",%progbits
  2864              		.align	1
-ARM GAS  /tmp/cc3OAoAK.s 			page 110
+ARM GAS  /tmp/cc6fvD8U.s 			page 110
 
 
  2865              		.global	HAL_CAN_GetState
@@ -6598,7 +6598,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2887              		.loc 1 1912 3 is_stmt 1 view .LVU896
  2888              		.loc 1 1912 12 is_stmt 0 view .LVU897
  2889 0008 93F82020 		ldrb	r2, [r3, #32]	@ zero_extendqisi2
-ARM GAS  /tmp/cc3OAoAK.s 			page 111
+ARM GAS  /tmp/cc6fvD8U.s 			page 111
 
 
  2890 000c D2B2     		uxtb	r2, r2
@@ -6658,7 +6658,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2918 0028 1B68     		ldr	r3, [r3]
 1922:ThirdParty/STM32F4xx_HAL_Driver/Src/stm32f4xx_hal_can.c ****     {
  2919              		.loc 1 1922 13 view .LVU909
-ARM GAS  /tmp/cc3OAoAK.s 			page 112
+ARM GAS  /tmp/cc6fvD8U.s 			page 112
 
 
  2920 002a 13F0020F 		tst	r3, #2
@@ -6718,7 +6718,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2961              		.section	.text.HAL_CAN_ResetError,"ax",%progbits
  2962              		.align	1
  2963              		.global	HAL_CAN_ResetError
-ARM GAS  /tmp/cc3OAoAK.s 			page 113
+ARM GAS  /tmp/cc6fvD8U.s 			page 113
 
 
  2964              		.syntax unified
@@ -6778,7 +6778,7 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  2995              		.loc 1 1966 5 is_stmt 1 view .LVU927
  2996              	.LVL205:
  2997              		.loc 1 1966 12 is_stmt 0 view .LVU928
-ARM GAS  /tmp/cc3OAoAK.s 			page 114
+ARM GAS  /tmp/cc6fvD8U.s 			page 114
 
 
  2998 001c 0120     		movs	r0, #1
@@ -6817,88 +6817,88 @@ ARM GAS  /tmp/cc3OAoAK.s 			page 1
  3023              		.file 7 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_def.h"
  3024              		.file 8 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_can.h"
  3025              		.file 9 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
-ARM GAS  /tmp/cc3OAoAK.s 			page 115
+ARM GAS  /tmp/cc6fvD8U.s 			page 115
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 stm32f4xx_hal_can.c
-     /tmp/cc3OAoAK.s:20     .text.HAL_CAN_MspInit:0000000000000000 $t
-     /tmp/cc3OAoAK.s:26     .text.HAL_CAN_MspInit:0000000000000000 HAL_CAN_MspInit
-     /tmp/cc3OAoAK.s:42     .text.HAL_CAN_Init:0000000000000000 $t
-     /tmp/cc3OAoAK.s:48     .text.HAL_CAN_Init:0000000000000000 HAL_CAN_Init
-     /tmp/cc3OAoAK.s:338    .text.HAL_CAN_MspDeInit:0000000000000000 $t
-     /tmp/cc3OAoAK.s:344    .text.HAL_CAN_MspDeInit:0000000000000000 HAL_CAN_MspDeInit
-     /tmp/cc3OAoAK.s:359    .text.HAL_CAN_ConfigFilter:0000000000000000 $t
-     /tmp/cc3OAoAK.s:365    .text.HAL_CAN_ConfigFilter:0000000000000000 HAL_CAN_ConfigFilter
-     /tmp/cc3OAoAK.s:588    .text.HAL_CAN_ConfigFilter:0000000000000138 $d
-     /tmp/cc3OAoAK.s:593    .text.HAL_CAN_Start:0000000000000000 $t
-     /tmp/cc3OAoAK.s:599    .text.HAL_CAN_Start:0000000000000000 HAL_CAN_Start
-     /tmp/cc3OAoAK.s:698    .text.HAL_CAN_Stop:0000000000000000 $t
-     /tmp/cc3OAoAK.s:704    .text.HAL_CAN_Stop:0000000000000000 HAL_CAN_Stop
-     /tmp/cc3OAoAK.s:804    .text.HAL_CAN_DeInit:0000000000000000 $t
-     /tmp/cc3OAoAK.s:810    .text.HAL_CAN_DeInit:0000000000000000 HAL_CAN_DeInit
-     /tmp/cc3OAoAK.s:865    .text.HAL_CAN_RequestSleep:0000000000000000 $t
-     /tmp/cc3OAoAK.s:871    .text.HAL_CAN_RequestSleep:0000000000000000 HAL_CAN_RequestSleep
-     /tmp/cc3OAoAK.s:920    .text.HAL_CAN_WakeUp:0000000000000000 $t
-     /tmp/cc3OAoAK.s:926    .text.HAL_CAN_WakeUp:0000000000000000 HAL_CAN_WakeUp
-     /tmp/cc3OAoAK.s:1024   .text.HAL_CAN_WakeUp:0000000000000058 $d
-     /tmp/cc3OAoAK.s:1029   .text.HAL_CAN_IsSleepActive:0000000000000000 $t
-     /tmp/cc3OAoAK.s:1035   .text.HAL_CAN_IsSleepActive:0000000000000000 HAL_CAN_IsSleepActive
-     /tmp/cc3OAoAK.s:1085   .text.HAL_CAN_AddTxMessage:0000000000000000 $t
-     /tmp/cc3OAoAK.s:1091   .text.HAL_CAN_AddTxMessage:0000000000000000 HAL_CAN_AddTxMessage
-     /tmp/cc3OAoAK.s:1311   .text.HAL_CAN_AbortTxRequest:0000000000000000 $t
-     /tmp/cc3OAoAK.s:1317   .text.HAL_CAN_AbortTxRequest:0000000000000000 HAL_CAN_AbortTxRequest
-     /tmp/cc3OAoAK.s:1392   .text.HAL_CAN_GetTxMailboxesFreeLevel:0000000000000000 $t
-     /tmp/cc3OAoAK.s:1398   .text.HAL_CAN_GetTxMailboxesFreeLevel:0000000000000000 HAL_CAN_GetTxMailboxesFreeLevel
-     /tmp/cc3OAoAK.s:1469   .text.HAL_CAN_IsTxMessagePending:0000000000000000 $t
-     /tmp/cc3OAoAK.s:1475   .text.HAL_CAN_IsTxMessagePending:0000000000000000 HAL_CAN_IsTxMessagePending
-     /tmp/cc3OAoAK.s:1532   .text.HAL_CAN_GetTxTimestamp:0000000000000000 $t
-     /tmp/cc3OAoAK.s:1538   .text.HAL_CAN_GetTxTimestamp:0000000000000000 HAL_CAN_GetTxTimestamp
-     /tmp/cc3OAoAK.s:1613   .text.HAL_CAN_GetRxMessage:0000000000000000 $t
-     /tmp/cc3OAoAK.s:1619   .text.HAL_CAN_GetRxMessage:0000000000000000 HAL_CAN_GetRxMessage
-     /tmp/cc3OAoAK.s:1920   .text.HAL_CAN_GetRxFifoFillLevel:0000000000000000 $t
-     /tmp/cc3OAoAK.s:1926   .text.HAL_CAN_GetRxFifoFillLevel:0000000000000000 HAL_CAN_GetRxFifoFillLevel
-     /tmp/cc3OAoAK.s:1988   .text.HAL_CAN_ActivateNotification:0000000000000000 $t
-     /tmp/cc3OAoAK.s:1994   .text.HAL_CAN_ActivateNotification:0000000000000000 HAL_CAN_ActivateNotification
-     /tmp/cc3OAoAK.s:2046   .text.HAL_CAN_DeactivateNotification:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2052   .text.HAL_CAN_DeactivateNotification:0000000000000000 HAL_CAN_DeactivateNotification
-     /tmp/cc3OAoAK.s:2104   .text.HAL_CAN_TxMailbox0CompleteCallback:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2110   .text.HAL_CAN_TxMailbox0CompleteCallback:0000000000000000 HAL_CAN_TxMailbox0CompleteCallback
-     /tmp/cc3OAoAK.s:2125   .text.HAL_CAN_TxMailbox1CompleteCallback:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2131   .text.HAL_CAN_TxMailbox1CompleteCallback:0000000000000000 HAL_CAN_TxMailbox1CompleteCallback
-     /tmp/cc3OAoAK.s:2146   .text.HAL_CAN_TxMailbox2CompleteCallback:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2152   .text.HAL_CAN_TxMailbox2CompleteCallback:0000000000000000 HAL_CAN_TxMailbox2CompleteCallback
-     /tmp/cc3OAoAK.s:2167   .text.HAL_CAN_TxMailbox0AbortCallback:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2173   .text.HAL_CAN_TxMailbox0AbortCallback:0000000000000000 HAL_CAN_TxMailbox0AbortCallback
-     /tmp/cc3OAoAK.s:2188   .text.HAL_CAN_TxMailbox1AbortCallback:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2194   .text.HAL_CAN_TxMailbox1AbortCallback:0000000000000000 HAL_CAN_TxMailbox1AbortCallback
-     /tmp/cc3OAoAK.s:2209   .text.HAL_CAN_TxMailbox2AbortCallback:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2215   .text.HAL_CAN_TxMailbox2AbortCallback:0000000000000000 HAL_CAN_TxMailbox2AbortCallback
-     /tmp/cc3OAoAK.s:2230   .text.HAL_CAN_RxFifo0MsgPendingCallback:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2236   .text.HAL_CAN_RxFifo0MsgPendingCallback:0000000000000000 HAL_CAN_RxFifo0MsgPendingCallback
-     /tmp/cc3OAoAK.s:2251   .text.HAL_CAN_RxFifo0FullCallback:0000000000000000 $t
-ARM GAS  /tmp/cc3OAoAK.s 			page 116
+     /tmp/cc6fvD8U.s:20     .text.HAL_CAN_MspInit:0000000000000000 $t
+     /tmp/cc6fvD8U.s:26     .text.HAL_CAN_MspInit:0000000000000000 HAL_CAN_MspInit
+     /tmp/cc6fvD8U.s:42     .text.HAL_CAN_Init:0000000000000000 $t
+     /tmp/cc6fvD8U.s:48     .text.HAL_CAN_Init:0000000000000000 HAL_CAN_Init
+     /tmp/cc6fvD8U.s:338    .text.HAL_CAN_MspDeInit:0000000000000000 $t
+     /tmp/cc6fvD8U.s:344    .text.HAL_CAN_MspDeInit:0000000000000000 HAL_CAN_MspDeInit
+     /tmp/cc6fvD8U.s:359    .text.HAL_CAN_ConfigFilter:0000000000000000 $t
+     /tmp/cc6fvD8U.s:365    .text.HAL_CAN_ConfigFilter:0000000000000000 HAL_CAN_ConfigFilter
+     /tmp/cc6fvD8U.s:588    .text.HAL_CAN_ConfigFilter:0000000000000138 $d
+     /tmp/cc6fvD8U.s:593    .text.HAL_CAN_Start:0000000000000000 $t
+     /tmp/cc6fvD8U.s:599    .text.HAL_CAN_Start:0000000000000000 HAL_CAN_Start
+     /tmp/cc6fvD8U.s:698    .text.HAL_CAN_Stop:0000000000000000 $t
+     /tmp/cc6fvD8U.s:704    .text.HAL_CAN_Stop:0000000000000000 HAL_CAN_Stop
+     /tmp/cc6fvD8U.s:804    .text.HAL_CAN_DeInit:0000000000000000 $t
+     /tmp/cc6fvD8U.s:810    .text.HAL_CAN_DeInit:0000000000000000 HAL_CAN_DeInit
+     /tmp/cc6fvD8U.s:865    .text.HAL_CAN_RequestSleep:0000000000000000 $t
+     /tmp/cc6fvD8U.s:871    .text.HAL_CAN_RequestSleep:0000000000000000 HAL_CAN_RequestSleep
+     /tmp/cc6fvD8U.s:920    .text.HAL_CAN_WakeUp:0000000000000000 $t
+     /tmp/cc6fvD8U.s:926    .text.HAL_CAN_WakeUp:0000000000000000 HAL_CAN_WakeUp
+     /tmp/cc6fvD8U.s:1024   .text.HAL_CAN_WakeUp:0000000000000058 $d
+     /tmp/cc6fvD8U.s:1029   .text.HAL_CAN_IsSleepActive:0000000000000000 $t
+     /tmp/cc6fvD8U.s:1035   .text.HAL_CAN_IsSleepActive:0000000000000000 HAL_CAN_IsSleepActive
+     /tmp/cc6fvD8U.s:1085   .text.HAL_CAN_AddTxMessage:0000000000000000 $t
+     /tmp/cc6fvD8U.s:1091   .text.HAL_CAN_AddTxMessage:0000000000000000 HAL_CAN_AddTxMessage
+     /tmp/cc6fvD8U.s:1311   .text.HAL_CAN_AbortTxRequest:0000000000000000 $t
+     /tmp/cc6fvD8U.s:1317   .text.HAL_CAN_AbortTxRequest:0000000000000000 HAL_CAN_AbortTxRequest
+     /tmp/cc6fvD8U.s:1392   .text.HAL_CAN_GetTxMailboxesFreeLevel:0000000000000000 $t
+     /tmp/cc6fvD8U.s:1398   .text.HAL_CAN_GetTxMailboxesFreeLevel:0000000000000000 HAL_CAN_GetTxMailboxesFreeLevel
+     /tmp/cc6fvD8U.s:1469   .text.HAL_CAN_IsTxMessagePending:0000000000000000 $t
+     /tmp/cc6fvD8U.s:1475   .text.HAL_CAN_IsTxMessagePending:0000000000000000 HAL_CAN_IsTxMessagePending
+     /tmp/cc6fvD8U.s:1532   .text.HAL_CAN_GetTxTimestamp:0000000000000000 $t
+     /tmp/cc6fvD8U.s:1538   .text.HAL_CAN_GetTxTimestamp:0000000000000000 HAL_CAN_GetTxTimestamp
+     /tmp/cc6fvD8U.s:1613   .text.HAL_CAN_GetRxMessage:0000000000000000 $t
+     /tmp/cc6fvD8U.s:1619   .text.HAL_CAN_GetRxMessage:0000000000000000 HAL_CAN_GetRxMessage
+     /tmp/cc6fvD8U.s:1920   .text.HAL_CAN_GetRxFifoFillLevel:0000000000000000 $t
+     /tmp/cc6fvD8U.s:1926   .text.HAL_CAN_GetRxFifoFillLevel:0000000000000000 HAL_CAN_GetRxFifoFillLevel
+     /tmp/cc6fvD8U.s:1988   .text.HAL_CAN_ActivateNotification:0000000000000000 $t
+     /tmp/cc6fvD8U.s:1994   .text.HAL_CAN_ActivateNotification:0000000000000000 HAL_CAN_ActivateNotification
+     /tmp/cc6fvD8U.s:2046   .text.HAL_CAN_DeactivateNotification:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2052   .text.HAL_CAN_DeactivateNotification:0000000000000000 HAL_CAN_DeactivateNotification
+     /tmp/cc6fvD8U.s:2104   .text.HAL_CAN_TxMailbox0CompleteCallback:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2110   .text.HAL_CAN_TxMailbox0CompleteCallback:0000000000000000 HAL_CAN_TxMailbox0CompleteCallback
+     /tmp/cc6fvD8U.s:2125   .text.HAL_CAN_TxMailbox1CompleteCallback:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2131   .text.HAL_CAN_TxMailbox1CompleteCallback:0000000000000000 HAL_CAN_TxMailbox1CompleteCallback
+     /tmp/cc6fvD8U.s:2146   .text.HAL_CAN_TxMailbox2CompleteCallback:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2152   .text.HAL_CAN_TxMailbox2CompleteCallback:0000000000000000 HAL_CAN_TxMailbox2CompleteCallback
+     /tmp/cc6fvD8U.s:2167   .text.HAL_CAN_TxMailbox0AbortCallback:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2173   .text.HAL_CAN_TxMailbox0AbortCallback:0000000000000000 HAL_CAN_TxMailbox0AbortCallback
+     /tmp/cc6fvD8U.s:2188   .text.HAL_CAN_TxMailbox1AbortCallback:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2194   .text.HAL_CAN_TxMailbox1AbortCallback:0000000000000000 HAL_CAN_TxMailbox1AbortCallback
+     /tmp/cc6fvD8U.s:2209   .text.HAL_CAN_TxMailbox2AbortCallback:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2215   .text.HAL_CAN_TxMailbox2AbortCallback:0000000000000000 HAL_CAN_TxMailbox2AbortCallback
+     /tmp/cc6fvD8U.s:2230   .text.HAL_CAN_RxFifo0MsgPendingCallback:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2236   .text.HAL_CAN_RxFifo0MsgPendingCallback:0000000000000000 HAL_CAN_RxFifo0MsgPendingCallback
+     /tmp/cc6fvD8U.s:2251   .text.HAL_CAN_RxFifo0FullCallback:0000000000000000 $t
+ARM GAS  /tmp/cc6fvD8U.s 			page 116
 
 
-     /tmp/cc3OAoAK.s:2257   .text.HAL_CAN_RxFifo0FullCallback:0000000000000000 HAL_CAN_RxFifo0FullCallback
-     /tmp/cc3OAoAK.s:2272   .text.HAL_CAN_RxFifo1MsgPendingCallback:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2278   .text.HAL_CAN_RxFifo1MsgPendingCallback:0000000000000000 HAL_CAN_RxFifo1MsgPendingCallback
-     /tmp/cc3OAoAK.s:2293   .text.HAL_CAN_RxFifo1FullCallback:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2299   .text.HAL_CAN_RxFifo1FullCallback:0000000000000000 HAL_CAN_RxFifo1FullCallback
-     /tmp/cc3OAoAK.s:2314   .text.HAL_CAN_SleepCallback:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2320   .text.HAL_CAN_SleepCallback:0000000000000000 HAL_CAN_SleepCallback
-     /tmp/cc3OAoAK.s:2335   .text.HAL_CAN_WakeUpFromRxMsgCallback:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2341   .text.HAL_CAN_WakeUpFromRxMsgCallback:0000000000000000 HAL_CAN_WakeUpFromRxMsgCallback
-     /tmp/cc3OAoAK.s:2356   .text.HAL_CAN_ErrorCallback:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2362   .text.HAL_CAN_ErrorCallback:0000000000000000 HAL_CAN_ErrorCallback
-     /tmp/cc3OAoAK.s:2377   .text.HAL_CAN_IRQHandler:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2383   .text.HAL_CAN_IRQHandler:0000000000000000 HAL_CAN_IRQHandler
-     /tmp/cc3OAoAK.s:2864   .text.HAL_CAN_GetState:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2870   .text.HAL_CAN_GetState:0000000000000000 HAL_CAN_GetState
-     /tmp/cc3OAoAK.s:2938   .text.HAL_CAN_GetError:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2944   .text.HAL_CAN_GetError:0000000000000000 HAL_CAN_GetError
-     /tmp/cc3OAoAK.s:2962   .text.HAL_CAN_ResetError:0000000000000000 $t
-     /tmp/cc3OAoAK.s:2968   .text.HAL_CAN_ResetError:0000000000000000 HAL_CAN_ResetError
+     /tmp/cc6fvD8U.s:2257   .text.HAL_CAN_RxFifo0FullCallback:0000000000000000 HAL_CAN_RxFifo0FullCallback
+     /tmp/cc6fvD8U.s:2272   .text.HAL_CAN_RxFifo1MsgPendingCallback:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2278   .text.HAL_CAN_RxFifo1MsgPendingCallback:0000000000000000 HAL_CAN_RxFifo1MsgPendingCallback
+     /tmp/cc6fvD8U.s:2293   .text.HAL_CAN_RxFifo1FullCallback:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2299   .text.HAL_CAN_RxFifo1FullCallback:0000000000000000 HAL_CAN_RxFifo1FullCallback
+     /tmp/cc6fvD8U.s:2314   .text.HAL_CAN_SleepCallback:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2320   .text.HAL_CAN_SleepCallback:0000000000000000 HAL_CAN_SleepCallback
+     /tmp/cc6fvD8U.s:2335   .text.HAL_CAN_WakeUpFromRxMsgCallback:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2341   .text.HAL_CAN_WakeUpFromRxMsgCallback:0000000000000000 HAL_CAN_WakeUpFromRxMsgCallback
+     /tmp/cc6fvD8U.s:2356   .text.HAL_CAN_ErrorCallback:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2362   .text.HAL_CAN_ErrorCallback:0000000000000000 HAL_CAN_ErrorCallback
+     /tmp/cc6fvD8U.s:2377   .text.HAL_CAN_IRQHandler:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2383   .text.HAL_CAN_IRQHandler:0000000000000000 HAL_CAN_IRQHandler
+     /tmp/cc6fvD8U.s:2864   .text.HAL_CAN_GetState:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2870   .text.HAL_CAN_GetState:0000000000000000 HAL_CAN_GetState
+     /tmp/cc6fvD8U.s:2938   .text.HAL_CAN_GetError:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2944   .text.HAL_CAN_GetError:0000000000000000 HAL_CAN_GetError
+     /tmp/cc6fvD8U.s:2962   .text.HAL_CAN_ResetError:0000000000000000 $t
+     /tmp/cc6fvD8U.s:2968   .text.HAL_CAN_ResetError:0000000000000000 HAL_CAN_ResetError
 
 UNDEFINED SYMBOLS
 HAL_GetTick

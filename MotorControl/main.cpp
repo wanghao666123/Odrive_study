@@ -339,8 +339,9 @@ void ODrive::disarm_with_error(Error error) {
  * control_loop_cb() instead.
  */
 void ODrive::sampling_cb() {
+    //!记录采样事件的触发次数
     n_evt_sampling_++;
-
+    //!记录代码段的执行时间 作用域结束时：TaskTimerContext 的析构函数会自动被调用，用于结束计时
     MEASURE_TIME(task_times_.sampling) {
         for (auto& axis: axes) {
             axis.encoder_.sample_now();
@@ -518,6 +519,7 @@ uint32_t ODrive::get_gpio_states() {
  */
 static void rtos_main(void*) {
     // Init USB device
+    //!USB初始化
     MX_USB_DEVICE_Init();
 
 
@@ -667,7 +669,7 @@ extern "C" int main(void) {
     // since the flash interface must be initialized and before board_init()
     // since board initialization can depend on the config.
     //?STEP03:配置项的读取和加载，并根据uart_a，uart_b和uart_c更新odrv.misconfigured_的值
-    //!从NVM中读取之前存入的数据？啥时候存的？这个应该是内部flash
+    //!从NVM中读取之前存入的数据？啥时候存的（应该是通过odrive tool存储的）？这个应该是内部flash
     size_t config_size = 0;
     bool success = config_manager.start_load()
             && config_read_all()
@@ -688,7 +690,7 @@ extern "C" int main(void) {
             || (odrv.config_.enable_uart_c && !uart_c);
 
     // Init board-specific peripherals
-    //?STEP04:各种外设初始化
+    //?STEP04:各种外设初始化，中断优先级设置，gpio的相关设置
     if (!board_init()) {
         for (;;); // TODO: handle properly
     }
@@ -696,12 +698,13 @@ extern "C" int main(void) {
     // Init GPIOs according to their configured mode
     for (size_t i = 0; i < GPIO_COUNT; ++i) {
         // Skip unavailable GPIOs
+        //!{GPIOA, GPIO_PIN_0}, // GPIO1
         if (!get_gpio(i)) {
             continue;
         }
-
+        //!gpio模式
         ODriveIntf::GpioMode mode = odrv.config_.gpio_modes[i];
-
+        //!get_gpio(i) = GPIO_PIN_0
         GPIO_InitTypeDef GPIO_InitStruct;
         GPIO_InitStruct.Pin = get_gpio(i).pin_mask_;
 
@@ -712,19 +715,25 @@ extern "C" int main(void) {
             mode == ODriveIntf::GPIO_MODE_MECH_BRAKE ||
             mode == ODriveIntf::GPIO_MODE_STATUS ||
             mode == ODriveIntf::GPIO_MODE_ANALOG_IN) {
-            GPIO_InitStruct.Alternate = 0;
+            GPIO_InitStruct.Alternate = 0; //!设置 Alternate = 0 表示当前引脚未启用任何复用功能
         } else {
+            //!std::find_if:是标准库 <algorithm> 中的一个算法，用于在容器中查找第一个满足特定条件的元素。
+            //!a 应该是 std::array<GpioFunction, 3> 中的一个元素，也就是类型为 GpioFunction
+            //!mode是ODriveIntf::GpioMode mode = odrv.config_.gpio_modes[i]导进来的
+            //!这个 lambda 表达式的作用是 比较每个元素的 mode 是否等于外部变量 mode
             auto it = std::find_if(
                     alternate_functions[i].begin(), alternate_functions[i].end(),
                     [mode](auto a) { return a.mode == mode; });
-
+            //!it = {ODrive::GPIO_MODE_PWM, GPIO_AF2_TIM5}
+            //!如果找到最后一个都没有找到，则odrv.misconfigured_ = true
             if (it == alternate_functions[i].end()) {
                 odrv.misconfigured_ = true; // this GPIO doesn't support the selected mode
                 continue;
             }
+            //!用于设置 STM32 微控制器 GPIO 引脚的复用功能
             GPIO_InitStruct.Alternate = it->alternate_function;
         }
-
+        //!根据不同的模式设置gpio的引脚功能
         switch (mode) {
             case ODriveIntf::GPIO_MODE_DIGITAL: {
                 GPIO_InitStruct.Mode = GPIO_MODE_INPUT;
@@ -822,32 +831,37 @@ extern "C" int main(void) {
                 continue;
             }
         }
-
+        //!hal库gpio初始化
         HAL_GPIO_Init(get_gpio(i).port_, &GPIO_InitStruct);
     }
 
     // Init usb irq binary semaphore, and start with no tokens by removing the starting one.
+    //!创建信号量
     osSemaphoreDef(sem_usb_irq);
     sem_usb_irq = osSemaphoreCreate(osSemaphore(sem_usb_irq), 1);
-    osSemaphoreWait(sem_usb_irq, 0);
+    osSemaphoreWait(sem_usb_irq, 0);//!0表示不阻塞等待，即调用时立即返回
 
     // Create an event queue for UART
+    //!创建一个消息队列，队列中的最大消息数量，这里是4，表示消息队列可以存储4条消息，每条消息的数据类型，这里是 uint32_t（32位无符号整数）
     osMessageQDef(uart_event_queue, 4, uint32_t);
     uart_event_queue = osMessageCreate(osMessageQ(uart_event_queue), NULL);
 
     // Create an event queue for USB
+    //!创建一个消息队列，队列中的最大消息数量，这里是7 ，表示消息队列可以存储7条消息，每条消息的数据类型，这里是 uint32_t（32位无符号整数）
     osMessageQDef(usb_event_queue, 7, uint32_t);
     usb_event_queue = osMessageCreate(osMessageQ(usb_event_queue), NULL);
-
+    //!创建信号量
     osSemaphoreDef(sem_can);
     sem_can = osSemaphoreCreate(osSemaphore(sem_can), 1);
-    osSemaphoreWait(sem_can, 0);
+    osSemaphoreWait(sem_can, 0);//!0表示不阻塞等待，即调用时立即返回
 
     // Create main thread
+    //!创建主线程
     osThreadDef(defaultTask, rtos_main, osPriorityNormal, 0, stack_size_default_task / sizeof(StackType_t));
     defaultTaskHandle = osThreadCreate(osThread(defaultTask), NULL);
 
     // Start scheduler
+    //!开启任务调度
     osKernelStart();
     
     for (;;);

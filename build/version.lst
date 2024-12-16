@@ -1,4 +1,4 @@
-ARM GAS  /tmp/cca7pisu.s 			page 1
+ARM GAS  /tmp/ccKQSnCm.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -38,15 +38,15 @@ ARM GAS  /tmp/cca7pisu.s 			page 1
   43              		.text
   44              	.Letext0:
   45              		.file 1 "version.c"
-ARM GAS  /tmp/cca7pisu.s 			page 2
+ARM GAS  /tmp/ccKQSnCm.s 			page 2
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 version.c
-     /tmp/cca7pisu.s:41     .rodata.fw_version_unreleased_:0000000000000000 fw_version_unreleased_
-     /tmp/cca7pisu.s:36     .rodata.fw_version_revision_:0000000000000000 fw_version_revision_
-     /tmp/cca7pisu.s:31     .rodata.fw_version_minor_:0000000000000000 fw_version_minor_
-     /tmp/cca7pisu.s:26     .rodata.fw_version_major_:0000000000000000 fw_version_major_
-     /tmp/cca7pisu.s:27     .rodata.fw_version_major_:0000000000000000 $d
+     /tmp/ccKQSnCm.s:41     .rodata.fw_version_unreleased_:0000000000000000 fw_version_unreleased_
+     /tmp/ccKQSnCm.s:36     .rodata.fw_version_revision_:0000000000000000 fw_version_revision_
+     /tmp/ccKQSnCm.s:31     .rodata.fw_version_minor_:0000000000000000 fw_version_minor_
+     /tmp/ccKQSnCm.s:26     .rodata.fw_version_major_:0000000000000000 fw_version_major_
+     /tmp/ccKQSnCm.s:27     .rodata.fw_version_major_:0000000000000000 $d
 
 NO UNDEFINED SYMBOLS

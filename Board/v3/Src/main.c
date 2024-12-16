@@ -223,6 +223,7 @@ void SystemClock_Config(void)
   * @param  htim : TIM handle
   * @retval None
   */
+//!用来做hal库的时基定时器
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim)
 {
   /* USER CODE BEGIN Callback 0 */

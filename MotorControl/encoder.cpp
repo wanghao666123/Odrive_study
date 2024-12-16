@@ -474,17 +474,19 @@ static bool decode_hall(uint8_t hall_state, int32_t* hall_cnt) {
     }
 }
 
+//!(1) 读出编码器的值（增量式编码器）
+//!(2) 获取某些IO口的电平值，是整个IO口（比如：GPIOA、GPIOB等）全部读出先！
 void Encoder::sample_now() {
     switch (mode_) {
-        case MODE_INCREMENTAL: {
-            tim_cnt_sample_ = (int16_t)timer_->Instance->CNT;
+        case MODE_INCREMENTAL: {//!增量式编码器
+            tim_cnt_sample_ = (int16_t)timer_->Instance->CNT;//!读相应定时器的count值
         } break;
 
-        case MODE_HALL: {
+        case MODE_HALL: {//!霍尔编码器
             // do nothing: samples already captured in general GPIO capture
         } break;
 
-        case MODE_SINCOS: {
+        case MODE_SINCOS: {//!sincos编码器核心输出：一个正弦信号（sin），一个余弦信号（cos），通过这两个信号可以计算出旋转角度的精确值  ？？？
             sincos_sample_s_ = get_adc_relative_voltage(get_gpio(config_.sincos_gpio_pin_sin)) - 0.5f;
             sincos_sample_c_ = get_adc_relative_voltage(get_gpio(config_.sincos_gpio_pin_cos)) - 0.5f;
         } break;
@@ -493,20 +495,21 @@ void Encoder::sample_now() {
         case MODE_SPI_ABS_CUI:
         case MODE_SPI_ABS_AEAT:
         case MODE_SPI_ABS_RLS:
-        case MODE_SPI_ABS_MA732:
+        case MODE_SPI_ABS_MA732://!通过spi总线读出对应的位置值 绝对式编码器
         {
             abs_spi_start_transaction();
             // Do nothing
         } break;
 
         default: {
-           set_error(ERROR_UNSUPPORTED_ENCODER_MODE);
+           set_error(ERROR_UNSUPPORTED_ENCODER_MODE);//!设置axis为ERROR_ENCODER_FAILED
         } break;
     }
 
     // Sample all GPIO digital input data registers, used for HALL sensors for example.
+    //!static const constexpr GPIO_TypeDef* ports_to_sample[] = { GPIOA, GPIOB, GPIOC };
     for (size_t i = 0; i < sizeof(ports_to_sample) / sizeof(ports_to_sample[0]); ++i) {
-        port_samples_[i] = ports_to_sample[i]->IDR;
+        port_samples_[i] = ports_to_sample[i]->IDR; //!读取输入数据寄存器
     }
 }
 
@@ -526,7 +529,7 @@ void Encoder::decode_hall_samples() {
 }
 
 bool Encoder::abs_spi_start_transaction() {
-    if (mode_ & MODE_FLAG_ABS){
+    if (mode_ & MODE_FLAG_ABS){//!啥也不干
         if (Stm32SpiArbiter::acquire_task(&spi_task_)) {
             spi_task_.ncs_gpio = abs_spi_cs_gpio_;
             spi_task_.tx_buf = (uint8_t*)abs_spi_dma_tx_;

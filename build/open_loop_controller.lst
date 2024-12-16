@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccyseA6A.s 			page 1
+ARM GAS  /tmp/cc4oGzy8.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
   50              		.file 2 "MotorControl/component.hpp"
    1:MotorControl/component.hpp **** #ifndef __COMPONENT_HPP
    2:MotorControl/component.hpp **** #define __COMPONENT_HPP
-ARM GAS  /tmp/ccyseA6A.s 			page 2
+ARM GAS  /tmp/cc4oGzy8.s 			page 2
 
 
    3:MotorControl/component.hpp **** 
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
   57:MotorControl/component.hpp ****     /**
   58:MotorControl/component.hpp ****      * @brief Marks the contained value as outdated. The value is not actually
   59:MotorControl/component.hpp ****      * deleted and can still be accessed through some of the member functions
-ARM GAS  /tmp/ccyseA6A.s 			page 3
+ARM GAS  /tmp/cc4oGzy8.s 			page 3
 
 
   60:MotorControl/component.hpp ****      * of this class.
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
   14:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** // GNU General Public License for more details.
   15:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
   16:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** // Under Section 7 of GPL version 3, you are granted additional
-ARM GAS  /tmp/ccyseA6A.s 			page 4
+ARM GAS  /tmp/cc4oGzy8.s 			page 4
 
 
   17:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** // permissions described in the GCC Runtime Library Exception, version
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
   71:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
   72:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****     // Must be constexpr for nullopt_t to be literal.
   73:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****     explicit constexpr nullopt_t(_Construct) { }
-ARM GAS  /tmp/ccyseA6A.s 			page 5
+ARM GAS  /tmp/cc4oGzy8.s 			page 5
 
 
   74:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****   };
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  128:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       // Constructor used by _Optional_base copy constructor when the
  129:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       // contained value is not trivially copy constructible.
  130:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       constexpr
-ARM GAS  /tmp/ccyseA6A.s 			page 6
+ARM GAS  /tmp/cc4oGzy8.s 			page 6
 
 
  131:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       _Optional_payload_base(bool __engaged,
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  185:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	else
  186:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	  {
  187:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    if (__other._M_engaged)
-ARM GAS  /tmp/ccyseA6A.s 			page 7
+ARM GAS  /tmp/cc4oGzy8.s 			page 7
 
 
  188:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	      this->_M_construct(std::move(__other._M_get()));
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  242:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
  243:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       bool _M_engaged = false;
  244:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
-ARM GAS  /tmp/ccyseA6A.s 			page 8
+ARM GAS  /tmp/cc4oGzy8.s 			page 8
 
 
  245:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       template<typename... _Args>
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  299:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****     {
  300:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       using _Optional_payload_base<_Tp>::_Optional_payload_base;
  301:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
-ARM GAS  /tmp/ccyseA6A.s 			page 9
+ARM GAS  /tmp/cc4oGzy8.s 			page 9
 
 
  302:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       _Optional_payload() = default;
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  356:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****     : _Optional_payload_base<_Tp>
  357:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****     {
  358:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       using _Optional_payload_base<_Tp>::_Optional_payload_base;
-ARM GAS  /tmp/ccyseA6A.s 			page 10
+ARM GAS  /tmp/cc4oGzy8.s 			page 10
 
 
  359:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  413:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       template<typename... _Args>
  414:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	void
  415:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	_M_construct(_Args&&... __args)
-ARM GAS  /tmp/ccyseA6A.s 			page 11
+ARM GAS  /tmp/cc4oGzy8.s 			page 11
 
 
  416:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	noexcept(is_nothrow_constructible_v<_Stored_type, _Args...>)
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  470:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****   template<typename _Tp,
  471:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	   bool = is_trivially_copy_constructible_v<_Tp>,
  472:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	   bool = is_trivially_move_constructible_v<_Tp>>
-ARM GAS  /tmp/ccyseA6A.s 			page 12
+ARM GAS  /tmp/cc4oGzy8.s 			page 12
 
 
  473:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****     struct _Optional_base
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  527:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****         : _M_payload(in_place,
  528:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 		     std::forward<_Args>(__args)...) { }
  529:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
-ARM GAS  /tmp/ccyseA6A.s 			page 13
+ARM GAS  /tmp/cc4oGzy8.s 			page 13
 
 
  530:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       template<typename _Up, typename... _Args,
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  584:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       constexpr _Optional_base(_Optional_base&& __other)
  585:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       noexcept(is_nothrow_move_constructible_v<_Tp>)
  586:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	: _M_payload(__other._M_payload._M_engaged,
-ARM GAS  /tmp/ccyseA6A.s 			page 14
+ARM GAS  /tmp/cc4oGzy8.s 			page 14
 
 
  587:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 		     std::move(__other._M_payload))
@@ -838,7 +838,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  641:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    is_constructible<_Tp, optional<_Up>&&>,
  642:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    is_convertible<const optional<_Up>&, _Tp>,
  643:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    is_convertible<optional<_Up>&, _Tp>,
-ARM GAS  /tmp/ccyseA6A.s 			page 15
+ARM GAS  /tmp/cc4oGzy8.s 			page 15
 
 
  644:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    is_convertible<const optional<_Up>&&, _Tp>,
@@ -898,7 +898,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
   66              		.loc 3 602 17 view .LVU7
   67              	.LBB543:
   68              	.LBI543:
-ARM GAS  /tmp/ccyseA6A.s 			page 16
+ARM GAS  /tmp/cc4oGzy8.s 			page 16
 
 
  360:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       ~_Optional_payload() = default;
@@ -958,7 +958,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
   22:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
   23:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** // <http://www.gnu.org/licenses/>.
   24:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** 
-ARM GAS  /tmp/ccyseA6A.s 			page 17
+ARM GAS  /tmp/cc4oGzy8.s 			page 17
 
 
   25:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** /*
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
   79:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h ****   /// Tag type for piecewise construction of std::pair objects.
   80:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h ****   struct piecewise_construct_t { explicit piecewise_construct_t() = default; };
   81:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** 
-ARM GAS  /tmp/ccyseA6A.s 			page 18
+ARM GAS  /tmp/cc4oGzy8.s 			page 18
 
 
   82:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h ****   /// Tag for piecewise construction of std::pair objects.
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  136:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** 	using __converts = typename conditional<__implicit,
  137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** 				       __do_converts,
  138:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** 				       __not_<__do_converts>>::type;
-ARM GAS  /tmp/ccyseA6A.s 			page 19
+ARM GAS  /tmp/cc4oGzy8.s 			page 19
 
 
  139:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** 	return __and_<is_constructible<_T1, const _U1&>,
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  193:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h ****     __pair_base() = default;
  194:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h ****     ~__pair_base() = default;
  195:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h ****     __pair_base(const __pair_base&) = default;
-ARM GAS  /tmp/ccyseA6A.s 			page 20
+ARM GAS  /tmp/cc4oGzy8.s 			page 20
 
 
  196:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h ****     __pair_base& operator=(const __pair_base&) = delete;
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  250:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h ****       /// Two objects may be passed to a @c pair constructor to be copied.
  251:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h ****       pair(const _T1& __a, const _T2& __b)
  252:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h ****       : first(__a), second(__b) { }
-ARM GAS  /tmp/ccyseA6A.s 			page 21
+ARM GAS  /tmp/cc4oGzy8.s 			page 21
 
 
  253:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** #else
@@ -1258,7 +1258,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  307:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** 			   _ImplicitlyConvertiblePair<_U1, _U2>(),
  308:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h ****                          bool>::type=false>
  309:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** 	explicit constexpr pair(const pair<_U1, _U2>& __p)
-ARM GAS  /tmp/ccyseA6A.s 			page 22
+ARM GAS  /tmp/cc4oGzy8.s 			page 22
 
 
  310:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** 	: first(__p.first), second(__p.second) { }
@@ -1318,7 +1318,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
    6:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // software; you can redistribute it and/or modify it under the
    7:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // terms of the GNU General Public License as published by the
    8:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // Free Software Foundation; either version 3, or (at your option)
-ARM GAS  /tmp/ccyseA6A.s 			page 23
+ARM GAS  /tmp/cc4oGzy8.s 			page 23
 
 
    9:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // any later version.
@@ -1378,7 +1378,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
   63:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****   /**
   64:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *  @addtogroup utilities
   65:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *  @{
-ARM GAS  /tmp/ccyseA6A.s 			page 24
+ARM GAS  /tmp/cc4oGzy8.s 			page 24
 
 
   66:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    */
@@ -1438,7 +1438,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  714:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 			 is_convertible<const _Up&, _Tp>,
  715:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 			 __not_<__converts_from_optional<_Tp, _Up>>> = true>
  716:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	constexpr
-ARM GAS  /tmp/ccyseA6A.s 			page 25
+ARM GAS  /tmp/cc4oGzy8.s 			page 25
 
 
  717:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	optional(const optional<_Up>& __t)
@@ -1498,7 +1498,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  771:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	: _Base(std::in_place, __il, std::forward<_Args>(__args)...) { }
  772:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
  773:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       // Assignment operators.
-ARM GAS  /tmp/ccyseA6A.s 			page 26
+ARM GAS  /tmp/cc4oGzy8.s 			page 26
 
 
  774:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       optional&
@@ -1558,7 +1558,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  828:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	operator=(optional<_Up>&& __u)
  829:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	{
  830:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	  if (__u)
-ARM GAS  /tmp/ccyseA6A.s 			page 27
+ARM GAS  /tmp/cc4oGzy8.s 			page 27
 
 
  831:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    {
@@ -1618,7 +1618,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  885:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	  }
  886:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       }
  887:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
-ARM GAS  /tmp/ccyseA6A.s 			page 28
+ARM GAS  /tmp/cc4oGzy8.s 			page 28
 
 
  888:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       // Observers.
@@ -1678,7 +1678,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  942:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
  943:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       constexpr const _Tp&&
  944:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       value() const&&
-ARM GAS  /tmp/ccyseA6A.s 			page 29
+ARM GAS  /tmp/cc4oGzy8.s 			page 29
 
 
  945:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       {
@@ -1738,7 +1738,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  147 002e 24AA     		add	r2, sp, #144
  148 0030 28A9     		add	r1, sp, #160
  149 0032 11E90300 		ldmdb	r1, {r0, r1}
-ARM GAS  /tmp/ccyseA6A.s 			page 30
+ARM GAS  /tmp/cc4oGzy8.s 			page 30
 
 
  150 0036 82E80300 		stm	r2, {r0, r1}
@@ -1798,7 +1798,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  194              		.loc 3 110 7 view .LVU42
  195              	.LBE584:
  196              	.LBE583:
-ARM GAS  /tmp/ccyseA6A.s 			page 31
+ARM GAS  /tmp/cc4oGzy8.s 			page 31
 
 
  197              	.LBE582:
@@ -1858,7 +1858,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  246 005c 22AA     		add	r2, sp, #136
  247 005e 0BA9     		add	r1, sp, #44
  248              	.LVL16:
-ARM GAS  /tmp/ccyseA6A.s 			page 32
+ARM GAS  /tmp/cc4oGzy8.s 			page 32
 
 
  249              		.loc 3 971 47 view .LVU56
@@ -1918,7 +1918,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  295              		.loc 3 199 14 is_stmt 0 view .LVU69
  296              	.LBE624:
  110:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       ~_Optional_payload_base() = default;
-ARM GAS  /tmp/ccyseA6A.s 			page 33
+ARM GAS  /tmp/cc4oGzy8.s 			page 33
 
 
  297              		.loc 3 110 7 view .LVU70
@@ -1978,7 +1978,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  342 0092 012A     		cmp	r2, #1
  343 0094 5ED0     		beq	.L38
  344              	.LVL24:
-ARM GAS  /tmp/ccyseA6A.s 			page 34
+ARM GAS  /tmp/cc4oGzy8.s 			page 34
 
 
  345              	.LBB652:
@@ -2038,7 +2038,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  388              	.LVL26:
  434:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
  389              		.loc 3 434 58 view .LVU93
-ARM GAS  /tmp/ccyseA6A.s 			page 35
+ARM GAS  /tmp/cc4oGzy8.s 			page 35
 
 
  390              	.LBE682:
@@ -2098,7 +2098,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
    1:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** // Algorithm implementation -*- C++ -*-
    2:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
    3:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** // Copyright (C) 2001-2020 Free Software Foundation, Inc.
-ARM GAS  /tmp/ccyseA6A.s 			page 36
+ARM GAS  /tmp/cc4oGzy8.s 			page 36
 
 
    4:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** //
@@ -2158,7 +2158,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
   58:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
   59:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** #include <cstdlib>	     // for rand
   60:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** #include <bits/algorithmfwd.h>
-ARM GAS  /tmp/ccyseA6A.s 			page 37
+ARM GAS  /tmp/cc4oGzy8.s 			page 37
 
 
   61:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** #include <bits/stl_heap.h>
@@ -2218,7 +2218,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  115:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _GLIBCXX20_CONSTEXPR
  116:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _InputIterator
  117:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     __find_if_not_n(_InputIterator __first, _Distance& __len, _Predicate __pred)
-ARM GAS  /tmp/ccyseA6A.s 			page 38
+ARM GAS  /tmp/cc4oGzy8.s 			page 38
 
 
  118:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     {
@@ -2278,7 +2278,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  172:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
  173:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  while (__predicate(__current, __p))
  174:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	    {
-ARM GAS  /tmp/ccyseA6A.s 			page 39
+ARM GAS  /tmp/cc4oGzy8.s 			page 39
 
 
  175:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	      if (++__p == __last2)
@@ -2338,7 +2338,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  229:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		   std::random_access_iterator_tag)
  230:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     {
  231:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       typedef typename std::iterator_traits<_RandomAccessIter>::difference_type
-ARM GAS  /tmp/ccyseA6A.s 			page 40
+ARM GAS  /tmp/cc4oGzy8.s 			page 40
 
 
  232:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	_DistanceType;
@@ -2398,7 +2398,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  286:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       while (1)
  287:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	{
  288:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  _ForwardIterator1 __new_result
-ARM GAS  /tmp/ccyseA6A.s 			page 41
+ARM GAS  /tmp/cc4oGzy8.s 			page 41
 
 
  289:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	    = std::__search(__first1, __last1, __first2, __last2, __comp);
@@ -2458,7 +2458,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  343:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @param  __first2  Start of sequence to match.
  344:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @param  __last2   End of sequence to match.
  345:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @return   The last iterator @c i in the range
-ARM GAS  /tmp/ccyseA6A.s 			page 42
+ARM GAS  /tmp/cc4oGzy8.s 			page 42
 
 
  346:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @p [__first1,__last1-(__last2-__first2)) such that @c *(i+N) ==
@@ -2518,7 +2518,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  400:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  compares equal value-by-value with the sequence given by @p
  401:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  [__first2,__last2) using comp as a predicate and returns an
  402:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  iterator to the first element of the sub-sequence, or @p __last1
-ARM GAS  /tmp/ccyseA6A.s 			page 43
+ARM GAS  /tmp/cc4oGzy8.s 			page 43
 
 
  403:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  if the sub-sequence is not found.  The sub-sequence will be the
@@ -2578,7 +2578,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  457:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *          of a sequence.
  458:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @ingroup non_mutating_algorithms
  459:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @param  __first   An input iterator.
-ARM GAS  /tmp/ccyseA6A.s 			page 44
+ARM GAS  /tmp/cc4oGzy8.s 			page 44
 
 
  460:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @param  __last    An input iterator.
@@ -2638,7 +2638,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  514:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 				__gnu_cxx::__ops::__pred_iter(__pred));
  515:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     }
  516:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
-ARM GAS  /tmp/ccyseA6A.s 			page 45
+ARM GAS  /tmp/cc4oGzy8.s 			page 45
 
 
  517:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   /**
@@ -2698,7 +2698,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  571:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  _ForwardIterator __middle = __first;
  572:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  std::advance(__middle, __half);
  573:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  if (__pred(*__middle))
-ARM GAS  /tmp/ccyseA6A.s 			page 46
+ARM GAS  /tmp/cc4oGzy8.s 			page 46
 
 
  574:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	    {
@@ -2758,7 +2758,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  628:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       __glibcxx_requires_valid_range(__first, __last);
  629:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
  630:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       return std::__remove_copy_if(__first, __last, __result,
-ARM GAS  /tmp/ccyseA6A.s 			page 47
+ARM GAS  /tmp/cc4oGzy8.s 			page 47
 
 
  631:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	__gnu_cxx::__ops::__iter_equals_val(__value));
@@ -2818,7 +2818,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  685:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	   typename _Predicate>
  686:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _GLIBCXX20_CONSTEXPR
  687:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _OutputIterator
-ARM GAS  /tmp/ccyseA6A.s 			page 48
+ARM GAS  /tmp/cc4oGzy8.s 			page 48
 
 
  688:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     copy_if(_InputIterator __first, _InputIterator __last,
@@ -2878,7 +2878,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  742:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     }
  743:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
  744:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   template<typename _RandomAccessIterator, typename _Size,
-ARM GAS  /tmp/ccyseA6A.s 			page 49
+ARM GAS  /tmp/cc4oGzy8.s 			page 49
 
 
  745:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	   typename _OutputIterator>
@@ -2938,7 +2938,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  799:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  and each element for which @p __pred returns false to @p __out_false.
  800:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   */
  801:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   template<typename _InputIterator, typename _OutputIterator1,
-ARM GAS  /tmp/ccyseA6A.s 			page 50
+ARM GAS  /tmp/cc4oGzy8.s 			page 50
 
 
  802:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	   typename _OutputIterator2, typename _Predicate>
@@ -2998,7 +2998,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  856:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @brief Remove elements from a sequence.
  857:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @ingroup mutating_algorithms
  858:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @param  __first  An input iterator.
-ARM GAS  /tmp/ccyseA6A.s 			page 51
+ARM GAS  /tmp/cc4oGzy8.s 			page 51
 
 
  859:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @param  __last   An input iterator.
@@ -3058,7 +3058,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  913:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       __glibcxx_function_requires(_Mutable_ForwardIteratorConcept<
  914:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 				  _ForwardIterator>)
  915:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       __glibcxx_function_requires(_UnaryPredicateConcept<_Predicate,
-ARM GAS  /tmp/ccyseA6A.s 			page 52
+ARM GAS  /tmp/cc4oGzy8.s 			page 52
 
 
  916:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	    typename iterator_traits<_ForwardIterator>::value_type>)
@@ -3118,7 +3118,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  970:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  unique() is stable, so the relative order of elements that are
  971:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  not removed is unchanged.
  972:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  Elements between the end of the resulting sequence and @p __last
-ARM GAS  /tmp/ccyseA6A.s 			page 53
+ARM GAS  /tmp/cc4oGzy8.s 			page 53
 
 
  973:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  are still present, but their value is unspecified.
@@ -3178,7 +3178,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1027:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *              _BinaryPredicate)
 1028:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  overloaded for forward iterators and output iterator as result.
 1029:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   */
-ARM GAS  /tmp/ccyseA6A.s 			page 54
+ARM GAS  /tmp/cc4oGzy8.s 			page 54
 
 
 1030:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   template<typename _ForwardIterator, typename _OutputIterator,
@@ -3238,7 +3238,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1084:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       return ++__result;
 1085:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     }
 1086:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
-ARM GAS  /tmp/ccyseA6A.s 			page 55
+ARM GAS  /tmp/cc4oGzy8.s 			page 55
 
 
 1087:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   /**
@@ -3298,7 +3298,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1141:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     __reverse(_RandomAccessIterator __first, _RandomAccessIterator __last,
 1142:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	      random_access_iterator_tag)
 1143:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     {
-ARM GAS  /tmp/ccyseA6A.s 			page 56
+ARM GAS  /tmp/cc4oGzy8.s 			page 56
 
 
 1144:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       if (__first == __last)
@@ -3358,7 +3358,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1198:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     reverse_copy(_BidirectionalIterator __first, _BidirectionalIterator __last,
 1199:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		 _OutputIterator __result)
 1200:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     {
-ARM GAS  /tmp/ccyseA6A.s 			page 57
+ARM GAS  /tmp/cc4oGzy8.s 			page 57
 
 
 1201:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       // concept requirements
@@ -3418,7 +3418,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1255:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  std::iter_swap(__first, __first2);
 1256:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  ++__first;
 1257:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  ++__first2;
-ARM GAS  /tmp/ccyseA6A.s 			page 58
+ARM GAS  /tmp/cc4oGzy8.s 			page 58
 
 
 1258:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  if (__first == __middle)
@@ -3478,7 +3478,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1312:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       else
 1313:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	{
 1314:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  std::__reverse(__first,  __middle, bidirectional_iterator_tag());
-ARM GAS  /tmp/ccyseA6A.s 			page 59
+ARM GAS  /tmp/cc4oGzy8.s 			page 59
 
 
 1315:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  return __first;
@@ -3538,7 +3538,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1369:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		  ++__p;
 1370:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		  ++__q;
 1371:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		}
-ARM GAS  /tmp/ccyseA6A.s 			page 60
+ARM GAS  /tmp/cc4oGzy8.s 			page 60
 
 
 1372:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	      __n %= __k;
@@ -3598,7 +3598,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1426:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   */
 1427:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   template<typename _ForwardIterator>
 1428:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _GLIBCXX20_CONSTEXPR
-ARM GAS  /tmp/ccyseA6A.s 			page 61
+ARM GAS  /tmp/cc4oGzy8.s 			page 61
 
 
 1429:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     inline _ForwardIterator
@@ -3658,7 +3658,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1483:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   template<typename _ForwardIterator, typename _Predicate>
 1484:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _GLIBCXX20_CONSTEXPR
 1485:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _ForwardIterator
-ARM GAS  /tmp/ccyseA6A.s 			page 62
+ARM GAS  /tmp/cc4oGzy8.s 			page 62
 
 
 1486:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     __partition(_ForwardIterator __first, _ForwardIterator __last,
@@ -3718,7 +3718,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1540:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   /// Requires __first != __last and !__pred(__first)
 1541:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   /// and __len == distance(__first, __last).
 1542:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   ///
-ARM GAS  /tmp/ccyseA6A.s 			page 63
+ARM GAS  /tmp/cc4oGzy8.s 			page 63
 
 
 1543:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   /// !__pred(__first) allows us to guarantee that we don't
@@ -3778,7 +3778,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1597:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       if (__right_len)
 1598:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	__right_split =
 1599:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  std::__stable_partition_adaptive(__right_split, __last, __pred,
-ARM GAS  /tmp/ccyseA6A.s 			page 64
+ARM GAS  /tmp/cc4oGzy8.s 			page 64
 
 
 1600:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 					   __right_len,
@@ -3838,7 +3838,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1654:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 				  _ForwardIterator>)
 1655:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       __glibcxx_function_requires(_UnaryPredicateConcept<_Predicate,
 1656:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	    typename iterator_traits<_ForwardIterator>::value_type>)
-ARM GAS  /tmp/ccyseA6A.s 			page 65
+ARM GAS  /tmp/cc4oGzy8.s 			page 65
 
 
 1657:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       __glibcxx_requires_valid_range(__first, __last);
@@ -3898,7 +3898,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1711:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  ++__first;
 1712:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	}
 1713:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       std::__sort_heap(__result_first, __result_real_last, __comp);
-ARM GAS  /tmp/ccyseA6A.s 			page 66
+ARM GAS  /tmp/cc4oGzy8.s 			page 66
 
 
 1714:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       return __result_real_last;
@@ -3958,7 +3958,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1768:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @ingroup sorting_algorithms
 1769:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @param  __first   An input iterator.
 1770:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @param  __last    Another input iterator.
-ARM GAS  /tmp/ccyseA6A.s 			page 67
+ARM GAS  /tmp/cc4oGzy8.s 			page 67
 
 
 1771:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @param  __result_first   A random-access iterator.
@@ -4018,7 +4018,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1825:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 			      _Compare __comp)
 1826:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     {
 1827:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       typename iterator_traits<_RandomAccessIterator>::value_type
-ARM GAS  /tmp/ccyseA6A.s 			page 68
+ARM GAS  /tmp/cc4oGzy8.s 			page 68
 
 
 1828:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	__val = _GLIBCXX_MOVE(*__last);
@@ -4078,7 +4078,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1882:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   /// This is a helper function for the sort routine.
 1883:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   template<typename _RandomAccessIterator, typename _Compare>
 1884:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _GLIBCXX20_CONSTEXPR
-ARM GAS  /tmp/ccyseA6A.s 			page 69
+ARM GAS  /tmp/cc4oGzy8.s 			page 69
 
 
 1885:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     void
@@ -4138,7 +4138,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1939:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		   _RandomAccessIterator __last,
 1940:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		   _Compare __comp)
 1941:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     {
-ARM GAS  /tmp/ccyseA6A.s 			page 70
+ARM GAS  /tmp/cc4oGzy8.s 			page 70
 
 
 1942:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       std::__heap_select(__first, __middle, __last, __comp);
@@ -4198,7 +4198,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 1996:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	    {
 1997:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	      std::__heap_select(__first, __nth + 1, __last, __comp);
 1998:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	      // Place the nth largest element in its final position.
-ARM GAS  /tmp/ccyseA6A.s 			page 71
+ARM GAS  /tmp/cc4oGzy8.s 			page 71
 
 
 1999:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	      std::iter_swap(__first, __nth);
@@ -4258,7 +4258,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2053:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     __upper_bound(_ForwardIterator __first, _ForwardIterator __last,
 2054:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		  const _Tp& __val, _Compare __comp)
 2055:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     {
-ARM GAS  /tmp/ccyseA6A.s 			page 72
+ARM GAS  /tmp/cc4oGzy8.s 			page 72
 
 
 2056:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       typedef typename iterator_traits<_ForwardIterator>::difference_type
@@ -4318,7 +4318,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2110:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @param  __last    Another iterator.
 2111:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @param  __val     The search term.
 2112:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @param  __comp    A functor to use for comparisons.
-ARM GAS  /tmp/ccyseA6A.s 			page 73
+ARM GAS  /tmp/cc4oGzy8.s 			page 73
 
 
 2113:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @return  An iterator pointing to the first element greater than @p __val,
@@ -4378,7 +4378,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2167:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	      std::advance(__first, __len);
 2168:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	      _ForwardIterator __right
 2169:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		= std::__upper_bound(++__middle, __first, __val, __comp_val_it);
-ARM GAS  /tmp/ccyseA6A.s 			page 74
+ARM GAS  /tmp/cc4oGzy8.s 			page 74
 
 
 2170:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	      return pair<_ForwardIterator, _ForwardIterator>(__left, __right);
@@ -4438,7 +4438,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2224:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @code
 2225:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *    std::make_pair(lower_bound(__first, __last, __val, __comp),
 2226:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *                   upper_bound(__first, __last, __val, __comp))
-ARM GAS  /tmp/ccyseA6A.s 			page 75
+ARM GAS  /tmp/cc4oGzy8.s 			page 75
 
 
 2227:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @endcode
@@ -4498,7 +4498,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2281:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     }
 2282:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
 2283:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   /**
-ARM GAS  /tmp/ccyseA6A.s 			page 76
+ARM GAS  /tmp/cc4oGzy8.s 			page 76
 
 
 2284:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @brief Determines whether an element exists in a range.
@@ -4558,7 +4558,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2338:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	      *__result = _GLIBCXX_MOVE(*__first1);
 2339:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	      ++__first1;
 2340:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	    }
-ARM GAS  /tmp/ccyseA6A.s 			page 77
+ARM GAS  /tmp/cc4oGzy8.s 			page 77
 
 
 2341:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  ++__result;
@@ -4618,7 +4618,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2395:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		      _BidirectionalIterator1 __middle,
 2396:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		      _BidirectionalIterator1 __last,
 2397:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		      _Distance __len1, _Distance __len2,
-ARM GAS  /tmp/ccyseA6A.s 			page 78
+ARM GAS  /tmp/cc4oGzy8.s 			page 78
 
 
 2398:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		      _BidirectionalIterator2 __buffer,
@@ -4678,7 +4678,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2452:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	{
 2453:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  _BidirectionalIterator __first_cut = __first;
 2454:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  _BidirectionalIterator __second_cut = __middle;
-ARM GAS  /tmp/ccyseA6A.s 			page 79
+ARM GAS  /tmp/cc4oGzy8.s 			page 79
 
 
 2455:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  _Distance __len11 = 0;
@@ -4738,7 +4738,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2509:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       _BidirectionalIterator __first_cut = __first;
 2510:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       _BidirectionalIterator __second_cut = __middle;
 2511:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       _Distance __len11 = 0;
-ARM GAS  /tmp/ccyseA6A.s 			page 80
+ARM GAS  /tmp/cc4oGzy8.s 			page 80
 
 
 2512:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       _Distance __len22 = 0;
@@ -4798,7 +4798,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2566:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  (__first, __middle, __last, __len1, __len2, __buf.begin(),
 2567:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	   _DistanceType(__buf.size()), __comp);
 2568:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     }
-ARM GAS  /tmp/ccyseA6A.s 			page 81
+ARM GAS  /tmp/cc4oGzy8.s 			page 81
 
 
 2569:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
@@ -4858,7 +4858,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2623:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  comparisons.  Otherwise an NlogN algorithm is used, where N is
 2624:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  distance(__first,__last).
 2625:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *
-ARM GAS  /tmp/ccyseA6A.s 			page 82
+ARM GAS  /tmp/cc4oGzy8.s 			page 82
 
 
 2626:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  The comparison function should have the same effects on ordering as
@@ -4918,7 +4918,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2680:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     void
 2681:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     __merge_sort_loop(_RandomAccessIterator1 __first,
 2682:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		      _RandomAccessIterator1 __last,
-ARM GAS  /tmp/ccyseA6A.s 			page 83
+ARM GAS  /tmp/cc4oGzy8.s 			page 83
 
 
 2683:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		      _RandomAccessIterator2 __result, _Distance __step_size,
@@ -4978,7 +4978,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2737:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  std::__merge_sort_loop(__first, __last, __buffer,
 2738:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 				 __step_size, __comp);
 2739:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  __step_size *= 2;
-ARM GAS  /tmp/ccyseA6A.s 			page 84
+ARM GAS  /tmp/cc4oGzy8.s 			page 84
 
 
 2740:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  std::__merge_sort_loop(__buffer, __buffer_last, __first,
@@ -5038,7 +5038,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2794:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
 2795:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   // stable_sort
 2796:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
-ARM GAS  /tmp/ccyseA6A.s 			page 85
+ARM GAS  /tmp/cc4oGzy8.s 			page 85
 
 
 2797:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   // Set algorithms: includes, set_union, set_intersection, set_difference,
@@ -5098,7 +5098,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2851:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       __glibcxx_function_requires(_LessThanOpConcept<
 2852:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	    typename iterator_traits<_InputIterator1>::value_type,
 2853:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	    typename iterator_traits<_InputIterator2>::value_type>)
-ARM GAS  /tmp/ccyseA6A.s 			page 86
+ARM GAS  /tmp/cc4oGzy8.s 			page 86
 
 
 2854:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       __glibcxx_function_requires(_LessThanOpConcept<
@@ -5158,7 +5158,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2908:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
 2909:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       return std::__includes(__first1, __last1, __first2, __last2,
 2910:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 			     __gnu_cxx::__ops::__iter_comp_iter(__comp));
-ARM GAS  /tmp/ccyseA6A.s 			page 87
+ARM GAS  /tmp/cc4oGzy8.s 			page 87
 
 
 2911:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     }
@@ -5218,7 +5218,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 2965:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @param  __last   End of range.
 2966:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @return  False if wrapped to first permutation, true otherwise.
 2967:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *
-ARM GAS  /tmp/ccyseA6A.s 			page 88
+ARM GAS  /tmp/cc4oGzy8.s 			page 88
 
 
 2968:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  Treats all permutations of the range as a set of @e dictionary sorted
@@ -5278,7 +5278,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 3022:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	(__first, __last, __gnu_cxx::__ops::__iter_comp_iter(__comp));
 3023:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     }
 3024:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
-ARM GAS  /tmp/ccyseA6A.s 			page 89
+ARM GAS  /tmp/cc4oGzy8.s 			page 89
 
 
 3025:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   template<typename _BidirectionalIterator, typename _Compare>
@@ -5338,7 +5338,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 3079:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     prev_permutation(_BidirectionalIterator __first,
 3080:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		     _BidirectionalIterator __last)
 3081:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     {
-ARM GAS  /tmp/ccyseA6A.s 			page 90
+ARM GAS  /tmp/cc4oGzy8.s 			page 90
 
 
 3082:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       // concept requirements
@@ -5398,7 +5398,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 3136:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		      _OutputIterator __result,
 3137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		      _Predicate __pred, const _Tp& __new_value)
 3138:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     {
-ARM GAS  /tmp/ccyseA6A.s 			page 91
+ARM GAS  /tmp/cc4oGzy8.s 			page 91
 
 
 3139:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       for (; __first != __last; ++__first, (void)++__result)
@@ -5458,7 +5458,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 3193:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @p [__result,__result+(__last-__first)) replacing elements for which
 3194:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @p __pred returns true with @p __new_value.
 3195:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   */
-ARM GAS  /tmp/ccyseA6A.s 			page 92
+ARM GAS  /tmp/cc4oGzy8.s 			page 92
 
 
 3196:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   template<typename _InputIterator, typename _OutputIterator,
@@ -5518,7 +5518,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 3250:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     __is_sorted_until(_ForwardIterator __first, _ForwardIterator __last,
 3251:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		      _Compare __comp)
 3252:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     {
-ARM GAS  /tmp/ccyseA6A.s 			page 93
+ARM GAS  /tmp/cc4oGzy8.s 			page 93
 
 
 3253:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       if (__first == __last)
@@ -5578,7 +5578,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 3307:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       __glibcxx_requires_valid_range(__first, __last);
 3308:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       __glibcxx_requires_irreflexive_pred(__first, __last, __comp);
 3309:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
-ARM GAS  /tmp/ccyseA6A.s 			page 94
+ARM GAS  /tmp/cc4oGzy8.s 			page 94
 
 
 3310:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       return std::__is_sorted_until(__first, __last,
@@ -5638,7 +5638,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 3364:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       if (__comp(__next, __first))
 3365:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	{
 3366:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  __min = __next;
-ARM GAS  /tmp/ccyseA6A.s 			page 95
+ARM GAS  /tmp/cc4oGzy8.s 			page 95
 
 
 3367:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  __max = __first;
@@ -5698,7 +5698,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 3421:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *           such that no other element in the range is larger.
 3422:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   */
 3423:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   template<typename _ForwardIterator>
-ARM GAS  /tmp/ccyseA6A.s 			page 96
+ARM GAS  /tmp/cc4oGzy8.s 			page 96
 
 
 3424:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _GLIBCXX14_CONSTEXPR
@@ -5758,7 +5758,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 3478:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     inline _Tp
 3479:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     min(initializer_list<_Tp> __l, _Compare __comp)
 3480:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     { return *std::min_element(__l.begin(), __l.end(), __comp); }
-ARM GAS  /tmp/ccyseA6A.s 			page 97
+ARM GAS  /tmp/cc4oGzy8.s 			page 97
 
 
 3481:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
@@ -5818,7 +5818,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 3535:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       // concept requirements
 3536:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       __glibcxx_function_requires(_ForwardIteratorConcept<_ForwardIterator1>)
 3537:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       __glibcxx_function_requires(_ForwardIteratorConcept<_ForwardIterator2>)
-ARM GAS  /tmp/ccyseA6A.s 			page 98
+ARM GAS  /tmp/cc4oGzy8.s 			page 98
 
 
 3538:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       __glibcxx_function_requires(_BinaryPredicateConcept<_BinaryPredicate,
@@ -5878,7 +5878,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 3592:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
 3593:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       for (_ForwardIterator1 __scan = __first1; __scan != __last1; ++__scan)
 3594:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	{
-ARM GAS  /tmp/ccyseA6A.s 			page 99
+ARM GAS  /tmp/cc4oGzy8.s 			page 99
 
 
 3595:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  if (__scan != std::__find_if(__first1, __scan,
@@ -5938,7 +5938,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
 3649:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *          otherwise, returns false.
 3650:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   */
 3651:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   template<typename _ForwardIterator1, typename _ForwardIterator2,
-ARM GAS  /tmp/ccyseA6A.s 			page 100
+ARM GAS  /tmp/cc4oGzy8.s 			page 100
 
 
 3652:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	   typename _BinaryPredicate>
@@ -5998,7 +5998,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
   90:MotorControl/component.hpp ****             return content_;
  456              		.loc 2 90 20 view .LVU115
  457 00f8 00F12802 		add	r2, r0, #40
-ARM GAS  /tmp/ccyseA6A.s 			page 101
+ARM GAS  /tmp/cc4oGzy8.s 			page 101
 
 
  458              	.LVL32:
@@ -6058,7 +6058,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  204:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    { }
  506              		.loc 3 204 47 view .LVU129
  507 0100 92E80300 		ldm	r2, {r0, r1}
-ARM GAS  /tmp/ccyseA6A.s 			page 102
+ARM GAS  /tmp/cc4oGzy8.s 			page 102
 
 
  508              	.LVL34:
@@ -6118,7 +6118,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  556              	.LBE688:
  557              	.LBB689:
  558              	.LBB605:
-ARM GAS  /tmp/ccyseA6A.s 			page 103
+ARM GAS  /tmp/cc4oGzy8.s 			page 103
 
 
  559              		.loc 2 90 20 view .LVU140
@@ -6178,7 +6178,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  607 0122 0DF12C0C 		add	ip, sp, #44
  608              	.LVL42:
  204:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    { }
-ARM GAS  /tmp/ccyseA6A.s 			page 104
+ARM GAS  /tmp/cc4oGzy8.s 			page 104
 
 
  609              		.loc 3 204 47 view .LVU154
@@ -6238,7 +6238,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  658              	.LBB691:
  659              	.LBB644:
  660              	.LBB625:
-ARM GAS  /tmp/ccyseA6A.s 			page 105
+ARM GAS  /tmp/cc4oGzy8.s 			page 105
 
 
  661              	.LBI625:
@@ -6298,7 +6298,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  204:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    { }
  709              		.loc 3 204 47 view .LVU178
  710              	.LBE642:
-ARM GAS  /tmp/ccyseA6A.s 			page 106
+ARM GAS  /tmp/cc4oGzy8.s 			page 106
 
 
  711              	.LBE641:
@@ -6358,7 +6358,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  758              	.LBE662:
  759              	.LBB663:
  760              	.LBI663:
-ARM GAS  /tmp/ccyseA6A.s 			page 107
+ARM GAS  /tmp/cc4oGzy8.s 			page 107
 
 
  607:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****         : _M_payload(in_place,
@@ -6418,7 +6418,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  807              	.LBE672:
  808              	.LBE671:
  809              	.LBE670:
-ARM GAS  /tmp/ccyseA6A.s 			page 108
+ARM GAS  /tmp/cc4oGzy8.s 			page 108
 
 
  810              	.LBE669:
@@ -6478,7 +6478,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  857              	.LBI699:
  858              		.loc 5 76 5 is_stmt 1 view .LVU211
  859              		.loc 5 76 5 is_stmt 0 view .LVU212
-ARM GAS  /tmp/ccyseA6A.s 			page 109
+ARM GAS  /tmp/cc4oGzy8.s 			page 109
 
 
  860              	.LBE699:
@@ -6538,7 +6538,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  382:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** 	: first(std::forward<_U1>(__p.first)),
  383:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** 	  second(std::forward<_U2>(__p.second)) { }
  384:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h **** 
-ARM GAS  /tmp/ccyseA6A.s 			page 110
+ARM GAS  /tmp/cc4oGzy8.s 			page 110
 
 
  385:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_pair.h ****       template<typename... _Args1, typename... _Args2>
@@ -6598,7 +6598,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  917              		.loc 6 3680 5 is_stmt 1 view .LVU230
  918              	.LBB705:
  919              		.loc 6 3683 21 is_stmt 0 view .LVU231
-ARM GAS  /tmp/ccyseA6A.s 			page 111
+ARM GAS  /tmp/cc4oGzy8.s 			page 111
 
 
  920 01a8 D3ED065A 		vldr.32	s11, [r3, #24]
@@ -6658,7 +6658,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  969              	.LBB710:
  970              	.LBI710:
   52:MotorControl/component.hpp ****         content_ = value;
-ARM GAS  /tmp/ccyseA6A.s 			page 112
+ARM GAS  /tmp/cc4oGzy8.s 			page 112
 
 
  971              		.loc 2 52 10 is_stmt 1 view .LVU243
@@ -6718,7 +6718,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  1016 020e 06DC     		bgt	.L29
  1017 0210 B4EEE57A 		vcmpe.f32	s14, s11
  1018 0214 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
-ARM GAS  /tmp/ccyseA6A.s 			page 113
+ARM GAS  /tmp/cc4oGzy8.s 			page 113
 
 
  1019 0218 02D5     		bpl	.L21
@@ -6778,7 +6778,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
    8:./MotorControl/utils.hpp **** #include <cmath>
    9:./MotorControl/utils.hpp **** 
   10:./MotorControl/utils.hpp **** /**
-ARM GAS  /tmp/ccyseA6A.s 			page 114
+ARM GAS  /tmp/cc4oGzy8.s 			page 114
 
 
   11:./MotorControl/utils.hpp ****  * @brief Flash size register address
@@ -6838,7 +6838,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
   65:./MotorControl/utils.hpp **** 
   66:./MotorControl/utils.hpp **** // Function prototypes for implementations in utils.cpp
   67:./MotorControl/utils.hpp **** std::tuple<float, float, float, bool> SVM(float alpha, float beta);
-ARM GAS  /tmp/ccyseA6A.s 			page 115
+ARM GAS  /tmp/cc4oGzy8.s 			page 115
 
 
   68:./MotorControl/utils.hpp **** float fast_atan2(float y, float x);
@@ -6898,7 +6898,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  122:./MotorControl/utils.hpp **** // the result will be in range -y/2 to y/2
  123:./MotorControl/utils.hpp **** inline float wrap_pm(float x, float y) {
  124:./MotorControl/utils.hpp **** #ifdef FPU_FPV4
-ARM GAS  /tmp/ccyseA6A.s 			page 116
+ARM GAS  /tmp/cc4oGzy8.s 			page 116
 
 
  125:./MotorControl/utils.hpp ****     float intval = (float)round_int(x / y);
@@ -6958,7 +6958,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  125:./MotorControl/utils.hpp **** #else
  1090              		.loc 7 125 42 view .LVU281
  1091 0240 F8EEE66A 		vcvt.f32.s32	s13, s13
-ARM GAS  /tmp/ccyseA6A.s 			page 117
+ARM GAS  /tmp/cc4oGzy8.s 			page 117
 
 
  1092              	.LVL85:
@@ -7018,7 +7018,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  602:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
  1133              		.loc 3 602 17 view .LVU295
  1134              	.LBB731:
-ARM GAS  /tmp/ccyseA6A.s 			page 118
+ARM GAS  /tmp/cc4oGzy8.s 			page 118
 
 
  1135              	.LBI731:
@@ -7078,7 +7078,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  1178              	.LVL92:
  970:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    : static_cast<_Tp>(std::forward<_Up>(__u));
  1179              		.loc 3 970 6 view .LVU307
-ARM GAS  /tmp/ccyseA6A.s 			page 119
+ARM GAS  /tmp/cc4oGzy8.s 			page 119
 
 
  1180              	.LBE756:
@@ -7138,7 +7138,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  1226              		.loc 3 607 28 is_stmt 1 view .LVU319
  1227              	.LBB740:
  1228              	.LBB741:
-ARM GAS  /tmp/ccyseA6A.s 			page 120
+ARM GAS  /tmp/cc4oGzy8.s 			page 120
 
 
  1229              	.LBB742:
@@ -7198,7 +7198,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  1276              	.LBE744:
  1277              	.LBE743:
  1278              	.LBE741:
-ARM GAS  /tmp/ccyseA6A.s 			page 121
+ARM GAS  /tmp/cc4oGzy8.s 			page 121
 
 
  1279              	.LBE740:
@@ -7258,7 +7258,7 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  1334 0008 00000000 		.word	_ZTI13ComponentBase
  1335              		.section	.rodata._ZTS18OpenLoopController,"a"
  1336              		.align	2
-ARM GAS  /tmp/ccyseA6A.s 			page 122
+ARM GAS  /tmp/cc4oGzy8.s 			page 122
 
 
  1339              	_ZTS18OpenLoopController:
@@ -7304,25 +7304,25 @@ ARM GAS  /tmp/ccyseA6A.s 			page 1
  1377              		.file 34 "Board/v3/Inc/board.h"
  1378              		.file 35 "MotorControl/open_loop_controller.hpp"
  1379              		.file 36 "<built-in>"
-ARM GAS  /tmp/ccyseA6A.s 			page 123
+ARM GAS  /tmp/cc4oGzy8.s 			page 123
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 open_loop_controller.cpp
-     /tmp/ccyseA6A.s:20     .text._ZN18OpenLoopController6updateEm:0000000000000000 $t
-     /tmp/ccyseA6A.s:26     .text._ZN18OpenLoopController6updateEm:0000000000000000 _ZN18OpenLoopController6updateEm
-     /tmp/ccyseA6A.s:1299   .text._ZN18OpenLoopController6updateEm:000000000000028c $d
+     /tmp/cc4oGzy8.s:20     .text._ZN18OpenLoopController6updateEm:0000000000000000 $t
+     /tmp/cc4oGzy8.s:26     .text._ZN18OpenLoopController6updateEm:0000000000000000 _ZN18OpenLoopController6updateEm
+     /tmp/cc4oGzy8.s:1299   .text._ZN18OpenLoopController6updateEm:000000000000028c $d
 .ARM.exidx.text._ZN18OpenLoopController6updateEm:0000000000000000 $d
-     /tmp/ccyseA6A.s:1314   .rodata._ZTS13ComponentBase:0000000000000000 _ZTS13ComponentBase
-     /tmp/ccyseA6A.s:1311   .rodata._ZTS13ComponentBase:0000000000000000 $d
-     /tmp/ccyseA6A.s:1321   .rodata._ZTI13ComponentBase:0000000000000000 _ZTI13ComponentBase
-     /tmp/ccyseA6A.s:1318   .rodata._ZTI13ComponentBase:0000000000000000 $d
-     /tmp/ccyseA6A.s:1339   .rodata._ZTS18OpenLoopController:0000000000000000 _ZTS18OpenLoopController
-     /tmp/ccyseA6A.s:1331   .rodata._ZTI18OpenLoopController:0000000000000000 _ZTI18OpenLoopController
-     /tmp/ccyseA6A.s:1345   .rodata._ZTV18OpenLoopController:0000000000000000 _ZTV18OpenLoopController
-     /tmp/ccyseA6A.s:1328   .rodata._ZTI18OpenLoopController:0000000000000000 $d
-     /tmp/ccyseA6A.s:1336   .rodata._ZTS18OpenLoopController:0000000000000000 $d
-     /tmp/ccyseA6A.s:1342   .rodata._ZTV18OpenLoopController:0000000000000000 $d
+     /tmp/cc4oGzy8.s:1314   .rodata._ZTS13ComponentBase:0000000000000000 _ZTS13ComponentBase
+     /tmp/cc4oGzy8.s:1311   .rodata._ZTS13ComponentBase:0000000000000000 $d
+     /tmp/cc4oGzy8.s:1321   .rodata._ZTI13ComponentBase:0000000000000000 _ZTI13ComponentBase
+     /tmp/cc4oGzy8.s:1318   .rodata._ZTI13ComponentBase:0000000000000000 $d
+     /tmp/cc4oGzy8.s:1339   .rodata._ZTS18OpenLoopController:0000000000000000 _ZTS18OpenLoopController
+     /tmp/cc4oGzy8.s:1331   .rodata._ZTI18OpenLoopController:0000000000000000 _ZTI18OpenLoopController
+     /tmp/cc4oGzy8.s:1345   .rodata._ZTV18OpenLoopController:0000000000000000 _ZTV18OpenLoopController
+     /tmp/cc4oGzy8.s:1328   .rodata._ZTI18OpenLoopController:0000000000000000 $d
+     /tmp/cc4oGzy8.s:1336   .rodata._ZTS18OpenLoopController:0000000000000000 $d
+     /tmp/cc4oGzy8.s:1342   .rodata._ZTV18OpenLoopController:0000000000000000 $d
 
 UNDEFINED SYMBOLS
 _ZTVN10__cxxabiv117__class_type_infoE

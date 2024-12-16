@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccxdJPvT.s 			page 1
+ARM GAS  /tmp/ccgrGYt5.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccxdJPvT.s 			page 1
   20:Board/v3/Src/spi.c ****   *    this list of conditions and the following disclaimer.
   21:Board/v3/Src/spi.c ****   * 2. Redistributions in binary form must reproduce the above copyright notice,
   22:Board/v3/Src/spi.c ****   *    this list of conditions and the following disclaimer in the documentation
-ARM GAS  /tmp/ccxdJPvT.s 			page 2
+ARM GAS  /tmp/ccgrGYt5.s 			page 2
 
 
   23:Board/v3/Src/spi.c ****   *    and/or other materials provided with the distribution.
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccxdJPvT.s 			page 1
   68:Board/v3/Src/spi.c ****   hspi3.Instance = SPI3;
   42              		.loc 1 68 3 view .LVU1
   43              		.loc 1 68 18 is_stmt 0 view .LVU2
-ARM GAS  /tmp/ccxdJPvT.s 			page 3
+ARM GAS  /tmp/ccgrGYt5.s 			page 3
 
 
   44 0002 1048     		ldr	r0, .L5
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccxdJPvT.s 			page 1
   80:Board/v3/Src/spi.c ****   if (HAL_SPI_Init(&hspi3) != HAL_OK)
   87              		.loc 1 80 3 is_stmt 1 view .LVU25
   88              		.loc 1 80 7 is_stmt 0 view .LVU26
-ARM GAS  /tmp/ccxdJPvT.s 			page 4
+ARM GAS  /tmp/ccgrGYt5.s 			page 4
 
 
   89 0032 FFF7FEFF 		bl	HAL_SPI_Init
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccxdJPvT.s 			page 1
  133 0004 9A42     		cmp	r2, r3
  134 0006 00D0     		beq	.L19
  135 0008 7047     		bx	lr
-ARM GAS  /tmp/ccxdJPvT.s 			page 5
+ARM GAS  /tmp/ccgrGYt5.s 			page 5
 
 
  136              	.L19:
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccxdJPvT.s 			page 1
  175 0032 0293     		str	r3, [sp, #8]
  106:Board/v3/Src/spi.c ****     GPIO_InitStruct.Pull = GPIO_PULLDOWN; // Idle clock and MOSI low.
  176              		.loc 1 106 5 is_stmt 1 view .LVU47
-ARM GAS  /tmp/ccxdJPvT.s 			page 6
+ARM GAS  /tmp/ccgrGYt5.s 			page 6
 
 
  177              		.loc 1 106 26 is_stmt 0 view .LVU48
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccxdJPvT.s 			page 1
  217 0060 4022     		movs	r2, #64
  218 0062 9A60     		str	r2, [r3, #8]
  121:Board/v3/Src/spi.c ****     hdma_spi3_tx.Init.PeriphInc = DMA_PINC_DISABLE;
-ARM GAS  /tmp/ccxdJPvT.s 			page 7
+ARM GAS  /tmp/ccgrGYt5.s 			page 7
 
 
  219              		.loc 1 121 5 is_stmt 1 view .LVU66
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccxdJPvT.s 			page 1
  259              	.L11:
  136:Board/v3/Src/spi.c ****     {
  137:Board/v3/Src/spi.c ****       _Error_Handler(__FILE__, __LINE__);
-ARM GAS  /tmp/ccxdJPvT.s 			page 8
+ARM GAS  /tmp/ccgrGYt5.s 			page 8
 
 
  138:Board/v3/Src/spi.c ****     }
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccxdJPvT.s 			page 1
  152:Board/v3/Src/spi.c ****         hdma_spi3_rx.Init.PeriphDataAlignment = DMA_PDATAALIGN_HALFWORD;
  153:Board/v3/Src/spi.c ****         hdma_spi3_rx.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;
  154:Board/v3/Src/spi.c ****     }
-ARM GAS  /tmp/ccxdJPvT.s 			page 9
+ARM GAS  /tmp/ccgrGYt5.s 			page 9
 
 
  155:Board/v3/Src/spi.c ****     hdma_spi3_rx.Init.Mode = DMA_NORMAL;
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccxdJPvT.s 			page 1
  336              		.cfi_restore_state
  128:Board/v3/Src/spi.c ****       hdma_spi3_tx.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;      
  337              		.loc 1 128 7 is_stmt 1 view .LVU121
-ARM GAS  /tmp/ccxdJPvT.s 			page 10
+ARM GAS  /tmp/ccgrGYt5.s 			page 10
 
 
  128:Board/v3/Src/spi.c ****       hdma_spi3_tx.Init.MemDataAlignment = DMA_MDATAALIGN_HALFWORD;      
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccxdJPvT.s 			page 1
  383              	.LFE134:
  385              		.section	.text.HAL_SPI_MspDeInit,"ax",%progbits
  386              		.align	1
-ARM GAS  /tmp/ccxdJPvT.s 			page 11
+ARM GAS  /tmp/ccgrGYt5.s 			page 11
 
 
  387              		.global	HAL_SPI_MspDeInit
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccxdJPvT.s 			page 1
  423              	.LVL12:
  424              		.loc 1 190 5 is_stmt 0 view .LVU138
  425 001e FFF7FEFF 		bl	HAL_GPIO_DeInit
-ARM GAS  /tmp/ccxdJPvT.s 			page 12
+ARM GAS  /tmp/ccgrGYt5.s 			page 12
 
 
  426              	.LVL13:
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccxdJPvT.s 			page 1
  468      00000000 
  468      00000000 
  468      00000000 
-ARM GAS  /tmp/ccxdJPvT.s 			page 13
+ARM GAS  /tmp/ccgrGYt5.s 			page 13
 
 
  468      00000000 
@@ -743,27 +743,27 @@ ARM GAS  /tmp/ccxdJPvT.s 			page 1
  485              		.file 9 "Board/v3/Inc/spi.h"
  486              		.file 10 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_cortex.h"
  487              		.file 11 "Board/v3/Inc/dma.h"
-ARM GAS  /tmp/ccxdJPvT.s 			page 14
+ARM GAS  /tmp/ccgrGYt5.s 			page 14
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 spi.c
-     /tmp/ccxdJPvT.s:20     .rodata.MX_SPI3_Init.str1.4:0000000000000000 $d
-     /tmp/ccxdJPvT.s:24     .text.MX_SPI3_Init:0000000000000000 $t
-     /tmp/ccxdJPvT.s:30     .text.MX_SPI3_Init:0000000000000000 MX_SPI3_Init
-     /tmp/ccxdJPvT.s:107    .text.MX_SPI3_Init:0000000000000044 $d
-     /tmp/ccxdJPvT.s:114    .text.HAL_SPI_MspInit:0000000000000000 $t
-     /tmp/ccxdJPvT.s:120    .text.HAL_SPI_MspInit:0000000000000000 HAL_SPI_MspInit
-     /tmp/ccxdJPvT.s:375    .text.HAL_SPI_MspInit:0000000000000108 $d
-     /tmp/ccxdJPvT.s:386    .text.HAL_SPI_MspDeInit:0000000000000000 $t
-     /tmp/ccxdJPvT.s:392    .text.HAL_SPI_MspDeInit:0000000000000000 HAL_SPI_MspDeInit
-     /tmp/ccxdJPvT.s:446    .text.HAL_SPI_MspDeInit:0000000000000038 $d
-     /tmp/ccxdJPvT.s:460    .bss.hdma_spi3_rx:0000000000000000 hdma_spi3_rx
-     /tmp/ccxdJPvT.s:467    .bss.hdma_spi3_tx:0000000000000000 hdma_spi3_tx
-     /tmp/ccxdJPvT.s:474    .bss.hspi3:0000000000000000 hspi3
-     /tmp/ccxdJPvT.s:456    .bss.hdma_spi3_rx:0000000000000000 $d
-     /tmp/ccxdJPvT.s:463    .bss.hdma_spi3_tx:0000000000000000 $d
-     /tmp/ccxdJPvT.s:470    .bss.hspi3:0000000000000000 $d
+     /tmp/ccgrGYt5.s:20     .rodata.MX_SPI3_Init.str1.4:0000000000000000 $d
+     /tmp/ccgrGYt5.s:24     .text.MX_SPI3_Init:0000000000000000 $t
+     /tmp/ccgrGYt5.s:30     .text.MX_SPI3_Init:0000000000000000 MX_SPI3_Init
+     /tmp/ccgrGYt5.s:107    .text.MX_SPI3_Init:0000000000000044 $d
+     /tmp/ccgrGYt5.s:114    .text.HAL_SPI_MspInit:0000000000000000 $t
+     /tmp/ccgrGYt5.s:120    .text.HAL_SPI_MspInit:0000000000000000 HAL_SPI_MspInit
+     /tmp/ccgrGYt5.s:375    .text.HAL_SPI_MspInit:0000000000000108 $d
+     /tmp/ccgrGYt5.s:386    .text.HAL_SPI_MspDeInit:0000000000000000 $t
+     /tmp/ccgrGYt5.s:392    .text.HAL_SPI_MspDeInit:0000000000000000 HAL_SPI_MspDeInit
+     /tmp/ccgrGYt5.s:446    .text.HAL_SPI_MspDeInit:0000000000000038 $d
+     /tmp/ccgrGYt5.s:460    .bss.hdma_spi3_rx:0000000000000000 hdma_spi3_rx
+     /tmp/ccgrGYt5.s:467    .bss.hdma_spi3_tx:0000000000000000 hdma_spi3_tx
+     /tmp/ccgrGYt5.s:474    .bss.hspi3:0000000000000000 hspi3
+     /tmp/ccgrGYt5.s:456    .bss.hdma_spi3_rx:0000000000000000 $d
+     /tmp/ccgrGYt5.s:463    .bss.hdma_spi3_tx:0000000000000000 $d
+     /tmp/ccgrGYt5.s:470    .bss.hspi3:0000000000000000 $d
 
 UNDEFINED SYMBOLS
 HAL_SPI_Init

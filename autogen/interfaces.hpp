@@ -967,22 +967,22 @@ public:
         ERROR_INVALID_BRAKE_RESISTANCE   = 0x00000080,
     };
     enum GpioMode {
-        GPIO_MODE_DIGITAL                = 0,
-        GPIO_MODE_DIGITAL_PULL_UP        = 1,
-        GPIO_MODE_DIGITAL_PULL_DOWN      = 2,
-        GPIO_MODE_ANALOG_IN              = 3,
-        GPIO_MODE_UART_A                 = 4,
+        GPIO_MODE_DIGITAL                = 0, //!普通的数字输入/输出模式，无任何上下拉电阻
+        GPIO_MODE_DIGITAL_PULL_UP        = 1, //!数字输入/输出模式，带上拉电阻。适用于需要将未连接信号默认拉高的场景
+        GPIO_MODE_DIGITAL_PULL_DOWN      = 2, //!数字输入/输出模式，带下拉电阻。适用于需要将未连接信号默认拉低的场景
+        GPIO_MODE_ANALOG_IN              = 3, //!模拟输入模式，用于 ADC（模数转换）读取信号
+        GPIO_MODE_UART_A                 = 4, //!UART（串口通信）模式
         GPIO_MODE_UART_B                 = 5,
         GPIO_MODE_UART_C                 = 6,
-        GPIO_MODE_CAN_A                  = 7,
-        GPIO_MODE_I2C_A                  = 8,
-        GPIO_MODE_SPI_A                  = 9,
-        GPIO_MODE_PWM                    = 10,
-        GPIO_MODE_ENC0                   = 11,
+        GPIO_MODE_CAN_A                  = 7, //!CAN 总线通信模式
+        GPIO_MODE_I2C_A                  = 8, //!I2C 通信模式
+        GPIO_MODE_SPI_A                  = 9, //!SPI 通信模式
+        GPIO_MODE_PWM                    = 10,//!配置为 PWM（脉冲宽度调制）输出模式
+        GPIO_MODE_ENC0                   = 11,//!编码器模式（ENC0、ENC1、ENC2）。通常用于读取旋转编码器的信号，以获取位置信息或速度反馈。
         GPIO_MODE_ENC1                   = 12,
         GPIO_MODE_ENC2                   = 13,
-        GPIO_MODE_MECH_BRAKE             = 14,
-        GPIO_MODE_STATUS                 = 15,
+        GPIO_MODE_MECH_BRAKE             = 14,//!机械制动模式，可能用于控制机械刹车
+        GPIO_MODE_STATUS                 = 15,//!状态指示模式，可能将 GPIO 配置为输出，表示设备状态（如运行状态、错误指示灯）
     };
     enum StreamProtocolType {
         STREAM_PROTOCOL_TYPE_FIBRE       = 0,

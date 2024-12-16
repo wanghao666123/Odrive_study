@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccjyQa7a.s 			page 1
+ARM GAS  /tmp/ccbo04Ik.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   26:fibre-cpp/legacy_protocol.cpp **** 
   27:fibre-cpp/legacy_protocol.cpp ****     if (state_ != kStateIdle) {
   28:fibre-cpp/legacy_protocol.cpp ****         completer.invoke({kStreamError, buffer.begin()});
-ARM GAS  /tmp/ccjyQa7a.s 			page 2
+ARM GAS  /tmp/ccbo04Ik.s 			page 2
 
 
   29:fibre-cpp/legacy_protocol.cpp ****     }
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   58              	.LVL3:
   56:fibre-cpp/legacy_protocol.cpp **** }
   59              		.loc 1 56 1 view .LVU8
-ARM GAS  /tmp/ccjyQa7a.s 			page 3
+ARM GAS  /tmp/ccbo04Ik.s 			page 3
 
 
   60 0014 08BD     		pop	{r3, pc}
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   97:fibre-cpp/legacy_protocol.cpp ****         *handle = reinterpret_cast<TransferHandle>(this);
   98:fibre-cpp/legacy_protocol.cpp ****     }
   99:fibre-cpp/legacy_protocol.cpp **** 
-ARM GAS  /tmp/ccjyQa7a.s 			page 4
+ARM GAS  /tmp/ccbo04Ik.s 			page 4
 
 
  100:fibre-cpp/legacy_protocol.cpp ****     if (state_ != kStateIdle) {
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  116              	_Z8calc_crcIhLj55EET_S0_h:
  117              		.fnstart
  118              	.LVL8:
-ARM GAS  /tmp/ccjyQa7a.s 			page 5
+ARM GAS  /tmp/ccbo04Ik.s 			page 5
 
 
  119              	.LFB5496:
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   18:fibre-cpp/crc.hpp ****         if (remainder & TOPBIT) {
  149              		.loc 2 18 27 is_stmt 1 discriminator 1 view .LVU25
  150 000e 3BB1     		cbz	r3, .L6
-ARM GAS  /tmp/ccjyQa7a.s 			page 6
+ARM GAS  /tmp/ccbo04Ik.s 			page 6
 
 
   19:fibre-cpp/crc.hpp ****         if (remainder & TOPBIT) {
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  193              		.cfi_offset 4, -12
  194              		.cfi_offset 5, -8
  195              		.cfi_offset 14, -4
-ARM GAS  /tmp/ccjyQa7a.s 			page 7
+ARM GAS  /tmp/ccbo04Ik.s 			page 7
 
 
  196 0002 0C46     		mov	r4, r1
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   46:fibre-cpp/crc.hpp **** template<unsigned POLYNOMIAL>
   47:fibre-cpp/crc.hpp **** static uint8_t calc_crc8(uint8_t remainder, const uint8_t* buffer, size_t length) {
  234              		.loc 2 47 16 is_stmt 1 view -0
-ARM GAS  /tmp/ccjyQa7a.s 			page 8
+ARM GAS  /tmp/ccbo04Ik.s 			page 8
 
 
  235              		.cfi_startproc
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  284              	.L20:
   18:fibre-cpp/crc.hpp ****         if (remainder & TOPBIT) {
  285              		.loc 2 18 5 is_stmt 1 discriminator 2 view .LVU51
-ARM GAS  /tmp/ccjyQa7a.s 			page 9
+ARM GAS  /tmp/ccbo04Ik.s 			page 9
 
 
  286 000c 013B     		subs	r3, r3, #1
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   30:fibre-cpp/crc.hpp ****     while (length--)
  332              		.loc 2 30 10 is_stmt 0 view .LVU62
  333 0000 38B5     		push	{r3, r4, r5, lr}
-ARM GAS  /tmp/ccjyQa7a.s 			page 10
+ARM GAS  /tmp/ccbo04Ik.s 			page 10
 
 
  334              	.LCFI4:
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  380              		@ args = 0, pretend = 0, frame = 0
  381              		@ frame_needed = 0, uses_anonymous_args = 0
  382              		.loc 2 52 17 is_stmt 0 view .LVU71
-ARM GAS  /tmp/ccjyQa7a.s 			page 11
+ARM GAS  /tmp/ccbo04Ik.s 			page 11
 
 
  383 0000 08B5     		push	{r3, lr}
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  144:fibre-cpp/legacy_protocol.cpp ****             n_discard = 1;
  145:fibre-cpp/legacy_protocol.cpp ****         } else if ((rx_buf_[1] & 0x80)) {
  146:fibre-cpp/legacy_protocol.cpp ****             n_discard = 2; // TODO: support packets larger than 128 bytes
-ARM GAS  /tmp/ccjyQa7a.s 			page 12
+ARM GAS  /tmp/ccbo04Ik.s 			page 12
 
 
  147:fibre-cpp/legacy_protocol.cpp ****         } else if (calc_crc8<CANONICAL_CRC8_POLYNOMIAL>(CANONICAL_CRC8_INIT, rx_buf_, 3)) {
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  201:fibre-cpp/legacy_protocol.cpp ****  *        this function then the handle is not set later than invoking the
  202:fibre-cpp/legacy_protocol.cpp ****  *        completer.
  203:fibre-cpp/legacy_protocol.cpp ****  */
-ARM GAS  /tmp/ccjyQa7a.s 			page 13
+ARM GAS  /tmp/ccbo04Ik.s 			page 13
 
 
  204:fibre-cpp/legacy_protocol.cpp **** void LegacyProtocolPacketBased::start_endpoint_operation(uint16_t endpoint_id, cbufptr_t tx_buf, bu
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  258:fibre-cpp/legacy_protocol.cpp ****     Callback<void, EndpointOperationResult> callback;
  259:fibre-cpp/legacy_protocol.cpp ****     const uint8_t* tx_end = nullptr;
  260:fibre-cpp/legacy_protocol.cpp ****     uint8_t* rx_end = nullptr;
-ARM GAS  /tmp/ccjyQa7a.s 			page 14
+ARM GAS  /tmp/ccbo04Ik.s 			page 14
 
 
  261:fibre-cpp/legacy_protocol.cpp **** 
@@ -838,7 +838,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  299:fibre-cpp/legacy_protocol.cpp ****     // The request must contain a 32 bit integer to specify an offset
  300:fibre-cpp/legacy_protocol.cpp ****     std::optional<uint32_t> offset = read_le<uint32_t>(input_buffer);
  425              		.loc 1 300 5 is_stmt 1 view .LVU76
-ARM GAS  /tmp/ccjyQa7a.s 			page 15
+ARM GAS  /tmp/ccbo04Ik.s 			page 15
 
 
  426              	.LVL43:
@@ -898,7 +898,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   51:fibre-cpp/include/fibre/simple_serdes.hpp ****                     return false;
   52:fibre-cpp/include/fibre/simple_serdes.hpp ****                 uint8_t byte = static_cast<uint8_t>((value >> ((i - 1) << 3)) & 0xff);
   53:fibre-cpp/include/fibre/simple_serdes.hpp ****                 **begin = byte;
-ARM GAS  /tmp/ccjyQa7a.s 			page 16
+ARM GAS  /tmp/ccbo04Ik.s 			page 16
 
 
   54:fibre-cpp/include/fibre/simple_serdes.hpp ****             }
@@ -958,7 +958,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   35:fibre-cpp/include/fibre/bufptr.hpp **** 
   36:fibre-cpp/include/fibre/bufptr.hpp ****     generic_bufptr_t(const generic_bufptr_t<typename std::remove_const<T>::type>& other)
   37:fibre-cpp/include/fibre/bufptr.hpp ****         : generic_bufptr_t(other.begin(), other.end()) {}
-ARM GAS  /tmp/ccjyQa7a.s 			page 17
+ARM GAS  /tmp/ccbo04Ik.s 			page 17
 
 
   38:fibre-cpp/include/fibre/bufptr.hpp **** 
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  442              	.LBI636:
   26:fibre-cpp/include/fibre/simple_serdes.hpp ****         T result = 0;
  443              		.loc 3 26 29 is_stmt 1 view .LVU81
-ARM GAS  /tmp/ccjyQa7a.s 			page 18
+ARM GAS  /tmp/ccbo04Ik.s 			page 18
 
 
  444              	.LBB637:
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  485 002c 9542     		cmp	r5, r2
  486 002e EED8     		bhi	.L31
  487              	.LVL51:
-ARM GAS  /tmp/ccjyQa7a.s 			page 19
+ARM GAS  /tmp/ccbo04Ik.s 			page 19
 
 
  488              	.LBB640:
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   52:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****   /**
   53:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****    *  @addtogroup utilities
   54:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****    *  @{
-ARM GAS  /tmp/ccjyQa7a.s 			page 20
+ARM GAS  /tmp/ccbo04Ik.s 			page 20
 
 
   55:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****    */
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  109:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
  110:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       _Optional_payload_base() = default;
  111:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       ~_Optional_payload_base() = default;
-ARM GAS  /tmp/ccjyQa7a.s 			page 21
+ARM GAS  /tmp/ccbo04Ik.s 			page 21
 
 
  112:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
@@ -1258,7 +1258,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  166:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****         if (this->_M_engaged && __other._M_engaged)
  167:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****           this->_M_get() = __other._M_get();
  168:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****         else
-ARM GAS  /tmp/ccjyQa7a.s 			page 22
+ARM GAS  /tmp/ccbo04Ik.s 			page 22
 
 
  169:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	  {
@@ -1318,7 +1318,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  223:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    constexpr
  224:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    _Storage(in_place_t, _Args&&... __args)
  225:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    : _M_value(std::forward<_Args>(__args)...)
-ARM GAS  /tmp/ccjyQa7a.s 			page 23
+ARM GAS  /tmp/ccbo04Ik.s 			page 23
 
 
  226:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    { }
@@ -1378,7 +1378,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  280:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       }
  281:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****     };
  282:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
-ARM GAS  /tmp/ccjyQa7a.s 			page 24
+ARM GAS  /tmp/ccbo04Ik.s 			page 24
 
 
  283:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****   // Class template that manages the payload for optionals.
@@ -1438,7 +1438,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  337:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       _Optional_payload(const _Optional_payload&) = default;
  338:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       _Optional_payload(_Optional_payload&&) = default;
  339:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       _Optional_payload& operator=(const _Optional_payload&) = default;
-ARM GAS  /tmp/ccjyQa7a.s 			page 25
+ARM GAS  /tmp/ccbo04Ik.s 			page 25
 
 
  340:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
@@ -1498,7 +1498,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  394:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       _Optional_payload(const _Optional_payload&) = default;
  395:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       _Optional_payload(_Optional_payload&&) = default;
  396:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       _Optional_payload& operator=(const _Optional_payload&) = default;
-ARM GAS  /tmp/ccjyQa7a.s 			page 26
+ARM GAS  /tmp/ccbo04Ik.s 			page 26
 
 
  397:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       _Optional_payload& operator=(_Optional_payload&&) = default;
@@ -1558,7 +1558,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  451:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
  452:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****   /**
  453:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****     * @brief Class template that provides copy/move constructors of optional.
-ARM GAS  /tmp/ccjyQa7a.s 			page 27
+ARM GAS  /tmp/ccbo04Ik.s 			page 27
 
 
  454:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****     *
@@ -1618,7 +1618,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  508:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
  509:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       // Assignment operators.
  510:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       _Optional_base& operator=(const _Optional_base&) = default;
-ARM GAS  /tmp/ccjyQa7a.s 			page 28
+ARM GAS  /tmp/ccbo04Ik.s 			page 28
 
 
  511:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       _Optional_base& operator=(_Optional_base&&) = default;
@@ -1678,7 +1678,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  565:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	       enable_if_t<is_constructible_v<_Tp, _Args&&...>, bool> = false>
  566:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****         constexpr explicit _Optional_base(in_place_t, _Args&&... __args)
  567:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****         : _M_payload(in_place,
-ARM GAS  /tmp/ccjyQa7a.s 			page 29
+ARM GAS  /tmp/ccbo04Ik.s 			page 29
 
 
  568:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 		     std::forward<_Args>(__args)...) { }
@@ -1738,7 +1738,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  622:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       // Copy and move constructors.
  623:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       constexpr _Optional_base(const _Optional_base& __other) = default;
  624:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       constexpr _Optional_base(_Optional_base&& __other) = default;
-ARM GAS  /tmp/ccjyQa7a.s 			page 30
+ARM GAS  /tmp/ccbo04Ik.s 			page 30
 
 
  625:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
@@ -1798,7 +1798,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  679:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       // SFINAE helpers
  680:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       template<typename _Up>
  681:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	using __not_self = __not_<is_same<optional, __remove_cvref_t<_Up>>>;
-ARM GAS  /tmp/ccjyQa7a.s 			page 31
+ARM GAS  /tmp/ccbo04Ik.s 			page 31
 
 
  682:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       template<typename _Up>
@@ -1858,7 +1858,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   38:fibre-cpp/include/fibre/simple_serdes.hpp ****                 uint8_t byte = **begin;
  525              		.loc 3 38 33 view .LVU105
  526              	.LBE647:
-ARM GAS  /tmp/ccjyQa7a.s 			page 32
+ARM GAS  /tmp/ccbo04Ik.s 			page 32
 
 
  527              	.LBE638:
@@ -1918,7 +1918,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   38:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** namespace std _GLIBCXX_VISIBILITY(default)
   39:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** {
   40:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** _GLIBCXX_BEGIN_NAMESPACE_VERSION
-ARM GAS  /tmp/ccjyQa7a.s 			page 33
+ARM GAS  /tmp/ccbo04Ik.s 			page 33
 
 
   41:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
@@ -1978,7 +1978,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  552              	.LBB657:
  553              	.LBB658:
  554              	.LBB659:
-ARM GAS  /tmp/ccjyQa7a.s 			page 34
+ARM GAS  /tmp/ccbo04Ik.s 			page 34
 
 
  555              	.LBI659:
@@ -2038,7 +2038,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  602              	.LBE636:
  603              	.LBE634:
  604              	.LBE633:
-ARM GAS  /tmp/ccjyQa7a.s 			page 35
+ARM GAS  /tmp/ccbo04Ik.s 			page 35
 
 
  301:fibre-cpp/legacy_protocol.cpp ****     
@@ -2098,7 +2098,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  749:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 			  is_constructible<_Tp, _Up&&>,
  750:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 			  __not_<is_convertible<_Up&&, _Tp>>,
  751:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 			  __not_<__converts_from_optional<_Tp, _Up>>> = false>
-ARM GAS  /tmp/ccjyQa7a.s 			page 36
+ARM GAS  /tmp/ccbo04Ik.s 			page 36
 
 
  752:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	explicit constexpr
@@ -2158,7 +2158,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  806:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	{
  807:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	  if (__u)
  808:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    {
-ARM GAS  /tmp/ccjyQa7a.s 			page 37
+ARM GAS  /tmp/ccbo04Ik.s 			page 37
 
 
  809:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	      if (this->_M_is_engaged())
@@ -2218,7 +2218,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  863:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
  864:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       // Destructor is implicit, implemented in _Optional_base.
  865:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
-ARM GAS  /tmp/ccjyQa7a.s 			page 38
+ARM GAS  /tmp/ccbo04Ik.s 			page 38
 
 
  866:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       // Swap.
@@ -2278,7 +2278,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  433:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional ****       { return static_cast<const _Dp*>(this)->_M_payload._M_engaged; }
  612              		.loc 5 433 22 view .LVU126
  613              	.LBB670:
-ARM GAS  /tmp/ccjyQa7a.s 			page 39
+ARM GAS  /tmp/ccbo04Ik.s 			page 39
 
 
  434:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
@@ -2338,7 +2338,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   75:fibre-cpp/include/fibre/bufptr.hpp ****     }
  653              		.loc 4 75 23 view .LVU139
  654 0058 3068     		ldr	r0, [r6]
-ARM GAS  /tmp/ccjyQa7a.s 			page 40
+ARM GAS  /tmp/ccbo04Ik.s 			page 40
 
 
  655              	.LVL60:
@@ -2398,7 +2398,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   37:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *
   38:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *
   39:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Copyright (c) 1996-1998
-ARM GAS  /tmp/ccjyQa7a.s 			page 41
+ARM GAS  /tmp/ccbo04Ik.s 			page 41
 
 
   40:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Silicon Graphics Computer Systems, Inc.
@@ -2458,7 +2458,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   94:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
   95:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #ifdef __cpp_lib_is_constant_evaluated
   96:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       if (std::is_constant_evaluated())
-ARM GAS  /tmp/ccjyQa7a.s 			page 42
+ARM GAS  /tmp/ccbo04Ik.s 			page 42
 
 
   97:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	{
@@ -2518,7 +2518,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  151:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     inline void
  152:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     iter_swap(_ForwardIterator1 __a, _ForwardIterator2 __b)
  153:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
-ARM GAS  /tmp/ccjyQa7a.s 			page 43
+ARM GAS  /tmp/ccbo04Ik.s 			page 43
 
 
  154:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // concept requirements
@@ -2578,7 +2578,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  208:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ForwardIterator2>)
  209:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_requires_valid_range(__first1, __last1);
  210:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
-ARM GAS  /tmp/ccjyQa7a.s 			page 44
+ARM GAS  /tmp/ccbo04Ik.s 			page 44
 
 
  211:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       for (; __first1 != __last1; ++__first1, (void)++__first2)
@@ -2638,7 +2638,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  696              	.LBI679:
   65:fibre-cpp/include/fibre/bufptr.hpp ****         if (!soft_assert(num <= size())) {
  697              		.loc 4 65 22 view .LVU152
-ARM GAS  /tmp/ccjyQa7a.s 			page 45
+ARM GAS  /tmp/ccbo04Ik.s 			page 45
 
 
  698              	.LBB680:
@@ -2698,7 +2698,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  742              	.LVL69:
   23:fibre-cpp/include/fibre/bufptr.hpp **** 
  743              		.loc 4 23 65 view .LVU163
-ARM GAS  /tmp/ccjyQa7a.s 			page 46
+ARM GAS  /tmp/ccbo04Ik.s 			page 46
 
 
  744              	.LBE684:
@@ -2758,7 +2758,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   76:fibre-cpp/include/fibre/simple_serdes.hpp ****     return LittleEndianSerializer<T>::write(value, &buffer->begin(), buffer->end());
  788              		.loc 3 76 44 view .LVU173
  789 009c 7168     		ldr	r1, [r6, #4]
-ARM GAS  /tmp/ccjyQa7a.s 			page 47
+ARM GAS  /tmp/ccbo04Ik.s 			page 47
 
 
  790              	.LVL73:
@@ -2818,7 +2818,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  832 00be 9142     		cmp	r1, r2
  833 00c0 EFD8     		bhi	.L37
   58:fibre-cpp/include/fibre/simple_serdes.hpp ****                 uint8_t byte = static_cast<uint8_t>((value >> (i << 3)) & 0xff);
-ARM GAS  /tmp/ccjyQa7a.s 			page 48
+ARM GAS  /tmp/ccbo04Ik.s 			page 48
 
 
  834              		.loc 3 58 28 view .LVU186
@@ -2878,7 +2878,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  320:fibre-cpp/legacy_protocol.cpp **** #endif
  321:fibre-cpp/legacy_protocol.cpp **** 
  322:fibre-cpp/legacy_protocol.cpp **** void LegacyProtocolPacketBased::on_write_finished(WriteResult result) {
-ARM GAS  /tmp/ccjyQa7a.s 			page 49
+ARM GAS  /tmp/ccbo04Ik.s 			page 49
 
 
  323:fibre-cpp/legacy_protocol.cpp ****     tx_handle_ = 0;
@@ -2938,7 +2938,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  377:fibre-cpp/legacy_protocol.cpp **** #if FIBRE_ENABLE_CLIENT
  378:fibre-cpp/legacy_protocol.cpp ****     if (pending_operations_.size() > 0) {
  379:fibre-cpp/legacy_protocol.cpp ****         // There is a write operation pending from the client side (i.e. an
-ARM GAS  /tmp/ccjyQa7a.s 			page 50
+ARM GAS  /tmp/ccbo04Ik.s 			page 50
 
 
  380:fibre-cpp/legacy_protocol.cpp ****         // outgoing remote endpoint operation).
@@ -2998,7 +2998,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  434:fibre-cpp/legacy_protocol.cpp ****             // It's possible that the RX operation completes before the TX operation
  435:fibre-cpp/legacy_protocol.cpp ****             if (it->second.tx_done) {
  436:fibre-cpp/legacy_protocol.cpp ****                 auto op = it->second;
-ARM GAS  /tmp/ccjyQa7a.s 			page 51
+ARM GAS  /tmp/ccbo04Ik.s 			page 51
 
 
  437:fibre-cpp/legacy_protocol.cpp ****                 expected_acks_.erase(it);
@@ -3058,7 +3058,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  491:fibre-cpp/legacy_protocol.cpp ****         fibre::bufptr_t output_buffer{tx_buf_ + 2, expected_response_length};
  492:fibre-cpp/legacy_protocol.cpp ****         fibre::endpoint_handler(endpoint_id, &input_buffer, &output_buffer);
  493:fibre-cpp/legacy_protocol.cpp **** 
-ARM GAS  /tmp/ccjyQa7a.s 			page 52
+ARM GAS  /tmp/ccbo04Ik.s 			page 52
 
 
  494:fibre-cpp/legacy_protocol.cpp ****         // Send response
@@ -3118,7 +3118,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  524:fibre-cpp/legacy_protocol.cpp ****         // TODO: handle app-initiated cancellation via cancel_endpoint_operation() (currently unuse
  525:fibre-cpp/legacy_protocol.cpp ****         status = kStreamError;
  526:fibre-cpp/legacy_protocol.cpp ****     }
-ARM GAS  /tmp/ccjyQa7a.s 			page 53
+ARM GAS  /tmp/ccbo04Ik.s 			page 53
 
 
  527:fibre-cpp/legacy_protocol.cpp **** 
@@ -3178,7 +3178,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   27:fibre-cpp/include/fibre/callback.hpp ****      * 
   28:fibre-cpp/include/fibre/callback.hpp ****      * This is only works it the other callback has identical template parameters.
   29:fibre-cpp/include/fibre/callback.hpp ****      * This constructor is templated so that construction from an incompatible
-ARM GAS  /tmp/ccjyQa7a.s 			page 54
+ARM GAS  /tmp/ccbo04Ik.s 			page 54
 
 
   30:fibre-cpp/include/fibre/callback.hpp ****      * callback gives a useful error message.
@@ -3238,7 +3238,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   71:fibre-cpp/include/fibre/callback.hpp ****         if (cb) {
  926              		.loc 8 71 9 view .LVU203
  927 0020 0CB1     		cbz	r4, .L47
-ARM GAS  /tmp/ccjyQa7a.s 			page 55
+ARM GAS  /tmp/ccbo04Ik.s 			page 55
 
 
   72:fibre-cpp/include/fibre/callback.hpp ****             return (*cb)(ctx, arg...);
@@ -3298,7 +3298,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  514:fibre-cpp/legacy_protocol.cpp ****         tx_channel_->cancel_write(tx_handle_);
  976              		.loc 1 514 9 is_stmt 1 view .LVU213
  514:fibre-cpp/legacy_protocol.cpp ****         tx_channel_->cancel_write(tx_handle_);
-ARM GAS  /tmp/ccjyQa7a.s 			page 56
+ARM GAS  /tmp/ccbo04Ik.s 			page 56
 
 
  977              		.loc 1 514 20 is_stmt 0 view .LVU214
@@ -3358,7 +3358,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   84:fibre-cpp/include/fibre/callback.hpp **** };
   85:fibre-cpp/include/fibre/callback.hpp **** 
   86:fibre-cpp/include/fibre/callback.hpp **** template<typename _TRet, typename _TObj, typename ... _TArgs>
-ARM GAS  /tmp/ccjyQa7a.s 			page 57
+ARM GAS  /tmp/ccbo04Ik.s 			page 57
 
 
   87:fibre-cpp/include/fibre/callback.hpp **** struct function_traits {
@@ -3418,7 +3418,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1037              	.LBE709:
  115:fibre-cpp/include/fibre/callback.hpp ****     return MemCb::with(obj);
  116:fibre-cpp/include/fibre/callback.hpp **** }
-ARM GAS  /tmp/ccjyQa7a.s 			page 58
+ARM GAS  /tmp/ccbo04Ik.s 			page 58
 
 
  1038              		.loc 8 116 1 view .LVU227
@@ -3478,7 +3478,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1088 0010 1C60     		str	r4, [r3]
  1089              	.L61:
   27:fibre-cpp/legacy_protocol.cpp ****         completer.invoke({kStreamError, buffer.begin()});
-ARM GAS  /tmp/ccjyQa7a.s 			page 59
+ARM GAS  /tmp/ccbo04Ik.s 			page 59
 
 
  1090              		.loc 1 27 5 is_stmt 1 view .LVU234
@@ -3538,7 +3538,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   74:fibre-cpp/include/fibre/bufptr.hpp ****         return end_ - begin_;
  1131              		.loc 4 74 12 view .LVU248
  1132              	.LBB716:
-ARM GAS  /tmp/ccjyQa7a.s 			page 60
+ARM GAS  /tmp/ccbo04Ik.s 			page 60
 
 
   75:fibre-cpp/include/fibre/bufptr.hpp ****     }
@@ -3598,7 +3598,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1174              		.loc 1 36 5 is_stmt 1 view .LVU261
   36:fibre-cpp/legacy_protocol.cpp **** 
  1175              		.loc 1 36 16 is_stmt 0 view .LVU262
-ARM GAS  /tmp/ccjyQa7a.s 			page 61
+ARM GAS  /tmp/ccbo04Ik.s 			page 61
 
 
  1176 0064 04F12003 		add	r3, r4, #32
@@ -3658,7 +3658,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   46:fibre-cpp/legacy_protocol.cpp **** 
  1215              		.loc 1 46 21 view .LVU278
  1216 00a6 2074     		strb	r0, [r4, #16]
-ARM GAS  /tmp/ccjyQa7a.s 			page 62
+ARM GAS  /tmp/ccbo04Ik.s 			page 62
 
 
   48:fibre-cpp/legacy_protocol.cpp ****     expected_tx_end_ = header_buf_ + 3;
@@ -3718,7 +3718,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1258              	.LVL110:
   50:fibre-cpp/legacy_protocol.cpp **** }
  1259              		.loc 1 50 29 view .LVU292
-ARM GAS  /tmp/ccjyQa7a.s 			page 63
+ARM GAS  /tmp/ccbo04Ik.s 			page 63
 
 
  1260 00c8 0096     		str	r6, [sp]
@@ -3778,7 +3778,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   59:fibre-cpp/legacy_protocol.cpp ****         state_ = kStateIdle;
  1311              		.loc 1 59 9 is_stmt 0 view .LVU298
  1312 000c 90F82830 		ldrb	r3, [r0, #40]	@ zero_extendqisi2
-ARM GAS  /tmp/ccjyQa7a.s 			page 64
+ARM GAS  /tmp/ccbo04Ik.s 			page 64
 
 
   59:fibre-cpp/legacy_protocol.cpp ****         state_ = kStateIdle;
@@ -3838,7 +3838,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1353 0032 0023     		movs	r3, #0
  1354 0034 80F82830 		strb	r3, [r0, #40]
   61:fibre-cpp/legacy_protocol.cpp ****         return;
-ARM GAS  /tmp/ccjyQa7a.s 			page 65
+ARM GAS  /tmp/ccbo04Ik.s 			page 65
 
 
  1355              		.loc 1 61 9 is_stmt 1 view .LVU313
@@ -3898,7 +3898,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1395              		.loc 1 62 9 is_stmt 1 view .LVU327
  1396 005e E6E7     		b	.L67
  1397              	.LVL120:
-ARM GAS  /tmp/ccjyQa7a.s 			page 66
+ARM GAS  /tmp/ccbo04Ik.s 			page 66
 
 
  1398              	.L79:
@@ -3958,7 +3958,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1437 0088 A847     		blx	r5
  1438              	.LVL125:
   72:fibre-cpp/include/fibre/callback.hpp ****         }
-ARM GAS  /tmp/ccjyQa7a.s 			page 67
+ARM GAS  /tmp/ccbo04Ik.s 			page 67
 
 
  1439              		.loc 8 72 25 view .LVU343
@@ -4018,7 +4018,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1483              	.LVL132:
  1484              	.L81:
   77:fibre-cpp/legacy_protocol.cpp ****         expected_tx_end_ = payload_buf_.end();
-ARM GAS  /tmp/ccjyQa7a.s 			page 68
+ARM GAS  /tmp/ccbo04Ik.s 			page 68
 
 
  1485              		.loc 1 77 9 view .LVU354
@@ -4078,7 +4078,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1525              		.loc 1 83 41 is_stmt 0 view .LVU368
  1526 00e2 00F11103 		add	r3, r0, #17
   83:fibre-cpp/legacy_protocol.cpp ****         tx_channel_->start_write(trailer_buf_, &inner_transfer_handle_, MEMBER_CB(this, complete));
-ARM GAS  /tmp/ccjyQa7a.s 			page 69
+ARM GAS  /tmp/ccbo04Ik.s 			page 69
 
 
  1527              		.loc 1 83 26 view .LVU369
@@ -4138,7 +4138,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1571              	.LVL142:
  1572 010e 8EE7     		b	.L67
  1573              	.LVL143:
-ARM GAS  /tmp/ccjyQa7a.s 			page 70
+ARM GAS  /tmp/ccbo04Ik.s 			page 70
 
 
  1574              	.L83:
@@ -4198,7 +4198,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1613 013c A847     		blx	r5
  1614              	.LVL148:
   72:fibre-cpp/include/fibre/callback.hpp ****         }
-ARM GAS  /tmp/ccjyQa7a.s 			page 71
+ARM GAS  /tmp/ccbo04Ik.s 			page 71
 
 
  1615              		.loc 8 72 37 view .LVU395
@@ -4258,7 +4258,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  105:fibre-cpp/include/fibre/callback.hpp ****             return (((TObj*)obj)->*func)(arg...);
  1666              		.loc 8 105 21 view .LVU401
  1667 001e 05B0     		add	sp, sp, #20
-ARM GAS  /tmp/ccjyQa7a.s 			page 72
+ARM GAS  /tmp/ccbo04Ik.s 			page 72
 
 
  1668              	.LCFI21:
@@ -4318,7 +4318,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1719              		.fnend
  1721              		.section	.text._ZN5fibre15PacketUnwrapper10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS
  1722              		.align	1
-ARM GAS  /tmp/ccjyQa7a.s 			page 73
+ARM GAS  /tmp/ccbo04Ik.s 			page 73
 
 
  1723              		.global	_ZN5fibre15PacketUnwrapper10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10Read
@@ -4378,7 +4378,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  101:fibre-cpp/legacy_protocol.cpp ****     }
  1768              		.loc 1 101 53 view .LVU418
  1769 001a 3368     		ldr	r3, [r6]
-ARM GAS  /tmp/ccjyQa7a.s 			page 74
+ARM GAS  /tmp/ccbo04Ik.s 			page 74
 
 
  101:fibre-cpp/legacy_protocol.cpp ****     }
@@ -4438,7 +4438,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1810              		.loc 1 107 5 is_stmt 1 view .LVU432
  107:fibre-cpp/legacy_protocol.cpp ****     expected_rx_end_ = rx_buf_ + 3;
  1811              		.loc 1 107 12 is_stmt 0 view .LVU433
-ARM GAS  /tmp/ccjyQa7a.s 			page 75
+ARM GAS  /tmp/ccbo04Ik.s 			page 75
 
 
  1812 004e 0223     		movs	r3, #2
@@ -4498,7 +4498,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1854              		.loc 1 110 1 view .LVU445
  1855 007c 08B0     		add	sp, sp, #32
  1856              	.LCFI24:
-ARM GAS  /tmp/ccjyQa7a.s 			page 76
+ARM GAS  /tmp/ccbo04Ik.s 			page 76
 
 
  1857              		.cfi_def_cfa_offset 16
@@ -4558,7 +4558,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1905              		.loc 1 128 16 is_stmt 0 view .LVU453
  1906 0016 9DF80020 		ldrb	r2, [sp]	@ zero_extendqisi2
  128:fibre-cpp/legacy_protocol.cpp ****         state_ = kStateIdle;
-ARM GAS  /tmp/ccjyQa7a.s 			page 77
+ARM GAS  /tmp/ccbo04Ik.s 			page 77
 
 
  1907              		.loc 1 128 5 view .LVU454
@@ -4618,7 +4618,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1949              		.loc 1 168 59 is_stmt 0 view .LVU466
  1950 0044 04F10C07 		add	r7, r4, #12
  168:fibre-cpp/legacy_protocol.cpp **** 
-ARM GAS  /tmp/ccjyQa7a.s 			page 78
+ARM GAS  /tmp/ccbo04Ik.s 			page 78
 
 
  1951              		.loc 1 168 53 view .LVU467
@@ -4678,7 +4678,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  1991 0074 2362     		str	r3, [r4, #32]
   71:fibre-cpp/include/fibre/callback.hpp ****             return (*cb)(ctx, arg...);
  1992              		.loc 8 71 9 view .LVU482
-ARM GAS  /tmp/ccjyQa7a.s 			page 79
+ARM GAS  /tmp/ccbo04Ik.s 			page 79
 
 
  1993 0076 002D     		cmp	r5, #0
@@ -4738,7 +4738,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2034              		.loc 8 67 15 is_stmt 0 view .LVU495
  2035 009c 606A     		ldr	r0, [r4, #36]
  2036              	.LVL177:
-ARM GAS  /tmp/ccjyQa7a.s 			page 80
+ARM GAS  /tmp/ccbo04Ik.s 			page 80
 
 
   68:fibre-cpp/include/fibre/callback.hpp ****         ctx_ = nullptr;
@@ -4798,7 +4798,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2076              	.LBB797:
  2077              	.LBI797:
   66:fibre-cpp/include/fibre/callback.hpp ****         void* ctx = ctx_;
-ARM GAS  /tmp/ccjyQa7a.s 			page 81
+ARM GAS  /tmp/ccbo04Ik.s 			page 81
 
 
  2078              		.loc 8 66 10 is_stmt 1 view .LVU511
@@ -4858,7 +4858,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2120              		.loc 4 23 5 is_stmt 1 view .LVU523
  2121              	.LBB800:
  2122              	.LBB801:
-ARM GAS  /tmp/ccjyQa7a.s 			page 82
+ARM GAS  /tmp/ccbo04Ik.s 			page 82
 
 
   23:fibre-cpp/include/fibre/bufptr.hpp **** 
@@ -4918,7 +4918,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2163              		.loc 1 145 16 view .LVU537
  2164 0108 002B     		cmp	r3, #0
  2165 010a 51DB     		blt	.L110
-ARM GAS  /tmp/ccjyQa7a.s 			page 83
+ARM GAS  /tmp/ccbo04Ik.s 			page 83
 
 
  147:fibre-cpp/legacy_protocol.cpp ****             n_discard = 3;
@@ -4978,7 +4978,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2205              	.LVL197:
  2206              	.LBB767:
  2207              	.LBI767:
-ARM GAS  /tmp/ccjyQa7a.s 			page 84
+ARM GAS  /tmp/ccbo04Ik.s 			page 84
 
 
  230:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
@@ -5038,7 +5038,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2249 0144 00D8     		bhi	.L104
  2250 0146 0B46     		mov	r3, r1
  2251              	.L104:
-ARM GAS  /tmp/ccjyQa7a.s 			page 85
+ARM GAS  /tmp/ccbo04Ik.s 			page 85
 
 
  2252              	.LVL200:
@@ -5098,7 +5098,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2295              		.loc 7 236 9 view .LVU578
  2296              	.LBE769:
  2297              	.LBE775:
-ARM GAS  /tmp/ccjyQa7a.s 			page 86
+ARM GAS  /tmp/ccbo04Ik.s 			page 86
 
 
  144:fibre-cpp/legacy_protocol.cpp ****         } else if ((rx_buf_[1] & 0x80)) {
@@ -5158,7 +5158,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2339              	.LBE778:
  2340              	.LBE777:
  2341              	.LBE776:
-ARM GAS  /tmp/ccjyQa7a.s 			page 87
+ARM GAS  /tmp/ccbo04Ik.s 			page 87
 
 
  2342              	.LBB781:
@@ -5218,7 +5218,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2386              	.LBE788:
  159:fibre-cpp/legacy_protocol.cpp **** 
  2387              		.loc 1 159 97 view .LVU602
-ARM GAS  /tmp/ccjyQa7a.s 			page 88
+ARM GAS  /tmp/ccbo04Ik.s 			page 88
 
 
  2388 019a 2146     		mov	r1, r4
@@ -5278,7 +5278,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2430              		.loc 4 23 5 is_stmt 1 view .LVU614
  2431              	.LBB760:
  2432              	.LBB761:
-ARM GAS  /tmp/ccjyQa7a.s 			page 89
+ARM GAS  /tmp/ccbo04Ik.s 			page 89
 
 
   23:fibre-cpp/include/fibre/bufptr.hpp **** 
@@ -5338,7 +5338,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2475              	.LBB755:
  2476              	.LBI755:
   23:fibre-cpp/include/fibre/bufptr.hpp **** 
-ARM GAS  /tmp/ccjyQa7a.s 			page 90
+ARM GAS  /tmp/ccbo04Ik.s 			page 90
 
 
  2477              		.loc 4 23 5 is_stmt 1 view .LVU627
@@ -5398,7 +5398,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2527              	.LCFI29:
  2528              		.cfi_def_cfa_offset 4
  2529              		.cfi_offset 14, -4
-ARM GAS  /tmp/ccjyQa7a.s 			page 91
+ARM GAS  /tmp/ccbo04Ik.s 			page 91
 
 
  2530              		.pad #20
@@ -5458,7 +5458,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2580              	.LBB807:
  2581              	.LBI807:
  104:fibre-cpp/include/fibre/callback.hpp ****         return cb_t{[](void* obj, TArgs... arg) {
-ARM GAS  /tmp/ccjyQa7a.s 			page 92
+ARM GAS  /tmp/ccbo04Ik.s 			page 92
 
 
  2582              		.loc 8 104 17 view .LVU640
@@ -5518,7 +5518,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2630              		.cfi_offset 5, -8
  2631              		.cfi_offset 14, -4
  2632              		.pad #28
-ARM GAS  /tmp/ccjyQa7a.s 			page 93
+ARM GAS  /tmp/ccbo04Ik.s 			page 93
 
 
  2633 0002 87B0     		sub	sp, sp, #28
@@ -5578,7 +5578,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2677 0024 04A8     		add	r0, sp, #16
  2678 0026 FFF7FEFF 		bl	_ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read
  2679              	.LVL240:
-ARM GAS  /tmp/ccjyQa7a.s 			page 94
+ARM GAS  /tmp/ccbo04Ik.s 			page 94
 
 
  2680              		.loc 1 560 28 view .LVU660
@@ -5638,7 +5638,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   13:fibre-cpp/print_utils.hpp **** }
   14:fibre-cpp/print_utils.hpp **** 
   15:fibre-cpp/print_utils.hpp **** /* @brief Converts a hexadecimal digit to a uint8_t.
-ARM GAS  /tmp/ccjyQa7a.s 			page 95
+ARM GAS  /tmp/ccbo04Ik.s 			page 95
 
 
   16:fibre-cpp/print_utils.hpp **** * @param output If not null, the digit's value is stored in this output
@@ -5698,7 +5698,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   70:fibre-cpp/print_utils.hpp ****     return hex_string_to_int_arr(str, hex_digits<TInt>() * ICount, output);
   71:fibre-cpp/print_utils.hpp **** }
   72:fibre-cpp/print_utils.hpp **** 
-ARM GAS  /tmp/ccjyQa7a.s 			page 96
+ARM GAS  /tmp/ccbo04Ik.s 			page 96
 
 
   73:fibre-cpp/print_utils.hpp **** // TODO: move to print_utils.hpp
@@ -5758,7 +5758,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2730 0008 1646     		mov	r6, r2
  2731              	.LVL243:
  2732              	.LBB821:
-ARM GAS  /tmp/ccjyQa7a.s 			page 97
+ARM GAS  /tmp/ccbo04Ik.s 			page 97
 
 
  2733              	.LBI821:
@@ -5818,7 +5818,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2775              		.loc 9 79 39 view .LVU675
  2776 0036 0020     		movs	r0, #0
  2777 0038 F1E7     		b	.L128
-ARM GAS  /tmp/ccjyQa7a.s 			page 98
+ARM GAS  /tmp/ccbo04Ik.s 			page 98
 
 
  2778              	.LVL248:
@@ -5878,7 +5878,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2824              		.cfi_endproc
  2825              	.LFE5038:
  2826              		.cantunwind
-ARM GAS  /tmp/ccjyQa7a.s 			page 99
+ARM GAS  /tmp/ccbo04Ik.s 			page 99
 
 
  2827              		.fnend
@@ -5938,7 +5938,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2857 000a 521A     		subs	r2, r2, r1
  2858              	.LVL255:
   75:fibre-cpp/include/fibre/bufptr.hpp ****     }
-ARM GAS  /tmp/ccjyQa7a.s 			page 100
+ARM GAS  /tmp/ccbo04Ik.s 			page 100
 
 
  2859              		.loc 4 75 21 view .LVU691
@@ -5998,7 +5998,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2909              	.LBB834:
   23:fibre-cpp/include/fibre/callback.hpp **** 
  2910              		.loc 8 23 32 is_stmt 0 view .LVU699
-ARM GAS  /tmp/ccjyQa7a.s 			page 101
+ARM GAS  /tmp/ccbo04Ik.s 			page 101
 
 
  2911 0000 014A     		ldr	r2, .L140
@@ -6058,7 +6058,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  2963              		.loc 9 77 5 is_stmt 1 view .LVU704
  2964              	.LBB841:
  2965              	.LBB842:
-ARM GAS  /tmp/ccjyQa7a.s 			page 102
+ARM GAS  /tmp/ccbo04Ik.s 			page 102
 
 
   77:fibre-cpp/print_utils.hpp ****         const char digits[] = "0123456789abcdef";
@@ -6118,7 +6118,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3009              	.LBB844:
   87:fibre-cpp/print_utils.hpp ****             val >>= 4;
  3010              		.loc 9 87 71 view .LVU716
-ARM GAS  /tmp/ccjyQa7a.s 			page 103
+ARM GAS  /tmp/ccbo04Ik.s 			page 103
 
 
  3011 003a 0CF00F01 		and	r1, ip, #15
@@ -6178,7 +6178,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3055              		.cantunwind
  3056              		.fnend
  3058              		.section	.text._ZN5fibrelsI10NullStreamKhEERT_S4_RKNS_15HexArrayPrinterIT0_EE,"axG",%progbits,_ZN5
-ARM GAS  /tmp/ccjyQa7a.s 			page 104
+ARM GAS  /tmp/ccbo04Ik.s 			page 104
 
 
  3059              		.align	1
@@ -6238,7 +6238,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3108              	.LBI846:
  3109              		.file 10 "fibre-cpp/logging.hpp"
    1:fibre-cpp/logging.hpp **** /**
-ARM GAS  /tmp/ccjyQa7a.s 			page 105
+ARM GAS  /tmp/ccbo04Ik.s 			page 105
 
 
    2:fibre-cpp/logging.hpp ****  * @brief Provides logging facilities
@@ -6298,7 +6298,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   56:fibre-cpp/logging.hpp **** #define __FIBRE_LOGGING_HPP
   57:fibre-cpp/logging.hpp **** 
   58:fibre-cpp/logging.hpp **** /**
-ARM GAS  /tmp/ccjyQa7a.s 			page 106
+ARM GAS  /tmp/ccbo04Ik.s 			page 106
 
 
   59:fibre-cpp/logging.hpp ****  * @brief Tag type to print the last system error
@@ -6358,7 +6358,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  113:fibre-cpp/logging.hpp **** 
  114:fibre-cpp/logging.hpp **** #endif
  115:fibre-cpp/logging.hpp **** 
-ARM GAS  /tmp/ccjyQa7a.s 			page 107
+ARM GAS  /tmp/ccbo04Ik.s 			page 107
 
 
  116:fibre-cpp/logging.hpp **** namespace fibre {
@@ -6418,7 +6418,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  170:fibre-cpp/logging.hpp **** template<> constexpr log_level_t get_default_log_verbosity<LOG_TOPIC_ ## topic>() { return (default
  171:fibre-cpp/logging.hpp **** template<> constexpr log_level_t get_max_log_verbosity<LOG_TOPIC_ ## topic>() { return (max_verbosi
  172:fibre-cpp/logging.hpp **** 
-ARM GAS  /tmp/ccjyQa7a.s 			page 108
+ARM GAS  /tmp/ccbo04Ik.s 			page 108
 
 
  173:fibre-cpp/logging.hpp **** 
@@ -6478,7 +6478,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  227:fibre-cpp/logging.hpp ****                 break;
  228:fibre-cpp/logging.hpp ****             }
  229:fibre-cpp/logging.hpp ****             base_stream << get_local_time() << " ";
-ARM GAS  /tmp/ccjyQa7a.s 			page 109
+ARM GAS  /tmp/ccbo04Ik.s 			page 109
 
 
  230:fibre-cpp/logging.hpp ****             base_stream << std::dec << "[" << topic << "] ";
@@ -6538,7 +6538,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  284:fibre-cpp/logging.hpp **** template<typename TStream, typename T, typename... Ts>
  285:fibre-cpp/logging.hpp **** void send_to_stream(TStream&& stream);
  286:fibre-cpp/logging.hpp **** 
-ARM GAS  /tmp/ccjyQa7a.s 			page 110
+ARM GAS  /tmp/ccbo04Ik.s 			page 110
 
 
  287:fibre-cpp/logging.hpp **** template<typename TStream>
@@ -6598,7 +6598,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3115 0024 0134     		adds	r4, r4, #1
  3116              	.LVL275:
  121:fibre-cpp/print_utils.hpp ****         stream << " " << as_hex(printer.ptr_[pos]);
-ARM GAS  /tmp/ccjyQa7a.s 			page 111
+ARM GAS  /tmp/ccbo04Ik.s 			page 111
 
 
  3117              		.loc 9 121 5 is_stmt 1 view .LVU736
@@ -6658,7 +6658,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3166              		.pad #236
  3167 0004 BBB0     		sub	sp, sp, #236
  3168              	.LCFI47:
-ARM GAS  /tmp/ccjyQa7a.s 			page 112
+ARM GAS  /tmp/ccbo04Ik.s 			page 112
 
 
  3169              		.cfi_def_cfa_offset 264
@@ -6718,7 +6718,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3209              	.LBI999:
   26:fibre-cpp/include/fibre/simple_serdes.hpp ****         T result = 0;
  3210              		.loc 3 26 29 view .LVU758
-ARM GAS  /tmp/ccjyQa7a.s 			page 113
+ARM GAS  /tmp/ccbo04Ik.s 			page 113
 
 
  3211              	.LBB1000:
@@ -6778,7 +6778,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  408:fibre-cpp/legacy_protocol.cpp ****     }
  3251              		.loc 1 408 9 is_stmt 1 view .LVU773
  3252 0042 03E1     		b	.L157
-ARM GAS  /tmp/ccjyQa7a.s 			page 114
+ARM GAS  /tmp/ccbo04Ik.s 			page 114
 
 
  3253              	.LVL285:
@@ -6838,7 +6838,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3295 0066 EDD8     		bhi	.L163
  3296              	.LVL292:
  3297              	.LBB1003:
-ARM GAS  /tmp/ccjyQa7a.s 			page 115
+ARM GAS  /tmp/ccbo04Ik.s 			page 115
 
 
  3298              	.LBI1003:
@@ -6898,7 +6898,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3340              		.loc 5 700 2 is_stmt 1 view .LVU797
  3341              	.LBB1013:
  3342              	.LBB1014:
-ARM GAS  /tmp/ccjyQa7a.s 			page 116
+ARM GAS  /tmp/ccbo04Ik.s 			page 116
 
 
  3343              	.LBB1015:
@@ -6958,7 +6958,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3390              		.loc 5 117 19 view .LVU812
  3391 0078 0123     		movs	r3, #1
  3392              	.LVL297:
-ARM GAS  /tmp/ccjyQa7a.s 			page 117
+ARM GAS  /tmp/ccbo04Ik.s 			page 117
 
 
  117:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	{ }
@@ -7018,7 +7018,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3437              		.loc 5 434 58 is_stmt 0 view .LVU823
  3438 008a 9DF82A30 		ldrb	r3, [sp, #42]	@ zero_extendqisi2
  3439              	.LVL303:
-ARM GAS  /tmp/ccjyQa7a.s 			page 118
+ARM GAS  /tmp/ccbo04Ik.s 			page 118
 
 
  434:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
@@ -7078,7 +7078,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
   27:fibre-cpp/include/fibre/simple_serdes.hpp ****         if (BigEndian) {
  3481              		.loc 3 27 11 view .LVU837
  3482 00b0 0023     		movs	r3, #0
-ARM GAS  /tmp/ccjyQa7a.s 			page 119
+ARM GAS  /tmp/ccbo04Ik.s 			page 119
 
 
  3483              	.LBB1045:
@@ -7138,7 +7138,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  451:fibre-cpp/legacy_protocol.cpp ****             return;
  3526              		.loc 1 451 36 view .LVU849
  3527 00cc 10AB     		add	r3, sp, #64
-ARM GAS  /tmp/ccjyQa7a.s 			page 120
+ARM GAS  /tmp/ccbo04Ik.s 			page 120
 
 
  3528 00ce 0DAA     		add	r2, sp, #52
@@ -7198,7 +7198,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3571 00f2 BCF1000F 		cmp	ip, #0
  3572 00f6 EFD0     		beq	.L170
   37:fibre-cpp/include/fibre/simple_serdes.hpp ****                     return std::nullopt;
-ARM GAS  /tmp/ccjyQa7a.s 			page 121
+ARM GAS  /tmp/ccbo04Ik.s 			page 121
 
 
  3573              		.loc 3 37 37 view .LVU861
@@ -7258,7 +7258,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3616              	.L169:
   38:fibre-cpp/include/fibre/simple_serdes.hpp ****                 uint8_t byte = **begin;
  3617              		.loc 3 38 33 view .LVU873
-ARM GAS  /tmp/ccjyQa7a.s 			page 122
+ARM GAS  /tmp/ccbo04Ik.s 			page 122
 
 
  3618              	.LBE1054:
@@ -7318,7 +7318,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3666 010a ADF8D030 		strh	r3, [sp, #208]	@ movhi
  3667              	.LVL321:
  204:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	    { }
-ARM GAS  /tmp/ccjyQa7a.s 			page 123
+ARM GAS  /tmp/ccbo04Ik.s 			page 123
 
 
  3668              		.loc 5 204 47 view .LVU888
@@ -7378,7 +7378,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  460:fibre-cpp/legacy_protocol.cpp **** 
  3713              		.loc 1 460 9 is_stmt 1 view .LVU898
  460:fibre-cpp/legacy_protocol.cpp **** 
-ARM GAS  /tmp/ccjyQa7a.s 			page 124
+ARM GAS  /tmp/ccbo04Ik.s 			page 124
 
 
  3714              		.loc 1 460 21 is_stmt 0 view .LVU899
@@ -7438,7 +7438,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3754 0158 96E80700 		ldm	r6, {r0, r1, r2}
  3755 015c 03C3     		stmia	r3!, {r0, r1}
  3756 015e 1A80     		strh	r2, [r3]	@ movhi
-ARM GAS  /tmp/ccjyQa7a.s 			page 125
+ARM GAS  /tmp/ccbo04Ik.s 			page 125
 
 
  3757              	.LBB1083:
@@ -7498,7 +7498,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3802              	.LVL337:
   21:fibre-cpp/include/fibre/bufptr.hpp **** 
  3803              		.loc 4 21 83 view .LVU927
-ARM GAS  /tmp/ccjyQa7a.s 			page 126
+ARM GAS  /tmp/ccbo04Ik.s 			page 126
 
 
  3804              	.LBE1089:
@@ -7558,7 +7558,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3847              		.loc 3 36 25 view .LVU938
  3848 01ac 1A46     		mov	r2, r3
  3849 01ae 0BE0     		b	.L174
-ARM GAS  /tmp/ccjyQa7a.s 			page 127
+ARM GAS  /tmp/ccbo04Ik.s 			page 127
 
 
  3850              	.LVL342:
@@ -7618,7 +7618,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  692:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 
  3892              		.loc 5 692 17 is_stmt 1 view .LVU951
  3893              	.LBB1096:
-ARM GAS  /tmp/ccjyQa7a.s 			page 128
+ARM GAS  /tmp/ccbo04Ik.s 			page 128
 
 
  3894              	.LBB1097:
@@ -7678,7 +7678,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3937              	.LBI1106:
  3938              		.loc 6 76 5 view .LVU963
  3939              		.loc 6 76 5 is_stmt 0 view .LVU964
-ARM GAS  /tmp/ccjyQa7a.s 			page 129
+ARM GAS  /tmp/ccbo04Ik.s 			page 129
 
 
  3940              	.LBE1106:
@@ -7738,7 +7738,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  3986              		.loc 5 117 19 view .LVU978
  3987 01e8 8DF8DE30 		strb	r3, [sp, #222]
  3988              	.LVL355:
-ARM GAS  /tmp/ccjyQa7a.s 			page 130
+ARM GAS  /tmp/ccbo04Ik.s 			page 130
 
 
  117:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/optional **** 	{ }
@@ -7798,7 +7798,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  488:fibre-cpp/legacy_protocol.cpp **** 
  4032              		.loc 1 488 38 view .LVU990
  4033 0206 023E     		subs	r6, r6, #2
-ARM GAS  /tmp/ccjyQa7a.s 			page 131
+ARM GAS  /tmp/ccbo04Ik.s 			page 131
 
 
  4034 0208 B6B2     		uxth	r6, r6
@@ -7858,7 +7858,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  4075              	.LBE1127:
  4076              	.LBE1126:
  4077              	.LBE1125:
-ARM GAS  /tmp/ccjyQa7a.s 			page 132
+ARM GAS  /tmp/ccbo04Ik.s 			page 132
 
 
  492:fibre-cpp/legacy_protocol.cpp **** 
@@ -7918,7 +7918,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  4120              	.LBE1146:
  4121              	.LBE1145:
  4122              	.LBE1144:
-ARM GAS  /tmp/ccjyQa7a.s 			page 133
+ARM GAS  /tmp/ccbo04Ik.s 			page 133
 
 
  507:fibre-cpp/legacy_protocol.cpp **** }
@@ -7978,7 +7978,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  4168              		.loc 1 496 95 view .LVU1024
  4169 025a 0236     		adds	r6, r6, #2
  4170              	.LVL375:
-ARM GAS  /tmp/ccjyQa7a.s 			page 134
+ARM GAS  /tmp/ccbo04Ik.s 			page 134
 
 
  497:fibre-cpp/legacy_protocol.cpp **** 
@@ -8038,7 +8038,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  4210 0276 FFF7FEFF 		bl	_ZN5fibre6as_hexIKhEENS_15HexArrayPrinterIT_EENS_16generic_bufptr_tIS3_EE
  4211              	.LVL381:
  4212 027a 1FA9     		add	r1, sp, #124
-ARM GAS  /tmp/ccjyQa7a.s 			page 135
+ARM GAS  /tmp/ccbo04Ik.s 			page 135
 
 
  4213 027c 1EA8     		add	r0, sp, #120
@@ -8098,7 +8098,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  4260              	.LFE4605:
  4261              		.fnend
  4263              		.section	.text._ZN5fibre25LegacyProtocolPacketBased17on_write_finishedENS_11WriteResultE,"ax",%pro
-ARM GAS  /tmp/ccjyQa7a.s 			page 136
+ARM GAS  /tmp/ccbo04Ik.s 			page 136
 
 
  4264              		.align	1
@@ -8158,7 +8158,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  367:fibre-cpp/legacy_protocol.cpp ****         on_read_finished({kStreamOk, rx_end});
  4308              		.loc 1 367 9 view .LVU1056
  367:fibre-cpp/legacy_protocol.cpp ****         on_read_finished({kStreamOk, rx_end});
-ARM GAS  /tmp/ccjyQa7a.s 			page 137
+ARM GAS  /tmp/ccbo04Ik.s 			page 137
 
 
  4309              		.loc 1 367 17 is_stmt 0 view .LVU1057
@@ -8218,7 +8218,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  105:fibre-cpp/include/fibre/callback.hpp ****             return (((TObj*)obj)->*func)(arg...);
  4357              		.loc 8 105 21 view -0
  4358              		.cfi_startproc
-ARM GAS  /tmp/ccjyQa7a.s 			page 138
+ARM GAS  /tmp/ccbo04Ik.s 			page 138
 
 
  4359              		@ args = 0, pretend = 0, frame = 16
@@ -8278,7 +8278,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  105:fibre-cpp/include/fibre/callback.hpp ****             return (((TObj*)obj)->*func)(arg...);
  4410              		.loc 8 105 21 is_stmt 1 view -0
  4411              		.cfi_startproc
-ARM GAS  /tmp/ccjyQa7a.s 			page 139
+ARM GAS  /tmp/ccbo04Ik.s 			page 139
 
 
  4412              		@ args = 0, pretend = 0, frame = 16
@@ -8338,7 +8338,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  4460              		.weak	_ZTIN5fibre17AsyncStreamSourceE
  4461              		.section	.rodata._ZTIN5fibre17AsyncStreamSourceE,"aG",%progbits,_ZTIN5fibre17AsyncStreamSourceE,co
  4462              		.align	2
-ARM GAS  /tmp/ccjyQa7a.s 			page 140
+ARM GAS  /tmp/ccbo04Ik.s 			page 140
 
 
  4465              	_ZTIN5fibre17AsyncStreamSourceE:
@@ -8398,7 +8398,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  4521              	_ZTVN5fibre13PacketWrapperE:
  4522 0000 00000000 		.word	0
  4523 0004 00000000 		.word	_ZTIN5fibre13PacketWrapperE
-ARM GAS  /tmp/ccjyQa7a.s 			page 141
+ARM GAS  /tmp/ccbo04Ik.s 			page 141
 
 
  4524 0008 00000000 		.word	_ZN5fibre13PacketWrapper11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteR
@@ -8458,7 +8458,7 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  4580              		.file 54 "fibre-cpp/protocol.hpp"
  4581              		.file 55 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
  4582              		.file 56 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdint.h"
-ARM GAS  /tmp/ccjyQa7a.s 			page 142
+ARM GAS  /tmp/ccbo04Ik.s 			page 142
 
 
  4583              		.file 57 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/math.h"
@@ -8469,139 +8469,139 @@ ARM GAS  /tmp/ccjyQa7a.s 			page 1
  4588              		.file 62 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/locale.h"
  4589              		.file 63 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/wctype.h"
  4590              		.file 64 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/pstl/execution_defs.h"
-ARM GAS  /tmp/ccjyQa7a.s 			page 143
+ARM GAS  /tmp/ccbo04Ik.s 			page 143
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 legacy_protocol.cpp
-     /tmp/ccjyQa7a.s:20     .text._ZN5fibre13PacketWrapper12cancel_writeEj:0000000000000000 $t
-     /tmp/ccjyQa7a.s:26     .text._ZN5fibre13PacketWrapper12cancel_writeEj:0000000000000000 _ZN5fibre13PacketWrapper12cancel_writeEj
+     /tmp/ccbo04Ik.s:20     .text._ZN5fibre13PacketWrapper12cancel_writeEj:0000000000000000 $t
+     /tmp/ccbo04Ik.s:26     .text._ZN5fibre13PacketWrapper12cancel_writeEj:0000000000000000 _ZN5fibre13PacketWrapper12cancel_writeEj
 .ARM.extab.text._ZN5fibre13PacketWrapper12cancel_writeEj:0000000000000000 $d
 .ARM.exidx.text._ZN5fibre13PacketWrapper12cancel_writeEj:0000000000000000 $d
-     /tmp/ccjyQa7a.s:66     .text._ZN5fibre15PacketUnwrapper11cancel_readEj:0000000000000000 $t
-     /tmp/ccjyQa7a.s:72     .text._ZN5fibre15PacketUnwrapper11cancel_readEj:0000000000000000 _ZN5fibre15PacketUnwrapper11cancel_readEj
+     /tmp/ccbo04Ik.s:66     .text._ZN5fibre15PacketUnwrapper11cancel_readEj:0000000000000000 $t
+     /tmp/ccbo04Ik.s:72     .text._ZN5fibre15PacketUnwrapper11cancel_readEj:0000000000000000 _ZN5fibre15PacketUnwrapper11cancel_readEj
 .ARM.extab.text._ZN5fibre15PacketUnwrapper11cancel_readEj:0000000000000000 $d
 .ARM.exidx.text._ZN5fibre15PacketUnwrapper11cancel_readEj:0000000000000000 $d
-     /tmp/ccjyQa7a.s:111    .text._Z8calc_crcIhLj55EET_S0_h:0000000000000000 $t
-     /tmp/ccjyQa7a.s:116    .text._Z8calc_crcIhLj55EET_S0_h:0000000000000000 _Z8calc_crcIhLj55EET_S0_h
+     /tmp/ccbo04Ik.s:111    .text._Z8calc_crcIhLj55EET_S0_h:0000000000000000 $t
+     /tmp/ccbo04Ik.s:116    .text._Z8calc_crcIhLj55EET_S0_h:0000000000000000 _Z8calc_crcIhLj55EET_S0_h
 .ARM.exidx.text._Z8calc_crcIhLj55EET_S0_h:0000000000000000 $d
-     /tmp/ccjyQa7a.s:175    .text._Z8calc_crcIhLj55EET_S0_PKhj:0000000000000000 $t
-     /tmp/ccjyQa7a.s:180    .text._Z8calc_crcIhLj55EET_S0_PKhj:0000000000000000 _Z8calc_crcIhLj55EET_S0_PKhj
+     /tmp/ccbo04Ik.s:175    .text._Z8calc_crcIhLj55EET_S0_PKhj:0000000000000000 $t
+     /tmp/ccbo04Ik.s:180    .text._Z8calc_crcIhLj55EET_S0_PKhj:0000000000000000 _Z8calc_crcIhLj55EET_S0_PKhj
 .ARM.exidx.text._Z8calc_crcIhLj55EET_S0_PKhj:0000000000000000 $d
-     /tmp/ccjyQa7a.s:225    .text._Z9calc_crc8ILj55EEhhPKhj:0000000000000000 $t
-     /tmp/ccjyQa7a.s:230    .text._Z9calc_crc8ILj55EEhhPKhj:0000000000000000 _Z9calc_crc8ILj55EEhhPKhj
+     /tmp/ccbo04Ik.s:225    .text._Z9calc_crc8ILj55EEhhPKhj:0000000000000000 $t
+     /tmp/ccbo04Ik.s:230    .text._Z9calc_crc8ILj55EEhhPKhj:0000000000000000 _Z9calc_crc8ILj55EEhhPKhj
 .ARM.exidx.text._Z9calc_crc8ILj55EEhhPKhj:0000000000000000 $d
-     /tmp/ccjyQa7a.s:255    .text._Z8calc_crcItLj15717EET_S0_h:0000000000000000 $t
-     /tmp/ccjyQa7a.s:260    .text._Z8calc_crcItLj15717EET_S0_h:0000000000000000 _Z8calc_crcItLj15717EET_S0_h
+     /tmp/ccbo04Ik.s:255    .text._Z8calc_crcItLj15717EET_S0_h:0000000000000000 $t
+     /tmp/ccbo04Ik.s:260    .text._Z8calc_crcItLj15717EET_S0_h:0000000000000000 _Z8calc_crcItLj15717EET_S0_h
 .ARM.exidx.text._Z8calc_crcItLj15717EET_S0_h:0000000000000000 $d
-     /tmp/ccjyQa7a.s:319    .text._Z8calc_crcItLj15717EET_S0_PKhj:0000000000000000 $t
-     /tmp/ccjyQa7a.s:324    .text._Z8calc_crcItLj15717EET_S0_PKhj:0000000000000000 _Z8calc_crcItLj15717EET_S0_PKhj
+     /tmp/ccbo04Ik.s:319    .text._Z8calc_crcItLj15717EET_S0_PKhj:0000000000000000 $t
+     /tmp/ccbo04Ik.s:324    .text._Z8calc_crcItLj15717EET_S0_PKhj:0000000000000000 _Z8calc_crcItLj15717EET_S0_PKhj
 .ARM.exidx.text._Z8calc_crcItLj15717EET_S0_PKhj:0000000000000000 $d
-     /tmp/ccjyQa7a.s:369    .text._Z10calc_crc16ILj15717EEttPKhj:0000000000000000 $t
-     /tmp/ccjyQa7a.s:374    .text._Z10calc_crc16ILj15717EEttPKhj:0000000000000000 _Z10calc_crc16ILj15717EEttPKhj
+     /tmp/ccbo04Ik.s:369    .text._Z10calc_crc16ILj15717EEttPKhj:0000000000000000 $t
+     /tmp/ccbo04Ik.s:374    .text._Z10calc_crc16ILj15717EEttPKhj:0000000000000000 _Z10calc_crc16ILj15717EEttPKhj
 .ARM.exidx.text._Z10calc_crc16ILj15717EEttPKhj:0000000000000000 $d
-     /tmp/ccjyQa7a.s:399    .text._ZN5fibre17endpoint0_handlerEPNS_16generic_bufptr_tIKhEEPNS0_IhEE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:405    .text._ZN5fibre17endpoint0_handlerEPNS_16generic_bufptr_tIKhEEPNS0_IhEE:0000000000000000 _ZN5fibre17endpoint0_handlerEPNS_16generic_bufptr_tIKhEEPNS0_IhEE
-     /tmp/ccjyQa7a.s:860    .text._ZN5fibre17endpoint0_handlerEPNS_16generic_bufptr_tIKhEEPNS0_IhEE:00000000000000cc $d
+     /tmp/ccbo04Ik.s:399    .text._ZN5fibre17endpoint0_handlerEPNS_16generic_bufptr_tIKhEEPNS0_IhEE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:405    .text._ZN5fibre17endpoint0_handlerEPNS_16generic_bufptr_tIKhEEPNS0_IhEE:0000000000000000 _ZN5fibre17endpoint0_handlerEPNS_16generic_bufptr_tIKhEEPNS0_IhEE
+     /tmp/ccbo04Ik.s:860    .text._ZN5fibre17endpoint0_handlerEPNS_16generic_bufptr_tIKhEEPNS0_IhEE:00000000000000cc $d
 .ARM.exidx.text._ZN5fibre17endpoint0_handlerEPNS_16generic_bufptr_tIKhEEPNS0_IhEE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:875    .text._ZN5fibre25LegacyProtocolPacketBased15on_rx_tx_closedENS_12StreamStatusE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:881    .text._ZN5fibre25LegacyProtocolPacketBased15on_rx_tx_closedENS_12StreamStatusE:0000000000000000 _ZN5fibre25LegacyProtocolPacketBased15on_rx_tx_closedENS_12StreamStatusE
+     /tmp/ccbo04Ik.s:875    .text._ZN5fibre25LegacyProtocolPacketBased15on_rx_tx_closedENS_12StreamStatusE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:881    .text._ZN5fibre25LegacyProtocolPacketBased15on_rx_tx_closedENS_12StreamStatusE:0000000000000000 _ZN5fibre25LegacyProtocolPacketBased15on_rx_tx_closedENS_12StreamStatusE
 .ARM.exidx.text._ZN5fibre25LegacyProtocolPacketBased15on_rx_tx_closedENS_12StreamStatusE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:948    .text._ZN5fibre25LegacyProtocolPacketBased12on_rx_closedENS_12StreamStatusE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:954    .text._ZN5fibre25LegacyProtocolPacketBased12on_rx_closedENS_12StreamStatusE:0000000000000000 _ZN5fibre25LegacyProtocolPacketBased12on_rx_closedENS_12StreamStatusE
+     /tmp/ccbo04Ik.s:948    .text._ZN5fibre25LegacyProtocolPacketBased12on_rx_closedENS_12StreamStatusE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:954    .text._ZN5fibre25LegacyProtocolPacketBased12on_rx_closedENS_12StreamStatusE:0000000000000000 _ZN5fibre25LegacyProtocolPacketBased12on_rx_closedENS_12StreamStatusE
 .ARM.extab.text._ZN5fibre25LegacyProtocolPacketBased12on_rx_closedENS_12StreamStatusE:0000000000000000 $d
 .ARM.exidx.text._ZN5fibre25LegacyProtocolPacketBased12on_rx_closedENS_12StreamStatusE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:1005   .text._ZN5fibre13make_callbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:1011   .text._ZN5fibre13make_callbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 _ZN5fibre13make_callbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE
-     /tmp/ccjyQa7a.s:1043   .text._ZN5fibre13make_callbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000008 $d
-     /tmp/ccjyQa7a.s:1630   .text._ZZN5fibre14MemberCallbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 _ZZN5fibre14MemberCallbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_
+     /tmp/ccbo04Ik.s:1005   .text._ZN5fibre13make_callbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:1011   .text._ZN5fibre13make_callbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 _ZN5fibre13make_callbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE
+     /tmp/ccbo04Ik.s:1043   .text._ZN5fibre13make_callbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000008 $d
+     /tmp/ccbo04Ik.s:1630   .text._ZZN5fibre14MemberCallbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 _ZZN5fibre14MemberCallbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_
 .ARM.exidx.text._ZN5fibre13make_callbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:1050   .text._ZN5fibre13PacketWrapper11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:1056   .text._ZN5fibre13PacketWrapper11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 _ZN5fibre13PacketWrapper11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE
+     /tmp/ccbo04Ik.s:1050   .text._ZN5fibre13PacketWrapper11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:1056   .text._ZN5fibre13PacketWrapper11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 _ZN5fibre13PacketWrapper11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE
 .ARM.exidx.text._ZN5fibre13PacketWrapper11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:1279   .text._ZN5fibre13PacketWrapper8completeENS_11WriteResultE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:1285   .text._ZN5fibre13PacketWrapper8completeENS_11WriteResultE:0000000000000000 _ZN5fibre13PacketWrapper8completeENS_11WriteResultE
+     /tmp/ccbo04Ik.s:1279   .text._ZN5fibre13PacketWrapper8completeENS_11WriteResultE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:1285   .text._ZN5fibre13PacketWrapper8completeENS_11WriteResultE:0000000000000000 _ZN5fibre13PacketWrapper8completeENS_11WriteResultE
 .ARM.exidx.text._ZN5fibre13PacketWrapper8completeENS_11WriteResultE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:1624   .text._ZZN5fibre14MemberCallbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 $t
+     /tmp/ccbo04Ik.s:1624   .text._ZZN5fibre14MemberCallbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 $t
 .ARM.exidx.text._ZZN5fibre14MemberCallbackIMNS_13PacketWrapperEFvNS_11WriteResultEEXadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 $d
-     /tmp/ccjyQa7a.s:1677   .text._ZN5fibre13make_callbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:1683   .text._ZN5fibre13make_callbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 _ZN5fibre13make_callbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE
-     /tmp/ccjyQa7a.s:1715   .text._ZN5fibre13make_callbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000008 $d
-     /tmp/ccjyQa7a.s:2518   .text._ZZN5fibre14MemberCallbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 _ZZN5fibre14MemberCallbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_
+     /tmp/ccbo04Ik.s:1677   .text._ZN5fibre13make_callbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:1683   .text._ZN5fibre13make_callbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 _ZN5fibre13make_callbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE
+     /tmp/ccbo04Ik.s:1715   .text._ZN5fibre13make_callbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000008 $d
+     /tmp/ccbo04Ik.s:2518   .text._ZZN5fibre14MemberCallbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 _ZZN5fibre14MemberCallbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_
 .ARM.exidx.text._ZN5fibre13make_callbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $d
-ARM GAS  /tmp/ccjyQa7a.s 			page 144
+ARM GAS  /tmp/ccbo04Ik.s 			page 144
 
 
-     /tmp/ccjyQa7a.s:1722   .text._ZN5fibre15PacketUnwrapper10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10ReadResultEEEE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:1728   .text._ZN5fibre15PacketUnwrapper10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10ReadResultEEEE:0000000000000000 _ZN5fibre15PacketUnwrapper10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10ReadResultEEEE
+     /tmp/ccbo04Ik.s:1722   .text._ZN5fibre15PacketUnwrapper10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10ReadResultEEEE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:1728   .text._ZN5fibre15PacketUnwrapper10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10ReadResultEEEE:0000000000000000 _ZN5fibre15PacketUnwrapper10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10ReadResultEEEE
 .ARM.exidx.text._ZN5fibre15PacketUnwrapper10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10ReadResultEEEE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:1866   .text._ZN5fibre15PacketUnwrapper8completeENS_10ReadResultE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:1872   .text._ZN5fibre15PacketUnwrapper8completeENS_10ReadResultE:0000000000000000 _ZN5fibre15PacketUnwrapper8completeENS_10ReadResultE
+     /tmp/ccbo04Ik.s:1866   .text._ZN5fibre15PacketUnwrapper8completeENS_10ReadResultE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:1872   .text._ZN5fibre15PacketUnwrapper8completeENS_10ReadResultE:0000000000000000 _ZN5fibre15PacketUnwrapper8completeENS_10ReadResultE
 .ARM.exidx.text._ZN5fibre15PacketUnwrapper8completeENS_10ReadResultE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:2512   .text._ZZN5fibre14MemberCallbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 $t
+     /tmp/ccbo04Ik.s:2512   .text._ZZN5fibre14MemberCallbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 $t
 .ARM.exidx.text._ZZN5fibre14MemberCallbackIMNS_15PacketUnwrapperEFvNS_10ReadResultEEXadL_ZNS1_8completeES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 $d
-     /tmp/ccjyQa7a.s:2565   .text._ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:2571   .text._ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 _ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE
-     /tmp/ccjyQa7a.s:2603   .text._ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000008 $d
-     /tmp/ccjyQa7a.s:4407   .text._ZZN5fibre14MemberCallbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 _ZZN5fibre14MemberCallbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_
+     /tmp/ccbo04Ik.s:2565   .text._ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:2571   .text._ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 _ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE
+     /tmp/ccbo04Ik.s:2603   .text._ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000008 $d
+     /tmp/ccbo04Ik.s:4407   .text._ZZN5fibre14MemberCallbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 _ZZN5fibre14MemberCallbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_
 .ARM.exidx.text._ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:2610   .text._ZN5fibre25LegacyProtocolPacketBased5startENS_8CallbackIvJPS0_NS_12StreamStatusEEEE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:2616   .text._ZN5fibre25LegacyProtocolPacketBased5startENS_8CallbackIvJPS0_NS_12StreamStatusEEEE:0000000000000000 _ZN5fibre25LegacyProtocolPacketBased5startENS_8CallbackIvJPS0_NS_12StreamStatusEEEE
+     /tmp/ccbo04Ik.s:2610   .text._ZN5fibre25LegacyProtocolPacketBased5startENS_8CallbackIvJPS0_NS_12StreamStatusEEEE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:2616   .text._ZN5fibre25LegacyProtocolPacketBased5startENS_8CallbackIvJPS0_NS_12StreamStatusEEEE:0000000000000000 _ZN5fibre25LegacyProtocolPacketBased5startENS_8CallbackIvJPS0_NS_12StreamStatusEEEE
 .ARM.exidx.text._ZN5fibre25LegacyProtocolPacketBased5startENS_8CallbackIvJPS0_NS_12StreamStatusEEEE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:2698   .rodata._ZN5fibre6as_hexItEENS_10HexPrinterIT_EES2_b.str1.4:0000000000000000 $d
-     /tmp/ccjyQa7a.s:2702   .text._ZN5fibre6as_hexItEENS_10HexPrinterIT_EES2_b:0000000000000000 $t
-     /tmp/ccjyQa7a.s:2708   .text._ZN5fibre6as_hexItEENS_10HexPrinterIT_EES2_b:0000000000000000 _ZN5fibre6as_hexItEENS_10HexPrinterIT_EES2_b
-     /tmp/ccjyQa7a.s:2823   .text._ZN5fibre6as_hexItEENS_10HexPrinterIT_EES2_b:0000000000000060 $d
+     /tmp/ccbo04Ik.s:2698   .rodata._ZN5fibre6as_hexItEENS_10HexPrinterIT_EES2_b.str1.4:0000000000000000 $d
+     /tmp/ccbo04Ik.s:2702   .text._ZN5fibre6as_hexItEENS_10HexPrinterIT_EES2_b:0000000000000000 $t
+     /tmp/ccbo04Ik.s:2708   .text._ZN5fibre6as_hexItEENS_10HexPrinterIT_EES2_b:0000000000000000 _ZN5fibre6as_hexItEENS_10HexPrinterIT_EES2_b
+     /tmp/ccbo04Ik.s:2823   .text._ZN5fibre6as_hexItEENS_10HexPrinterIT_EES2_b:0000000000000060 $d
 .ARM.exidx.text._ZN5fibre6as_hexItEENS_10HexPrinterIT_EES2_b:0000000000000000 $d
-     /tmp/ccjyQa7a.s:2830   .text._ZN5fibre6as_hexIKhEENS_15HexArrayPrinterIT_EENS_16generic_bufptr_tIS3_EE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:2836   .text._ZN5fibre6as_hexIKhEENS_15HexArrayPrinterIT_EENS_16generic_bufptr_tIS3_EE:0000000000000000 _ZN5fibre6as_hexIKhEENS_15HexArrayPrinterIT_EENS_16generic_bufptr_tIS3_EE
+     /tmp/ccbo04Ik.s:2830   .text._ZN5fibre6as_hexIKhEENS_15HexArrayPrinterIT_EENS_16generic_bufptr_tIS3_EE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:2836   .text._ZN5fibre6as_hexIKhEENS_15HexArrayPrinterIT_EENS_16generic_bufptr_tIS3_EE:0000000000000000 _ZN5fibre6as_hexIKhEENS_15HexArrayPrinterIT_EENS_16generic_bufptr_tIS3_EE
 .ARM.exidx.text._ZN5fibre6as_hexIKhEENS_15HexArrayPrinterIT_EENS_16generic_bufptr_tIS3_EE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:2887   .text._ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:2893   .text._ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 _ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE
-     /tmp/ccjyQa7a.s:2925   .text._ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000008 $d
-     /tmp/ccjyQa7a.s:4354   .text._ZZN5fibre14MemberCallbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 _ZZN5fibre14MemberCallbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_
+     /tmp/ccbo04Ik.s:2887   .text._ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:2893   .text._ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 _ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE
+     /tmp/ccbo04Ik.s:2925   .text._ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000008 $d
+     /tmp/ccbo04Ik.s:4354   .text._ZZN5fibre14MemberCallbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 _ZZN5fibre14MemberCallbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_
 .ARM.exidx.text._ZN5fibre13make_callbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EENS_15function_traitsIvS1_JS2_EEENS_14MemberCallbackIS4_XadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:2932   .text._ZN5fibre6as_hexIhEENS_10HexPrinterIT_EES2_b:0000000000000000 $t
-     /tmp/ccjyQa7a.s:2938   .text._ZN5fibre6as_hexIhEENS_10HexPrinterIT_EES2_b:0000000000000000 _ZN5fibre6as_hexIhEENS_10HexPrinterIT_EES2_b
-     /tmp/ccjyQa7a.s:3052   .text._ZN5fibre6as_hexIhEENS_10HexPrinterIT_EES2_b:0000000000000060 $d
+     /tmp/ccbo04Ik.s:2932   .text._ZN5fibre6as_hexIhEENS_10HexPrinterIT_EES2_b:0000000000000000 $t
+     /tmp/ccbo04Ik.s:2938   .text._ZN5fibre6as_hexIhEENS_10HexPrinterIT_EES2_b:0000000000000000 _ZN5fibre6as_hexIhEENS_10HexPrinterIT_EES2_b
+     /tmp/ccbo04Ik.s:3052   .text._ZN5fibre6as_hexIhEENS_10HexPrinterIT_EES2_b:0000000000000060 $d
 .ARM.exidx.text._ZN5fibre6as_hexIhEENS_10HexPrinterIT_EES2_b:0000000000000000 $d
-     /tmp/ccjyQa7a.s:3059   .text._ZN5fibrelsI10NullStreamKhEERT_S4_RKNS_15HexArrayPrinterIT0_EE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:3065   .text._ZN5fibrelsI10NullStreamKhEERT_S4_RKNS_15HexArrayPrinterIT0_EE:0000000000000000 _ZN5fibrelsI10NullStreamKhEERT_S4_RKNS_15HexArrayPrinterIT0_EE
+     /tmp/ccbo04Ik.s:3059   .text._ZN5fibrelsI10NullStreamKhEERT_S4_RKNS_15HexArrayPrinterIT0_EE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:3065   .text._ZN5fibrelsI10NullStreamKhEERT_S4_RKNS_15HexArrayPrinterIT0_EE:0000000000000000 _ZN5fibrelsI10NullStreamKhEERT_S4_RKNS_15HexArrayPrinterIT0_EE
 .ARM.exidx.text._ZN5fibrelsI10NullStreamKhEERT_S4_RKNS_15HexArrayPrinterIT0_EE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:3140   .text._ZN5fibre25LegacyProtocolPacketBased16on_read_finishedENS_10ReadResultE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:3146   .text._ZN5fibre25LegacyProtocolPacketBased16on_read_finishedENS_10ReadResultE:0000000000000000 _ZN5fibre25LegacyProtocolPacketBased16on_read_finishedENS_10ReadResultE
-     /tmp/ccjyQa7a.s:4254   .text._ZN5fibre25LegacyProtocolPacketBased16on_read_finishedENS_10ReadResultE:00000000000002ac $d
+     /tmp/ccbo04Ik.s:3140   .text._ZN5fibre25LegacyProtocolPacketBased16on_read_finishedENS_10ReadResultE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:3146   .text._ZN5fibre25LegacyProtocolPacketBased16on_read_finishedENS_10ReadResultE:0000000000000000 _ZN5fibre25LegacyProtocolPacketBased16on_read_finishedENS_10ReadResultE
+     /tmp/ccbo04Ik.s:4254   .text._ZN5fibre25LegacyProtocolPacketBased16on_read_finishedENS_10ReadResultE:00000000000002ac $d
 .ARM.exidx.text._ZN5fibre25LegacyProtocolPacketBased16on_read_finishedENS_10ReadResultE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:4264   .text._ZN5fibre25LegacyProtocolPacketBased17on_write_finishedENS_11WriteResultE:0000000000000000 $t
-     /tmp/ccjyQa7a.s:4270   .text._ZN5fibre25LegacyProtocolPacketBased17on_write_finishedENS_11WriteResultE:0000000000000000 _ZN5fibre25LegacyProtocolPacketBased17on_write_finishedENS_11WriteResultE
+     /tmp/ccbo04Ik.s:4264   .text._ZN5fibre25LegacyProtocolPacketBased17on_write_finishedENS_11WriteResultE:0000000000000000 $t
+     /tmp/ccbo04Ik.s:4270   .text._ZN5fibre25LegacyProtocolPacketBased17on_write_finishedENS_11WriteResultE:0000000000000000 _ZN5fibre25LegacyProtocolPacketBased17on_write_finishedENS_11WriteResultE
 .ARM.exidx.text._ZN5fibre25LegacyProtocolPacketBased17on_write_finishedENS_11WriteResultE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:4348   .text._ZZN5fibre14MemberCallbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 $t
+     /tmp/ccbo04Ik.s:4348   .text._ZZN5fibre14MemberCallbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 $t
 .ARM.exidx.text._ZZN5fibre14MemberCallbackIMNS_25LegacyProtocolPacketBasedEFvNS_11WriteResultEEXadL_ZNS1_17on_write_finishedES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 $d
-     /tmp/ccjyQa7a.s:4401   .text._ZZN5fibre14MemberCallbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 $t
+     /tmp/ccbo04Ik.s:4401   .text._ZZN5fibre14MemberCallbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 $t
 .ARM.exidx.text._ZZN5fibre14MemberCallbackIMNS_25LegacyProtocolPacketBasedEFvNS_10ReadResultEEXadL_ZNS1_16on_read_finishedES2_EES1_vSt5tupleIJS2_EEE4withEPS1_ENUlPvS2_E_4_FUNES9_S2_:0000000000000000 $d
-     /tmp/ccjyQa7a.s:4458   .rodata._ZTSN5fibre17AsyncStreamSourceE:0000000000000000 _ZTSN5fibre17AsyncStreamSourceE
-     /tmp/ccjyQa7a.s:4455   .rodata._ZTSN5fibre17AsyncStreamSourceE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:4465   .rodata._ZTIN5fibre17AsyncStreamSourceE:0000000000000000 _ZTIN5fibre17AsyncStreamSourceE
-     /tmp/ccjyQa7a.s:4462   .rodata._ZTIN5fibre17AsyncStreamSourceE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:4473   .rodata._ZTSN5fibre15AsyncStreamSinkE:0000000000000000 _ZTSN5fibre15AsyncStreamSinkE
-     /tmp/ccjyQa7a.s:4470   .rodata._ZTSN5fibre15AsyncStreamSinkE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:4480   .rodata._ZTIN5fibre15AsyncStreamSinkE:0000000000000000 _ZTIN5fibre15AsyncStreamSinkE
-     /tmp/ccjyQa7a.s:4477   .rodata._ZTIN5fibre15AsyncStreamSinkE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:4509   .rodata._ZTSN5fibre13PacketWrapperE:0000000000000000 _ZTSN5fibre13PacketWrapperE
-     /tmp/ccjyQa7a.s:4493   .rodata._ZTIN5fibre13PacketWrapperE:0000000000000000 _ZTIN5fibre13PacketWrapperE
-ARM GAS  /tmp/ccjyQa7a.s 			page 145
+     /tmp/ccbo04Ik.s:4458   .rodata._ZTSN5fibre17AsyncStreamSourceE:0000000000000000 _ZTSN5fibre17AsyncStreamSourceE
+     /tmp/ccbo04Ik.s:4455   .rodata._ZTSN5fibre17AsyncStreamSourceE:0000000000000000 $d
+     /tmp/ccbo04Ik.s:4465   .rodata._ZTIN5fibre17AsyncStreamSourceE:0000000000000000 _ZTIN5fibre17AsyncStreamSourceE
+     /tmp/ccbo04Ik.s:4462   .rodata._ZTIN5fibre17AsyncStreamSourceE:0000000000000000 $d
+     /tmp/ccbo04Ik.s:4473   .rodata._ZTSN5fibre15AsyncStreamSinkE:0000000000000000 _ZTSN5fibre15AsyncStreamSinkE
+     /tmp/ccbo04Ik.s:4470   .rodata._ZTSN5fibre15AsyncStreamSinkE:0000000000000000 $d
+     /tmp/ccbo04Ik.s:4480   .rodata._ZTIN5fibre15AsyncStreamSinkE:0000000000000000 _ZTIN5fibre15AsyncStreamSinkE
+     /tmp/ccbo04Ik.s:4477   .rodata._ZTIN5fibre15AsyncStreamSinkE:0000000000000000 $d
+     /tmp/ccbo04Ik.s:4509   .rodata._ZTSN5fibre13PacketWrapperE:0000000000000000 _ZTSN5fibre13PacketWrapperE
+     /tmp/ccbo04Ik.s:4493   .rodata._ZTIN5fibre13PacketWrapperE:0000000000000000 _ZTIN5fibre13PacketWrapperE
+ARM GAS  /tmp/ccbo04Ik.s 			page 145
 
 
-     /tmp/ccjyQa7a.s:4515   .rodata._ZTSN5fibre15PacketUnwrapperE:0000000000000000 _ZTSN5fibre15PacketUnwrapperE
-     /tmp/ccjyQa7a.s:4501   .rodata._ZTIN5fibre15PacketUnwrapperE:0000000000000000 _ZTIN5fibre15PacketUnwrapperE
-     /tmp/ccjyQa7a.s:4521   .rodata._ZTVN5fibre13PacketWrapperE:0000000000000000 _ZTVN5fibre13PacketWrapperE
-     /tmp/ccjyQa7a.s:4530   .rodata._ZTVN5fibre15PacketUnwrapperE:0000000000000000 _ZTVN5fibre15PacketUnwrapperE
-     /tmp/ccjyQa7a.s:4490   .rodata._ZTIN5fibre13PacketWrapperE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:4498   .rodata._ZTIN5fibre15PacketUnwrapperE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:4506   .rodata._ZTSN5fibre13PacketWrapperE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:4512   .rodata._ZTSN5fibre15PacketUnwrapperE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:4518   .rodata._ZTVN5fibre13PacketWrapperE:0000000000000000 $d
-     /tmp/ccjyQa7a.s:4527   .rodata._ZTVN5fibre15PacketUnwrapperE:0000000000000000 $d
+     /tmp/ccbo04Ik.s:4515   .rodata._ZTSN5fibre15PacketUnwrapperE:0000000000000000 _ZTSN5fibre15PacketUnwrapperE
+     /tmp/ccbo04Ik.s:4501   .rodata._ZTIN5fibre15PacketUnwrapperE:0000000000000000 _ZTIN5fibre15PacketUnwrapperE
+     /tmp/ccbo04Ik.s:4521   .rodata._ZTVN5fibre13PacketWrapperE:0000000000000000 _ZTVN5fibre13PacketWrapperE
+     /tmp/ccbo04Ik.s:4530   .rodata._ZTVN5fibre15PacketUnwrapperE:0000000000000000 _ZTVN5fibre15PacketUnwrapperE
+     /tmp/ccbo04Ik.s:4490   .rodata._ZTIN5fibre13PacketWrapperE:0000000000000000 $d
+     /tmp/ccbo04Ik.s:4498   .rodata._ZTIN5fibre15PacketUnwrapperE:0000000000000000 $d
+     /tmp/ccbo04Ik.s:4506   .rodata._ZTSN5fibre13PacketWrapperE:0000000000000000 $d
+     /tmp/ccbo04Ik.s:4512   .rodata._ZTSN5fibre15PacketUnwrapperE:0000000000000000 $d
+     /tmp/ccbo04Ik.s:4518   .rodata._ZTVN5fibre13PacketWrapperE:0000000000000000 $d
+     /tmp/ccbo04Ik.s:4527   .rodata._ZTVN5fibre15PacketUnwrapperE:0000000000000000 $d
 
 UNDEFINED SYMBOLS
 __aeabi_unwind_cpp_pr1

@@ -10,8 +10,9 @@
 #define MEASURE_MAX_LENGTH
 
 inline uint16_t sample_TIM13() {
+    //!两者的比值表示定时器每计数一次所对应的时钟周期数量
     constexpr uint16_t clocks_per_cnt = (uint16_t)((float)TIM_1_8_CLOCK_HZ / (float)TIM_APB1_CLOCK_HZ);
-    return clocks_per_cnt * TIM13->CNT;  // TODO: Use a hw_config
+    return clocks_per_cnt * TIM13->CNT;  // TODO: Use a hw_config  将计数值乘以每个计数对应的时钟周期数，得到实际的时钟周期值
 }
 
 struct TaskTimer {

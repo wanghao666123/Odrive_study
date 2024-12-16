@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccSTr1Mh.s 			page 1
+ARM GAS  /tmp/cc4174RZ.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
   28:Drivers/STM32/stm32_spi_arbiter.cpp **** 
   29:Drivers/STM32/stm32_spi_arbiter.cpp **** bool Stm32SpiArbiter::start() {
   30:Drivers/STM32/stm32_spi_arbiter.cpp ****     if (!task_list_) {
-ARM GAS  /tmp/ccSTr1Mh.s 			page 2
+ARM GAS  /tmp/cc4174RZ.s 			page 2
 
 
   31:Drivers/STM32/stm32_spi_arbiter.cpp ****         return false;
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
   85:Drivers/STM32/stm32_spi_arbiter.cpp **** // TODO: this currently only works when called in a CMSIS thread.
   86:Drivers/STM32/stm32_spi_arbiter.cpp **** bool Stm32SpiArbiter::transfer(SPI_InitTypeDef config, Stm32Gpio ncs_gpio, const uint8_t* tx_buf, u
   87:Drivers/STM32/stm32_spi_arbiter.cpp ****     volatile uint8_t result = 0xff;
-ARM GAS  /tmp/ccSTr1Mh.s 			page 3
+ARM GAS  /tmp/cc4174RZ.s 			page 3
 
 
   88:Drivers/STM32/stm32_spi_arbiter.cpp **** 
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
   76              		.loc 1 7 69 is_stmt 1 view -0
   77              		.cfi_startproc
   78              		@ args = 0, pretend = 0, frame = 0
-ARM GAS  /tmp/ccSTr1Mh.s 			page 4
+ARM GAS  /tmp/cc4174RZ.s 			page 4
 
 
   79              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
   18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
  119              		.loc 1 18 7 view .LVU22
  120 0022 7047     		bx	lr
-ARM GAS  /tmp/ccSTr1Mh.s 			page 5
+ARM GAS  /tmp/cc4174RZ.s 			page 5
 
 
  121              	.LVL9:
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
   18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
  161              		.loc 1 18 7 view .LVU37
  162 0046 7047     		bx	lr
-ARM GAS  /tmp/ccSTr1Mh.s 			page 6
+ARM GAS  /tmp/cc4174RZ.s 			page 6
 
 
  163              	.LVL15:
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
   18:Drivers/STM32/stm32_spi_arbiter.cpp **** }
  203              		.loc 1 18 7 view .LVU52
  204 006a 7047     		bx	lr
-ARM GAS  /tmp/ccSTr1Mh.s 			page 7
+ARM GAS  /tmp/cc4174RZ.s 			page 7
 
 
  205              	.LVL21:
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  248              		.syntax unified
  249              		.thumb
  250              		.thumb_func
-ARM GAS  /tmp/ccSTr1Mh.s 			page 8
+ARM GAS  /tmp/cc4174RZ.s 			page 8
 
 
  252              	_ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE:
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  301              		.loc 1 26 5 view .LVU71
   26:Drivers/STM32/stm32_spi_arbiter.cpp **** }
  302              		.loc 1 26 21 is_stmt 0 view .LVU72
-ARM GAS  /tmp/ccSTr1Mh.s 			page 9
+ARM GAS  /tmp/cc4174RZ.s 			page 9
 
 
  303 0000 0023     		movs	r3, #0
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  349 000c 311D     		adds	r1, r6, #4
  350 000e 2846     		mov	r0, r5
  351              	.LVL33:
-ARM GAS  /tmp/ccSTr1Mh.s 			page 10
+ARM GAS  /tmp/cc4174RZ.s 			page 10
 
 
   35:Drivers/STM32/stm32_spi_arbiter.cpp ****         HAL_SPI_DeInit(hspi_);
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  376 0022 FFF7FEFF 		bl	HAL_GPIO_WritePin
  377              	.LVL36:
  378              	.L33:
-ARM GAS  /tmp/ccSTr1Mh.s 			page 11
+ARM GAS  /tmp/cc4174RZ.s 			page 11
 
 
  379              		.loc 2 26 30 view .LVU93
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
   37:Drivers/STM32/stm32_spi_arbiter.cpp ****         HAL_SPI_Init(hspi_);
  419              		.loc 1 37 9 is_stmt 1 view .LVU108
  420 004e 2368     		ldr	r3, [r4]
-ARM GAS  /tmp/ccSTr1Mh.s 			page 12
+ARM GAS  /tmp/cc4174RZ.s 			page 12
 
 
   37:Drivers/STM32/stm32_spi_arbiter.cpp ****         HAL_SPI_Init(hspi_);
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  463              	.L36:
   50:Drivers/STM32/stm32_spi_arbiter.cpp ****         status = HAL_SPI_Transmit_DMA(hspi_, (uint8_t*)task.tx_buf, task.length);
  464              		.loc 1 50 12 is_stmt 1 view .LVU121
-ARM GAS  /tmp/ccSTr1Mh.s 			page 13
+ARM GAS  /tmp/cc4174RZ.s 			page 13
 
 
  465 0094 21B1     		cbz	r1, .L37
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
   25:Drivers/STM32/stm32_gpio.hpp ****             HAL_GPIO_WritePin(port_, pin_mask_, state ? GPIO_PIN_SET : GPIO_PIN_RESET);
  505              		.loc 2 25 9 view .LVU136
  506 00b2 18B1     		cbz	r0, .L38
-ARM GAS  /tmp/ccSTr1Mh.s 			page 14
+ARM GAS  /tmp/cc4174RZ.s 			page 14
 
 
  507              		.loc 2 26 13 is_stmt 1 view .LVU137
@@ -838,7 +838,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  556              		.cfi_offset 4, -12
  557              		.cfi_offset 5, -8
  558              		.cfi_offset 14, -4
-ARM GAS  /tmp/ccSTr1Mh.s 			page 15
+ARM GAS  /tmp/cc4174RZ.s 			page 15
 
 
  559              		.pad #12
@@ -898,7 +898,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
   32:Drivers/STM32/stm32_system.h ****     uint32_t primask = __get_PRIMASK();
   33:Drivers/STM32/stm32_system.h ****     __disable_irq();
   34:Drivers/STM32/stm32_system.h ****     return primask;
-ARM GAS  /tmp/ccSTr1Mh.s 			page 16
+ARM GAS  /tmp/cc4174RZ.s 			page 16
 
 
   35:Drivers/STM32/stm32_system.h **** }
@@ -958,7 +958,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
   20:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
   21:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * See the License for the specific language governing permissions and
   22:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  * limitations under the License.
-ARM GAS  /tmp/ccSTr1Mh.s 			page 17
+ARM GAS  /tmp/cc4174RZ.s 			page 17
 
 
   23:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
   77:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #endif
   78:ThirdParty/CMSIS/Include/cmsis_gcc.h **** #ifndef   __UNALIGNED_UINT16_WRITE
   79:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic push
-ARM GAS  /tmp/ccSTr1Mh.s 			page 18
+ARM GAS  /tmp/cc4174RZ.s 			page 18
 
 
   80:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   #pragma GCC diagnostic ignored "-Wpacked"
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  134:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
  135:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
  136:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \brief   Disable IRQ Interrupts
-ARM GAS  /tmp/ccSTr1Mh.s 			page 19
+ARM GAS  /tmp/cc4174RZ.s 			page 19
 
 
  137:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \details Disables IRQ interrupts by setting the I-bit in the CPSR.
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  191:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   \param [in]    control  Control Register value to set
  192:ThirdParty/CMSIS/Include/cmsis_gcc.h ****  */
  193:ThirdParty/CMSIS/Include/cmsis_gcc.h **** __STATIC_FORCEINLINE void __TZ_set_CONTROL_NS(uint32_t control)
-ARM GAS  /tmp/ccSTr1Mh.s 			page 20
+ARM GAS  /tmp/cc4174RZ.s 			page 20
 
 
  194:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  248:ThirdParty/CMSIS/Include/cmsis_gcc.h **** {
  249:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   uint32_t result;
  250:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  /tmp/ccSTr1Mh.s 			page 21
+ARM GAS  /tmp/cc4174RZ.s 			page 21
 
 
  251:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, psp"  : "=r" (result) );
@@ -1258,7 +1258,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  305:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   __ASM volatile ("MRS %0, msp" : "=r" (result) );
  306:ThirdParty/CMSIS/Include/cmsis_gcc.h ****   return(result);
  307:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
-ARM GAS  /tmp/ccSTr1Mh.s 			page 22
+ARM GAS  /tmp/cc4174RZ.s 			page 22
 
 
  308:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
@@ -1318,7 +1318,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  362:ThirdParty/CMSIS/Include/cmsis_gcc.h **** }
  363:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
  364:ThirdParty/CMSIS/Include/cmsis_gcc.h **** 
-ARM GAS  /tmp/ccSTr1Mh.s 			page 23
+ARM GAS  /tmp/cc4174RZ.s 			page 23
 
 
  365:ThirdParty/CMSIS/Include/cmsis_gcc.h **** /**
@@ -1378,7 +1378,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  616              	.LBE78:
   34:Drivers/STM32/stm32_system.h **** }
  617              		.loc 3 34 5 view .LVU163
-ARM GAS  /tmp/ccSTr1Mh.s 			page 24
+ARM GAS  /tmp/cc4174RZ.s 			page 24
 
 
  618              	.LBE75:
@@ -1438,7 +1438,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
   38:Drivers/STM32/stm32_system.h **** }
  662              		.loc 3 38 5 view .LVU177
  663              	.LBB89:
-ARM GAS  /tmp/ccSTr1Mh.s 			page 25
+ARM GAS  /tmp/cc4174RZ.s 			page 25
 
 
  664              	.LBB87:
@@ -1498,7 +1498,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  690              	.L46:
   83:Drivers/STM32/stm32_spi_arbiter.cpp **** 
  691              		.loc 1 83 1 is_stmt 0 view .LVU182
-ARM GAS  /tmp/ccSTr1Mh.s 			page 26
+ARM GAS  /tmp/cc4174RZ.s 			page 26
 
 
  692 0030 03B0     		add	sp, sp, #12
@@ -1558,7 +1558,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  738              	.LVL70:
  739              	.LFB2949:
   86:Drivers/STM32/stm32_spi_arbiter.cpp ****     volatile uint8_t result = 0xff;
-ARM GAS  /tmp/ccSTr1Mh.s 			page 27
+ARM GAS  /tmp/cc4174RZ.s 			page 27
 
 
  740              		.loc 1 86 152 is_stmt 1 view -0
@@ -1618,7 +1618,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  784 0038 9CE80700 		ldm	ip, {r0, r1, r2}
  785 003c 8EE80700 		stm	lr, {r0, r1, r2}
  786 0040 0CAB     		add	r3, sp, #48
-ARM GAS  /tmp/ccSTr1Mh.s 			page 28
+ARM GAS  /tmp/cc4174RZ.s 			page 28
 
 
  787 0042 26AA     		add	r2, sp, #152
@@ -1678,7 +1678,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  830              	.LCFI9:
  831              		.cfi_restore 14
  832              		.cfi_restore 5
-ARM GAS  /tmp/ccSTr1Mh.s 			page 29
+ARM GAS  /tmp/cc4174RZ.s 			page 29
 
 
  833              		.cfi_restore 4
@@ -1738,7 +1738,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  116:Drivers/STM32/stm32_spi_arbiter.cpp ****     task_list_->ncs_gpio.write(true);
  881              		.loc 1 116 5 is_stmt 1 view .LVU216
  882              	.LVL76:
-ARM GAS  /tmp/ccSTr1Mh.s 			page 30
+ARM GAS  /tmp/cc4174RZ.s 			page 30
 
 
  883              	.LBB107:
@@ -1798,7 +1798,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  925              	.LBB113:
  926              	.LBI113:
   31:Drivers/STM32/stm32_system.h ****     uint32_t primask = __get_PRIMASK();
-ARM GAS  /tmp/ccSTr1Mh.s 			page 31
+ARM GAS  /tmp/cc4174RZ.s 			page 31
 
 
  927              		.loc 3 31 24 view .LVU233
@@ -1858,7 +1858,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  969              		.loc 3 56 58 view .LVU245
  970              	.LBE112:
  971              	.LBE111:
-ARM GAS  /tmp/ccSTr1Mh.s 			page 32
+ARM GAS  /tmp/cc4174RZ.s 			page 32
 
 
  972              	.LBE110:
@@ -1918,7 +1918,7 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  126:Drivers/STM32/stm32_spi_arbiter.cpp ****     if (next) {
  1020              		.loc 1 126 5 is_stmt 1 view .LVU258
  1021 003a 13B1     		cbz	r3, .L60
-ARM GAS  /tmp/ccSTr1Mh.s 			page 33
+ARM GAS  /tmp/cc4174RZ.s 			page 33
 
 
  127:Drivers/STM32/stm32_spi_arbiter.cpp ****         start();
@@ -1976,35 +1976,35 @@ ARM GAS  /tmp/ccSTr1Mh.s 			page 1
  1072              		.file 27 "MotorControl/utils.hpp"
  1073              		.file 28 "ThirdParty/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
  1074              		.file 29 "<built-in>"
-ARM GAS  /tmp/ccSTr1Mh.s 			page 34
+ARM GAS  /tmp/cc4174RZ.s 			page 34
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 stm32_spi_arbiter.cpp
-     /tmp/ccSTr1Mh.s:20     .text._ZZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjmENUlPvbE_4_FUNES5_b:0000000000000000 $t
-     /tmp/ccSTr1Mh.s:25     .text._ZZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjmENUlPvbE_4_FUNES5_b:0000000000000000 _ZZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjmENUlPvbE_4_FUNES5_b
+     /tmp/cc4174RZ.s:20     .text._ZZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjmENUlPvbE_4_FUNES5_b:0000000000000000 $t
+     /tmp/cc4174RZ.s:25     .text._ZZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjmENUlPvbE_4_FUNES5_b:0000000000000000 _ZZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjmENUlPvbE_4_FUNES5_b
 .ARM.exidx.text._ZZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjmENUlPvbE_4_FUNES5_b:0000000000000000 $d
-     /tmp/ccSTr1Mh.s:66     .text._Z6equalsRK15SPI_InitTypeDefS1_:0000000000000000 $t
-     /tmp/ccSTr1Mh.s:72     .text._Z6equalsRK15SPI_InitTypeDefS1_:0000000000000000 _Z6equalsRK15SPI_InitTypeDefS1_
+     /tmp/cc4174RZ.s:66     .text._Z6equalsRK15SPI_InitTypeDefS1_:0000000000000000 $t
+     /tmp/cc4174RZ.s:72     .text._Z6equalsRK15SPI_InitTypeDefS1_:0000000000000000 _Z6equalsRK15SPI_InitTypeDefS1_
 .ARM.exidx.text._Z6equalsRK15SPI_InitTypeDefS1_:0000000000000000 $d
-     /tmp/ccSTr1Mh.s:246    .text._ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE:0000000000000000 $t
-     /tmp/ccSTr1Mh.s:252    .text._ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE:0000000000000000 _ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE
+     /tmp/cc4174RZ.s:246    .text._ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE:0000000000000000 $t
+     /tmp/cc4174RZ.s:252    .text._ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE:0000000000000000 _ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE
 .ARM.exidx.text._ZN15Stm32SpiArbiter12acquire_taskEPNS_7SpiTaskE:0000000000000000 $d
-     /tmp/ccSTr1Mh.s:286    .text._ZN15Stm32SpiArbiter12release_taskEPNS_7SpiTaskE:0000000000000000 $t
-     /tmp/ccSTr1Mh.s:292    .text._ZN15Stm32SpiArbiter12release_taskEPNS_7SpiTaskE:0000000000000000 _ZN15Stm32SpiArbiter12release_taskEPNS_7SpiTaskE
+     /tmp/cc4174RZ.s:286    .text._ZN15Stm32SpiArbiter12release_taskEPNS_7SpiTaskE:0000000000000000 $t
+     /tmp/cc4174RZ.s:292    .text._ZN15Stm32SpiArbiter12release_taskEPNS_7SpiTaskE:0000000000000000 _ZN15Stm32SpiArbiter12release_taskEPNS_7SpiTaskE
 .ARM.exidx.text._ZN15Stm32SpiArbiter12release_taskEPNS_7SpiTaskE:0000000000000000 $d
-     /tmp/ccSTr1Mh.s:313    .text._ZN15Stm32SpiArbiter5startEv:0000000000000000 $t
-     /tmp/ccSTr1Mh.s:319    .text._ZN15Stm32SpiArbiter5startEv:0000000000000000 _ZN15Stm32SpiArbiter5startEv
+     /tmp/cc4174RZ.s:313    .text._ZN15Stm32SpiArbiter5startEv:0000000000000000 $t
+     /tmp/cc4174RZ.s:319    .text._ZN15Stm32SpiArbiter5startEv:0000000000000000 _ZN15Stm32SpiArbiter5startEv
 .ARM.exidx.text._ZN15Stm32SpiArbiter5startEv:0000000000000000 $d
-     /tmp/ccSTr1Mh.s:537    .text._ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE:0000000000000000 $t
-     /tmp/ccSTr1Mh.s:543    .text._ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE:0000000000000000 _ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE
+     /tmp/cc4174RZ.s:537    .text._ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE:0000000000000000 $t
+     /tmp/cc4174RZ.s:543    .text._ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE:0000000000000000 _ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE
 .ARM.exidx.text._ZN15Stm32SpiArbiter14transfer_asyncEPNS_7SpiTaskE:0000000000000000 $d
-     /tmp/ccSTr1Mh.s:730    .text._ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm:0000000000000000 $t
-     /tmp/ccSTr1Mh.s:736    .text._ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm:0000000000000000 _ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm
-     /tmp/ccSTr1Mh.s:844    .text._ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm:000000000000008c $d
+     /tmp/cc4174RZ.s:730    .text._ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm:0000000000000000 $t
+     /tmp/cc4174RZ.s:736    .text._ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm:0000000000000000 _ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm
+     /tmp/cc4174RZ.s:844    .text._ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm:000000000000008c $d
 .ARM.exidx.text._ZN15Stm32SpiArbiter8transferE15SPI_InitTypeDef9Stm32GpioPKhPhjm:0000000000000000 $d
-     /tmp/ccSTr1Mh.s:850    .text._ZN15Stm32SpiArbiter11on_completeEv:0000000000000000 $t
-     /tmp/ccSTr1Mh.s:856    .text._ZN15Stm32SpiArbiter11on_completeEv:0000000000000000 _ZN15Stm32SpiArbiter11on_completeEv
+     /tmp/cc4174RZ.s:850    .text._ZN15Stm32SpiArbiter11on_completeEv:0000000000000000 $t
+     /tmp/cc4174RZ.s:856    .text._ZN15Stm32SpiArbiter11on_completeEv:0000000000000000 _ZN15Stm32SpiArbiter11on_completeEv
 .ARM.exidx.text._ZN15Stm32SpiArbiter11on_completeEv:0000000000000000 $d
 
 UNDEFINED SYMBOLS

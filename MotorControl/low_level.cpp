@@ -313,6 +313,9 @@ float get_adc_relative_voltage_ch(uint16_t channel) {
 //--------------------------------
 
 void vbus_sense_adc_cb(uint32_t adc_value) {
+    //!1UL << 12UL 等于 4096，即 12 位 ADC 的最大数字表示值
+    //!#define VBUS_S_DIVIDER_RATIO 19.0f
+    //!voltage_scale 表示 ADC 单位值（1 个单位）对应的实际电压
     constexpr float voltage_scale = adc_ref_voltage * VBUS_S_DIVIDER_RATIO / adc_full_scale;
     vbus_voltage = adc_value * voltage_scale;
 }
