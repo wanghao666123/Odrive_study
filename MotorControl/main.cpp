@@ -524,6 +524,7 @@ static void rtos_main(void*) {
 
 
     // Start ADC for temperature measurements and user measurements
+    //!将ADC采集到的数据存放在adc_measurements_中
     start_general_purpose_adc();
 
     //osDelay(100);

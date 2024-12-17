@@ -118,9 +118,9 @@ bool uart0_stdout_pending = false;
 
 static void uart_server_thread(void * ctx) {
     (void) ctx;
-
+    //!odrv.config_.uart0_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_STDOUT
     if (odrv.config_.uart0_protocol == ODrive::STREAM_PROTOCOL_TYPE_FIBRE) {
-        fibre_over_uart.start({});
+        fibre_over_uart.start({});//!与PC端软件进行通信 这里传入了一个 空的回调 Callback<void, LegacyProtocolPacketBased*, StreamStatus>，即 {}。 这意味着调用时不执行任何特定回调逻辑，传入的回调是空的（不会触发任何操作）
     } else if (odrv.config_.uart0_protocol == ODrive::STREAM_PROTOCOL_TYPE_ASCII
             || odrv.config_.uart0_protocol == ODrive::STREAM_PROTOCOL_TYPE_ASCII_AND_STDOUT) {
         ascii_over_uart.start();
@@ -179,16 +179,20 @@ static void uart_server_thread(void * ctx) {
 
 // TODO: allow multiple UART server instances
 void start_uart_server(UART_HandleTypeDef* huart) {
+    //!将串口指针指向huart
     huart_ = huart;
     uart_tx_stream.huart_ = huart;
 
     // DMA is set up to receive in a circular buffer forever.
     // We dont use interrupts to fetch the data, instead we periodically read
     // data out of the circular buffer into a parse buffer, controlled by a state machine
+    //!开始用dma接收，并且设置接收缓冲区大小为64
     HAL_UART_Receive_DMA(huart_, dma_rx_buffer, sizeof(dma_rx_buffer));
+    //!应该是上一次接收的在缓冲区的索引？
     dma_last_rcv_idx = 0;
 
     // Start UART communication thread
+    //!栈大小为4096，创建串口服务线程
     osThreadDef(uart_server_thread_def, uart_server_thread, osPriorityNormal, 0, stack_size_uart_thread / sizeof(StackType_t) /* the ascii protocol needs considerable stack space */);
     uart_thread = osThreadCreate(osThread(uart_server_thread_def), NULL);
 }

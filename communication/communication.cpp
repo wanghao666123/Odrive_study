@@ -39,6 +39,7 @@ void init_communication(void) {
     //printf("hi!\r\n");
 
     // Dual UART operation not supported yet
+    //!uart a和uart b不能同时使用
     if (odrv.config_.enable_uart_a && odrv.config_.enable_uart_b) {
         odrv.misconfigured_ = true;
     }

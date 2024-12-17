@@ -557,6 +557,8 @@ void LegacyProtocolPacketBased::start(Callback<void, LegacyProtocolPacketBased*,
 #endif
     on_stopped_ = on_stopped;
     TransferHandle dummy;
+    //!uint8_t rx_buf_[128];
+    //!on_read_finished 会在数据读取完成时被调用？？？没看懂
     rx_channel_->start_read(rx_buf_, &dummy, MEMBER_CB(this, on_read_finished));
 
 #if FIBRE_ENABLE_CLIENT

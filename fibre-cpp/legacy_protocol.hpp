@@ -90,6 +90,7 @@ private:
 
 struct LegacyProtocolPacketBased {
 public:
+    //!tx_mtu 表示发送数据的最大传输单元，即单次发送操作所允许的最大字节数
     LegacyProtocolPacketBased(AsyncStreamSource* rx_channel, AsyncStreamSink* tx_channel, size_t tx_mtu)
         : rx_channel_(rx_channel), tx_channel_(tx_channel), tx_mtu_(std::min(tx_mtu, sizeof(tx_buf_))) {}
 
@@ -165,6 +166,7 @@ public:
 private:
     PacketUnwrapper unwrapper_;
     PacketWrapper wrapper_;
+    //!将rx_channel_和tx_channel_分别指向unwrapper_和wrapper_，即指向uart_rx_stream和uart_tx_stream
     LegacyProtocolPacketBased inner_protocol_{&unwrapper_, &wrapper_, 127};
 };
 

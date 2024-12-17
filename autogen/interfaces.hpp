@@ -984,11 +984,11 @@ public:
         GPIO_MODE_MECH_BRAKE             = 14,//!机械制动模式，可能用于控制机械刹车
         GPIO_MODE_STATUS                 = 15,//!状态指示模式，可能将 GPIO 配置为输出，表示设备状态（如运行状态、错误指示灯）
     };
-    enum StreamProtocolType {
-        STREAM_PROTOCOL_TYPE_FIBRE       = 0,
-        STREAM_PROTOCOL_TYPE_ASCII       = 1,
-        STREAM_PROTOCOL_TYPE_STDOUT      = 2,
-        STREAM_PROTOCOL_TYPE_ASCII_AND_STDOUT = 3,
+    enum StreamProtocolType {//!数据流协议
+        STREAM_PROTOCOL_TYPE_FIBRE       = 0,     //!基于 FIBRE 协议（自定义二进制通信协议）的通信方式
+        STREAM_PROTOCOL_TYPE_ASCII       = 1,     //!ASCII 协议指的是文本格式的通信，例如通过串口发送纯文本命令和响应数据
+        STREAM_PROTOCOL_TYPE_STDOUT      = 2,     //!通常用于日志、调试信息输出到终端（控制台）或文件
+        STREAM_PROTOCOL_TYPE_ASCII_AND_STDOUT = 3,//!数据既以 ASCII 协议 格式发送。也同时输出到 标准输出（例如用于调试日志）
     };
     template<typename T> static inline auto get_error(T* obj) { return Property<ODriveIntf::Error>{&obj->error_}; }
     template<typename T> static inline void get_error(T* obj, void* ptr) { new (ptr) Property<ODriveIntf::Error>{&obj->error_}; }

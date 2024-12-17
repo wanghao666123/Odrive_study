@@ -217,7 +217,7 @@ void start_general_purpose_adc() {
     }
 
     // Set up sampling sequence (channel 0 ... channel 15)
-    sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;
+    sConfig.SamplingTime = ADC_SAMPLETIME_15CYCLES;//!表示每次采样需要 15 个 ADC 时钟周期
     for (uint32_t channel = 0; channel < ADC_CHANNEL_COUNT; ++channel) {
         sConfig.Channel = channel << ADC_CR1_AWDCH_Pos;
         sConfig.Rank = channel + 1; // rank numbering starts at 1
@@ -226,7 +226,7 @@ void start_general_purpose_adc() {
             return;
         }
     }
-
+    //!reinterpret_cast<uint32_t*> 将 adc_measurements_ 转换为合适的数据指针类型。
     HAL_ADC_Start_DMA(&hadc1, reinterpret_cast<uint32_t*>(adc_measurements_), ADC_CHANNEL_COUNT);
 }
 
