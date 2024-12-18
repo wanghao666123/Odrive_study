@@ -109,7 +109,7 @@ Stm32UartTxStream uart_tx_stream(huart_);
 Stm32UartRxStream uart_rx_stream;
 
 LegacyProtocolStreamBased fibre_over_uart(&uart_rx_stream, &uart_tx_stream);
-
+//!2个逻辑通道？
 fibre::AsyncStreamSinkMultiplexer<2> uart_tx_multiplexer(uart_tx_stream);
 fibre::BufferedStreamSink<64> uart0_stdout_sink(uart_tx_multiplexer); // Used in communication.cpp
 AsciiProtocol ascii_over_uart(&uart_rx_stream, &uart_tx_multiplexer);
@@ -123,7 +123,7 @@ static void uart_server_thread(void * ctx) {
         fibre_over_uart.start({});//!与PC端软件进行通信 这里传入了一个 空的回调 Callback<void, LegacyProtocolPacketBased*, StreamStatus>，即 {}。 这意味着调用时不执行任何特定回调逻辑，传入的回调是空的（不会触发任何操作）
     } else if (odrv.config_.uart0_protocol == ODrive::STREAM_PROTOCOL_TYPE_ASCII
             || odrv.config_.uart0_protocol == ODrive::STREAM_PROTOCOL_TYPE_ASCII_AND_STDOUT) {
-        ascii_over_uart.start();
+        ascii_over_uart.start();//!注册了回调函数 on_read_finished ---> complete,只是做了开始读取的准备工作，但是还没有进行真正意义上的读取
     }
 
     for (;;) {

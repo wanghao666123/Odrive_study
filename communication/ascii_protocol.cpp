@@ -450,5 +450,6 @@ void AsciiProtocol::on_read_finished(ReadResult result) {
 
 void AsciiProtocol::start() {
     TransferHandle dummy;
+    //!uint8_t rx_buf_[256];
     rx_channel_->start_read(rx_buf_, &dummy, MEMBER_CB(this, on_read_finished));
 }

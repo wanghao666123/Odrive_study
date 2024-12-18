@@ -79,11 +79,11 @@ private:
     Callback<void, ReadResult> completer_;
 
     enum {
-        kStateIdle,
-        kStateCancelling,
-        kStateReceivingHeader,
-        kStateReceivingPayload,
-        kStateReceivingTrailer
+        kStateIdle, //!空闲状态
+        kStateCancelling, //!正在取消操作
+        kStateReceivingHeader, //!正在接收数据包头
+        kStateReceivingPayload, //!正在接收数据负载
+        kStateReceivingTrailer //!正在接收数据包尾
     } state_ = kStateIdle;
 };
 

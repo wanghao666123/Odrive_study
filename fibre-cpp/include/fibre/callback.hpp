@@ -55,7 +55,7 @@ public:
     operator bool() {
         return cb_;
     }
-    
+    //!TArgs...：这是一个模板参数包，表示函数接受一组任意数量和类型的参数
     TRet invoke(TArgs ... arg) const {
         if (cb_) {
             return (*cb_)(ctx_, arg...);
@@ -114,7 +114,11 @@ template<typename T, T func,
 typename MemCb::cb_t make_callback(typename TTraits::TObj* obj) {
     return MemCb::with(obj);
 }
-
+//!this, on_read_finished
+//!decltype(*obj)返回这个对象的类型，即LegacyProtocolPacketBased*
+//!如果 obj 是一个引用类型，比如 LegacyProtocolPacketBased&，那么 std::remove_reference_t 会移除引用,这样可以确保我们得到纯粹的对象类型LegacyProtocolPacketBased
+//!&LegacyProtocolPacketBased::on_read_finished
+//!fibre::make_callback 会将该成员函数与 this 对象绑定在一起，创建一个可以被回调的函数对象。
 #define MEMBER_CB(obj, func) \
     fibre::make_callback< \
         decltype(&std::remove_reference_t<decltype(*obj)>::func), \

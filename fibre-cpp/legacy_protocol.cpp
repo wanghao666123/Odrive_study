@@ -93,19 +93,23 @@ void PacketWrapper::complete(WriteResult result) {
 /* PacketUnwrapper -----------------------------------------------------------*/
 
 void PacketUnwrapper::start_read(bufptr_t buffer, TransferHandle* handle, Callback<void, ReadResult> completer) {
+    //!可以让调用方在后续回调中识别出是哪一个PacketUnwrapper对象负责了这次操作
     if (handle) {
         *handle = reinterpret_cast<TransferHandle>(this);
     }
 
     if (state_ != kStateIdle) {
-        completer.invoke({kStreamError, buffer.begin()});
+        completer.invoke({kStreamError, buffer.begin()});//!如果当前不是空闲状态，说明另一个接收任务尚未完成，直接调用 completer 回调，通知调用方出现了错误 kStreamError
     }
 
-    completer_ = completer;
-    payload_buf_ = buffer;
+    completer_ = completer;//!将用户传入的回调 completer 存储在成员变量中，以便后续可以调用它
+    payload_buf_ = buffer;//!存储用户提供的缓冲区地址
 
-    state_ = kStateReceivingHeader;
-    expected_rx_end_ = rx_buf_ + 3;
+    state_ = kStateReceivingHeader;//!正在接收数据包头
+    expected_rx_end_ = rx_buf_ + 3;//!表示预期接收 3 字节的数据
+    //!{rx_buf_, expected_rx_end_} 指定接收缓冲区，表示这次希望接收 3 字节到 rx_buf_
+    //!inner_transfer_handle_，用来标识这次底层传输
+    //!MEMBER_CB(this, complete)，将当前对象（this）和成员函数 complete 绑定为回调
     rx_channel_->start_read({rx_buf_, expected_rx_end_}, &inner_transfer_handle_, MEMBER_CB(this, complete));
 }
 
@@ -559,6 +563,7 @@ void LegacyProtocolPacketBased::start(Callback<void, LegacyProtocolPacketBased*,
     TransferHandle dummy;
     //!uint8_t rx_buf_[128];
     //!on_read_finished 会在数据读取完成时被调用？？？没看懂
+    //!注册了回调函数 on_read_finished ---> complete,只是做了开始读取的准备工作，但是还没有进行真正意义上的读取
     rx_channel_->start_read(rx_buf_, &dummy, MEMBER_CB(this, on_read_finished));
 
 #if FIBRE_ENABLE_CLIENT
