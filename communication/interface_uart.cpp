@@ -127,12 +127,13 @@ static void uart_server_thread(void * ctx) {
     }
 
     for (;;) {
+        //!osMessageQDef(uart_event_queue, 4, uint32_t);
         osEvent event = osMessageGet(uart_event_queue, osWaitForever);
-
+        //!osEventMessage：表示从消息队列成功接收到了一条消息。
         if (event.status != osEventMessage) {
             continue;
         }
-
+        //!当 event.status == osEventMessage 时，value.v 包含队列中发送的 32 位消息。
         switch (event.value.v) {
             case 1: {
                 // This event is triggered by the control loop at 8kHz. This should be
@@ -141,27 +142,31 @@ static void uart_server_thread(void * ctx) {
                 // during the sleep period.
 
                 // Check for UART errors and restart receive DMA transfer if required
+                //!HAL_UART_STATE_BUSY_RX 表示 UART 正在接收数据。
                 if (huart_->RxState != HAL_UART_STATE_BUSY_RX) {
                     HAL_UART_AbortReceive(huart_);
-                    HAL_UART_Receive_DMA(huart_, dma_rx_buffer, sizeof(dma_rx_buffer));
-                    dma_last_rcv_idx = 0;
+                    HAL_UART_Receive_DMA(huart_, dma_rx_buffer, sizeof(dma_rx_buffer));//!64
+                    dma_last_rcv_idx = 0;//!重置索引
                 }
                 // Fetch the circular buffer "write pointer", where it would write next
+                //!当 DMA 接收数据时，这个寄存器的值会逐渐减少，表示剩余未传输的数据字节数
                 uint32_t new_rcv_idx = UART_RX_BUFFER_SIZE - huart_->hdmarx->Instance->NDTR;
                 if (new_rcv_idx > UART_RX_BUFFER_SIZE) { // defensive programming
                     continue;
                 }
 
                 // Process bytes in one or two chunks (two in case there was a wrap)
+                //!新的循环
                 if (new_rcv_idx < dma_last_rcv_idx) {
                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
                             UART_RX_BUFFER_SIZE - dma_last_rcv_idx);
                     dma_last_rcv_idx = 0;
                 }
                 if (new_rcv_idx > dma_last_rcv_idx) {
+                    //!从dma_rx_buffer + dma_last_rcv_idx位置开始接收，接收new_rcv_idx - dma_last_rcv_idx字节的数据
                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
-                            new_rcv_idx - dma_last_rcv_idx);
-                    dma_last_rcv_idx = new_rcv_idx;
+                            new_rcv_idx - dma_last_rcv_idx);//!这里的回调关系没太搞明白
+                    dma_last_rcv_idx = new_rcv_idx;//!更新索引
                 }
             } break;
 
@@ -199,7 +204,7 @@ void start_uart_server(UART_HandleTypeDef* huart) {
 
 void uart_poll() {
     if (uart_thread) { // the thread is only started if UART is enabled
-        osMessagePut(uart_event_queue, 1, 0);
+        osMessagePut(uart_event_queue, 1, 0); //!向uart队列中发送 1
     }
 }
 

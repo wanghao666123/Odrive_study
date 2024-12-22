@@ -298,9 +298,9 @@ void vApplicationIdleHook(void) {
  * It should finish as quickly as possible.
  */
 void ODrive::do_fast_checks() {
-    if (!(vbus_voltage >= config_.dc_bus_undervoltage_trip_level))
+    if (!(vbus_voltage >= config_.dc_bus_undervoltage_trip_level))//!设置低电压报警阈值，当 DC 电压低于此值电机将停止并报错
         disarm_with_error(ERROR_DC_BUS_UNDER_VOLTAGE);
-    if (!(vbus_voltage <= config_.dc_bus_overvoltage_trip_level))
+    if (!(vbus_voltage <= config_.dc_bus_overvoltage_trip_level))//!设置过压报警阈值，当 DC 电压高于此值电机将停止并报错
         disarm_with_error(ERROR_DC_BUS_OVER_VOLTAGE);
 }
 
@@ -363,6 +363,7 @@ void ODrive::sampling_cb() {
  *        must not rely on any interrupts.
  */
 void ODrive::control_loop_cb(uint32_t timestamp) {
+    //!记录上一次更新的时间戳
     last_update_timestamp_ = timestamp;
     n_evt_control_loop_++;
 
@@ -376,6 +377,7 @@ void ODrive::control_loop_cb(uint32_t timestamp) {
         // TODO: maybe we should add a check to output ports that prevents
         // double-setting the value.
         for (auto& axis: axes) {
+            //!这些变量都要搞清楚
             axis.acim_estimator_.slip_vel_.reset();
             axis.acim_estimator_.stator_phase_vel_.reset();
             axis.acim_estimator_.stator_phase_.reset();
@@ -397,17 +399,17 @@ void ODrive::control_loop_cb(uint32_t timestamp) {
             axis.sensorless_estimator_.vel_estimate_.reset();
         }
 
-        uart_poll();
-        odrv.oscilloscope_.update();
+        uart_poll();//!向uart队列中发送 1
+        odrv.oscilloscope_.update();//!更新示波器？
     }
-
+    //!可能通过读取物理传感器的状态来更新当前的限位状态？
     for (auto& axis : axes) {
         MEASURE_TIME(axis.task_times_.endstop_update) {
             axis.min_endstop_.update();
             axis.max_endstop_.update();
         }
     }
-
+    //!电机状态检测？
     MEASURE_TIME(task_times_.control_loop_checks) {
         for (auto& axis: axes) {
             // look for errors at axis level and also all subcomponents
@@ -421,7 +423,7 @@ void ODrive::control_loop_cb(uint32_t timestamp) {
             }
         }
     }
-
+    //!编码器检测？
     for (auto& axis: axes) {
         // Sub-components should use set_error which will propegate to this error_
         MEASURE_TIME(axis.task_times_.thermistor_update) {
@@ -529,6 +531,7 @@ static void rtos_main(void*) {
 
     //osDelay(100);
     // Init communications (this requires the axis objects to be constructed)
+    //!开启了uart_a、usb、can通讯
     init_communication();
 
     // Start pwm-in compare modules

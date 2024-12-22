@@ -43,19 +43,20 @@ void init_communication(void) {
     if (odrv.config_.enable_uart_a && odrv.config_.enable_uart_b) {
         odrv.misconfigured_ = true;
     }
-
+    //!在这里面进行串口接收和发送
     if (odrv.config_.enable_uart_a && uart_a) {
         start_uart_server(uart_a);
     } else if (odrv.config_.enable_uart_b && uart_b) {
         start_uart_server(uart_b);
     }
-
+    //!在这里面进行usb通讯
     start_usb_server();
-
+    //!bool enable_i2c_a = false;
     if (odrv.config_.enable_i2c_a) {
         start_i2c_server();
     }
-
+    //!bool enable_can_a = true;
+    //!在这里面进行can通讯
     if (odrv.config_.enable_can_a) {
         odrv.can_.start_server(&hcan1);
     }

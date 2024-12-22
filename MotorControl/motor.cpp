@@ -608,15 +608,18 @@ void Motor::current_meas_cb(uint32_t timestamp, std::optional<Iph_ABC_t> current
 
     n_evt_current_measurement_++;
     //!直流偏置校准（DC Calibration）用于校正三相电流传感器的偏置误差（偏置电压不为零）。
+    //!dc_calib_running_since_ = 0
+    //!DC_calib_.phB：电机 B 相电流偏移量
+    //!在这里dc_calib_valid = false
     bool dc_calib_valid = (dc_calib_running_since_ >= config_.dc_calib_tau * 7.5f)
                        && (abs(DC_calib_.phA) < max_dc_calib_)
                        && (abs(DC_calib_.phB) < max_dc_calib_)
                        && (abs(DC_calib_.phC) < max_dc_calib_);
-
+    //!armed_state_状态机 在arm()中更新
     if (armed_state_ == 1 || armed_state_ == 2) {
         current_meas_ = {0.0f, 0.0f, 0.0f};
         armed_state_ += 1;
-    } else if (current.has_value() && dc_calib_valid) {
+    } else if (current.has_value() && dc_calib_valid) { //!表示当前已经完成电流的直流偏置校准，并且有新测量数据
         current_meas_ = {
             current->phA - DC_calib_.phA,
             current->phB - DC_calib_.phB,
@@ -625,13 +628,14 @@ void Motor::current_meas_cb(uint32_t timestamp, std::optional<Iph_ABC_t> current
     } else {
         current_meas_ = std::nullopt;
     }
-
+    //!current_meas_ = std::nullopt;
     // Run system-level checks (e.g. overvoltage/undervoltage condition)
     // The motor might be disarmed in this function. In this case the
     // handler will continue to run until the end but it won't have an
     // effect on the PWM.
+    //!检测低电压和过压，如果不合适，则报警
     odrv.do_fast_checks();
-
+    //!这里暂时还不会执行 begin
     if (current_meas_.has_value()) {
         // Check for violation of current limit
         // If Ia + Ib + Ic == 0 holds then we have:
@@ -663,6 +667,7 @@ void Motor::current_meas_cb(uint32_t timestamp, std::optional<Iph_ABC_t> current
             disarm_with_error(err);
         }
     }
+    //!这里暂时还不会执行 end
 }
 
 /**

@@ -549,7 +549,7 @@ void TIM8_UP_TIM13_IRQHandler(void) {
             TIM_1_8_PERIOD_CLOCKS / 2;
     }
 }
-
+//!相电流测量
 void ControlLoop_IRQHandler(void) {
     //!记录进入该中断的次数
     COUNT_IRQ(ControlLoop_IRQn);
@@ -579,22 +579,33 @@ void ControlLoop_IRQHandler(void) {
         current1 = {0.0f, 0.0f};
     }
     //!timestamp - TIM1_INIT_COUNT：代表M0的ADC相电压采集时间，timestamp：代表M1的ADC相电压采集时间
+    //!timestamp - TIM1_INIT_COUNT  ===》 timestamp - TIM_1_8_PERIOD_CLOCKS / 2 + 1 * 128) 这里为啥是这个偏移
+    //!TIM1_INIT_COUNT 用于对齐电流采样时间 
+    //!这个偏移是进一步微调时间点，用于补偿硬件上的延迟或系统特性。延迟可能来自：
+        //!MOSFET 或 IGBT 的开关延迟。
+        //!电路中的滤波器引入的信号延迟。
+        //!ADC 开始采样到完成采样的时间
+    //!做了一些判断
     motors[0].current_meas_cb(timestamp - TIM1_INIT_COUNT, current0);
     motors[1].current_meas_cb(timestamp, current1);
 
+    //!执行一系列数据的update，比如“电角度”、“电速度”、“温度”等 
     odrv.control_loop_cb(timestamp);
 
     // By this time the ADCs for both M0 and M1 should have fired again. But
     // let's wait for them just to be sure.
+    //!ADC 采样可能已经开始了一次新周期，但代码中仍然决定等待 ADC 确保转换完成，原因可能是因为control_loop_cb执行时间比较长？
     MEASURE_TIME(odrv.task_times_.dc_calib_wait) {
         while (!(ADC2->SR & ADC_SR_EOC));
     }
-
+    //!再获取一次电流值
+    //!得到相电流A,B,C  M0触发比M1的触发要早一点，而我们正在分析的代码执行的是在M1的中断处，所以此时M0的相电压值已经采集结束了（TIM1的update事件会自动触发采样启动）
     if (!fetch_and_reset_adcs(&current0, &current1)) {
         motors[0].disarm_with_error(Motor::ERROR_BAD_TIMING);
         motors[1].disarm_with_error(Motor::ERROR_BAD_TIMING);
     }
-
+    //!再计算下下一次的ADC采样的时间戳
+    //!timestamp + TIM_1_8_PERIOD_CLOCKS * (TIM_1_8_RCR + 1) - TIM1_INIT_COUNT 好像没有用到？
     motors[0].dc_calib_cb(timestamp + TIM_1_8_PERIOD_CLOCKS * (TIM_1_8_RCR + 1) - TIM1_INIT_COUNT, current0);
     motors[1].dc_calib_cb(timestamp + TIM_1_8_PERIOD_CLOCKS * (TIM_1_8_RCR + 1), current1);
 
