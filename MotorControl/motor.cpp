@@ -674,9 +674,11 @@ void Motor::current_meas_cb(uint32_t timestamp, std::optional<Iph_ABC_t> current
  * @brief Called when the underlying hardware timer triggers an update event.
  */
 void Motor::dc_calib_cb(uint32_t timestamp, std::optional<Iph_ABC_t> current) {
+    //!dc校准的周期，也就是每进行一次C1校准的周期
     const float dc_calib_period = static_cast<float>(2 * TIM_1_8_PERIOD_CLOCKS * (TIM_1_8_RCR + 1)) / TIM_1_8_CLOCK_HZ;
     TaskTimerContext tmr{axis_->task_times_.dc_calib};
-
+    //!DC_calib_.phA = DC_calib_.phA + calib_filter_k * current->phA - DC_calib_.phA * calib_filter_k
+    //!              = (1 - calib_filter_k) * DC_calib_.phA + calib_filter_k * DC_calib_.phA
     if (current.has_value()) {
         const float calib_filter_k = std::min(dc_calib_period / config_.dc_calib_tau, 1.0f);
         DC_calib_.phA += (current->phA - DC_calib_.phA) * calib_filter_k;

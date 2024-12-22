@@ -527,7 +527,7 @@ void TIM8_UP_TIM13_IRQHandler(void) {
     }
     //!将这一次计数方向赋值给上一次计数方向
     counting_down_ = counting_down;
-    //!修改时间戳“timestamp_”为下一次中断时间点
+    //!修改时间戳“timestamp_”为当前中断时间点 C1（else） ---》  M1
     timestamp_ += TIM_1_8_PERIOD_CLOCKS * (TIM_1_8_RCR + 1);
     //!向上计数
     if (!counting_down) {
@@ -550,10 +550,15 @@ void TIM8_UP_TIM13_IRQHandler(void) {
     }
 }
 //!相电流测量
+
+//!TIM8_UP_TIM13_IRQHandler  中使用软件触发 ControlLoop_IRQHandler ，但是由于TIM8_UP_TIM13_IRQHandler 优先级高于 ControlLoop_IRQHandler，所以要等到TIM8_UP_TIM13_IRQHandler结束后，才会执行ControlLoop_IRQHandler
+//???问题1：为什么611行会再进行一次adc采集？
+//!问题1答案：因为在ControlLoop_IRQHandler执行control_loop_cb期间，会发生tim8的上升沿，则会自动触发adc采集M1的IB和IC，所以这里会在611行之前的607行一直等待ADC转换完成
+//???问题2：为什么625行会乘3？foc运算周期
 void ControlLoop_IRQHandler(void) {
     //!记录进入该中断的次数
     COUNT_IRQ(ControlLoop_IRQn);
-    //!下一次进入TIM8_UP_TIM13_IRQHandler的时间
+    //!当前进入TIM8_UP_TIM13_IRQHandler的时间
     uint32_t timestamp = timestamp_;
 
     // Ensure that all the ADCs are done
@@ -561,6 +566,7 @@ void ControlLoop_IRQHandler(void) {
     std::optional<Iph_ABC_t> current0;
     std::optional<Iph_ABC_t> current1;
     //!得到相电流A,B,C  M0触发比M1的触发要早一点，而我们正在分析的代码执行的是在M1的中断处，所以此时M0的相电压值已经采集结束了（TIM1的update事件会自动触发采样启动）
+    //!上升沿触发
     if (!fetch_and_reset_adcs(&current0, &current1)) {
         motors[0].disarm_with_error(Motor::ERROR_BAD_TIMING);
         motors[1].disarm_with_error(Motor::ERROR_BAD_TIMING);
@@ -586,14 +592,18 @@ void ControlLoop_IRQHandler(void) {
         //!电路中的滤波器引入的信号延迟。
         //!ADC 开始采样到完成采样的时间
     //!做了一些判断
+    //!检测一下电流是否异常（比如超过限制电流值）等等安全检查，然后调用“on_mesurement()”，通过获取的相电压(IA 、IB 和Ic )计算出Iα和Iβ 
     motors[0].current_meas_cb(timestamp - TIM1_INIT_COUNT, current0);
     motors[1].current_meas_cb(timestamp, current1);
 
-    //!执行一系列数据的update，比如“电角度”、“电速度”、“温度”等 
+    //!工作比较多，执行的时间也很长，执行一系列数据的update，比如“电角度”、“电速度”、“温度”等
+    //!在这里应该是对定时器8的上升沿触发的更新事件做出的响应
     odrv.control_loop_cb(timestamp);
 
     // By this time the ADCs for both M0 and M1 should have fired again. But
     // let's wait for them just to be sure.
+    //!此时，M0 和 M1 的 ADC 应该已经再次启动。但是让我们等待它们，以确保万无一失
+    //!在执行下面这一行代码期间，会再触发一次TIM8_UP_TIM13_IRQHandler（优先级比这个高），所以这里
     //!ADC 采样可能已经开始了一次新周期，但代码中仍然决定等待 ADC 确保转换完成，原因可能是因为control_loop_cb执行时间比较长？
     MEASURE_TIME(odrv.task_times_.dc_calib_wait) {
         while (!(ADC2->SR & ADC_SR_EOC));
@@ -604,8 +614,11 @@ void ControlLoop_IRQHandler(void) {
         motors[0].disarm_with_error(Motor::ERROR_BAD_TIMING);
         motors[1].disarm_with_error(Motor::ERROR_BAD_TIMING);
     }
-    //!再计算下下一次的ADC采样的时间戳
+    //!再计算下一次的ADC采样的时间戳
     //!timestamp + TIM_1_8_PERIOD_CLOCKS * (TIM_1_8_RCR + 1) - TIM1_INIT_COUNT 好像没有用到？
+    //!timestamp：M1
+    //!根据上一次相电流值和当前测量出来的相电流值，进行一阶互补滤波（其实就是这一次更愿意相信上一次相电流值还是当前测量出来的相电流值）
+    //!程序运行到这里会触发又一次的TIM8_UP_TIM13_IRQHandler ---》 C1
     motors[0].dc_calib_cb(timestamp + TIM_1_8_PERIOD_CLOCKS * (TIM_1_8_RCR + 1) - TIM1_INIT_COUNT, current0);
     motors[1].dc_calib_cb(timestamp + TIM_1_8_PERIOD_CLOCKS * (TIM_1_8_RCR + 1), current1);
 
@@ -615,6 +628,8 @@ void ControlLoop_IRQHandler(void) {
     // If we did everything right, the TIM8 update handler should have been
     // called exactly once between the start of this function and now.
 
+    //!在“ControlLoop_IRQHandler”开始执行后，中途会被“TIM8_UP_TIM13_IRQHandler”打断一次
+    //!执行C1的时候timestamp_也会累加一次，timestamp_是全局变量
     if (timestamp_ != timestamp + TIM_1_8_PERIOD_CLOCKS * (TIM_1_8_RCR + 1)) {
         motors[0].disarm_with_error(Motor::ERROR_CONTROL_DEADLINE_MISSED);
         motors[1].disarm_with_error(Motor::ERROR_CONTROL_DEADLINE_MISSED);
