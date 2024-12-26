@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccWnakNi.s 			page 1
+ARM GAS  /tmp/cc9Wf6AD.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
    4:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** //
    5:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** // This file is part of the GNU ISO C++ Library.  This library is free
    6:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** // software; you can redistribute it and/or modify it under the
-ARM GAS  /tmp/ccWnakNi.s 			page 2
+ARM GAS  /tmp/cc9Wf6AD.s 			page 2
 
 
    7:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** // terms of the GNU General Public License as published by the
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
   61:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #undef exp
   62:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #undef fabs
   63:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #undef floor
-ARM GAS  /tmp/ccWnakNi.s 			page 3
+ARM GAS  /tmp/cc9Wf6AD.s 			page 3
 
 
   64:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #undef fmod
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  118:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     asin(_Tp __x)
  119:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     { return __builtin_asin(__x); }
  120:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** 
-ARM GAS  /tmp/ccWnakNi.s 			page 4
+ARM GAS  /tmp/cc9Wf6AD.s 			page 4
 
 
  121:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   using ::atan;
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  175:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value, 
  176:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****                                     double>::__type
  177:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     ceil(_Tp __x)
-ARM GAS  /tmp/ccWnakNi.s 			page 5
+ARM GAS  /tmp/cc9Wf6AD.s 			page 5
 
 
  178:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     { return __builtin_ceil(__x); }
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  232:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value,
  233:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****                                     double>::__type
  234:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     exp(_Tp __x)
-ARM GAS  /tmp/ccWnakNi.s 			page 6
+ARM GAS  /tmp/cc9Wf6AD.s 			page 6
 
 
  235:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     { return __builtin_exp(__x); }
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  289:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     typename __gnu_cxx::__promote_2<_Tp, _Up>::__type
  290:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     fmod(_Tp __x, _Up __y)
  291:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     {
-ARM GAS  /tmp/ccWnakNi.s 			page 7
+ARM GAS  /tmp/cc9Wf6AD.s 			page 7
 
 
  292:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****       typedef typename __gnu_cxx::__promote_2<_Tp, _Up>::__type __type;
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  346:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   template<typename _Tp>
  347:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     inline _GLIBCXX_CONSTEXPR
  348:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value, 
-ARM GAS  /tmp/ccWnakNi.s 			page 8
+ARM GAS  /tmp/cc9Wf6AD.s 			page 8
 
 
  349:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****                                     double>::__type
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  403:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   pow(float __x, int __n)
  404:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   { return __builtin_powif(__x, __n); }
  405:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** 
-ARM GAS  /tmp/ccWnakNi.s 			page 9
+ARM GAS  /tmp/cc9Wf6AD.s 			page 9
 
 
  406:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   inline long double
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  460:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** 
  461:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #ifndef __CORRECT_ISO_CPP_MATH_H_PROTO
  462:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   inline _GLIBCXX_CONSTEXPR float
-ARM GAS  /tmp/ccWnakNi.s 			page 10
+ARM GAS  /tmp/cc9Wf6AD.s 			page 10
 
 
  463:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   sqrt(float __x)
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  517:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #if !_GLIBCXX_USE_C99_FP_MACROS_DYNAMIC
  518:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** 
  519:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** // These are possible macros imported from C99-land.
-ARM GAS  /tmp/ccWnakNi.s 			page 11
+ARM GAS  /tmp/cc9Wf6AD.s 			page 11
 
 
  520:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #undef fpclassify
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  574:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #ifndef __CORRECT_ISO_CPP11_MATH_H_PROTO_INT
  575:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   template<typename _Tp>
  576:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     constexpr typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value,
-ARM GAS  /tmp/ccWnakNi.s 			page 12
+ARM GAS  /tmp/cc9Wf6AD.s 			page 12
 
 
  577:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****                                               bool>::__type
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  631:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****                                               bool>::__type
  632:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     isnan(_Tp __x)
  633:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     { return false; }
-ARM GAS  /tmp/ccWnakNi.s 			page 13
+ARM GAS  /tmp/cc9Wf6AD.s 			page 13
 
 
  634:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #endif
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
   70              	.LVL5:
   71              	.L3:
   72              	.LCFI2:
-ARM GAS  /tmp/ccWnakNi.s 			page 14
+ARM GAS  /tmp/cc9Wf6AD.s 			page 14
 
 
   73              		.cfi_restore_state
@@ -838,7 +838,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  116              		.cfi_offset 88, -16
  117              		.cfi_offset 89, -12
  118 0006 86B0     		sub	sp, sp, #24
-ARM GAS  /tmp/ccWnakNi.s 			page 15
+ARM GAS  /tmp/cc9Wf6AD.s 			page 15
 
 
  119              	.LCFI5:
@@ -898,7 +898,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  690:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   constexpr bool
  691:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   isgreater(long double __x, long double __y)
  692:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   { return __builtin_isgreater(__x, __y); }
-ARM GAS  /tmp/ccWnakNi.s 			page 16
+ARM GAS  /tmp/cc9Wf6AD.s 			page 16
 
 
  693:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #endif
@@ -958,7 +958,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  747:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #ifndef __CORRECT_ISO_CPP11_MATH_H_PROTO_INT
  748:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   template<typename _Tp, typename _Up>
  749:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     constexpr typename
-ARM GAS  /tmp/ccWnakNi.s 			page 17
+ARM GAS  /tmp/cc9Wf6AD.s 			page 17
 
 
  750:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     __gnu_cxx::__enable_if<(__is_arithmetic<_Tp>::__value
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  804:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     islessgreater(_Tp __x, _Up __y)
  805:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     {
  806:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****       typedef typename __gnu_cxx::__promote_2<_Tp, _Up>::__type __type;
-ARM GAS  /tmp/ccWnakNi.s 			page 18
+ARM GAS  /tmp/cc9Wf6AD.s 			page 18
 
 
  807:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****       return __builtin_islessgreater(__type(__x), __type(__y));
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  861:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     isinf(_Tp __f)
  862:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     {
  863:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****       typedef typename __gnu_cxx::__promote<_Tp>::__type __type;
-ARM GAS  /tmp/ccWnakNi.s 			page 19
+ARM GAS  /tmp/cc9Wf6AD.s 			page 19
 
 
  864:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****       return __builtin_isinf(__type(__f));
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  918:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****       return __builtin_isless(__type(__f1), __type(__f2));
  919:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     }
  920:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** 
-ARM GAS  /tmp/ccWnakNi.s 			page 20
+ARM GAS  /tmp/cc9Wf6AD.s 			page 20
 
 
  921:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   template<typename _Tp>
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  975:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #undef erfcf
  976:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #undef erfcl
  977:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #undef exp2
-ARM GAS  /tmp/ccWnakNi.s 			page 21
+ARM GAS  /tmp/cc9Wf6AD.s 			page 21
 
 
  978:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #undef exp2f
@@ -1258,7 +1258,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
 1032:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #undef nearbyintl
 1033:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #undef nextafter
 1034:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #undef nextafterf
-ARM GAS  /tmp/ccWnakNi.s 			page 22
+ARM GAS  /tmp/cc9Wf6AD.s 			page 22
 
 
 1035:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** #undef nextafterl
@@ -1318,7 +1318,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
 1089:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   using ::erf;
 1090:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   using ::erff;
 1091:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   using ::erfl;
-ARM GAS  /tmp/ccWnakNi.s 			page 23
+ARM GAS  /tmp/cc9Wf6AD.s 			page 23
 
 
 1092:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** 
@@ -1378,7 +1378,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
 1146:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** 
 1147:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   using ::log2;
 1148:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   using ::log2f;
-ARM GAS  /tmp/ccWnakNi.s 			page 24
+ARM GAS  /tmp/cc9Wf6AD.s 			page 24
 
 
 1149:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   using ::log2l;
@@ -1438,7 +1438,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
 1203:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   using ::tgamma;
 1204:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   using ::tgammaf;
 1205:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****   using ::tgammal;
-ARM GAS  /tmp/ccWnakNi.s 			page 25
+ARM GAS  /tmp/cc9Wf6AD.s 			page 25
 
 
 1206:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** 
@@ -1498,7 +1498,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
 1260:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     constexpr typename __gnu_cxx::__enable_if<__is_integer<_Tp>::__value, 
 1261:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****                                               double>::__type
 1262:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     atanh(_Tp __x)
-ARM GAS  /tmp/ccWnakNi.s 			page 26
+ARM GAS  /tmp/cc9Wf6AD.s 			page 26
 
 
 1263:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath ****     { return __builtin_atanh(__x); }
@@ -1558,7 +1558,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  170              		.loc 1 24 13 is_stmt 0 view .LVU31
  171 004e 60EE0C7A 		vmul.f32	s15, s0, s24
  172              		.loc 1 24 9 view .LVU32
-ARM GAS  /tmp/ccWnakNi.s 			page 27
+ARM GAS  /tmp/cc9Wf6AD.s 			page 27
 
 
  173 0052 C4ED077A 		vstr.32	s15, [r4, #28]
@@ -1618,7 +1618,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  215              		.loc 1 36 9 view .LVU55
  216 009c 84ED0C7A 		vstr.32	s14, [r4, #48]
   37:MotorControl/trapTraj.cpp **** 
-ARM GAS  /tmp/ccWnakNi.s 			page 28
+ARM GAS  /tmp/cc9Wf6AD.s 			page 28
 
 
   38:MotorControl/trapTraj.cpp ****     // Integral of velocity ramps over the full accel and decel times to get
@@ -1678,7 +1678,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  263              	.LVL19:
  264              	.LBB31:
  265              	.LBI31:
-ARM GAS  /tmp/ccWnakNi.s 			page 29
+ARM GAS  /tmp/cc9Wf6AD.s 			page 29
 
 
  266              		.file 3 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h"
@@ -1738,7 +1738,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
   54:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  */
   55:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
   56:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #ifndef _STL_ALGOBASE_H
-ARM GAS  /tmp/ccWnakNi.s 			page 30
+ARM GAS  /tmp/cc9Wf6AD.s 			page 30
 
 
   57:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #define _STL_ALGOBASE_H 1
@@ -1798,7 +1798,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  111:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // when it's safe, i.e., the value_types are equal.
  112:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<bool _BoolType>
  113:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     struct __iter_swap
-ARM GAS  /tmp/ccWnakNi.s 			page 31
+ARM GAS  /tmp/cc9Wf6AD.s 			page 31
 
 
  114:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
@@ -1858,7 +1858,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  168:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_ConvertibleConcept<_ValueType2,
  169:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ValueType1>)
  170:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
-ARM GAS  /tmp/ccWnakNi.s 			page 32
+ARM GAS  /tmp/cc9Wf6AD.s 			page 32
 
 
  171:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       typedef typename iterator_traits<_ForwardIterator1>::reference
@@ -1918,7 +1918,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  225:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  preprocessor macro.
  226:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   */
  227:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _Tp>
-ARM GAS  /tmp/ccWnakNi.s 			page 33
+ARM GAS  /tmp/cc9Wf6AD.s 			page 33
 
 
  228:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX14_CONSTEXPR
@@ -1978,7 +1978,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  464:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cmath **** 
  285              		.loc 2 464 27 is_stmt 0 view .LVU82
  286 00fe 93ED000A 		vldr.32	s0, [r3]
-ARM GAS  /tmp/ccWnakNi.s 			page 34
+ARM GAS  /tmp/cc9Wf6AD.s 			page 34
 
 
  287              	.LVL21:
@@ -2038,7 +2038,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  335 0136 F1EE688A 		vneg.f32	s17, s17
  336              		.loc 1 47 37 view .LVU101
  337 013a 94ED097A 		vldr.32	s14, [r4, #36]
-ARM GAS  /tmp/ccWnakNi.s 			page 35
+ARM GAS  /tmp/cc9Wf6AD.s 			page 35
 
 
  338              		.loc 1 47 35 view .LVU102
@@ -2098,7 +2098,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  381 0172 C4ED049A 		vstr.32	s19, [r4, #16]
   57:MotorControl/trapTraj.cpp ****     Xf_ = Xf;
  382              		.loc 1 57 5 is_stmt 1 view .LVU120
-ARM GAS  /tmp/ccWnakNi.s 			page 36
+ARM GAS  /tmp/cc9Wf6AD.s 			page 36
 
 
  383              		.loc 1 57 9 is_stmt 0 view .LVU121
@@ -2158,7 +2158,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
   33:./MotorControl/utils.hpp **** #define STM_ID_GetSignature() ((*(uint16_t *)(ID_DBGMCU_IDCODE)) & 0x0FFF)
   34:./MotorControl/utils.hpp **** 
   35:./MotorControl/utils.hpp **** /**
-ARM GAS  /tmp/ccWnakNi.s 			page 37
+ARM GAS  /tmp/cc9Wf6AD.s 			page 37
 
 
   36:./MotorControl/utils.hpp ****  * "Returns" the device revision
@@ -2218,7 +2218,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  407              	.LVL30:
  408              		.loc 4 85 16 view .LVU131
  409              	.LBE43:
-ARM GAS  /tmp/ccWnakNi.s 			page 38
+ARM GAS  /tmp/cc9Wf6AD.s 			page 38
 
 
  410              	.LBE42:
@@ -2278,7 +2278,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  458              	.LBB38:
  459 01b0 03AB     		add	r3, sp, #12
  460              	.LVL35:
-ARM GAS  /tmp/ccWnakNi.s 			page 39
+ARM GAS  /tmp/cc9Wf6AD.s 			page 39
 
 
  260:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __a;
@@ -2338,7 +2338,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  507              		@ frame_needed = 0, uses_anonymous_args = 0
  508              		@ link register save eliminated.
  509              		.loc 1 64 68 is_stmt 0 view .LVU150
-ARM GAS  /tmp/ccWnakNi.s 			page 40
+ARM GAS  /tmp/cc9Wf6AD.s 			page 40
 
 
  510 0000 8AB0     		sub	sp, sp, #40
@@ -2398,7 +2398,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  556              		.loc 1 71 36 view .LVU167
  557 003e 77EE877A 		vadd.f32	s15, s15, s14
  558              		.loc 1 71 22 view .LVU168
-ARM GAS  /tmp/ccWnakNi.s 			page 41
+ARM GAS  /tmp/cc9Wf6AD.s 			page 41
 
 
  559 0042 CDED047A 		vstr.32	s15, [sp, #16]
@@ -2458,7 +2458,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
   82:MotorControl/trapTraj.cpp ****         trajStep.Ydd = Dr_;
   83:MotorControl/trapTraj.cpp ****     } else if (t >= Tf_) {  // Final Condition
   84:MotorControl/trapTraj.cpp ****         trajStep.Y   = Xf_;
-ARM GAS  /tmp/ccWnakNi.s 			page 42
+ARM GAS  /tmp/cc9Wf6AD.s 			page 42
 
 
   85:MotorControl/trapTraj.cpp ****         trajStep.Yd  = 0.0f;
@@ -2518,7 +2518,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
   75:MotorControl/trapTraj.cpp ****         trajStep.Y   = yAccel_ + Vr_*(t - Ta_);
  633              		.loc 1 75 41 view .LVU196
  634 009a 30EE670A 		vsub.f32	s0, s0, s15
-ARM GAS  /tmp/ccWnakNi.s 			page 43
+ARM GAS  /tmp/cc9Wf6AD.s 			page 43
 
 
  635              	.LVL48:
@@ -2578,7 +2578,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  674 00c6 D0ED056A 		vldr.32	s13, [r0, #20]
   80:MotorControl/trapTraj.cpp ****         trajStep.Y   = Xf_ + 0.5f*Dr_*SQ(td);
  675              		.loc 1 80 35 view .LVU212
-ARM GAS  /tmp/ccWnakNi.s 			page 44
+ARM GAS  /tmp/cc9Wf6AD.s 			page 44
 
 
  676 00ca 90ED097A 		vldr.32	s14, [r0, #36]
@@ -2638,7 +2638,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
   84:MotorControl/trapTraj.cpp ****         trajStep.Y   = Xf_;
  717              		.loc 1 84 24 is_stmt 0 view .LVU228
  718 00fe 4369     		ldr	r3, [r0, #20]	@ float
-ARM GAS  /tmp/ccWnakNi.s 			page 45
+ARM GAS  /tmp/cc9Wf6AD.s 			page 45
 
 
   84:MotorControl/trapTraj.cpp ****         trajStep.Y   = Xf_;
@@ -2698,7 +2698,7 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  769              		.file 34 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdio.h"
  770              		.file 35 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/stdlib.h"
  771              		.file 36 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/math.h"
-ARM GAS  /tmp/ccWnakNi.s 			page 46
+ARM GAS  /tmp/cc9Wf6AD.s 			page 46
 
 
  772              		.file 37 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/string.h"
@@ -2710,19 +2710,19 @@ ARM GAS  /tmp/ccWnakNi.s 			page 1
  778              		.file 43 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/wchar.h"
  779              		.file 44 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/locale.h"
  780              		.file 45 "<built-in>"
-ARM GAS  /tmp/ccWnakNi.s 			page 47
+ARM GAS  /tmp/cc9Wf6AD.s 			page 47
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 trapTraj.cpp
-     /tmp/ccWnakNi.s:20     .text._Z9sign_hardf:0000000000000000 $t
-     /tmp/ccWnakNi.s:26     .text._Z9sign_hardf:0000000000000000 _Z9sign_hardf
+     /tmp/cc9Wf6AD.s:20     .text._Z9sign_hardf:0000000000000000 $t
+     /tmp/cc9Wf6AD.s:26     .text._Z9sign_hardf:0000000000000000 _Z9sign_hardf
     .ARM.exidx.text._Z9sign_hardf:0000000000000000 $d
-     /tmp/ccWnakNi.s:85     .text._ZN21TrapezoidalTrajectory15planTrapezoidalEffffff:0000000000000000 $t
-     /tmp/ccWnakNi.s:91     .text._ZN21TrapezoidalTrajectory15planTrapezoidalEffffff:0000000000000000 _ZN21TrapezoidalTrajectory15planTrapezoidalEffffff
+     /tmp/cc9Wf6AD.s:85     .text._ZN21TrapezoidalTrajectory15planTrapezoidalEffffff:0000000000000000 $t
+     /tmp/cc9Wf6AD.s:91     .text._ZN21TrapezoidalTrajectory15planTrapezoidalEffffff:0000000000000000 _ZN21TrapezoidalTrajectory15planTrapezoidalEffffff
 .ARM.exidx.text._ZN21TrapezoidalTrajectory15planTrapezoidalEffffff:0000000000000000 $d
-     /tmp/ccWnakNi.s:494    .text._ZN21TrapezoidalTrajectory4evalEf:0000000000000000 $t
-     /tmp/ccWnakNi.s:500    .text._ZN21TrapezoidalTrajectory4evalEf:0000000000000000 _ZN21TrapezoidalTrajectory4evalEf
+     /tmp/cc9Wf6AD.s:494    .text._ZN21TrapezoidalTrajectory4evalEf:0000000000000000 $t
+     /tmp/cc9Wf6AD.s:500    .text._ZN21TrapezoidalTrajectory4evalEf:0000000000000000 _ZN21TrapezoidalTrajectory4evalEf
 .ARM.exidx.text._ZN21TrapezoidalTrajectory4evalEf:0000000000000000 $d
 
 UNDEFINED SYMBOLS

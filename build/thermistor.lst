@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccPK5rSs.s 			page 1
+ARM GAS  /tmp/cctLJzMN.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
   27:MotorControl/odrive_main.h **** typedef struct {
   28:MotorControl/odrive_main.h ****     bool fully_booted;
   29:MotorControl/odrive_main.h ****     uint32_t uptime; // [ms]
-ARM GAS  /tmp/ccPK5rSs.s 			page 2
+ARM GAS  /tmp/cctLJzMN.s 			page 2
 
 
   30:MotorControl/odrive_main.h ****     uint32_t min_heap_space; // FreeRTOS heap [Bytes]
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
   84:MotorControl/odrive_main.h ****     float dc_bus_overvoltage_trip_level = 1.07f * HW_VERSION_VOLTAGE;   //<! [V] maximum voltage ab
   85:MotorControl/odrive_main.h ****                                                                         //<! This protects against 
   86:MotorControl/odrive_main.h ****                                                                         //<! the brake power if the
-ARM GAS  /tmp/ccPK5rSs.s 			page 3
+ARM GAS  /tmp/cctLJzMN.s 			page 3
 
 
   87:MotorControl/odrive_main.h ****                                                                         //<! The default is 26V for
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  141:MotorControl/odrive_main.h **** 
  142:MotorControl/odrive_main.h **** // ODrive specific includes
  143:MotorControl/odrive_main.h **** #include <utils.hpp>
-ARM GAS  /tmp/ccPK5rSs.s 			page 4
+ARM GAS  /tmp/cctLJzMN.s 			page 4
 
 
  144:MotorControl/odrive_main.h **** #include <low_level.h>
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
   58              	.LVL4:
  167:MotorControl/odrive_main.h ****     return (gpio_num < GPIO_COUNT) ? gpios[gpio_num] : GPIO_COUNT ? gpios[0] : Stm32Gpio::none;
   59              		.loc 1 167 36 view .LVU9
-ARM GAS  /tmp/ccPK5rSs.s 			page 5
+ARM GAS  /tmp/cctLJzMN.s 			page 5
 
 
   60 0018 F8E7     		b	.L2
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
   35:MotorControl/thermistor.cpp ****     temperature_ = lpf_vals_.back();
   36:MotorControl/thermistor.cpp **** }
   37:MotorControl/thermistor.cpp **** 
-ARM GAS  /tmp/ccPK5rSs.s 			page 6
+ARM GAS  /tmp/cctLJzMN.s 			page 6
 
 
   38:MotorControl/thermistor.cpp **** bool ThermistorCurrentLimiter::do_checks() {
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  121 002c 67EE877A 		vmul.f32	s15, s15, s14
  122              		.loc 2 52 11 view .LVU26
  123 0030 CDED037A 		vstr.32	s15, [sp, #12]
-ARM GAS  /tmp/ccPK5rSs.s 			page 7
+ARM GAS  /tmp/cctLJzMN.s 			page 7
 
 
  124              	.LVL9:
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
   46:./MotorControl/utils.hpp ****  */
   47:./MotorControl/utils.hpp **** #define STM_ID_GetRevision() (*(uint16_t *)(ID_DBGMCU_IDCODE + 2))
   48:./MotorControl/utils.hpp **** 
-ARM GAS  /tmp/ccPK5rSs.s 			page 8
+ARM GAS  /tmp/cctLJzMN.s 			page 8
 
 
   49:./MotorControl/utils.hpp **** /**
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  103:./MotorControl/utils.hpp ****     return __builtin_isnan(x);
  132              		.loc 3 103 5 is_stmt 1 discriminator 2 view .LVU29
  133              		.loc 2 53 36 is_stmt 0 discriminator 2 view .LVU30
-ARM GAS  /tmp/ccPK5rSs.s 			page 9
+ARM GAS  /tmp/cctLJzMN.s 			page 9
 
 
  134 003e F4EE677A 		vcmp.f32	s15, s15
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
   42:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Permission to use, copy, modify, distribute and sell this software
   43:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * and its documentation for any purpose is hereby granted without fee,
   44:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * provided that the above copyright notice appear in all copies and
-ARM GAS  /tmp/ccPK5rSs.s 			page 10
+ARM GAS  /tmp/cctLJzMN.s 			page 10
 
 
   45:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * that both that copyright notice and this permission notice appear
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
   99:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	    if (*__first1 != *__first2)
  100:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	      return *__first1 < *__first2 ? -1 : 1;
  101:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  return 0;
-ARM GAS  /tmp/ccPK5rSs.s 			page 11
+ARM GAS  /tmp/cctLJzMN.s 			page 11
 
 
  102:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	}
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  156:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ForwardIterator1>)
  157:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_Mutable_ForwardIteratorConcept<
  158:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ForwardIterator2>)
-ARM GAS  /tmp/ccPK5rSs.s 			page 12
+ARM GAS  /tmp/cctLJzMN.s 			page 12
 
 
  159:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  213:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __first2;
  214:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
  215:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
-ARM GAS  /tmp/ccPK5rSs.s 			page 13
+ARM GAS  /tmp/cctLJzMN.s 			page 13
 
 
  216:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /**
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  174              		.cfi_restore_state
   54:MotorControl/thermistor.cpp ****     }
  175              		.loc 2 54 9 is_stmt 1 discriminator 3 view .LVU40
-ARM GAS  /tmp/ccPK5rSs.s 			page 14
+ARM GAS  /tmp/cctLJzMN.s 			page 14
 
 
   54:MotorControl/thermistor.cpp ****     }
@@ -838,7 +838,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  218              	.LBB112:
  219              	.LBI112:
  220              		.file 6 "./MotorControl/current_limiter.hpp"
-ARM GAS  /tmp/ccPK5rSs.s 			page 15
+ARM GAS  /tmp/cctLJzMN.s 			page 15
 
 
    1:./MotorControl/current_limiter.hpp **** #ifndef __CURRENT_LIMITER_HPP
@@ -898,7 +898,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
   28:./MotorControl/thermistor.hpp ****     const float& temp_limit_lower_;
   29:./MotorControl/thermistor.hpp ****     const float& temp_limit_upper_;
   30:./MotorControl/thermistor.hpp ****     const bool& enabled_;
-ARM GAS  /tmp/ccPK5rSs.s 			page 16
+ARM GAS  /tmp/cctLJzMN.s 			page 16
 
 
   31:./MotorControl/thermistor.hpp ****     Motor* motor_ = nullptr; // set by Motor::apply_config()
@@ -958,7 +958,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  268              	.LBB116:
  269 0004 034A     		ldr	r2, .L18+4
  270 0006 0260     		str	r2, [r0]
-ARM GAS  /tmp/ccPK5rSs.s 			page 17
+ARM GAS  /tmp/cctLJzMN.s 			page 17
 
 
  271              	.LVL23:
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  324              	.LBB121:
  325 0004 034A     		ldr	r2, .L21+4
  326 0006 0260     		str	r2, [r0]
-ARM GAS  /tmp/ccPK5rSs.s 			page 18
+ARM GAS  /tmp/cctLJzMN.s 			page 18
 
 
  327              	.LVL27:
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  380              	.LBI124:
   11:./MotorControl/thermistor.hpp **** 
  381              		.loc 5 11 13 is_stmt 1 view .LVU63
-ARM GAS  /tmp/ccPK5rSs.s 			page 19
+ARM GAS  /tmp/cctLJzMN.s 			page 19
 
 
  382              	.LBB125:
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  433 0000 10B5     		push	{r4, lr}
  434              	.LCFI4:
  435              		.cfi_def_cfa_offset 8
-ARM GAS  /tmp/ccPK5rSs.s 			page 20
+ARM GAS  /tmp/cctLJzMN.s 			page 20
 
 
  436              		.cfi_offset 4, -8
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  485              		.cantunwind
  486              		.fnend
  488              		.section	.text._ZN32OffboardThermistorCurrentLimiterD0Ev,"axG",%progbits,_ZN32OffboardThermistorCu
-ARM GAS  /tmp/ccPK5rSs.s 			page 21
+ARM GAS  /tmp/cctLJzMN.s 			page 21
 
 
  489              		.align	1
@@ -1258,7 +1258,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  543              		.loc 5 70 13 view .LVU85
  544 0016 2046     		mov	r0, r4
  545 0018 10BD     		pop	{r4, pc}
-ARM GAS  /tmp/ccPK5rSs.s 			page 22
+ARM GAS  /tmp/cctLJzMN.s 			page 22
 
 
  546              	.LVL48:
@@ -1318,7 +1318,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  597 000e C360     		str	r3, [r0, #12]
  598 0010 094B     		ldr	r3, .L37+8
  599              	.LVL52:
-ARM GAS  /tmp/ccPK5rSs.s 			page 23
+ARM GAS  /tmp/cctLJzMN.s 			page 23
 
 
   17:MotorControl/thermistor.cpp **** {
@@ -1378,7 +1378,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  651              		.save {r4, lr}
  652              	.LCFI8:
  653              		.cfi_def_cfa_offset 8
-ARM GAS  /tmp/ccPK5rSs.s 			page 24
+ARM GAS  /tmp/cctLJzMN.s 			page 24
 
 
  654              		.cfi_offset 4, -8
@@ -1438,7 +1438,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  134:./MotorControl/utils.hpp ****     float res = wrap_pm(x, y);
  135:./MotorControl/utils.hpp ****     if (res < 0) res += y;
  136:./MotorControl/utils.hpp ****     return res;
-ARM GAS  /tmp/ccPK5rSs.s 			page 25
+ARM GAS  /tmp/cctLJzMN.s 			page 25
 
 
  137:./MotorControl/utils.hpp **** }
@@ -1498,7 +1498,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
   25:MotorControl/thermistor.cpp ****     float k = current_meas_period / tau;
  709              		.loc 2 25 5 is_stmt 1 view .LVU116
   26:MotorControl/thermistor.cpp ****     float val = raw_temperature_;
-ARM GAS  /tmp/ccPK5rSs.s 			page 26
+ARM GAS  /tmp/cctLJzMN.s 			page 26
 
 
  710              		.loc 2 26 5 view .LVU117
@@ -1558,7 +1558,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
   46:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
   47:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****   template<typename _Tp, std::size_t _Nm>
   48:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****     struct __array_traits
-ARM GAS  /tmp/ccPK5rSs.s 			page 27
+ARM GAS  /tmp/cctLJzMN.s 			page 27
 
 
   49:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****     {
@@ -1618,7 +1618,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  103:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef std::size_t                    	      size_type;
  104:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef std::ptrdiff_t                   	      difference_type;
  105:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef std::reverse_iterator<iterator>	      reverse_iterator;
-ARM GAS  /tmp/ccPK5rSs.s 			page 28
+ARM GAS  /tmp/cctLJzMN.s 			page 28
 
 
  106:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       typedef std::reverse_iterator<const_iterator>   const_reverse_iterator;
@@ -1678,7 +1678,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  157:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR const_iterator
  158:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       cbegin() const noexcept
  159:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return const_iterator(data()); }
-ARM GAS  /tmp/ccPK5rSs.s 			page 29
+ARM GAS  /tmp/cctLJzMN.s 			page 29
 
 
  160:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
@@ -1738,7 +1738,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  214:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR reference
  215:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       front() noexcept
  216:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return *begin(); }
-ARM GAS  /tmp/ccPK5rSs.s 			page 30
+ARM GAS  /tmp/cctLJzMN.s 			page 30
 
 
  217:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
@@ -1798,7 +1798,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  748              		.loc 2 29 17 is_stmt 0 discriminator 2 view .LVU130
  749 003a 93ED007A 		vldr.32	s14, [r3]
   29:MotorControl/thermistor.cpp ****         val = lpf_val;
-ARM GAS  /tmp/ccPK5rSs.s 			page 31
+ARM GAS  /tmp/cctLJzMN.s 			page 31
 
 
  750              		.loc 2 29 29 discriminator 2 view .LVU131
@@ -1858,7 +1858,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  789              	.LBB172:
  790              	.LBI172:
  238:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
-ARM GAS  /tmp/ccPK5rSs.s 			page 32
+ARM GAS  /tmp/cctLJzMN.s 			page 32
 
 
  239:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
@@ -1918,7 +1918,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  293:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *
  294:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  This will work on temporary expressions, since they are only evaluated
  295:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  once, unlike a preprocessor macro.
-ARM GAS  /tmp/ccPK5rSs.s 			page 33
+ARM GAS  /tmp/cctLJzMN.s 			page 33
 
 
  296:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   */
@@ -1978,7 +1978,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  350:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	}
  351:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     };
  352:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
-ARM GAS  /tmp/ccPK5rSs.s 			page 34
+ARM GAS  /tmp/cctLJzMN.s 			page 34
 
 
  353:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus >= 201103L
@@ -2038,7 +2038,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  407:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
  408:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
  409:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<bool _IsMove>
-ARM GAS  /tmp/ccPK5rSs.s 			page 35
+ARM GAS  /tmp/cctLJzMN.s 			page 35
 
 
  410:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     struct __copy_move<_IsMove, true, random_access_iterator_tag>
@@ -2098,7 +2098,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  464:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
  465:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       typedef typename iterator_traits<_II>::iterator_category _Category;
  466:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #ifdef __cpp_lib_is_constant_evaluated
-ARM GAS  /tmp/ccPK5rSs.s 			page 36
+ARM GAS  /tmp/cctLJzMN.s 			page 36
 
 
  467:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       if (std::is_constant_evaluated())
@@ -2158,7 +2158,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  521:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _OI
  522:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     __copy_move_a(const ::__gnu_debug::_Safe_iterator<_Ite, _Seq, _Cat>&,
  523:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		  const ::__gnu_debug::_Safe_iterator<_Ite, _Seq, _Cat>&,
-ARM GAS  /tmp/ccPK5rSs.s 			page 37
+ARM GAS  /tmp/cctLJzMN.s 			page 37
 
 
  524:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		  _OI);
@@ -2218,7 +2218,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  578:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __result An output iterator.
  579:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @return   result + (last - first)
  580:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *
-ARM GAS  /tmp/ccPK5rSs.s 			page 38
+ARM GAS  /tmp/cctLJzMN.s 			page 38
 
 
  581:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  This inline function will boil down to a call to @c memmove whenever
@@ -2278,7 +2278,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  635:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  return __result;
  636:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	}
  637:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     };
-ARM GAS  /tmp/ccPK5rSs.s 			page 39
+ARM GAS  /tmp/cctLJzMN.s 			page 39
 
 
  638:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
@@ -2338,7 +2338,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  692:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  return __result - _Num;
  693:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	}
  694:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     };
-ARM GAS  /tmp/ccPK5rSs.s 			page 40
+ARM GAS  /tmp/cctLJzMN.s 			page 40
 
 
  695:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
@@ -2398,7 +2398,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  749:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		  (std::__niter_base(__first), std::__niter_base(__last),
  750:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		   std::__niter_base(__result)));
  751:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
-ARM GAS  /tmp/ccPK5rSs.s 			page 41
+ARM GAS  /tmp/cctLJzMN.s 			page 41
 
 
  752:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
@@ -2458,7 +2458,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  806:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
  807:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return std::__copy_move_backward_a<__is_move_iterator<_BI1>::__value>
  808:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	     (std::__miter_base(__first), std::__miter_base(__last), __result);
-ARM GAS  /tmp/ccPK5rSs.s 			page 42
+ARM GAS  /tmp/cctLJzMN.s 			page 42
 
 
  809:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
@@ -2518,7 +2518,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  863:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
  864:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _ForwardIterator, typename _Tp>
  865:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX20_CONSTEXPR
-ARM GAS  /tmp/ccPK5rSs.s 			page 43
+ARM GAS  /tmp/cctLJzMN.s 			page 43
 
 
  866:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     inline typename
@@ -2578,7 +2578,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  920:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	     const _Tp&);
  921:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
  922:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /**
-ARM GAS  /tmp/ccPK5rSs.s 			page 44
+ARM GAS  /tmp/cctLJzMN.s 			page 44
 
 
  923:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @brief Fills the range [first,last) with copies of value.
@@ -2638,7 +2638,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  977:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   __size_to_integer(unsigned __GLIBCXX_TYPE_INT_N_2 __n) { return __n; }
  978:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
  979:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if defined(__GLIBCXX_TYPE_INT_N_3)
-ARM GAS  /tmp/ccPK5rSs.s 			page 45
+ARM GAS  /tmp/cctLJzMN.s 			page 45
 
 
  980:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   inline _GLIBCXX_CONSTEXPR unsigned __GLIBCXX_TYPE_INT_N_3
@@ -2698,7 +2698,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
 1034:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       static_assert(is_integral<_Size>{}, "fill_n must pass integral size");
 1035:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
 1036:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __fill_n_a1(__first, __n, __value);
-ARM GAS  /tmp/ccPK5rSs.s 			page 46
+ARM GAS  /tmp/cctLJzMN.s 			page 46
 
 
 1037:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
@@ -2758,7 +2758,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  792              		.loc 4 1089 5 is_stmt 0 view .LVU148
  793              	.LBE172:
  794              	.LBE171:
-ARM GAS  /tmp/ccPK5rSs.s 			page 47
+ARM GAS  /tmp/cctLJzMN.s 			page 47
 
 
  951:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   inline _GLIBCXX_CONSTEXPR long
@@ -2818,7 +2818,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  841              		.section	.text._ZN24ThermistorCurrentLimiter9do_checksEv,"ax",%progbits
  842              		.align	1
  843              		.global	_ZN24ThermistorCurrentLimiter9do_checksEv
-ARM GAS  /tmp/ccPK5rSs.s 			page 48
+ARM GAS  /tmp/cctLJzMN.s 			page 48
 
 
  844              		.syntax unified
@@ -2878,7 +2878,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  887 0028 7047     		bx	lr
  888              	.LVL78:
  889              	.L56:
-ARM GAS  /tmp/ccPK5rSs.s 			page 49
+ARM GAS  /tmp/cctLJzMN.s 			page 49
 
 
   40:MotorControl/thermistor.cpp ****     }
@@ -2938,7 +2938,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  937 0018 FFF7FEFF 		bl	_ZN24ThermistorCurrentLimiterC2EtPKfjRS0_S2_RKb
  938              	.LVL80:
  939              		.loc 2 66 45 view .LVU177
-ARM GAS  /tmp/ccPK5rSs.s 			page 50
+ARM GAS  /tmp/cctLJzMN.s 			page 50
 
 
  940 001c 054B     		ldr	r3, .L59
@@ -2998,7 +2998,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
   70:MotorControl/thermistor.cpp **** OffboardThermistorCurrentLimiter::OffboardThermistorCurrentLimiter() :
   71:MotorControl/thermistor.cpp ****     ThermistorCurrentLimiter(UINT16_MAX,
   72:MotorControl/thermistor.cpp ****                              &config_.thermistor_poly_coeffs[0],
-ARM GAS  /tmp/ccPK5rSs.s 			page 51
+ARM GAS  /tmp/cctLJzMN.s 			page 51
 
 
   73:MotorControl/thermistor.cpp ****                              num_coeffs_,
@@ -3058,7 +3058,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  1028              		.loc 2 89 1 view .LVU189
  1029              		.cfi_endproc
  1030              	.LFE5189:
-ARM GAS  /tmp/ccPK5rSs.s 			page 52
+ARM GAS  /tmp/cctLJzMN.s 			page 52
 
 
  1031              		.fnend
@@ -3118,7 +3118,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  1080              	.LBB185:
  1081              	.LBI185:
   53:./MotorControl/thermistor.hpp ****         float thermistor_poly_coeffs[num_coeffs_];
-ARM GAS  /tmp/ccPK5rSs.s 			page 53
+ARM GAS  /tmp/cctLJzMN.s 			page 53
 
 
  1082              		.loc 5 53 12 is_stmt 1 view .LVU197
@@ -3178,7 +3178,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
   79:MotorControl/thermistor.cpp **** 
  1132              		.loc 2 79 1 view .LVU205
  1133 0050 2046     		mov	r0, r4
-ARM GAS  /tmp/ccPK5rSs.s 			page 54
+ARM GAS  /tmp/cctLJzMN.s 			page 54
 
 
  1134 0052 04B0     		add	sp, sp, #16
@@ -3238,7 +3238,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  1188              		@ frame_needed = 0, uses_anonymous_args = 0
   81:MotorControl/thermistor.cpp ****     config_.parent = this;
  1189              		.loc 2 81 55 is_stmt 0 view .LVU208
-ARM GAS  /tmp/ccPK5rSs.s 			page 55
+ARM GAS  /tmp/cctLJzMN.s 			page 55
 
 
  1190 0000 08B5     		push	{r3, lr}
@@ -3298,7 +3298,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  1239              	_ZTIN10ODriveIntf35OnboardThermistorCurrentLimiterIntfE:
  1240 0000 08000000 		.word	_ZTVN10__cxxabiv117__class_type_infoE+8
  1241 0004 00000000 		.word	_ZTSN10ODriveIntf35OnboardThermistorCurrentLimiterIntfE
-ARM GAS  /tmp/ccPK5rSs.s 			page 56
+ARM GAS  /tmp/cctLJzMN.s 			page 56
 
 
  1242              		.weak	_ZTSN10ODriveIntf36OffboardThermistorCurrentLimiterIntfE
@@ -3358,7 +3358,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  1296              		.weak	_ZTS32OffboardThermistorCurrentLimiter
  1297              		.section	.rodata._ZTS32OffboardThermistorCurrentLimiter,"aG",%progbits,_ZTS32OffboardThermistorCur
  1298              		.align	2
-ARM GAS  /tmp/ccPK5rSs.s 			page 57
+ARM GAS  /tmp/cctLJzMN.s 			page 57
 
 
  1301              	_ZTS32OffboardThermistorCurrentLimiter:
@@ -3418,7 +3418,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  1361 0014 02000000 		.word	2
  1362 0018 00000000 		.word	_ZTIN10ODriveIntf28ThermistorCurrentLimiterIntfE
  1363 001c 02000000 		.word	2
-ARM GAS  /tmp/ccPK5rSs.s 			page 58
+ARM GAS  /tmp/cctLJzMN.s 			page 58
 
 
  1364              		.section	.rodata._ZTS24ThermistorCurrentLimiter,"a"
@@ -3478,7 +3478,7 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  1418              		.file 43 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/cstdio"
  1419              		.file 44 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h"
  1420              		.file 45 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdlib.h"
-ARM GAS  /tmp/ccPK5rSs.s 			page 59
+ARM GAS  /tmp/cctLJzMN.s 			page 59
 
 
  1421              		.file 46 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/stdlib.h"
@@ -3499,114 +3499,114 @@ ARM GAS  /tmp/ccPK5rSs.s 			page 1
  1436              		.file 61 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/new"
  1437              		.file 62 "MotorControl/low_level.h"
  1438              		.file 63 "<built-in>"
-ARM GAS  /tmp/ccPK5rSs.s 			page 60
+ARM GAS  /tmp/cctLJzMN.s 			page 60
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 thermistor.cpp
-     /tmp/ccPK5rSs.s:20     .text._ZL8get_gpioj:0000000000000000 $t
-     /tmp/ccPK5rSs.s:25     .text._ZL8get_gpioj:0000000000000000 _ZL8get_gpioj
-     /tmp/ccPK5rSs.s:64     .text._ZL8get_gpioj:000000000000001c $d
+     /tmp/cctLJzMN.s:20     .text._ZL8get_gpioj:0000000000000000 $t
+     /tmp/cctLJzMN.s:25     .text._ZL8get_gpioj:0000000000000000 _ZL8get_gpioj
+     /tmp/cctLJzMN.s:64     .text._ZL8get_gpioj:000000000000001c $d
     .ARM.exidx.text._ZL8get_gpioj:0000000000000000 $d
-     /tmp/ccPK5rSs.s:71     .text._ZNK24ThermistorCurrentLimiter17get_current_limitEf:0000000000000000 $t
-     /tmp/ccPK5rSs.s:77     .text._ZNK24ThermistorCurrentLimiter17get_current_limitEf:0000000000000000 _ZNK24ThermistorCurrentLimiter17get_current_limitEf
+     /tmp/cctLJzMN.s:71     .text._ZNK24ThermistorCurrentLimiter17get_current_limitEf:0000000000000000 $t
+     /tmp/cctLJzMN.s:77     .text._ZNK24ThermistorCurrentLimiter17get_current_limitEf:0000000000000000 _ZNK24ThermistorCurrentLimiter17get_current_limitEf
 .ARM.exidx.text._ZNK24ThermistorCurrentLimiter17get_current_limitEf:0000000000000000 $d
-     /tmp/ccPK5rSs.s:197    .text._ZN24ThermistorCurrentLimiterD2Ev:0000000000000000 $t
-     /tmp/ccPK5rSs.s:203    .text._ZN24ThermistorCurrentLimiterD2Ev:0000000000000000 _ZN24ThermistorCurrentLimiterD2Ev
-     /tmp/ccPK5rSs.s:235    .text._ZN24ThermistorCurrentLimiterD2Ev:000000000000000c $d
-     /tmp/ccPK5rSs.s:1322   .rodata._ZTV14CurrentLimiter:0000000000000000 _ZTV14CurrentLimiter
+     /tmp/cctLJzMN.s:197    .text._ZN24ThermistorCurrentLimiterD2Ev:0000000000000000 $t
+     /tmp/cctLJzMN.s:203    .text._ZN24ThermistorCurrentLimiterD2Ev:0000000000000000 _ZN24ThermistorCurrentLimiterD2Ev
+     /tmp/cctLJzMN.s:235    .text._ZN24ThermistorCurrentLimiterD2Ev:000000000000000c $d
+     /tmp/cctLJzMN.s:1322   .rodata._ZTV14CurrentLimiter:0000000000000000 _ZTV14CurrentLimiter
 .ARM.exidx.text._ZN24ThermistorCurrentLimiterD2Ev:0000000000000000 $d
-     /tmp/ccPK5rSs.s:203    .text._ZN24ThermistorCurrentLimiterD2Ev:0000000000000000 _ZN24ThermistorCurrentLimiterD1Ev
-     /tmp/ccPK5rSs.s:245    .text._ZN32OffboardThermistorCurrentLimiterD2Ev:0000000000000000 $t
-     /tmp/ccPK5rSs.s:251    .text._ZN32OffboardThermistorCurrentLimiterD2Ev:0000000000000000 _ZN32OffboardThermistorCurrentLimiterD2Ev
-     /tmp/ccPK5rSs.s:290    .text._ZN32OffboardThermistorCurrentLimiterD2Ev:0000000000000010 $d
-     /tmp/ccPK5rSs.s:1345   .rodata._ZTV32OffboardThermistorCurrentLimiter:0000000000000000 _ZTV32OffboardThermistorCurrentLimiter
+     /tmp/cctLJzMN.s:203    .text._ZN24ThermistorCurrentLimiterD2Ev:0000000000000000 _ZN24ThermistorCurrentLimiterD1Ev
+     /tmp/cctLJzMN.s:245    .text._ZN32OffboardThermistorCurrentLimiterD2Ev:0000000000000000 $t
+     /tmp/cctLJzMN.s:251    .text._ZN32OffboardThermistorCurrentLimiterD2Ev:0000000000000000 _ZN32OffboardThermistorCurrentLimiterD2Ev
+     /tmp/cctLJzMN.s:290    .text._ZN32OffboardThermistorCurrentLimiterD2Ev:0000000000000010 $d
+     /tmp/cctLJzMN.s:1345   .rodata._ZTV32OffboardThermistorCurrentLimiter:0000000000000000 _ZTV32OffboardThermistorCurrentLimiter
 .ARM.exidx.text._ZN32OffboardThermistorCurrentLimiterD2Ev:0000000000000000 $d
-     /tmp/ccPK5rSs.s:251    .text._ZN32OffboardThermistorCurrentLimiterD2Ev:0000000000000000 _ZN32OffboardThermistorCurrentLimiterD1Ev
-     /tmp/ccPK5rSs.s:301    .text._ZN31OnboardThermistorCurrentLimiterD2Ev:0000000000000000 $t
-     /tmp/ccPK5rSs.s:307    .text._ZN31OnboardThermistorCurrentLimiterD2Ev:0000000000000000 _ZN31OnboardThermistorCurrentLimiterD2Ev
-     /tmp/ccPK5rSs.s:346    .text._ZN31OnboardThermistorCurrentLimiterD2Ev:0000000000000010 $d
-     /tmp/ccPK5rSs.s:1334   .rodata._ZTV31OnboardThermistorCurrentLimiter:0000000000000000 _ZTV31OnboardThermistorCurrentLimiter
+     /tmp/cctLJzMN.s:251    .text._ZN32OffboardThermistorCurrentLimiterD2Ev:0000000000000000 _ZN32OffboardThermistorCurrentLimiterD1Ev
+     /tmp/cctLJzMN.s:301    .text._ZN31OnboardThermistorCurrentLimiterD2Ev:0000000000000000 $t
+     /tmp/cctLJzMN.s:307    .text._ZN31OnboardThermistorCurrentLimiterD2Ev:0000000000000000 _ZN31OnboardThermistorCurrentLimiterD2Ev
+     /tmp/cctLJzMN.s:346    .text._ZN31OnboardThermistorCurrentLimiterD2Ev:0000000000000010 $d
+     /tmp/cctLJzMN.s:1334   .rodata._ZTV31OnboardThermistorCurrentLimiter:0000000000000000 _ZTV31OnboardThermistorCurrentLimiter
 .ARM.exidx.text._ZN31OnboardThermistorCurrentLimiterD2Ev:0000000000000000 $d
-     /tmp/ccPK5rSs.s:307    .text._ZN31OnboardThermistorCurrentLimiterD2Ev:0000000000000000 _ZN31OnboardThermistorCurrentLimiterD1Ev
-     /tmp/ccPK5rSs.s:357    .text._ZN24ThermistorCurrentLimiterD0Ev:0000000000000000 $t
-     /tmp/ccPK5rSs.s:363    .text._ZN24ThermistorCurrentLimiterD0Ev:0000000000000000 _ZN24ThermistorCurrentLimiterD0Ev
-     /tmp/ccPK5rSs.s:410    .text._ZN24ThermistorCurrentLimiterD0Ev:0000000000000018 $d
+     /tmp/cctLJzMN.s:307    .text._ZN31OnboardThermistorCurrentLimiterD2Ev:0000000000000000 _ZN31OnboardThermistorCurrentLimiterD1Ev
+     /tmp/cctLJzMN.s:357    .text._ZN24ThermistorCurrentLimiterD0Ev:0000000000000000 $t
+     /tmp/cctLJzMN.s:363    .text._ZN24ThermistorCurrentLimiterD0Ev:0000000000000000 _ZN24ThermistorCurrentLimiterD0Ev
+     /tmp/cctLJzMN.s:410    .text._ZN24ThermistorCurrentLimiterD0Ev:0000000000000018 $d
 .ARM.exidx.text._ZN24ThermistorCurrentLimiterD0Ev:0000000000000000 $d
-     /tmp/ccPK5rSs.s:418    .text._ZN31OnboardThermistorCurrentLimiterD0Ev:0000000000000000 $t
-     /tmp/ccPK5rSs.s:424    .text._ZN31OnboardThermistorCurrentLimiterD0Ev:0000000000000000 _ZN31OnboardThermistorCurrentLimiterD0Ev
-     /tmp/ccPK5rSs.s:480    .text._ZN31OnboardThermistorCurrentLimiterD0Ev:000000000000001c $d
+     /tmp/cctLJzMN.s:418    .text._ZN31OnboardThermistorCurrentLimiterD0Ev:0000000000000000 $t
+     /tmp/cctLJzMN.s:424    .text._ZN31OnboardThermistorCurrentLimiterD0Ev:0000000000000000 _ZN31OnboardThermistorCurrentLimiterD0Ev
+     /tmp/cctLJzMN.s:480    .text._ZN31OnboardThermistorCurrentLimiterD0Ev:000000000000001c $d
 .ARM.exidx.text._ZN31OnboardThermistorCurrentLimiterD0Ev:0000000000000000 $d
-     /tmp/ccPK5rSs.s:489    .text._ZN32OffboardThermistorCurrentLimiterD0Ev:0000000000000000 $t
-     /tmp/ccPK5rSs.s:495    .text._ZN32OffboardThermistorCurrentLimiterD0Ev:0000000000000000 _ZN32OffboardThermistorCurrentLimiterD0Ev
-     /tmp/ccPK5rSs.s:551    .text._ZN32OffboardThermistorCurrentLimiterD0Ev:000000000000001c $d
+     /tmp/cctLJzMN.s:489    .text._ZN32OffboardThermistorCurrentLimiterD0Ev:0000000000000000 $t
+     /tmp/cctLJzMN.s:495    .text._ZN32OffboardThermistorCurrentLimiterD0Ev:0000000000000000 _ZN32OffboardThermistorCurrentLimiterD0Ev
+     /tmp/cctLJzMN.s:551    .text._ZN32OffboardThermistorCurrentLimiterD0Ev:000000000000001c $d
 .ARM.exidx.text._ZN32OffboardThermistorCurrentLimiterD0Ev:0000000000000000 $d
-     /tmp/ccPK5rSs.s:560    .text._ZN24ThermistorCurrentLimiterC2EtPKfjRS0_S2_RKb:0000000000000000 $t
-     /tmp/ccPK5rSs.s:566    .text._ZN24ThermistorCurrentLimiterC2EtPKfjRS0_S2_RKb:0000000000000000 _ZN24ThermistorCurrentLimiterC2EtPKfjRS0_S2_RKb
-     /tmp/ccPK5rSs.s:624    .text._ZN24ThermistorCurrentLimiterC2EtPKfjRS0_S2_RKb:0000000000000030 $d
+     /tmp/cctLJzMN.s:560    .text._ZN24ThermistorCurrentLimiterC2EtPKfjRS0_S2_RKb:0000000000000000 $t
+     /tmp/cctLJzMN.s:566    .text._ZN24ThermistorCurrentLimiterC2EtPKfjRS0_S2_RKb:0000000000000000 _ZN24ThermistorCurrentLimiterC2EtPKfjRS0_S2_RKb
+     /tmp/cctLJzMN.s:624    .text._ZN24ThermistorCurrentLimiterC2EtPKfjRS0_S2_RKb:0000000000000030 $d
 .ARM.exidx.text._ZN24ThermistorCurrentLimiterC2EtPKfjRS0_S2_RKb:0000000000000000 $d
-     /tmp/ccPK5rSs.s:566    .text._ZN24ThermistorCurrentLimiterC2EtPKfjRS0_S2_RKb:0000000000000000 _ZN24ThermistorCurrentLimiterC1EtPKfjRS0_S2_RKb
-     /tmp/ccPK5rSs.s:635    .text._ZN24ThermistorCurrentLimiter6updateEv:0000000000000000 $t
-     /tmp/ccPK5rSs.s:641    .text._ZN24ThermistorCurrentLimiter6updateEv:0000000000000000 _ZN24ThermistorCurrentLimiter6updateEv
-     /tmp/ccPK5rSs.s:827    .text._ZN24ThermistorCurrentLimiter6updateEv:0000000000000074 $d
+     /tmp/cctLJzMN.s:566    .text._ZN24ThermistorCurrentLimiterC2EtPKfjRS0_S2_RKb:0000000000000000 _ZN24ThermistorCurrentLimiterC1EtPKfjRS0_S2_RKb
+     /tmp/cctLJzMN.s:635    .text._ZN24ThermistorCurrentLimiter6updateEv:0000000000000000 $t
+     /tmp/cctLJzMN.s:641    .text._ZN24ThermistorCurrentLimiter6updateEv:0000000000000000 _ZN24ThermistorCurrentLimiter6updateEv
+     /tmp/cctLJzMN.s:827    .text._ZN24ThermistorCurrentLimiter6updateEv:0000000000000074 $d
 .ARM.exidx.text._ZN24ThermistorCurrentLimiter6updateEv:0000000000000000 $d
-     /tmp/ccPK5rSs.s:842    .text._ZN24ThermistorCurrentLimiter9do_checksEv:0000000000000000 $t
-     /tmp/ccPK5rSs.s:848    .text._ZN24ThermistorCurrentLimiter9do_checksEv:0000000000000000 _ZN24ThermistorCurrentLimiter9do_checksEv
+     /tmp/cctLJzMN.s:842    .text._ZN24ThermistorCurrentLimiter9do_checksEv:0000000000000000 $t
+     /tmp/cctLJzMN.s:848    .text._ZN24ThermistorCurrentLimiter9do_checksEv:0000000000000000 _ZN24ThermistorCurrentLimiter9do_checksEv
 .ARM.exidx.text._ZN24ThermistorCurrentLimiter9do_checksEv:0000000000000000 $d
-     /tmp/ccPK5rSs.s:899    .text._ZN31OnboardThermistorCurrentLimiterC2EtPKfj:0000000000000000 $t
-     /tmp/ccPK5rSs.s:905    .text._ZN31OnboardThermistorCurrentLimiterC2EtPKfj:0000000000000000 _ZN31OnboardThermistorCurrentLimiterC2EtPKfj
-     /tmp/ccPK5rSs.s:970    .text._ZN31OnboardThermistorCurrentLimiterC2EtPKfj:0000000000000034 $d
+     /tmp/cctLJzMN.s:899    .text._ZN31OnboardThermistorCurrentLimiterC2EtPKfj:0000000000000000 $t
+     /tmp/cctLJzMN.s:905    .text._ZN31OnboardThermistorCurrentLimiterC2EtPKfj:0000000000000000 _ZN31OnboardThermistorCurrentLimiterC2EtPKfj
+     /tmp/cctLJzMN.s:970    .text._ZN31OnboardThermistorCurrentLimiterC2EtPKfj:0000000000000034 $d
 .ARM.exidx.text._ZN31OnboardThermistorCurrentLimiterC2EtPKfj:0000000000000000 $d
-     /tmp/ccPK5rSs.s:905    .text._ZN31OnboardThermistorCurrentLimiterC2EtPKfj:0000000000000000 _ZN31OnboardThermistorCurrentLimiterC1EtPKfj
-     /tmp/ccPK5rSs.s:981    .text._ZN32OffboardThermistorCurrentLimiter10decode_pinEv:0000000000000000 $t
-ARM GAS  /tmp/ccPK5rSs.s 			page 61
+     /tmp/cctLJzMN.s:905    .text._ZN31OnboardThermistorCurrentLimiterC2EtPKfj:0000000000000000 _ZN31OnboardThermistorCurrentLimiterC1EtPKfj
+     /tmp/cctLJzMN.s:981    .text._ZN32OffboardThermistorCurrentLimiter10decode_pinEv:0000000000000000 $t
+ARM GAS  /tmp/cctLJzMN.s 			page 61
 
 
-     /tmp/ccPK5rSs.s:987    .text._ZN32OffboardThermistorCurrentLimiter10decode_pinEv:0000000000000000 _ZN32OffboardThermistorCurrentLimiter10decode_pinEv
+     /tmp/cctLJzMN.s:987    .text._ZN32OffboardThermistorCurrentLimiter10decode_pinEv:0000000000000000 _ZN32OffboardThermistorCurrentLimiter10decode_pinEv
 .ARM.exidx.text._ZN32OffboardThermistorCurrentLimiter10decode_pinEv:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1034   .text._ZN32OffboardThermistorCurrentLimiterC2Ev:0000000000000000 $t
-     /tmp/ccPK5rSs.s:1040   .text._ZN32OffboardThermistorCurrentLimiterC2Ev:0000000000000000 _ZN32OffboardThermistorCurrentLimiterC2Ev
-     /tmp/ccPK5rSs.s:1144   .text._ZN32OffboardThermistorCurrentLimiterC2Ev:0000000000000058 $d
+     /tmp/cctLJzMN.s:1034   .text._ZN32OffboardThermistorCurrentLimiterC2Ev:0000000000000000 $t
+     /tmp/cctLJzMN.s:1040   .text._ZN32OffboardThermistorCurrentLimiterC2Ev:0000000000000000 _ZN32OffboardThermistorCurrentLimiterC2Ev
+     /tmp/cctLJzMN.s:1144   .text._ZN32OffboardThermistorCurrentLimiterC2Ev:0000000000000058 $d
 .ARM.extab.text._ZN32OffboardThermistorCurrentLimiterC2Ev:0000000000000000 $d
 .ARM.exidx.text._ZN32OffboardThermistorCurrentLimiterC2Ev:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1040   .text._ZN32OffboardThermistorCurrentLimiterC2Ev:0000000000000000 _ZN32OffboardThermistorCurrentLimiterC1Ev
-     /tmp/ccPK5rSs.s:1175   .text._ZN32OffboardThermistorCurrentLimiter12apply_configEv:0000000000000000 $t
-     /tmp/ccPK5rSs.s:1181   .text._ZN32OffboardThermistorCurrentLimiter12apply_configEv:0000000000000000 _ZN32OffboardThermistorCurrentLimiter12apply_configEv
+     /tmp/cctLJzMN.s:1040   .text._ZN32OffboardThermistorCurrentLimiterC2Ev:0000000000000000 _ZN32OffboardThermistorCurrentLimiterC1Ev
+     /tmp/cctLJzMN.s:1175   .text._ZN32OffboardThermistorCurrentLimiter12apply_configEv:0000000000000000 $t
+     /tmp/cctLJzMN.s:1181   .text._ZN32OffboardThermistorCurrentLimiter12apply_configEv:0000000000000000 _ZN32OffboardThermistorCurrentLimiter12apply_configEv
 .ARM.extab.text._ZN32OffboardThermistorCurrentLimiter12apply_configEv:0000000000000000 $d
 .ARM.exidx.text._ZN32OffboardThermistorCurrentLimiter12apply_configEv:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1216   .rodata._ZTSN10ODriveIntf28ThermistorCurrentLimiterIntfE:0000000000000000 _ZTSN10ODriveIntf28ThermistorCurrentLimiterIntfE
-     /tmp/ccPK5rSs.s:1213   .rodata._ZTSN10ODriveIntf28ThermistorCurrentLimiterIntfE:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1223   .rodata._ZTIN10ODriveIntf28ThermistorCurrentLimiterIntfE:0000000000000000 _ZTIN10ODriveIntf28ThermistorCurrentLimiterIntfE
-     /tmp/ccPK5rSs.s:1220   .rodata._ZTIN10ODriveIntf28ThermistorCurrentLimiterIntfE:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1231   .rodata._ZTSN10ODriveIntf35OnboardThermistorCurrentLimiterIntfE:0000000000000000 _ZTSN10ODriveIntf35OnboardThermistorCurrentLimiterIntfE
-     /tmp/ccPK5rSs.s:1228   .rodata._ZTSN10ODriveIntf35OnboardThermistorCurrentLimiterIntfE:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1239   .rodata._ZTIN10ODriveIntf35OnboardThermistorCurrentLimiterIntfE:0000000000000000 _ZTIN10ODriveIntf35OnboardThermistorCurrentLimiterIntfE
-     /tmp/ccPK5rSs.s:1236   .rodata._ZTIN10ODriveIntf35OnboardThermistorCurrentLimiterIntfE:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1247   .rodata._ZTSN10ODriveIntf36OffboardThermistorCurrentLimiterIntfE:0000000000000000 _ZTSN10ODriveIntf36OffboardThermistorCurrentLimiterIntfE
-     /tmp/ccPK5rSs.s:1244   .rodata._ZTSN10ODriveIntf36OffboardThermistorCurrentLimiterIntfE:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1255   .rodata._ZTIN10ODriveIntf36OffboardThermistorCurrentLimiterIntfE:0000000000000000 _ZTIN10ODriveIntf36OffboardThermistorCurrentLimiterIntfE
-     /tmp/ccPK5rSs.s:1252   .rodata._ZTIN10ODriveIntf36OffboardThermistorCurrentLimiterIntfE:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1263   .rodata._ZTS14CurrentLimiter:0000000000000000 _ZTS14CurrentLimiter
-     /tmp/ccPK5rSs.s:1260   .rodata._ZTS14CurrentLimiter:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1270   .rodata._ZTI14CurrentLimiter:0000000000000000 _ZTI14CurrentLimiter
-     /tmp/ccPK5rSs.s:1267   .rodata._ZTI14CurrentLimiter:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1368   .rodata._ZTS24ThermistorCurrentLimiter:0000000000000000 _ZTS24ThermistorCurrentLimiter
-     /tmp/ccPK5rSs.s:1355   .rodata._ZTI24ThermistorCurrentLimiter:0000000000000000 _ZTI24ThermistorCurrentLimiter
-     /tmp/ccPK5rSs.s:1280   .rodata._ZTS31OnboardThermistorCurrentLimiter:0000000000000000 _ZTS31OnboardThermistorCurrentLimiter
-     /tmp/ccPK5rSs.s:1277   .rodata._ZTS31OnboardThermistorCurrentLimiter:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1287   .rodata._ZTI31OnboardThermistorCurrentLimiter:0000000000000000 _ZTI31OnboardThermistorCurrentLimiter
-     /tmp/ccPK5rSs.s:1284   .rodata._ZTI31OnboardThermistorCurrentLimiter:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1301   .rodata._ZTS32OffboardThermistorCurrentLimiter:0000000000000000 _ZTS32OffboardThermistorCurrentLimiter
-     /tmp/ccPK5rSs.s:1298   .rodata._ZTS32OffboardThermistorCurrentLimiter:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1308   .rodata._ZTI32OffboardThermistorCurrentLimiter:0000000000000000 _ZTI32OffboardThermistorCurrentLimiter
-     /tmp/ccPK5rSs.s:1305   .rodata._ZTI32OffboardThermistorCurrentLimiter:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1319   .rodata._ZTV14CurrentLimiter:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1375   .rodata._ZTV24ThermistorCurrentLimiter:0000000000000000 _ZTV24ThermistorCurrentLimiter
-     /tmp/ccPK5rSs.s:1331   .rodata._ZTV31OnboardThermistorCurrentLimiter:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1342   .rodata._ZTV32OffboardThermistorCurrentLimiter:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1352   .rodata._ZTI24ThermistorCurrentLimiter:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1365   .rodata._ZTS24ThermistorCurrentLimiter:0000000000000000 $d
-     /tmp/ccPK5rSs.s:1371   .rodata._ZTV24ThermistorCurrentLimiter:0000000000000000 $d
+     /tmp/cctLJzMN.s:1216   .rodata._ZTSN10ODriveIntf28ThermistorCurrentLimiterIntfE:0000000000000000 _ZTSN10ODriveIntf28ThermistorCurrentLimiterIntfE
+     /tmp/cctLJzMN.s:1213   .rodata._ZTSN10ODriveIntf28ThermistorCurrentLimiterIntfE:0000000000000000 $d
+     /tmp/cctLJzMN.s:1223   .rodata._ZTIN10ODriveIntf28ThermistorCurrentLimiterIntfE:0000000000000000 _ZTIN10ODriveIntf28ThermistorCurrentLimiterIntfE
+     /tmp/cctLJzMN.s:1220   .rodata._ZTIN10ODriveIntf28ThermistorCurrentLimiterIntfE:0000000000000000 $d
+     /tmp/cctLJzMN.s:1231   .rodata._ZTSN10ODriveIntf35OnboardThermistorCurrentLimiterIntfE:0000000000000000 _ZTSN10ODriveIntf35OnboardThermistorCurrentLimiterIntfE
+     /tmp/cctLJzMN.s:1228   .rodata._ZTSN10ODriveIntf35OnboardThermistorCurrentLimiterIntfE:0000000000000000 $d
+     /tmp/cctLJzMN.s:1239   .rodata._ZTIN10ODriveIntf35OnboardThermistorCurrentLimiterIntfE:0000000000000000 _ZTIN10ODriveIntf35OnboardThermistorCurrentLimiterIntfE
+     /tmp/cctLJzMN.s:1236   .rodata._ZTIN10ODriveIntf35OnboardThermistorCurrentLimiterIntfE:0000000000000000 $d
+     /tmp/cctLJzMN.s:1247   .rodata._ZTSN10ODriveIntf36OffboardThermistorCurrentLimiterIntfE:0000000000000000 _ZTSN10ODriveIntf36OffboardThermistorCurrentLimiterIntfE
+     /tmp/cctLJzMN.s:1244   .rodata._ZTSN10ODriveIntf36OffboardThermistorCurrentLimiterIntfE:0000000000000000 $d
+     /tmp/cctLJzMN.s:1255   .rodata._ZTIN10ODriveIntf36OffboardThermistorCurrentLimiterIntfE:0000000000000000 _ZTIN10ODriveIntf36OffboardThermistorCurrentLimiterIntfE
+     /tmp/cctLJzMN.s:1252   .rodata._ZTIN10ODriveIntf36OffboardThermistorCurrentLimiterIntfE:0000000000000000 $d
+     /tmp/cctLJzMN.s:1263   .rodata._ZTS14CurrentLimiter:0000000000000000 _ZTS14CurrentLimiter
+     /tmp/cctLJzMN.s:1260   .rodata._ZTS14CurrentLimiter:0000000000000000 $d
+     /tmp/cctLJzMN.s:1270   .rodata._ZTI14CurrentLimiter:0000000000000000 _ZTI14CurrentLimiter
+     /tmp/cctLJzMN.s:1267   .rodata._ZTI14CurrentLimiter:0000000000000000 $d
+     /tmp/cctLJzMN.s:1368   .rodata._ZTS24ThermistorCurrentLimiter:0000000000000000 _ZTS24ThermistorCurrentLimiter
+     /tmp/cctLJzMN.s:1355   .rodata._ZTI24ThermistorCurrentLimiter:0000000000000000 _ZTI24ThermistorCurrentLimiter
+     /tmp/cctLJzMN.s:1280   .rodata._ZTS31OnboardThermistorCurrentLimiter:0000000000000000 _ZTS31OnboardThermistorCurrentLimiter
+     /tmp/cctLJzMN.s:1277   .rodata._ZTS31OnboardThermistorCurrentLimiter:0000000000000000 $d
+     /tmp/cctLJzMN.s:1287   .rodata._ZTI31OnboardThermistorCurrentLimiter:0000000000000000 _ZTI31OnboardThermistorCurrentLimiter
+     /tmp/cctLJzMN.s:1284   .rodata._ZTI31OnboardThermistorCurrentLimiter:0000000000000000 $d
+     /tmp/cctLJzMN.s:1301   .rodata._ZTS32OffboardThermistorCurrentLimiter:0000000000000000 _ZTS32OffboardThermistorCurrentLimiter
+     /tmp/cctLJzMN.s:1298   .rodata._ZTS32OffboardThermistorCurrentLimiter:0000000000000000 $d
+     /tmp/cctLJzMN.s:1308   .rodata._ZTI32OffboardThermistorCurrentLimiter:0000000000000000 _ZTI32OffboardThermistorCurrentLimiter
+     /tmp/cctLJzMN.s:1305   .rodata._ZTI32OffboardThermistorCurrentLimiter:0000000000000000 $d
+     /tmp/cctLJzMN.s:1319   .rodata._ZTV14CurrentLimiter:0000000000000000 $d
+     /tmp/cctLJzMN.s:1375   .rodata._ZTV24ThermistorCurrentLimiter:0000000000000000 _ZTV24ThermistorCurrentLimiter
+     /tmp/cctLJzMN.s:1331   .rodata._ZTV31OnboardThermistorCurrentLimiter:0000000000000000 $d
+     /tmp/cctLJzMN.s:1342   .rodata._ZTV32OffboardThermistorCurrentLimiter:0000000000000000 $d
+     /tmp/cctLJzMN.s:1352   .rodata._ZTI24ThermistorCurrentLimiter:0000000000000000 $d
+     /tmp/cctLJzMN.s:1365   .rodata._ZTS24ThermistorCurrentLimiter:0000000000000000 $d
+     /tmp/cctLJzMN.s:1371   .rodata._ZTV24ThermistorCurrentLimiter:0000000000000000 $d
                            .group:0000000000000000 _ZN24ThermistorCurrentLimiterD5Ev
                            .group:0000000000000000 _ZN32OffboardThermistorCurrentLimiterD5Ev
                            .group:0000000000000000 _ZN31OnboardThermistorCurrentLimiterD5Ev
@@ -3619,7 +3619,7 @@ __aeabi_unwind_cpp_pr0
 channel_from_gpio
 __cxa_end_cleanup
 __gxx_personality_v0
-ARM GAS  /tmp/ccPK5rSs.s 			page 62
+ARM GAS  /tmp/cctLJzMN.s 			page 62
 
 
 __aeabi_unwind_cpp_pr1

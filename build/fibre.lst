@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccu97uzg.s 			page 1
+ARM GAS  /tmp/ccsmNutM.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   26:fibre-cpp/fibre.cpp **** #endif
   27:fibre-cpp/fibre.cpp **** 
   28:fibre-cpp/fibre.cpp **** using namespace fibre;
-ARM GAS  /tmp/ccu97uzg.s 			page 2
+ARM GAS  /tmp/ccsmNutM.s 			page 2
 
 
   29:fibre-cpp/fibre.cpp **** 
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   78:fibre-cpp/fibre.cpp **** #if FIBRE_ENABLE_EVENT_LOOP
   79:fibre-cpp/fibre.cpp ****     EventLoopImpl* event_loop = my_alloc<EventLoopImpl>(); // TODO: free
   80:fibre-cpp/fibre.cpp ****     return event_loop->start([&](){ on_started.invoke(event_loop); });
-ARM GAS  /tmp/ccu97uzg.s 			page 3
+ARM GAS  /tmp/ccsmNutM.s 			page 3
 
 
   81:fibre-cpp/fibre.cpp **** #else
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  115:fibre-cpp/fibre.cpp **** }
  116:fibre-cpp/fibre.cpp **** 
  117:fibre-cpp/fibre.cpp **** Context* fibre::open(EventLoop* event_loop) {
-ARM GAS  /tmp/ccu97uzg.s 			page 4
+ARM GAS  /tmp/ccsmNutM.s 			page 4
 
 
  118:fibre-cpp/fibre.cpp ****     Context* ctx = my_alloc<Context>();
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  172:fibre-cpp/fibre.cpp **** 
  173:fibre-cpp/fibre.cpp ****         prev_delim = std::min(next_delim + 1, specs.end());
  174:fibre-cpp/fibre.cpp ****     }
-ARM GAS  /tmp/ccu97uzg.s 			page 5
+ARM GAS  /tmp/ccsmNutM.s 			page 5
 
 
  175:fibre-cpp/fibre.cpp **** 
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  229:fibre-cpp/fibre.cpp ****     FIBRE_LOG(D) << "found channels!";
  230:fibre-cpp/fibre.cpp **** 
  231:fibre-cpp/fibre.cpp ****     if (result.status != kFibreOk) {
-ARM GAS  /tmp/ccu97uzg.s 			page 6
+ARM GAS  /tmp/ccsmNutM.s 			page 6
 
 
  232:fibre-cpp/fibre.cpp ****         FIBRE_LOG(W) << "discoverer stopped";
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   73 0006 4FF49071 		mov	r1, #288
   74              	.LVL4:
   75              		.loc 1 269 12 discriminator 1 view .LVU8
-ARM GAS  /tmp/ccu97uzg.s 			page 7
+ARM GAS  /tmp/ccsmNutM.s 			page 7
 
 
   76 000a FFF7FEFF 		bl	_ZdlPvj
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   28:fibre-cpp/include/fibre/callback.hpp ****      * This is only works it the other callback has identical template parameters.
   29:fibre-cpp/include/fibre/callback.hpp ****      * This constructor is templated so that construction from an incompatible
   30:fibre-cpp/include/fibre/callback.hpp ****      * callback gives a useful error message.
-ARM GAS  /tmp/ccu97uzg.s 			page 8
+ARM GAS  /tmp/ccsmNutM.s 			page 8
 
 
   31:fibre-cpp/include/fibre/callback.hpp ****      */
@@ -448,7 +448,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   55:fibre-cpp/include/fibre/callback.hpp ****     operator bool() {
   56:fibre-cpp/include/fibre/callback.hpp ****         return cb_;
   57:fibre-cpp/include/fibre/callback.hpp ****     }
-  58:fibre-cpp/include/fibre/callback.hpp ****     
+  58:fibre-cpp/include/fibre/callback.hpp ****     //!TArgs...：这是一个模板参数包，表示函数接受一组任意数量和类型的参
   59:fibre-cpp/include/fibre/callback.hpp ****     TRet invoke(TArgs ... arg) const {
   60:fibre-cpp/include/fibre/callback.hpp ****         if (cb_) {
   61:fibre-cpp/include/fibre/callback.hpp ****             return (*cb_)(ctx_, arg...);
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   85:fibre-cpp/include/fibre/callback.hpp **** 
   86:fibre-cpp/include/fibre/callback.hpp **** template<typename _TRet, typename _TObj, typename ... _TArgs>
   87:fibre-cpp/include/fibre/callback.hpp **** struct function_traits {
-ARM GAS  /tmp/ccu97uzg.s 			page 9
+ARM GAS  /tmp/ccsmNutM.s 			page 9
 
 
   88:fibre-cpp/include/fibre/callback.hpp ****     using TRet = _TRet;
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  140              	.LFB4412:
   57:fibre-cpp/fibre.cpp ****     if (!TheInstance<T>::in_use) {
  141              		.loc 1 57 4 is_stmt 1 view -0
-ARM GAS  /tmp/ccu97uzg.s 			page 10
+ARM GAS  /tmp/ccsmNutM.s 			page 10
 
 
  142              		.cfi_startproc
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  190 0000 034B     		ldr	r3, .L18
  191 0002 8342     		cmp	r3, r0
  192 0004 00D0     		beq	.L17
-ARM GAS  /tmp/ccu97uzg.s 			page 11
+ARM GAS  /tmp/ccsmNutM.s 			page 11
 
 
  193              	.L15:
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  146:fibre-cpp/fibre.cpp **** 
  240              		.loc 1 146 1 view .LVU34
  241 0006 08BD     		pop	{r3, pc}
-ARM GAS  /tmp/ccu97uzg.s 			page 12
+ARM GAS  /tmp/ccsmNutM.s 			page 12
 
 
  242              		.cfi_endproc
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  284              		.align	2
  285              	.L23:
  286 0008 00000000 		.word	_ZZN5fibre14MemberCallbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEE
-ARM GAS  /tmp/ccu97uzg.s 			page 13
+ARM GAS  /tmp/ccsmNutM.s 			page 13
 
 
  287              		.cfi_endproc
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  335              		.loc 1 236 17 is_stmt 0 view .LVU48
  336 0014 1646     		mov	r6, r2
  236:fibre-cpp/fibre.cpp ****         FIBRE_LOG(W) << "unidirectional operation not supported yet";
-ARM GAS  /tmp/ccu97uzg.s 			page 14
+ARM GAS  /tmp/ccsmNutM.s 			page 14
 
 
  337              		.loc 1 236 5 view .LVU49
@@ -838,7 +838,7 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   27:fibre-cpp/legacy_protocol.hpp **** 
   28:fibre-cpp/legacy_protocol.hpp **** constexpr uint8_t CANONICAL_PREFIX = 0xAA;
   29:fibre-cpp/legacy_protocol.hpp **** 
-ARM GAS  /tmp/ccu97uzg.s 			page 15
+ARM GAS  /tmp/ccsmNutM.s 			page 15
 
 
   30:fibre-cpp/legacy_protocol.hpp **** constexpr uint16_t PROTOCOL_VERSION = 1;
@@ -893,12 +893,12 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   79:fibre-cpp/legacy_protocol.hpp ****     Callback<void, ReadResult> completer_;
   80:fibre-cpp/legacy_protocol.hpp **** 
   81:fibre-cpp/legacy_protocol.hpp ****     enum {
-  82:fibre-cpp/legacy_protocol.hpp ****         kStateIdle,
-  83:fibre-cpp/legacy_protocol.hpp ****         kStateCancelling,
-  84:fibre-cpp/legacy_protocol.hpp ****         kStateReceivingHeader,
-  85:fibre-cpp/legacy_protocol.hpp ****         kStateReceivingPayload,
-  86:fibre-cpp/legacy_protocol.hpp ****         kStateReceivingTrailer
-ARM GAS  /tmp/ccu97uzg.s 			page 16
+  82:fibre-cpp/legacy_protocol.hpp ****         kStateIdle, //!空闲状态
+  83:fibre-cpp/legacy_protocol.hpp ****         kStateCancelling, //!正在取消操作
+  84:fibre-cpp/legacy_protocol.hpp ****         kStateReceivingHeader, //!正在接收数据包头
+  85:fibre-cpp/legacy_protocol.hpp ****         kStateReceivingPayload, //!正在接收数据负载
+  86:fibre-cpp/legacy_protocol.hpp ****         kStateReceivingTrailer //!正在接收数据包尾
+ARM GAS  /tmp/ccsmNutM.s 			page 16
 
 
   87:fibre-cpp/legacy_protocol.hpp ****     } state_ = kStateIdle;
@@ -907,14 +907,15 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   90:fibre-cpp/legacy_protocol.hpp **** 
   91:fibre-cpp/legacy_protocol.hpp **** struct LegacyProtocolPacketBased {
   92:fibre-cpp/legacy_protocol.hpp **** public:
-  93:fibre-cpp/legacy_protocol.hpp ****     LegacyProtocolPacketBased(AsyncStreamSource* rx_channel, AsyncStreamSink* tx_channel, size_t tx
- 359              		.loc 3 93 5 is_stmt 1 view .LVU56
+  93:fibre-cpp/legacy_protocol.hpp ****     //!tx_mtu 表示发送数据的最大传输单元，即单次发送操作所允许的最大字�
+  94:fibre-cpp/legacy_protocol.hpp ****     LegacyProtocolPacketBased(AsyncStreamSource* rx_channel, AsyncStreamSink* tx_channel, size_t tx
+ 359              		.loc 3 94 5 is_stmt 1 view .LVU56
  360              	.LBB98:
-  94:fibre-cpp/legacy_protocol.hpp ****         : rx_channel_(rx_channel), tx_channel_(tx_channel), tx_mtu_(std::min(tx_mtu, sizeof(tx_buf_
- 361              		.loc 3 94 102 is_stmt 0 view .LVU57
+  95:fibre-cpp/legacy_protocol.hpp ****         : rx_channel_(rx_channel), tx_channel_(tx_channel), tx_mtu_(std::min(tx_mtu, sizeof(tx_buf_
+ 361              		.loc 3 95 102 is_stmt 0 view .LVU57
  362 002a 0660     		str	r6, [r0]
  363 002c 4760     		str	r7, [r0, #4]
- 364              		.loc 3 94 86 view .LVU58
+ 364              		.loc 3 95 86 view .LVU58
  365 002e 8022     		movs	r2, #128
  366 0030 0392     		str	r2, [sp, #12]
  367              	.LVL19:
@@ -957,10 +958,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   34:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * in supporting documentation.  Hewlett-Packard Company makes no
   35:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * representations about the suitability of this software for any
   36:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * purpose.  It is provided "as is" without express or implied warranty.
+ARM GAS  /tmp/ccsmNutM.s 			page 17
+
+
   37:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *
-ARM GAS  /tmp/ccu97uzg.s 			page 17
-
-
   38:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  *
   39:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Copyright (c) 1996-1998
   40:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****  * Silicon Graphics Computer Systems, Inc.
@@ -1017,10 +1018,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   91:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
   92:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus >= 201103L
   93:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       static_assert(sizeof(_Tp) == sizeof(_Up), "can be compared with memcmp");
+ARM GAS  /tmp/ccsmNutM.s 			page 18
+
+
   94:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
-ARM GAS  /tmp/ccu97uzg.s 			page 18
-
-
   95:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #ifdef __cpp_lib_is_constant_evaluated
   96:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       if (std::is_constant_evaluated())
   97:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	{
@@ -1077,10 +1078,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  148:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   */
  149:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _ForwardIterator1, typename _ForwardIterator2>
  150:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX20_CONSTEXPR
+ARM GAS  /tmp/ccsmNutM.s 			page 19
+
+
  151:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     inline void
-ARM GAS  /tmp/ccu97uzg.s 			page 19
-
-
  152:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     iter_swap(_ForwardIterator1 __a, _ForwardIterator2 __b)
  153:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
  154:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // concept requirements
@@ -1137,10 +1138,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  205:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_Mutable_ForwardIteratorConcept<
  206:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ForwardIterator1>)
  207:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_Mutable_ForwardIteratorConcept<
+ARM GAS  /tmp/ccsmNutM.s 			page 20
+
+
  208:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				  _ForwardIterator2>)
-ARM GAS  /tmp/ccu97uzg.s 			page 20
-
-
  209:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_requires_valid_range(__first1, __last1);
  210:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
  211:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       for (; __first1 != __last1; ++__first1, (void)++__first2)
@@ -1182,10 +1183,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  380              		.loc 4 237 14 view .LVU62
  381              	.LBE100:
  382              	.LBE99:
- 383              		.loc 3 94 77 view .LVU63
+ 383              		.loc 3 95 77 view .LVU63
  384 0038 1B68     		ldr	r3, [r3]
  385              	.LVL21:
- 386              		.loc 3 94 102 view .LVU64
+ 386              		.loc 3 95 102 view .LVU64
  387 003a A360     		str	r3, [r4, #8]
  388 003c 0023     		movs	r3, #0
  389 003e C4F80C31 		str	r3, [r4, #268]
@@ -1197,10 +1198,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   21:fibre-cpp/include/fibre/callback.hpp ****     Callback(TRet(*callback)(void*, TArgs...), void* ctx) :
  395              		.loc 2 21 5 is_stmt 1 view .LVU65
  396              	.LBB103:
+ARM GAS  /tmp/ccsmNutM.s 			page 21
+
+
   21:fibre-cpp/include/fibre/callback.hpp ****     Callback(TRet(*callback)(void*, TArgs...), void* ctx) :
-ARM GAS  /tmp/ccu97uzg.s 			page 21
-
-
  397              		.loc 2 21 58 is_stmt 0 view .LVU66
  398 004a C4F81831 		str	r3, [r4, #280]
  399 004e C4F81C31 		str	r3, [r4, #284]
@@ -1257,10 +1258,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  444              		.loc 4 236 9 view .LVU72
  445 006c 03AB     		add	r3, sp, #12
  446 006e E3E7     		b	.L27
+ARM GAS  /tmp/ccsmNutM.s 			page 22
+
+
  447              	.LBE101:
-ARM GAS  /tmp/ccu97uzg.s 			page 22
-
-
  448              	.LBE104:
  449              	.LBE105:
  450              	.LBE106:
@@ -1317,10 +1318,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  275:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _Tp, typename _Compare>
  276:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX14_CONSTEXPR
  277:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     inline const _Tp&
+ARM GAS  /tmp/ccsmNutM.s 			page 23
+
+
  278:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     min(const _Tp& __a, const _Tp& __b, _Compare __comp)
-ARM GAS  /tmp/ccu97uzg.s 			page 23
-
-
  279:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
  280:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       //return __comp(__b, __a) ? __b : __a;
  281:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       if (__comp(__b, __a))
@@ -1377,10 +1378,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  332:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
  333:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // All of these auxiliary structs serve two purposes.  (1) Replace
  334:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // calls to copy with memmove whenever possible.  (Memmove, not memcpy,
+ARM GAS  /tmp/ccsmNutM.s 			page 24
+
+
  335:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // because the input and output ranges are permitted to overlap.)
-ARM GAS  /tmp/ccu97uzg.s 			page 24
-
-
  336:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // (2) If we're using random access iterators, then write the loop as
  337:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // a for loop with an explicit count.
  338:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
@@ -1437,10 +1438,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  389:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<>
  390:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     struct __copy_move<true, false, random_access_iterator_tag>
  391:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ARM GAS  /tmp/ccsmNutM.s 			page 25
+
+
  392:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       template<typename _II, typename _OI>
-ARM GAS  /tmp/ccu97uzg.s 			page 25
-
-
  393:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	_GLIBCXX20_CONSTEXPR
  394:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	static _OI
  395:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	__copy_m(_II __first, _II __last, _OI __result)
@@ -1497,10 +1498,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  446:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		   ostreambuf_iterator<_CharT, char_traits<_CharT> >);
  447:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
  448:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<bool _IsMove, typename _CharT>
+ARM GAS  /tmp/ccsmNutM.s 			page 26
+
+
  449:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     typename __gnu_cxx::__enable_if<__is_char<_CharT>::__value,
-ARM GAS  /tmp/ccu97uzg.s 			page 26
-
-
  450:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	     ostreambuf_iterator<_CharT, char_traits<_CharT> > >::__type
  451:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     __copy_move_a2(const _CharT*, const _CharT*,
  452:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		   ostreambuf_iterator<_CharT, char_traits<_CharT> >);
@@ -1557,10 +1558,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  503:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX20_CONSTEXPR
  504:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     inline _OI
  505:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     __copy_move_a1(_II __first, _II __last, _OI __result)
+ARM GAS  /tmp/ccsmNutM.s 			page 27
+
+
  506:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     { return std::__copy_move_a2<_IsMove>(__first, __last, __result); }
-ARM GAS  /tmp/ccu97uzg.s 			page 27
-
-
  507:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
  508:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<bool _IsMove, typename _II, typename _OI>
  509:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX20_CONSTEXPR
@@ -1617,10 +1618,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  560:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     copy(_II __first, _II __last, _OI __result)
  561:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
  562:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // concept requirements
+ARM GAS  /tmp/ccsmNutM.s 			page 28
+
+
  563:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_InputIteratorConcept<_II>)
-ARM GAS  /tmp/ccu97uzg.s 			page 28
-
-
  564:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_OutputIteratorConcept<_OI,
  565:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	    typename iterator_traits<_II>::value_type>)
  566:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_requires_can_increment_range(__first, __last, __result);
@@ -1677,10 +1678,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  617:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	{
  618:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  while (__first != __last)
  619:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	    *--__result = *--__last;
+ARM GAS  /tmp/ccsmNutM.s 			page 29
+
+
  620:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  return __result;
-ARM GAS  /tmp/ccu97uzg.s 			page 29
-
-
  621:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	}
  622:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     };
  623:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
@@ -1737,10 +1738,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  674:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<bool _IsMove>
  675:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     struct __copy_move_backward<_IsMove, true, random_access_iterator_tag>
  676:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ARM GAS  /tmp/ccsmNutM.s 			page 30
+
+
  677:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       template<typename _Tp>
-ARM GAS  /tmp/ccu97uzg.s 			page 30
-
-
  678:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	_GLIBCXX20_CONSTEXPR
  679:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	static _Tp*
  680:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	__copy_move_b(const _Tp* __first, const _Tp* __last, _Tp* __result)
@@ -1797,10 +1798,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  731:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 			_GLIBCXX_STD_C::_Deque_iterator<_ITp, _IRef, _IPtr>,
  732:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 			_GLIBCXX_STD_C::_Deque_iterator<_ITp, _IRef, _IPtr>,
  733:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 			_GLIBCXX_STD_C::_Deque_iterator<_OTp, _OTp&, _OTp*>);
+ARM GAS  /tmp/ccsmNutM.s 			page 31
+
+
  734:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
-ARM GAS  /tmp/ccu97uzg.s 			page 31
-
-
  735:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<bool _IsMove, typename _II, typename _Tp>
  736:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     typename __gnu_cxx::__enable_if<
  737:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __is_random_access_iter<_II>::__value,
@@ -1857,10 +1858,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  788:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  loop count will be known (and therefore a candidate for compiler
  789:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  optimizations such as unrolling).
  790:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *
+ARM GAS  /tmp/ccsmNutM.s 			page 32
+
+
  791:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  Result may not be in the range (first,last].  Use copy instead.  Note
-ARM GAS  /tmp/ccu97uzg.s 			page 32
-
-
  792:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  that the start of the output range may overlap [first,last).
  793:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   */
  794:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _BI1, typename _BI2>
@@ -1917,10 +1918,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  845:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 					       __result);
  846:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
  847:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ARM GAS  /tmp/ccsmNutM.s 			page 33
+
+
  848:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #define _GLIBCXX_MOVE_BACKWARD3(_Tp, _Up, _Vp) std::move_backward(_Tp, _Up, _Vp)
-ARM GAS  /tmp/ccu97uzg.s 			page 33
-
-
  849:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #else
  850:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #define _GLIBCXX_MOVE_BACKWARD3(_Tp, _Up, _Vp) std::copy_backward(_Tp, _Up, _Vp)
  851:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
@@ -1977,10 +1978,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  902:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     { std::__fill_a1(__first.base(), __last.base(), __value); }
  903:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
  904:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _Tp, typename _VTp>
+ARM GAS  /tmp/ccsmNutM.s 			page 34
+
+
  905:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     void
-ARM GAS  /tmp/ccu97uzg.s 			page 34
-
-
  906:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     __fill_a1(const _GLIBCXX_STD_C::_Deque_iterator<_Tp, _Tp&, _Tp*>&,
  907:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	      const _GLIBCXX_STD_C::_Deque_iterator<_Tp, _Tp&, _Tp*>&,
  908:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	      const _VTp&);
@@ -2037,10 +2038,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  959:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   __size_to_integer(unsigned long long __n) { return __n; }
  960:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
  961:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if defined(__GLIBCXX_TYPE_INT_N_0)
+ARM GAS  /tmp/ccsmNutM.s 			page 35
+
+
  962:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   inline _GLIBCXX_CONSTEXPR __GLIBCXX_TYPE_INT_N_0
-ARM GAS  /tmp/ccu97uzg.s 			page 35
-
-
  963:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   __size_to_integer(__GLIBCXX_TYPE_INT_N_0 __n) { return __n; }
  964:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   inline _GLIBCXX_CONSTEXPR unsigned __GLIBCXX_TYPE_INT_N_0
  965:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   __size_to_integer(unsigned __GLIBCXX_TYPE_INT_N_0 __n) { return __n; }
@@ -2097,10 +2098,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1016:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	*__first = __tmp;
 1017:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __first;
 1018:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
+ARM GAS  /tmp/ccsmNutM.s 			page 36
+
+
 1019:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
-ARM GAS  /tmp/ccu97uzg.s 			page 36
-
-
 1020:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _Ite, typename _Seq, typename _Cat, typename _Size,
 1021:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	   typename _Tp>
 1022:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     ::__gnu_debug::_Safe_iterator<_Ite, _Seq, _Cat>
@@ -2157,10 +2158,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1073:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __n      The count of copies to perform.
 1074:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __value  A reference-to-const of arbitrary type.
 1075:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @return   The iterator at first+n.
+ARM GAS  /tmp/ccsmNutM.s 			page 37
+
+
 1076:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *
-ARM GAS  /tmp/ccu97uzg.s 			page 37
-
-
 1077:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  This function fills a range with copies of the same value.  For char
 1078:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  types filling contiguous areas of memory, this becomes an inline call
 1079:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  to @c memset or @c wmemset.
@@ -2217,10 +2218,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1130:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     __equal_aux1(_GLIBCXX_STD_C::_Deque_iterator<_Tp, _Ref, _Ptr>,
 1131:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		 _GLIBCXX_STD_C::_Deque_iterator<_Tp, _Ref, _Ptr>,
 1132:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		 _II);
+ARM GAS  /tmp/ccsmNutM.s 			page 38
+
+
 1133:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
-ARM GAS  /tmp/ccu97uzg.s 			page 38
-
-
 1134:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _Tp1, typename _Ref1, typename _Ptr1,
 1135:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	   typename _Tp2, typename _Ref2, typename _Ptr2>
 1136:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     bool
@@ -2277,10 +2278,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1187:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename, typename>
 1188:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     struct __lc_rai
 1189:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ARM GAS  /tmp/ccsmNutM.s 			page 39
+
+
 1190:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       template<typename _II1, typename _II2>
-ARM GAS  /tmp/ccu97uzg.s 			page 39
-
-
 1191:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	_GLIBCXX20_CONSTEXPR
 1192:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	static _II1
 1193:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	__newlast1(_II1, _II1 __last1, _II2, _II2)
@@ -2337,10 +2338,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1244:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	}
 1245:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __first1 == __last1 && __first2 != __last2;
 1246:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
+ARM GAS  /tmp/ccsmNutM.s 			page 40
+
+
 1247:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
-ARM GAS  /tmp/ccu97uzg.s 			page 40
-
-
 1248:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<bool _BoolType>
 1249:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     struct __lexicographical_compare
 1250:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
@@ -2397,10 +2398,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1301:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
 1302:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return std::__lexicographical_compare<__simple>::__lc(__first1, __last1,
 1303:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 							    __first2, __last2);
+ARM GAS  /tmp/ccsmNutM.s 			page 41
+
+
 1304:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
-ARM GAS  /tmp/ccu97uzg.s 			page 41
-
-
 1305:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
 1306:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _ForwardIterator, typename _Tp, typename _Compare>
 1307:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX20_CONSTEXPR
@@ -2457,10 +2458,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1358:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 				__gnu_cxx::__ops::__iter_less_val());
 1359:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
 1360:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ARM GAS  /tmp/ccsmNutM.s 			page 42
+
+
 1361:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /// This is a helper function for the sort routines and for random.tcc.
-ARM GAS  /tmp/ccu97uzg.s 			page 42
-
-
 1362:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   //  Precondition: __n > 0.
 1363:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   inline _GLIBCXX_CONSTEXPR int
 1364:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   __lg(int __n)
@@ -2517,10 +2518,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1415:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
 1416:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
 1417:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /**
+ARM GAS  /tmp/ccsmNutM.s 			page 43
+
+
 1418:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @brief Tests a range for element-wise equality.
-ARM GAS  /tmp/ccu97uzg.s 			page 43
-
-
 1419:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @ingroup non_mutating_algorithms
 1420:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __first1  An input iterator.
 1421:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __last1   An input iterator.
@@ -2577,10 +2578,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1472:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  return false;
 1473:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __first1 == __last1 && __first2 == __last2;
 1474:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     }
+ARM GAS  /tmp/ccsmNutM.s 			page 44
+
+
 1475:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
-ARM GAS  /tmp/ccu97uzg.s 			page 44
-
-
 1476:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // 4-iterator version of std::equal<It1, It2, BinaryPred> for use in C++11.
 1477:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _II1, typename _II2, typename _BinaryPredicate>
 1478:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX20_CONSTEXPR
@@ -2637,10 +2638,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1529:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_InputIteratorConcept<_II2>)
 1530:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_EqualOpConcept<
 1531:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	    typename iterator_traits<_II1>::value_type,
+ARM GAS  /tmp/ccsmNutM.s 			page 45
+
+
 1532:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	    typename iterator_traits<_II2>::value_type>)
-ARM GAS  /tmp/ccu97uzg.s 			page 45
-
-
 1533:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_requires_valid_range(__first1, __last1);
 1534:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_requires_valid_range(__first2, __last2);
 1535:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
@@ -2697,10 +2698,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1586:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   */
 1587:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _II1, typename _II2>
 1588:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX20_CONSTEXPR
+ARM GAS  /tmp/ccsmNutM.s 			page 46
+
+
 1589:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     inline bool
-ARM GAS  /tmp/ccu97uzg.s 			page 46
-
-
 1590:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     lexicographical_compare(_II1 __first1, _II1 __last1,
 1591:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 			    _II2 __first2, _II2 __last2)
 1592:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
@@ -2757,10 +2758,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1643:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // or std::byte, suitable for comparison by memcmp.
 1644:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _Iter>
 1645:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     concept __is_byte_iter = contiguous_iterator<_Iter>
+ARM GAS  /tmp/ccsmNutM.s 			page 47
+
+
 1646:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       && __is_memcmp_ordered<iter_value_t<_Iter>>::__value;
-ARM GAS  /tmp/ccu97uzg.s 			page 47
-
-
 1647:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
 1648:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // Return a struct with two members, initialized to the smaller of x and y
 1649:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   // (or x if they compare equal) and the result of the comparison x <=> y.
@@ -2817,10 +2818,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1700:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		const auto [__len, __lencmp]
 1701:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		  = std::__min_cmp(__last1 - __first1, __last2 - __first2);
 1702:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		if (__len)
+ARM GAS  /tmp/ccsmNutM.s 			page 48
+
+
 1703:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		  {
-ARM GAS  /tmp/ccu97uzg.s 			page 48
-
-
 1704:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		    const auto __c
 1705:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		      = __builtin_memcmp(&*__first1, &*__first2, __len) <=> 0;
 1706:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 		    if (__c != 0)
@@ -2877,10 +2878,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1757:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __first2  An input iterator.
 1758:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @return   A pair of iterators pointing to the first mismatch.
 1759:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *
+ARM GAS  /tmp/ccsmNutM.s 			page 49
+
+
 1760:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  This compares the elements of two ranges using @c == and returns a pair
-ARM GAS  /tmp/ccu97uzg.s 			page 49
-
-
 1761:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  of iterators.  The first iterator points into the first range, the
 1762:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  second iterator points into the second range, and the elements pointed
 1763:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  to by the iterators are not equal.
@@ -2937,10 +2938,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1814:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
 1815:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus > 201103L
 1816:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
+ARM GAS  /tmp/ccsmNutM.s 			page 50
+
+
 1817:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   template<typename _InputIterator1, typename _InputIterator2,
-ARM GAS  /tmp/ccu97uzg.s 			page 50
-
-
 1818:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	   typename _BinaryPredicate>
 1819:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     _GLIBCXX20_CONSTEXPR
 1820:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     pair<_InputIterator1, _InputIterator2>
@@ -2997,10 +2998,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1871:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __last1   An input iterator.
 1872:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __first2  An input iterator.
 1873:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __last2   An input iterator.
+ARM GAS  /tmp/ccsmNutM.s 			page 51
+
+
 1874:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param __binary_pred A binary predicate @link functors
-ARM GAS  /tmp/ccu97uzg.s 			page 51
-
-
 1875:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *         functor@endlink.
 1876:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @return   A pair of iterators pointing to the first mismatch.
 1877:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *
@@ -3057,10 +3058,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  472 0000 0346     		mov	r3, r0
 1922:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	      _Predicate __pred, random_access_iterator_tag)
 1923:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
+ARM GAS  /tmp/ccsmNutM.s 			page 52
+
+
 1924:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       typename iterator_traits<_RandomAccessIterator>::difference_type
-ARM GAS  /tmp/ccu97uzg.s 			page 52
-
-
 1925:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	__trip_count = (__last - __first) >> 2;
  473              		.loc 4 1925 25 view .LVU75
  474 0002 0A1A     		subs	r2, r1, r0
@@ -3117,10 +3118,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   38:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****   {
   39:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****     template<typename _Iterator1, typename _Iterator2>
   40:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       _GLIBCXX14_CONSTEXPR
+ARM GAS  /tmp/ccsmNutM.s 			page 53
+
+
   41:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       bool
-ARM GAS  /tmp/ccu97uzg.s 			page 53
-
-
   42:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       operator()(_Iterator1 __it1, _Iterator2 __it2) const
   43:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       { return *__it1 < *__it2; }
   44:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****   };
@@ -3177,10 +3178,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   95:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       operator()(_Value& __val, _Iterator __it) const
   96:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       { return __val < *__it; }
   97:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****   };
+ARM GAS  /tmp/ccsmNutM.s 			page 54
+
+
   98:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h **** 
-ARM GAS  /tmp/ccu97uzg.s 			page 54
-
-
   99:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****   _GLIBCXX20_CONSTEXPR
  100:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****   inline _Val_less_iter
  101:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****   __val_less_iter()
@@ -3237,10 +3238,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  152:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       template<typename _Iterator1, typename _Iterator2>
  153:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****         _GLIBCXX14_CONSTEXPR
  154:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****         bool
+ARM GAS  /tmp/ccsmNutM.s 			page 55
+
+
  155:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****         operator()(_Iterator1 __it1, _Iterator2 __it2)
-ARM GAS  /tmp/ccu97uzg.s 			page 55
-
-
  156:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****         { return bool(_M_comp(*__it1, *__it2)); }
  157:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****     };
  158:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h **** 
@@ -3297,10 +3298,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  209:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****   template<typename _Compare>
  210:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****     struct _Val_comp_iter
  211:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****     {
+ARM GAS  /tmp/ccsmNutM.s 			page 56
+
+
  212:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       _Compare _M_comp;
-ARM GAS  /tmp/ccu97uzg.s 			page 56
-
-
  213:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h **** 
  214:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       _GLIBCXX20_CONSTEXPR
  215:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       explicit
@@ -3357,10 +3358,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  266:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h **** 	bool
  267:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h **** 	operator()(_Iterator __it)
  268:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h **** 	{ return *__it == _M_value; }
+ARM GAS  /tmp/ccsmNutM.s 			page 57
+
+
  269:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****     };
-ARM GAS  /tmp/ccu97uzg.s 			page 57
-
-
  270:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h **** 
  271:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****   template<typename _Value>
  272:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****     _GLIBCXX20_CONSTEXPR
@@ -3417,10 +3418,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  323:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****     { return _Iter_pred<_Predicate>(_GLIBCXX_MOVE(__pred)); }
  324:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h **** 
  325:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****   template<typename _Compare, typename _Value>
+ARM GAS  /tmp/ccsmNutM.s 			page 58
+
+
  326:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****     struct _Iter_comp_to_val
-ARM GAS  /tmp/ccu97uzg.s 			page 58
-
-
  327:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****     {
  328:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       _Compare _M_comp;
  329:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       _Value& _M_value;
@@ -3477,10 +3478,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  380:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****     {
  381:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       _Predicate _M_pred;
  382:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h **** 
+ARM GAS  /tmp/ccsmNutM.s 			page 59
+
+
  383:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       _GLIBCXX20_CONSTEXPR
-ARM GAS  /tmp/ccu97uzg.s 			page 59
-
-
  384:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       explicit
  385:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h ****       _Iter_negate(_Predicate __pred)
  386:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h **** 	: _M_pred(_GLIBCXX_MOVE(__pred))
@@ -3537,10 +3538,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  522              		.loc 5 392 2 is_stmt 1 view .LVU88
  523              	.LBB112:
  524              		.loc 5 393 24 is_stmt 0 view .LVU89
+ARM GAS  /tmp/ccsmNutM.s 			page 60
+
+
  525 001a 5C78     		ldrb	r4, [r3, #1]	@ zero_extendqisi2
-ARM GAS  /tmp/ccu97uzg.s 			page 60
-
-
  526              	.LVL35:
  527              		.loc 5 393 24 view .LVU90
  528              	.LBE112:
@@ -3597,10 +3598,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1927:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	{
  565              		.loc 4 1927 7 is_stmt 1 view .LVU103
  566 002c 013A     		subs	r2, r2, #1
+ARM GAS  /tmp/ccsmNutM.s 			page 61
+
+
  567              	.LVL41:
-ARM GAS  /tmp/ccu97uzg.s 			page 61
-
-
 1927:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	{
  568              		.loc 4 1927 27 view .LVU104
  569 002e 002A     		cmp	r2, #0
@@ -3657,10 +3658,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  610              	.LBE120:
 1952:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  // FALLTHRU
 1953:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	case 2:
+ARM GAS  /tmp/ccsmNutM.s 			page 62
+
+
 1954:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  if (__pred(__first))
-ARM GAS  /tmp/ccu97uzg.s 			page 62
-
-
  611              		.loc 4 1954 4 view .LVU115
  612 004c 52B1     		cbz	r2, .L39
 1955:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	    return __first;
@@ -3717,10 +3718,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1950:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  ++__first;
  649              		.loc 4 1950 13 view .LVU124
  650 0060 1846     		mov	r0, r3
+ARM GAS  /tmp/ccsmNutM.s 			page 63
+
+
  651 0062 FAE7     		b	.L30
-ARM GAS  /tmp/ccu97uzg.s 			page 63
-
-
  652              	.L39:
 1955:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  ++__first;
  653              		.loc 4 1955 13 view .LVU125
@@ -3777,10 +3778,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  696              	.LVL58:
  697              	.L48:
  698              	.LBB127:
+ARM GAS  /tmp/ccsmNutM.s 			page 64
+
+
  392:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h **** 	{ return !bool(_M_pred(*__it)); }
-ARM GAS  /tmp/ccu97uzg.s 			page 64
-
-
  699              		.loc 5 392 2 is_stmt 1 view .LVU136
  700              	.LBB122:
  701              		.loc 5 393 24 is_stmt 0 view .LVU137
@@ -3837,10 +3838,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
 1955:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  ++__first;
  743              		.loc 4 1955 13 view .LVU150
  744 009a 7047     		bx	lr
+ARM GAS  /tmp/ccsmNutM.s 			page 65
+
+
  745              	.LVL67:
-ARM GAS  /tmp/ccu97uzg.s 			page 65
-
-
  746              	.L58:
 1960:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  ++__first;
  747              		.loc 4 1960 13 view .LVU151
@@ -3897,10 +3898,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   17:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** // permissions described in the GCC Runtime Library Exception, version
   18:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** // 3.1, as published by the Free Software Foundation.
   19:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
+ARM GAS  /tmp/ccsmNutM.s 			page 66
+
+
   20:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** // You should have received a copy of the GNU General Public License and
-ARM GAS  /tmp/ccu97uzg.s 			page 66
-
-
   21:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** // a copy of the GCC Runtime Library Exception along with this program;
   22:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
   23:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** // <http://www.gnu.org/licenses/>.
@@ -3957,10 +3958,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   74:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
   75:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   /// Swaps the median value of *__a, *__b and *__c under __comp to *__result
   76:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   template<typename _Iterator, typename _Compare>
+ARM GAS  /tmp/ccsmNutM.s 			page 67
+
+
   77:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _GLIBCXX20_CONSTEXPR
-ARM GAS  /tmp/ccu97uzg.s 			page 67
-
-
   78:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     void
   79:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     __move_median_to_first(_Iterator __result,_Iterator __a, _Iterator __b,
   80:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 			   _Iterator __c, _Compare __comp)
@@ -4017,10 +4018,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  131:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   // find_if
  132:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   // find_first_of
  133:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   // adjacent_find
+ARM GAS  /tmp/ccsmNutM.s 			page 68
+
+
  134:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   // count
-ARM GAS  /tmp/ccu97uzg.s 			page 68
-
-
  135:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   // count_if
  136:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   // search
  137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
@@ -4077,10 +4078,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  188:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  This is an helper function for search_n overloaded for forward iterators.
  189:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   */
  190:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   template<typename _ForwardIterator, typename _Integer,
+ARM GAS  /tmp/ccsmNutM.s 			page 69
+
+
  191:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	   typename _UnaryPredicate>
-ARM GAS  /tmp/ccu97uzg.s 			page 69
-
-
  192:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _GLIBCXX20_CONSTEXPR
  193:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _ForwardIterator
  194:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     __search_n_aux(_ForwardIterator __first, _ForwardIterator __last,
@@ -4137,10 +4138,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  245:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	    {
  246:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	      if (--__remainder == 0)
  247:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 		return (__first - __count); // Success
+ARM GAS  /tmp/ccsmNutM.s 			page 70
+
+
  248:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	    }
-ARM GAS  /tmp/ccu97uzg.s 			page 70
-
-
  249:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	  __remainder = __count + 1 - (__first - __backTrack);
  250:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	}
  251:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       return __last; // Failure
@@ -4197,10 +4198,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  302:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   template<typename _BidirectionalIterator1, typename _BidirectionalIterator2,
  303:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	   typename _BinaryPredicate>
  304:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _GLIBCXX20_CONSTEXPR
+ARM GAS  /tmp/ccsmNutM.s 			page 71
+
+
  305:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _BidirectionalIterator1
-ARM GAS  /tmp/ccu97uzg.s 			page 71
-
-
  306:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     __find_end(_BidirectionalIterator1 __first1,
  307:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	       _BidirectionalIterator1 __last1,
  308:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	       _BidirectionalIterator2 __first2,
@@ -4257,10 +4258,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  359:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  __last1-(__last2-__first2) where @p __last2-__first2 is the
  360:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  length of the sub-sequence.  This means that the returned
  361:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  iterator @c i will be in the range @p
+ARM GAS  /tmp/ccsmNutM.s 			page 72
+
+
  362:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  [__first1,__last1-(__last2-__first2))
-ARM GAS  /tmp/ccu97uzg.s 			page 72
-
-
  363:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   */
  364:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   template<typename _ForwardIterator1, typename _ForwardIterator2>
  365:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     _GLIBCXX20_CONSTEXPR
@@ -4317,10 +4318,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  416:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     inline _ForwardIterator1
  417:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     find_end(_ForwardIterator1 __first1, _ForwardIterator1 __last1,
  418:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	     _ForwardIterator2 __first2, _ForwardIterator2 __last2,
+ARM GAS  /tmp/ccsmNutM.s 			page 73
+
+
  419:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 	     _BinaryPredicate __comp)
-ARM GAS  /tmp/ccu97uzg.s 			page 73
-
-
  420:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     {
  421:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       // concept requirements
  422:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****       __glibcxx_function_requires(_ForwardIteratorConcept<_ForwardIterator1>)
@@ -4377,10 +4378,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  469:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     inline bool
  470:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     none_of(_InputIterator __first, _InputIterator __last, _Predicate __pred)
  471:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****     { return __last == _GLIBCXX_STD_A::find_if(__first, __last, __pred); }
+ARM GAS  /tmp/ccsmNutM.s 			page 74
+
+
  472:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h **** 
-ARM GAS  /tmp/ccu97uzg.s 			page 74
-
-
  473:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****   /**
  474:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *  @brief  Checks that a predicate is true for at least one element
  475:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algo.h ****    *          of a sequence.
@@ -4437,10 +4438,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
    7:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // terms of the GNU General Public License as published by the
    8:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // Free Software Foundation; either version 3, or (at your option)
    9:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // any later version.
+ARM GAS  /tmp/ccsmNutM.s 			page 75
+
+
   10:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
-ARM GAS  /tmp/ccu97uzg.s 			page 75
-
-
   11:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // This library is distributed in the hope that it will be useful,
   12:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // but WITHOUT ANY WARRANTY; without even the implied warranty of
   13:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -4497,10 +4498,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
   64:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *  @addtogroup utilities
   65:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *  @{
   66:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    */
+ARM GAS  /tmp/ccsmNutM.s 			page 76
+
+
   67:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
-ARM GAS  /tmp/ccu97uzg.s 			page 76
-
-
   68:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****   /**
   69:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *  @brief  Forward an lvalue.
   70:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *  @return The parameter cast to the specified type.
@@ -4557,10 +4558,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  810              		.loc 5 399 5 view .LVU162
  811              	.LBB154:
  812              	.LBB155:
+ARM GAS  /tmp/ccsmNutM.s 			page 77
+
+
  813              	.LBI155:
-ARM GAS  /tmp/ccu97uzg.s 			page 77
-
-
  385:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h **** 	: _M_pred(_GLIBCXX_MOVE(__pred))
  814              		.loc 5 385 7 view .LVU163
  815              	.LBB156:
@@ -4617,10 +4618,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  113:fibre-cpp/fibre.cpp ****     return all(args, std::make_index_sequence<sizeof...(T)>());
  863              		.loc 1 113 6 is_stmt 0 view .LVU171
  864 0000 08B5     		push	{r3, lr}
+ARM GAS  /tmp/ccsmNutM.s 			page 78
+
+
  865              	.LCFI16:
-ARM GAS  /tmp/ccu97uzg.s 			page 78
-
-
  866              		.cfi_def_cfa_offset 8
  867              		.cfi_offset 3, -8
  868              		.cfi_offset 14, -4
@@ -4677,10 +4678,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  913 000a 28B1     		cbz	r0, .L67
  124:fibre-cpp/fibre.cpp ****     auto static_backends_good = for_each_in_tuple(BackendInitializer{ctx},
  914              		.loc 1 124 5 view .LVU180
+ARM GAS  /tmp/ccsmNutM.s 			page 79
+
+
  124:fibre-cpp/fibre.cpp ****     auto static_backends_good = for_each_in_tuple(BackendInitializer{ctx},
-ARM GAS  /tmp/ccu97uzg.s 			page 79
-
-
  915              		.loc 1 124 21 is_stmt 0 view .LVU181
  916 000c 4460     		str	r4, [r0, #4]
  125:fibre-cpp/fibre.cpp ****             ctx->static_backends);
@@ -4737,10 +4738,10 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  963              		.file 12 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/arm-none-eabi/thumb/v7e-m+fp/har
  964              		.file 13 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_iterator_base_types.h"
  965              		.file 14 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/debug/debug.h"
+ARM GAS  /tmp/ccsmNutM.s 			page 80
+
+
  966              		.file 15 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple"
-ARM GAS  /tmp/ccu97uzg.s 			page 80
-
-
  967              		.file 16 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/exception_ptr.h"
  968              		.file 17 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/allocator.h"
  969              		.file 18 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_iterator.h"
@@ -4787,54 +4788,54 @@ ARM GAS  /tmp/ccu97uzg.s 			page 1
  1010              		.file 59 "fibre-cpp/include/fibre/cpp_utils.hpp"
  1011              		.file 60 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/new"
  1012              		.file 61 "<built-in>"
-ARM GAS  /tmp/ccu97uzg.s 			page 81
+ARM GAS  /tmp/ccsmNutM.s 			page 81
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 fibre.cpp
-     /tmp/ccu97uzg.s:20     .text._ZN5fibre17launch_event_loopENS_8CallbackIvJPNS_9EventLoopEEEE:0000000000000000 $t
-     /tmp/ccu97uzg.s:26     .text._ZN5fibre17launch_event_loopENS_8CallbackIvJPNS_9EventLoopEEEE:0000000000000000 _ZN5fibre17launch_event_loopENS_8CallbackIvJPNS_9EventLoopEEEE
+     /tmp/ccsmNutM.s:20     .text._ZN5fibre17launch_event_loopENS_8CallbackIvJPNS_9EventLoopEEEE:0000000000000000 $t
+     /tmp/ccsmNutM.s:26     .text._ZN5fibre17launch_event_loopENS_8CallbackIvJPNS_9EventLoopEEEE:0000000000000000 _ZN5fibre17launch_event_loopENS_8CallbackIvJPNS_9EventLoopEEEE
 .ARM.exidx.text._ZN5fibre17launch_event_loopENS_8CallbackIvJPNS_9EventLoopEEEE:0000000000000000 $d
-     /tmp/ccu97uzg.s:48     .text._ZN5fibre6Domain10on_stoppedEPNS_25LegacyProtocolPacketBasedENS_12StreamStatusE:0000000000000000 $t
-     /tmp/ccu97uzg.s:54     .text._ZN5fibre6Domain10on_stoppedEPNS_25LegacyProtocolPacketBasedENS_12StreamStatusE:0000000000000000 _ZN5fibre6Domain10on_stoppedEPNS_25LegacyProtocolPacketBasedENS_12StreamStatusE
+     /tmp/ccsmNutM.s:48     .text._ZN5fibre6Domain10on_stoppedEPNS_25LegacyProtocolPacketBasedENS_12StreamStatusE:0000000000000000 $t
+     /tmp/ccsmNutM.s:54     .text._ZN5fibre6Domain10on_stoppedEPNS_25LegacyProtocolPacketBasedENS_12StreamStatusE:0000000000000000 _ZN5fibre6Domain10on_stoppedEPNS_25LegacyProtocolPacketBasedENS_12StreamStatusE
 .ARM.exidx.text._ZN5fibre6Domain10on_stoppedEPNS_25LegacyProtocolPacketBasedENS_12StreamStatusE:0000000000000000 $d
-     /tmp/ccu97uzg.s:94     .text._ZZN5fibre14MemberCallbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEE4withEPS1_ENUlPvS3_S4_E_4_FUNESB_S3_S4_:0000000000000000 $t
-     /tmp/ccu97uzg.s:100    .text._ZZN5fibre14MemberCallbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEE4withEPS1_ENUlPvS3_S4_E_4_FUNESB_S3_S4_:0000000000000000 _ZZN5fibre14MemberCallbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEE4withEPS1_ENUlPvS3_S4_E_4_FUNESB_S3_S4_
+     /tmp/ccsmNutM.s:94     .text._ZZN5fibre14MemberCallbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEE4withEPS1_ENUlPvS3_S4_E_4_FUNESB_S3_S4_:0000000000000000 $t
+     /tmp/ccsmNutM.s:100    .text._ZZN5fibre14MemberCallbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEE4withEPS1_ENUlPvS3_S4_E_4_FUNESB_S3_S4_:0000000000000000 _ZZN5fibre14MemberCallbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEE4withEPS1_ENUlPvS3_S4_E_4_FUNESB_S3_S4_
 .ARM.exidx.text._ZZN5fibre14MemberCallbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEE4withEPS1_ENUlPvS3_S4_E_4_FUNESB_S3_S4_:0000000000000000 $d
-     /tmp/ccu97uzg.s:132    .text._Z8my_allocIN5fibre7ContextEEPT_v:0000000000000000 $t
-     /tmp/ccu97uzg.s:138    .text._Z8my_allocIN5fibre7ContextEEPT_v:0000000000000000 _Z8my_allocIN5fibre7ContextEEPT_v
-     /tmp/ccu97uzg.s:166    .text._Z8my_allocIN5fibre7ContextEEPT_v:0000000000000014 $d
-     /tmp/ccu97uzg.s:948    .bss._ZN11TheInstanceIN5fibre7ContextEE6in_useE:0000000000000000 _ZN11TheInstanceIN5fibre7ContextEE6in_useE
-     /tmp/ccu97uzg.s:955    .bss._ZN11TheInstanceIN5fibre7ContextEE8instanceE:0000000000000000 _ZN11TheInstanceIN5fibre7ContextEE8instanceE
+     /tmp/ccsmNutM.s:132    .text._Z8my_allocIN5fibre7ContextEEPT_v:0000000000000000 $t
+     /tmp/ccsmNutM.s:138    .text._Z8my_allocIN5fibre7ContextEEPT_v:0000000000000000 _Z8my_allocIN5fibre7ContextEEPT_v
+     /tmp/ccsmNutM.s:166    .text._Z8my_allocIN5fibre7ContextEEPT_v:0000000000000014 $d
+     /tmp/ccsmNutM.s:948    .bss._ZN11TheInstanceIN5fibre7ContextEE6in_useE:0000000000000000 _ZN11TheInstanceIN5fibre7ContextEE6in_useE
+     /tmp/ccsmNutM.s:955    .bss._ZN11TheInstanceIN5fibre7ContextEE8instanceE:0000000000000000 _ZN11TheInstanceIN5fibre7ContextEE8instanceE
 .ARM.exidx.text._Z8my_allocIN5fibre7ContextEEPT_v:0000000000000000 $d
-     /tmp/ccu97uzg.s:174    .text._Z7my_freeIN5fibre7ContextEEvPT_:0000000000000000 $t
-     /tmp/ccu97uzg.s:180    .text._Z7my_freeIN5fibre7ContextEEvPT_:0000000000000000 _Z7my_freeIN5fibre7ContextEEvPT_
-     /tmp/ccu97uzg.s:206    .text._Z7my_freeIN5fibre7ContextEEvPT_:0000000000000010 $d
+     /tmp/ccsmNutM.s:174    .text._Z7my_freeIN5fibre7ContextEEvPT_:0000000000000000 $t
+     /tmp/ccsmNutM.s:180    .text._Z7my_freeIN5fibre7ContextEEvPT_:0000000000000000 _Z7my_freeIN5fibre7ContextEEvPT_
+     /tmp/ccsmNutM.s:206    .text._Z7my_freeIN5fibre7ContextEEvPT_:0000000000000010 $d
 .ARM.exidx.text._Z7my_freeIN5fibre7ContextEEvPT_:0000000000000000 $d
-     /tmp/ccu97uzg.s:214    .text._ZN5fibre5closeEPNS_7ContextE:0000000000000000 $t
-     /tmp/ccu97uzg.s:220    .text._ZN5fibre5closeEPNS_7ContextE:0000000000000000 _ZN5fibre5closeEPNS_7ContextE
+     /tmp/ccsmNutM.s:214    .text._ZN5fibre5closeEPNS_7ContextE:0000000000000000 $t
+     /tmp/ccsmNutM.s:220    .text._ZN5fibre5closeEPNS_7ContextE:0000000000000000 _ZN5fibre5closeEPNS_7ContextE
 .ARM.exidx.text._ZN5fibre5closeEPNS_7ContextE:0000000000000000 $d
-     /tmp/ccu97uzg.s:248    .text._ZN5fibre13make_callbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EENS_15function_traitsIvS1_JS3_S4_EEENS_14MemberCallbackIS6_XadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $t
-     /tmp/ccu97uzg.s:254    .text._ZN5fibre13make_callbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EENS_15function_traitsIvS1_JS3_S4_EEENS_14MemberCallbackIS6_XadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 _ZN5fibre13make_callbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EENS_15function_traitsIvS1_JS3_S4_EEENS_14MemberCallbackIS6_XadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEEEEENT2_4cb_tEPNT1_4TObjE
-     /tmp/ccu97uzg.s:286    .text._ZN5fibre13make_callbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EENS_15function_traitsIvS1_JS3_S4_EEENS_14MemberCallbackIS6_XadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000008 $d
+     /tmp/ccsmNutM.s:248    .text._ZN5fibre13make_callbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EENS_15function_traitsIvS1_JS3_S4_EEENS_14MemberCallbackIS6_XadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $t
+     /tmp/ccsmNutM.s:254    .text._ZN5fibre13make_callbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EENS_15function_traitsIvS1_JS3_S4_EEENS_14MemberCallbackIS6_XadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 _ZN5fibre13make_callbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EENS_15function_traitsIvS1_JS3_S4_EEENS_14MemberCallbackIS6_XadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEEEEENT2_4cb_tEPNT1_4TObjE
+     /tmp/ccsmNutM.s:286    .text._ZN5fibre13make_callbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EENS_15function_traitsIvS1_JS3_S4_EEENS_14MemberCallbackIS6_XadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000008 $d
 .ARM.exidx.text._ZN5fibre13make_callbackIMNS_6DomainEFvPNS_25LegacyProtocolPacketBasedENS_12StreamStatusEEXadL_ZNS1_10on_stoppedES3_S4_EENS_15function_traitsIvS1_JS3_S4_EEENS_14MemberCallbackIS6_XadL_ZNS1_10on_stoppedES3_S4_EES1_vSt5tupleIJS3_S4_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $d
-     /tmp/ccu97uzg.s:293    .text._ZN5fibre6Domain12add_channelsENS_22ChannelDiscoveryResultE:0000000000000000 $t
-     /tmp/ccu97uzg.s:299    .text._ZN5fibre6Domain12add_channelsENS_22ChannelDiscoveryResultE:0000000000000000 _ZN5fibre6Domain12add_channelsENS_22ChannelDiscoveryResultE
+     /tmp/ccsmNutM.s:293    .text._ZN5fibre6Domain12add_channelsENS_22ChannelDiscoveryResultE:0000000000000000 $t
+     /tmp/ccsmNutM.s:299    .text._ZN5fibre6Domain12add_channelsENS_22ChannelDiscoveryResultE:0000000000000000 _ZN5fibre6Domain12add_channelsENS_22ChannelDiscoveryResultE
 .ARM.exidx.text._ZN5fibre6Domain12add_channelsENS_22ChannelDiscoveryResultE:0000000000000000 $d
-     /tmp/ccu97uzg.s:456    .text._ZSt9__find_ifIPbN9__gnu_cxx5__ops12_Iter_negateIZ3allIJEJEEbSt5tupleIJDpT_EESt16integer_sequenceIjJXspT0_EEEEUlbE_EEET_SD_SD_T0_St26random_access_iterator_tag:0000000000000000 $t
-     /tmp/ccu97uzg.s:462    .text._ZSt9__find_ifIPbN9__gnu_cxx5__ops12_Iter_negateIZ3allIJEJEEbSt5tupleIJDpT_EESt16integer_sequenceIjJXspT0_EEEEUlbE_EEET_SD_SD_T0_St26random_access_iterator_tag:0000000000000000 _ZSt9__find_ifIPbN9__gnu_cxx5__ops12_Iter_negateIZ3allIJEJEEbSt5tupleIJDpT_EESt16integer_sequenceIjJXspT0_EEEEUlbE_EEET_SD_SD_T0_St26random_access_iterator_tag
+     /tmp/ccsmNutM.s:456    .text._ZSt9__find_ifIPbN9__gnu_cxx5__ops12_Iter_negateIZ3allIJEJEEbSt5tupleIJDpT_EESt16integer_sequenceIjJXspT0_EEEEUlbE_EEET_SD_SD_T0_St26random_access_iterator_tag:0000000000000000 $t
+     /tmp/ccsmNutM.s:462    .text._ZSt9__find_ifIPbN9__gnu_cxx5__ops12_Iter_negateIZ3allIJEJEEbSt5tupleIJDpT_EESt16integer_sequenceIjJXspT0_EEEEUlbE_EEET_SD_SD_T0_St26random_access_iterator_tag:0000000000000000 _ZSt9__find_ifIPbN9__gnu_cxx5__ops12_Iter_negateIZ3allIJEJEEbSt5tupleIJDpT_EESt16integer_sequenceIjJXspT0_EEEEUlbE_EEET_SD_SD_T0_St26random_access_iterator_tag
 .ARM.exidx.text._ZSt9__find_ifIPbN9__gnu_cxx5__ops12_Iter_negateIZ3allIJEJEEbSt5tupleIJDpT_EESt16integer_sequenceIjJXspT0_EEEEUlbE_EEET_SD_SD_T0_St26random_access_iterator_tag:0000000000000000 $d
-     /tmp/ccu97uzg.s:758    .text._Z3allIJEJEEbSt5tupleIJDpT_EESt16integer_sequenceIjJXspT0_EEE:0000000000000000 $t
-     /tmp/ccu97uzg.s:764    .text._Z3allIJEJEEbSt5tupleIJDpT_EESt16integer_sequenceIjJXspT0_EEE:0000000000000000 _Z3allIJEJEEbSt5tupleIJDpT_EESt16integer_sequenceIjJXspT0_EEE
+     /tmp/ccsmNutM.s:758    .text._Z3allIJEJEEbSt5tupleIJDpT_EESt16integer_sequenceIjJXspT0_EEE:0000000000000000 $t
+     /tmp/ccsmNutM.s:764    .text._Z3allIJEJEEbSt5tupleIJDpT_EESt16integer_sequenceIjJXspT0_EEE:0000000000000000 _Z3allIJEJEEbSt5tupleIJDpT_EESt16integer_sequenceIjJXspT0_EEE
 .ARM.exidx.text._Z3allIJEJEEbSt5tupleIJDpT_EESt16integer_sequenceIjJXspT0_EEE:0000000000000000 $d
-     /tmp/ccu97uzg.s:849    .text._Z3allIJEEbSt5tupleIJDpT_EE:0000000000000000 $t
-     /tmp/ccu97uzg.s:855    .text._Z3allIJEEbSt5tupleIJDpT_EE:0000000000000000 _Z3allIJEEbSt5tupleIJDpT_EE
+     /tmp/ccsmNutM.s:849    .text._Z3allIJEEbSt5tupleIJDpT_EE:0000000000000000 $t
+     /tmp/ccsmNutM.s:855    .text._Z3allIJEEbSt5tupleIJDpT_EE:0000000000000000 _Z3allIJEEbSt5tupleIJDpT_EE
 .ARM.exidx.text._Z3allIJEEbSt5tupleIJDpT_EE:0000000000000000 $d
-     /tmp/ccu97uzg.s:884    .text._ZN5fibre4openEPNS_9EventLoopE:0000000000000000 $t
-     /tmp/ccu97uzg.s:890    .text._ZN5fibre4openEPNS_9EventLoopE:0000000000000000 _ZN5fibre4openEPNS_9EventLoopE
+     /tmp/ccsmNutM.s:884    .text._ZN5fibre4openEPNS_9EventLoopE:0000000000000000 $t
+     /tmp/ccsmNutM.s:890    .text._ZN5fibre4openEPNS_9EventLoopE:0000000000000000 _ZN5fibre4openEPNS_9EventLoopE
 .ARM.exidx.text._ZN5fibre4openEPNS_9EventLoopE:0000000000000000 $d
-     /tmp/ccu97uzg.s:949    .bss._ZN11TheInstanceIN5fibre7ContextEE6in_useE:0000000000000000 $d
-     /tmp/ccu97uzg.s:952    .bss._ZN11TheInstanceIN5fibre7ContextEE8instanceE:0000000000000000 $d
+     /tmp/ccsmNutM.s:949    .bss._ZN11TheInstanceIN5fibre7ContextEE6in_useE:0000000000000000 $d
+     /tmp/ccsmNutM.s:952    .bss._ZN11TheInstanceIN5fibre7ContextEE8instanceE:0000000000000000 $d
 
 UNDEFINED SYMBOLS
 _ZdlPvj

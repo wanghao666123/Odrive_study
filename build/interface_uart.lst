@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccl9WTg1.s 			page 1
+ARM GAS  /tmp/cchBlNLE.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   18:communication/interface_uart.cpp **** // DMA open loop continous circular buffer
   19:communication/interface_uart.cpp **** // 1ms delay periodic, chase DMA ptr around
   20:communication/interface_uart.cpp **** static uint8_t dma_rx_buffer[UART_RX_BUFFER_SIZE];
-ARM GAS  /tmp/ccl9WTg1.s 			page 2
+ARM GAS  /tmp/cchBlNLE.s 			page 2
 
 
   21:communication/interface_uart.cpp **** static uint32_t dma_last_rcv_idx;
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   36              		.cfi_startproc
   37              		@ args = 0, pretend = 0, frame = 0
   38              		@ frame_needed = 0, uses_anonymous_args = 0
-ARM GAS  /tmp/ccl9WTg1.s 			page 3
+ARM GAS  /tmp/cchBlNLE.s 			page 3
 
 
   39              		@ link register save eliminated.
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   83 001a 83E80300 		stm	r3, {r0, r1}
   86:communication/interface_uart.cpp ****     if (handle) {
   84              		.loc 1 86 5 is_stmt 1 view .LVU10
-ARM GAS  /tmp/ccl9WTg1.s 			page 4
+ARM GAS  /tmp/cchBlNLE.s 			page 4
 
 
   85 001e 02B1     		cbz	r2, .L2
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   99:communication/interface_uart.cpp **** 
  100:communication/interface_uart.cpp ****     if (completer_ && rx_buf.begin()) {
  101:communication/interface_uart.cpp ****         rx_buf_ = {nullptr, nullptr};
-ARM GAS  /tmp/ccl9WTg1.s 			page 5
+ARM GAS  /tmp/cchBlNLE.s 			page 5
 
 
  102:communication/interface_uart.cpp ****         size_t chunk = std::min(length, rx_buf.size());
@@ -251,7 +251,7 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  109:communication/interface_uart.cpp **** Stm32UartRxStream uart_rx_stream;
  110:communication/interface_uart.cpp **** 
  111:communication/interface_uart.cpp **** LegacyProtocolStreamBased fibre_over_uart(&uart_rx_stream, &uart_tx_stream);
- 112:communication/interface_uart.cpp **** 
+ 112:communication/interface_uart.cpp **** //!2个逻辑通道？
  113:communication/interface_uart.cpp **** fibre::AsyncStreamSinkMultiplexer<2> uart_tx_multiplexer(uart_tx_stream);
  114:communication/interface_uart.cpp **** fibre::BufferedStreamSink<64> uart0_stdout_sink(uart_tx_multiplexer); // Used in communication.cpp
  115:communication/interface_uart.cpp **** AsciiProtocol ascii_over_uart(&uart_rx_stream, &uart_tx_multiplexer);
@@ -260,114 +260,123 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  118:communication/interface_uart.cpp **** 
  119:communication/interface_uart.cpp **** static void uart_server_thread(void * ctx) {
  120:communication/interface_uart.cpp ****     (void) ctx;
- 121:communication/interface_uart.cpp **** 
+ 121:communication/interface_uart.cpp ****     //!odrv.config_.uart0_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_STDOUT
  122:communication/interface_uart.cpp ****     if (odrv.config_.uart0_protocol == ODrive::STREAM_PROTOCOL_TYPE_FIBRE) {
- 123:communication/interface_uart.cpp ****         fibre_over_uart.start({});
+ 123:communication/interface_uart.cpp ****         fibre_over_uart.start({});//!与PC端软件进行通信 这里传入了一个 空的回调 
  124:communication/interface_uart.cpp ****     } else if (odrv.config_.uart0_protocol == ODrive::STREAM_PROTOCOL_TYPE_ASCII
  125:communication/interface_uart.cpp ****             || odrv.config_.uart0_protocol == ODrive::STREAM_PROTOCOL_TYPE_ASCII_AND_STDOUT) {
- 126:communication/interface_uart.cpp ****         ascii_over_uart.start();
+ 126:communication/interface_uart.cpp ****         ascii_over_uart.start();//!注册了回调函数 on_read_finished ---> complete,只是做�
  127:communication/interface_uart.cpp ****     }
  128:communication/interface_uart.cpp **** 
  129:communication/interface_uart.cpp ****     for (;;) {
- 130:communication/interface_uart.cpp ****         osEvent event = osMessageGet(uart_event_queue, osWaitForever);
- 131:communication/interface_uart.cpp **** 
- 132:communication/interface_uart.cpp ****         if (event.status != osEventMessage) {
- 133:communication/interface_uart.cpp ****             continue;
- 134:communication/interface_uart.cpp ****         }
- 135:communication/interface_uart.cpp **** 
- 136:communication/interface_uart.cpp ****         switch (event.value.v) {
- 137:communication/interface_uart.cpp ****             case 1: {
- 138:communication/interface_uart.cpp ****                 // This event is triggered by the control loop at 8kHz. This should be
- 139:communication/interface_uart.cpp ****                 // enough for most applications.
- 140:communication/interface_uart.cpp ****                 // At 1Mbaud/s that corresponds to at most 12.5 bytes which can arrive
- 141:communication/interface_uart.cpp ****                 // during the sleep period.
- 142:communication/interface_uart.cpp **** 
- 143:communication/interface_uart.cpp ****                 // Check for UART errors and restart receive DMA transfer if required
- 144:communication/interface_uart.cpp ****                 if (huart_->RxState != HAL_UART_STATE_BUSY_RX) {
- 145:communication/interface_uart.cpp ****                     HAL_UART_AbortReceive(huart_);
- 146:communication/interface_uart.cpp ****                     HAL_UART_Receive_DMA(huart_, dma_rx_buffer, sizeof(dma_rx_buffer));
- 147:communication/interface_uart.cpp ****                     dma_last_rcv_idx = 0;
- 148:communication/interface_uart.cpp ****                 }
- 149:communication/interface_uart.cpp ****                 // Fetch the circular buffer "write pointer", where it would write next
- 150:communication/interface_uart.cpp ****                 uint32_t new_rcv_idx = UART_RX_BUFFER_SIZE - huart_->hdmarx->Instance->NDTR;
- 151:communication/interface_uart.cpp ****                 if (new_rcv_idx > UART_RX_BUFFER_SIZE) { // defensive programming
- 152:communication/interface_uart.cpp ****                     continue;
- 153:communication/interface_uart.cpp ****                 }
- 154:communication/interface_uart.cpp **** 
- 155:communication/interface_uart.cpp ****                 // Process bytes in one or two chunks (two in case there was a wrap)
- 156:communication/interface_uart.cpp ****                 if (new_rcv_idx < dma_last_rcv_idx) {
- 157:communication/interface_uart.cpp ****                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
- 158:communication/interface_uart.cpp ****                             UART_RX_BUFFER_SIZE - dma_last_rcv_idx);
-ARM GAS  /tmp/ccl9WTg1.s 			page 6
+ 130:communication/interface_uart.cpp ****         //!osMessageQDef(uart_event_queue, 4, uint32_t);
+ 131:communication/interface_uart.cpp ****         osEvent event = osMessageGet(uart_event_queue, osWaitForever);
+ 132:communication/interface_uart.cpp ****         //!osEventMessage：表示从消息队列成功接收到了一条消息。
+ 133:communication/interface_uart.cpp ****         if (event.status != osEventMessage) {
+ 134:communication/interface_uart.cpp ****             continue;
+ 135:communication/interface_uart.cpp ****         }
+ 136:communication/interface_uart.cpp ****         //!当 event.status == osEventMessage 时，value.v 包含队列中发送的 32 位消息�
+ 137:communication/interface_uart.cpp ****         switch (event.value.v) {
+ 138:communication/interface_uart.cpp ****             case 1: {
+ 139:communication/interface_uart.cpp ****                 // This event is triggered by the control loop at 8kHz. This should be
+ 140:communication/interface_uart.cpp ****                 // enough for most applications.
+ 141:communication/interface_uart.cpp ****                 // At 1Mbaud/s that corresponds to at most 12.5 bytes which can arrive
+ 142:communication/interface_uart.cpp ****                 // during the sleep period.
+ 143:communication/interface_uart.cpp **** 
+ 144:communication/interface_uart.cpp ****                 // Check for UART errors and restart receive DMA transfer if required
+ 145:communication/interface_uart.cpp ****                 //!HAL_UART_STATE_BUSY_RX 表示 UART 正在接收数据。
+ 146:communication/interface_uart.cpp ****                 if (huart_->RxState != HAL_UART_STATE_BUSY_RX) {
+ 147:communication/interface_uart.cpp ****                     HAL_UART_AbortReceive(huart_);
+ 148:communication/interface_uart.cpp ****                     HAL_UART_Receive_DMA(huart_, dma_rx_buffer, sizeof(dma_rx_buffer));//!64
+ 149:communication/interface_uart.cpp ****                     dma_last_rcv_idx = 0;//!重置索引
+ 150:communication/interface_uart.cpp ****                 }
+ 151:communication/interface_uart.cpp ****                 // Fetch the circular buffer "write pointer", where it would write next
+ 152:communication/interface_uart.cpp ****                 //!当 DMA 接收数据时，这个寄存器的值会逐渐减少，表示剩余未
+ 153:communication/interface_uart.cpp ****                 uint32_t new_rcv_idx = UART_RX_BUFFER_SIZE - huart_->hdmarx->Instance->NDTR;
+ 154:communication/interface_uart.cpp ****                 if (new_rcv_idx > UART_RX_BUFFER_SIZE) { // defensive programming
+ 155:communication/interface_uart.cpp ****                     continue;
+ 156:communication/interface_uart.cpp ****                 }
+ 157:communication/interface_uart.cpp **** 
+ 158:communication/interface_uart.cpp ****                 // Process bytes in one or two chunks (two in case there was a wrap)
+ARM GAS  /tmp/cchBlNLE.s 			page 6
 
 
- 159:communication/interface_uart.cpp ****                     dma_last_rcv_idx = 0;
- 160:communication/interface_uart.cpp ****                 }
- 161:communication/interface_uart.cpp ****                 if (new_rcv_idx > dma_last_rcv_idx) {
- 162:communication/interface_uart.cpp ****                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
- 163:communication/interface_uart.cpp ****                             new_rcv_idx - dma_last_rcv_idx);
- 164:communication/interface_uart.cpp ****                     dma_last_rcv_idx = new_rcv_idx;
- 165:communication/interface_uart.cpp ****                 }
- 166:communication/interface_uart.cpp ****             } break;
- 167:communication/interface_uart.cpp **** 
- 168:communication/interface_uart.cpp ****             case 2: {
- 169:communication/interface_uart.cpp ****                 uart_tx_stream.did_finish();
- 170:communication/interface_uart.cpp ****             } break;
- 171:communication/interface_uart.cpp **** 
- 172:communication/interface_uart.cpp ****             case 3: { // stdout has data
- 173:communication/interface_uart.cpp ****                 uart0_stdout_pending = false;
- 174:communication/interface_uart.cpp ****                 uart0_stdout_sink.maybe_start_async_write();
+ 159:communication/interface_uart.cpp ****                 //!新的循环
+ 160:communication/interface_uart.cpp ****                 if (new_rcv_idx < dma_last_rcv_idx) {
+ 161:communication/interface_uart.cpp ****                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
+ 162:communication/interface_uart.cpp ****                             UART_RX_BUFFER_SIZE - dma_last_rcv_idx);
+ 163:communication/interface_uart.cpp ****                     dma_last_rcv_idx = 0;
+ 164:communication/interface_uart.cpp ****                 }
+ 165:communication/interface_uart.cpp ****                 if (new_rcv_idx > dma_last_rcv_idx) {
+ 166:communication/interface_uart.cpp ****                     //!从dma_rx_buffer + dma_last_rcv_idx位置开始接收，接收new_rcv_idx - 
+ 167:communication/interface_uart.cpp ****                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
+ 168:communication/interface_uart.cpp ****                             new_rcv_idx - dma_last_rcv_idx);//!这里的回调关系没太搞明白
+ 169:communication/interface_uart.cpp ****                     dma_last_rcv_idx = new_rcv_idx;//!更新索引
+ 170:communication/interface_uart.cpp ****                 }
+ 171:communication/interface_uart.cpp ****             } break;
+ 172:communication/interface_uart.cpp **** 
+ 173:communication/interface_uart.cpp ****             case 2: {
+ 174:communication/interface_uart.cpp ****                 uart_tx_stream.did_finish();
  175:communication/interface_uart.cpp ****             } break;
- 176:communication/interface_uart.cpp ****         }
- 177:communication/interface_uart.cpp ****     }
- 178:communication/interface_uart.cpp **** }
- 179:communication/interface_uart.cpp **** 
- 180:communication/interface_uart.cpp **** // TODO: allow multiple UART server instances
- 181:communication/interface_uart.cpp **** void start_uart_server(UART_HandleTypeDef* huart) {
- 182:communication/interface_uart.cpp ****     huart_ = huart;
- 183:communication/interface_uart.cpp ****     uart_tx_stream.huart_ = huart;
+ 176:communication/interface_uart.cpp **** 
+ 177:communication/interface_uart.cpp ****             case 3: { // stdout has data
+ 178:communication/interface_uart.cpp ****                 uart0_stdout_pending = false;
+ 179:communication/interface_uart.cpp ****                 uart0_stdout_sink.maybe_start_async_write();
+ 180:communication/interface_uart.cpp ****             } break;
+ 181:communication/interface_uart.cpp ****         }
+ 182:communication/interface_uart.cpp ****     }
+ 183:communication/interface_uart.cpp **** }
  184:communication/interface_uart.cpp **** 
- 185:communication/interface_uart.cpp ****     // DMA is set up to receive in a circular buffer forever.
- 186:communication/interface_uart.cpp ****     // We dont use interrupts to fetch the data, instead we periodically read
- 187:communication/interface_uart.cpp ****     // data out of the circular buffer into a parse buffer, controlled by a state machine
- 188:communication/interface_uart.cpp ****     HAL_UART_Receive_DMA(huart_, dma_rx_buffer, sizeof(dma_rx_buffer));
- 189:communication/interface_uart.cpp ****     dma_last_rcv_idx = 0;
+ 185:communication/interface_uart.cpp **** // TODO: allow multiple UART server instances
+ 186:communication/interface_uart.cpp **** void start_uart_server(UART_HandleTypeDef* huart) {
+ 187:communication/interface_uart.cpp ****     //!将串口指针指向huart
+ 188:communication/interface_uart.cpp ****     huart_ = huart;
+ 189:communication/interface_uart.cpp ****     uart_tx_stream.huart_ = huart;
  190:communication/interface_uart.cpp **** 
- 191:communication/interface_uart.cpp ****     // Start UART communication thread
- 192:communication/interface_uart.cpp ****     osThreadDef(uart_server_thread_def, uart_server_thread, osPriorityNormal, 0, stack_size_uart_th
- 193:communication/interface_uart.cpp ****     uart_thread = osThreadCreate(osThread(uart_server_thread_def), NULL);
- 194:communication/interface_uart.cpp **** }
- 195:communication/interface_uart.cpp **** 
- 196:communication/interface_uart.cpp **** void uart_poll() {
- 197:communication/interface_uart.cpp ****     if (uart_thread) { // the thread is only started if UART is enabled
- 198:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 1, 0);
- 199:communication/interface_uart.cpp ****     }
- 200:communication/interface_uart.cpp **** }
- 201:communication/interface_uart.cpp **** 
- 202:communication/interface_uart.cpp **** void HAL_UART_TxCpltCallback(UART_HandleTypeDef* huart) {
- 203:communication/interface_uart.cpp ****     if (huart == huart_) {
- 204:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 2, 0);
- 205:communication/interface_uart.cpp ****     }
- 206:communication/interface_uart.cpp **** }
- 131              		.loc 1 206 1 is_stmt 1 view -0
+ 191:communication/interface_uart.cpp ****     // DMA is set up to receive in a circular buffer forever.
+ 192:communication/interface_uart.cpp ****     // We dont use interrupts to fetch the data, instead we periodically read
+ 193:communication/interface_uart.cpp ****     // data out of the circular buffer into a parse buffer, controlled by a state machine
+ 194:communication/interface_uart.cpp ****     //!开始用dma接收，并且设置接收缓冲区大小为64
+ 195:communication/interface_uart.cpp ****     HAL_UART_Receive_DMA(huart_, dma_rx_buffer, sizeof(dma_rx_buffer));
+ 196:communication/interface_uart.cpp ****     //!应该是上一次接收的在缓冲区的索引？
+ 197:communication/interface_uart.cpp ****     dma_last_rcv_idx = 0;
+ 198:communication/interface_uart.cpp **** 
+ 199:communication/interface_uart.cpp ****     // Start UART communication thread
+ 200:communication/interface_uart.cpp ****     //!栈大小为4096，创建串口服务线程
+ 201:communication/interface_uart.cpp ****     osThreadDef(uart_server_thread_def, uart_server_thread, osPriorityNormal, 0, stack_size_uart_th
+ 202:communication/interface_uart.cpp ****     uart_thread = osThreadCreate(osThread(uart_server_thread_def), NULL);
+ 203:communication/interface_uart.cpp **** }
+ 204:communication/interface_uart.cpp **** 
+ 205:communication/interface_uart.cpp **** void uart_poll() {
+ 206:communication/interface_uart.cpp ****     if (uart_thread) { // the thread is only started if UART is enabled
+ 207:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 1, 0); //!向uart队列中发送 1
+ 208:communication/interface_uart.cpp ****     }
+ 209:communication/interface_uart.cpp **** }
+ 210:communication/interface_uart.cpp **** 
+ 211:communication/interface_uart.cpp **** void HAL_UART_TxCpltCallback(UART_HandleTypeDef* huart) {
+ 212:communication/interface_uart.cpp ****     if (huart == huart_) {
+ 213:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 2, 0);
+ 214:communication/interface_uart.cpp ****     }
+ 215:communication/interface_uart.cpp **** }
+ARM GAS  /tmp/cchBlNLE.s 			page 7
+
+
+ 131              		.loc 1 215 1 is_stmt 1 view -0
  132              		.cfi_startproc
  133              		@ args = 0, pretend = 0, frame = 0
  134              		@ frame_needed = 0, uses_anonymous_args = 0
  135              		@ link register save eliminated.
- 136              		.loc 1 206 1 is_stmt 0 view .LVU18
+ 136              		.loc 1 215 1 is_stmt 0 view .LVU18
  137 0000 0128     		cmp	r0, #1
  138 0002 00D0     		beq	.L14
  139              	.L11:
-ARM GAS  /tmp/ccl9WTg1.s 			page 7
-
-
  140 0004 7047     		bx	lr
  141              	.L14:
- 142              		.loc 1 206 1 discriminator 1 view .LVU19
+ 142              		.loc 1 215 1 discriminator 1 view .LVU19
  143 0006 4FF6FF73 		movw	r3, #65535
  144 000a 9942     		cmp	r1, r3
  145 000c FAD1     		bne	.L11
- 146              		.loc 1 206 1 view .LVU20
+ 146              		.loc 1 215 1 view .LVU20
  147 000e 70B4     		push	{r4, r5, r6}
  148              	.LCFI1:
  149              		.cfi_def_cfa_offset 12
@@ -409,6 +418,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   19:fibre-cpp/include/fibre/async_stream.hpp ****     StreamStatus status;
   20:fibre-cpp/include/fibre/async_stream.hpp **** 
   21:fibre-cpp/include/fibre/async_stream.hpp ****     /**
+ARM GAS  /tmp/cchBlNLE.s 			page 8
+
+
   22:fibre-cpp/include/fibre/async_stream.hpp ****      * @brief The pointer to one position after the last byte that was
   23:fibre-cpp/include/fibre/async_stream.hpp ****      * transferred.
   24:fibre-cpp/include/fibre/async_stream.hpp ****      * This must always be in [buffer.begin(), buffer.end()], even if the
@@ -418,9 +430,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   28:fibre-cpp/include/fibre/async_stream.hpp ****      */
   29:fibre-cpp/include/fibre/async_stream.hpp ****     unsigned char* end;
   30:fibre-cpp/include/fibre/async_stream.hpp **** };
-ARM GAS  /tmp/ccl9WTg1.s 			page 8
-
-
   31:fibre-cpp/include/fibre/async_stream.hpp **** 
   32:fibre-cpp/include/fibre/async_stream.hpp **** struct WriteResult {
   33:fibre-cpp/include/fibre/async_stream.hpp ****     StreamStatus status;
@@ -469,6 +478,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   76:fibre-cpp/include/fibre/async_stream.hpp ****     /**
   77:fibre-cpp/include/fibre/async_stream.hpp ****      * @brief Cancels an operation that was previously started with start_read().
   78:fibre-cpp/include/fibre/async_stream.hpp ****      *
+ARM GAS  /tmp/cchBlNLE.s 			page 9
+
+
   79:fibre-cpp/include/fibre/async_stream.hpp ****      * The transfer is cancelled asynchronously and the associated completer
   80:fibre-cpp/include/fibre/async_stream.hpp ****      * will eventually be completed with kStreamCancelled. Until then the
   81:fibre-cpp/include/fibre/async_stream.hpp ****      * transfer must be considered still in progress and associated resources
@@ -478,9 +490,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   85:fibre-cpp/include/fibre/async_stream.hpp ****      * than kStreamCancelled when the transfer was cancelled.
   86:fibre-cpp/include/fibre/async_stream.hpp ****      *
   87:fibre-cpp/include/fibre/async_stream.hpp ****      * This function must not be called once the stream has started to invoke
-ARM GAS  /tmp/ccl9WTg1.s 			page 9
-
-
   88:fibre-cpp/include/fibre/async_stream.hpp ****      * the associated completion handler. It must also not be called twice for
   89:fibre-cpp/include/fibre/async_stream.hpp ****      * the same transfer.
   90:fibre-cpp/include/fibre/async_stream.hpp ****      */
@@ -529,6 +538,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   12:fibre-cpp/include/fibre/callback.hpp **** namespace detail {
   13:fibre-cpp/include/fibre/callback.hpp **** template<typename T> struct get_default { static T val() { return {}; } };
   14:fibre-cpp/include/fibre/callback.hpp **** template<> struct get_default<void> { static void val() {} };
+ARM GAS  /tmp/cchBlNLE.s 			page 10
+
+
   15:fibre-cpp/include/fibre/callback.hpp **** }
   16:fibre-cpp/include/fibre/callback.hpp **** 
   17:fibre-cpp/include/fibre/callback.hpp **** template<typename TRet, typename ... TArgs>
@@ -538,9 +550,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  184              		.loc 3 20 5 is_stmt 1 view .LVU27
  185              	.LBB533:
  186              	.LBB534:
-ARM GAS  /tmp/ccl9WTg1.s 			page 10
-
-
  187              		.loc 3 20 44 is_stmt 0 view .LVU28
  188 0020 0022     		movs	r2, #0
  189 0022 8A60     		str	r2, [r1, #8]
@@ -589,6 +598,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  226              	.LBB541:
  227              		.loc 3 20 44 is_stmt 0 view .LVU37
  228 0032 6260     		str	r2, [r4, #4]
+ARM GAS  /tmp/cchBlNLE.s 			page 11
+
+
  229 0034 A260     		str	r2, [r4, #8]
  230              	.LVL14:
  231              		.loc 3 20 44 view .LVU38
@@ -598,9 +610,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  235              	.LBB542:
  236              	.LBI542:
  237              		.file 4 "fibre-cpp/include/fibre/bufptr.hpp"
-ARM GAS  /tmp/ccl9WTg1.s 			page 11
-
-
    1:fibre-cpp/include/fibre/bufptr.hpp **** #ifndef __FIBRE_BUFPTR_HPP
    2:fibre-cpp/include/fibre/bufptr.hpp **** #define __FIBRE_BUFPTR_HPP
    3:fibre-cpp/include/fibre/bufptr.hpp **** 
@@ -649,6 +658,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
    7:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #include "legacy_object_client.hpp"
    8:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #include <unordered_map>
    9:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #include <optional>
+ARM GAS  /tmp/cchBlNLE.s 			page 12
+
+
   10:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #include <queue>
   11:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #endif
   12:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
@@ -658,9 +670,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   16:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** // Can protect a 4 byte payload against toggling of up to 5 bits
   17:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** //  source: https://users.ece.cmu.edu/~koopman/crc/index.html
   18:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** constexpr uint8_t CANONICAL_CRC8_POLYNOMIAL = 0x37;
-ARM GAS  /tmp/ccl9WTg1.s 			page 12
-
-
   19:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** constexpr uint8_t CANONICAL_CRC8_INIT = 0x42;
   20:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
   21:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** // Default CRC-16 Polynomial: 0x9eb2 x^16 + x^13 + x^12 + x^11 + x^10 + x^8 + x^6 + x^5 + x^2 + 1
@@ -709,6 +718,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   64:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     PacketUnwrapper(AsyncStreamSource* rx_channel)
   65:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         : rx_channel_(rx_channel) {}
   66:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ARM GAS  /tmp/cchBlNLE.s 			page 13
+
+
   67:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void start_read(bufptr_t buffer, TransferHandle* handle, Callback<void, ReadResult> completer) 
   68:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void cancel_read(TransferHandle transfer_handle) final;
   69:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
@@ -718,91 +730,89 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   73:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     AsyncStreamSource* rx_channel_;
   74:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     TransferHandle inner_transfer_handle_;
   75:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     uint8_t rx_buf_[3];
-ARM GAS  /tmp/ccl9WTg1.s 			page 13
-
-
   76:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     uint8_t* expected_rx_end_;
   77:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     size_t payload_length_ = 0;
   78:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     bufptr_t payload_buf_ = {nullptr, nullptr};
   79:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     Callback<void, ReadResult> completer_;
   80:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
   81:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     enum {
-  82:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         kStateIdle,
-  83:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         kStateCancelling,
-  84:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         kStateReceivingHeader,
-  85:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         kStateReceivingPayload,
-  86:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         kStateReceivingTrailer
+  82:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         kStateIdle, //!空闲状态
+  83:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         kStateCancelling, //!正在取消操作
+  84:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         kStateReceivingHeader, //!正在接收数据包头
+  85:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         kStateReceivingPayload, //!正在接收数据负载
+  86:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         kStateReceivingTrailer //!正在接收数据包尾
   87:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     } state_ = kStateIdle;
   88:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** };
   89:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
   90:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
   91:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** struct LegacyProtocolPacketBased {
   92:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** public:
-  93:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     LegacyProtocolPacketBased(AsyncStreamSource* rx_channel, AsyncStreamSink* tx_channel, size_t tx
-  94:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         : rx_channel_(rx_channel), tx_channel_(tx_channel), tx_mtu_(std::min(tx_mtu, sizeof(tx_buf_
-  95:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
-  96:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     AsyncStreamSource* rx_channel_ = nullptr;
-  97:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     AsyncStreamSink* tx_channel_ = nullptr;
-  98:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     size_t tx_mtu_;
-  99:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     uint8_t tx_buf_[128];
- 100:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     uint8_t rx_buf_[128];
- 101:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
- 102:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     TransferHandle tx_handle_ = 0; // non-zero while a TX operation is in progress
- 103:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     uint8_t* rx_end_ = nullptr; // non-zero if an RX operation has finished but wasn't handled yet 
- 104:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     StreamStatus rx_status_ = kStreamOk; // non-ok if the RX process was terminated permanently.
- 105:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****                                          // This signals to the TX process that it should close
- 106:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****                                          // the protocol instance at the next possible instant.
- 107:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     
- 108:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     Callback<void, LegacyProtocolPacketBased*, StreamStatus> on_stopped_ = nullptr;
- 109:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
- 110:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #if FIBRE_ENABLE_CLIENT
- 111:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void start_endpoint_operation(uint16_t endpoint_id, cbufptr_t tx_buf, bufptr_t rx_buf, Endpoint
- 112:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void cancel_endpoint_operation(EndpointOperationHandle handle);
- 113:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
- 114:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     LegacyObjectClient client_{this};
- 115:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #endif
- 116:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
- 117:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #if FIBRE_ENABLE_CLIENT
- 118:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void start(Callback<void, LegacyObjectClient*, std::shared_ptr<LegacyObject>> on_found_root_obj
- 119:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #else
- 120:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void start(Callback<void, LegacyProtocolPacketBased*, StreamStatus> on_stopped);
- 121:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #endif
- 122:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
- 123:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** private:
- 124:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
- 125:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #if FIBRE_ENABLE_CLIENT
- 126:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     struct EndpointOperation {
- 127:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         uint16_t seqno;
- 128:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         uint16_t endpoint_id;
- 129:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         cbufptr_t tx_buf;
- 130:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         bool tx_done;
- 131:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         bufptr_t rx_buf;
- 132:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         bool rx_done;
-ARM GAS  /tmp/ccl9WTg1.s 			page 14
+  93:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     //!tx_mtu 表示发送数据的最大传输单元，即单次发送操作所允许的最大字�
+  94:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     LegacyProtocolPacketBased(AsyncStreamSource* rx_channel, AsyncStreamSink* tx_channel, size_t tx
+  95:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         : rx_channel_(rx_channel), tx_channel_(tx_channel), tx_mtu_(std::min(tx_mtu, sizeof(tx_buf_
+  96:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+  97:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     AsyncStreamSource* rx_channel_ = nullptr;
+  98:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     AsyncStreamSink* tx_channel_ = nullptr;
+  99:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     size_t tx_mtu_;
+ 100:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     uint8_t tx_buf_[128];
+ 101:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     uint8_t rx_buf_[128];
+ 102:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ 103:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     TransferHandle tx_handle_ = 0; // non-zero while a TX operation is in progress
+ 104:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     uint8_t* rx_end_ = nullptr; // non-zero if an RX operation has finished but wasn't handled yet 
+ 105:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     StreamStatus rx_status_ = kStreamOk; // non-ok if the RX process was terminated permanently.
+ 106:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****                                          // This signals to the TX process that it should close
+ 107:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****                                          // the protocol instance at the next possible instant.
+ 108:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     
+ 109:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     Callback<void, LegacyProtocolPacketBased*, StreamStatus> on_stopped_ = nullptr;
+ 110:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ 111:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #if FIBRE_ENABLE_CLIENT
+ 112:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void start_endpoint_operation(uint16_t endpoint_id, cbufptr_t tx_buf, bufptr_t rx_buf, Endpoint
+ 113:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void cancel_endpoint_operation(EndpointOperationHandle handle);
+ 114:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ 115:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     LegacyObjectClient client_{this};
+ 116:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #endif
+ 117:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ 118:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #if FIBRE_ENABLE_CLIENT
+ 119:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void start(Callback<void, LegacyObjectClient*, std::shared_ptr<LegacyObject>> on_found_root_obj
+ 120:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #else
+ 121:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void start(Callback<void, LegacyProtocolPacketBased*, StreamStatus> on_stopped);
+ 122:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #endif
+ 123:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ARM GAS  /tmp/cchBlNLE.s 			page 14
 
 
- 133:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         Callback<void, EndpointOperationResult> callback;
- 134:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     };
- 135:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
- 136:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void start_endpoint_operation(EndpointOperation op);
- 137:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
- 138:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     uint16_t outbound_seq_no_ = 0;
- 139:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     std::vector<EndpointOperation> pending_operations_; // operations that are waiting for TX
- 140:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     EndpointOperationHandle transmitting_op_ = 0; // operation that is in TX
- 141:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     std::unordered_map<uint16_t, EndpointOperation> expected_acks_; // operations that are waiting 
- 142:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #endif
- 143:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
- 144:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void on_write_finished(WriteResult result);
- 145:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void on_read_finished(ReadResult result);
- 146:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void on_rx_closed(StreamStatus status);
- 147:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void on_rx_tx_closed(StreamStatus status);
- 148:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** };
- 149:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ 124:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** private:
+ 125:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ 126:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #if FIBRE_ENABLE_CLIENT
+ 127:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     struct EndpointOperation {
+ 128:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         uint16_t seqno;
+ 129:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         uint16_t endpoint_id;
+ 130:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         cbufptr_t tx_buf;
+ 131:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         bool tx_done;
+ 132:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         bufptr_t rx_buf;
+ 133:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         bool rx_done;
+ 134:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         Callback<void, EndpointOperationResult> callback;
+ 135:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     };
+ 136:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ 137:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void start_endpoint_operation(EndpointOperation op);
+ 138:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ 139:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     uint16_t outbound_seq_no_ = 0;
+ 140:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     std::vector<EndpointOperation> pending_operations_; // operations that are waiting for TX
+ 141:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     EndpointOperationHandle transmitting_op_ = 0; // operation that is in TX
+ 142:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     std::unordered_map<uint16_t, EndpointOperation> expected_acks_; // operations that are waiting 
+ 143:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #endif
+ 144:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ 145:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void on_write_finished(WriteResult result);
+ 146:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void on_read_finished(ReadResult result);
+ 147:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void on_rx_closed(StreamStatus status);
+ 148:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void on_rx_tx_closed(StreamStatus status);
+ 149:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** };
  150:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
- 151:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** struct LegacyProtocolStreamBased {
- 152:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** public:
- 153:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     LegacyProtocolStreamBased(AsyncStreamSource* rx_channel, AsyncStreamSink* tx_channel)
- 254              		.loc 5 153 5 is_stmt 1 view .LVU42
+ 151:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ 152:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** struct LegacyProtocolStreamBased {
+ 153:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** public:
+ 154:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     LegacyProtocolStreamBased(AsyncStreamSource* rx_channel, AsyncStreamSink* tx_channel)
+ 254              		.loc 5 154 5 is_stmt 1 view .LVU42
  255              	.LBB546:
  256              	.LBB547:
  257              	.LBI547:
@@ -828,6 +838,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  273 0040 1E60     		str	r6, [r3]
  274 0042 5C60     		str	r4, [r3, #4]
  275 0044 5A61     		str	r2, [r3, #20]
+ARM GAS  /tmp/cchBlNLE.s 			page 15
+
+
  276              	.LVL17:
  277              	.LBB552:
  278              	.LBI552:
@@ -838,9 +851,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  283 0046 9A61     		str	r2, [r3, #24]
  284 0048 DA61     		str	r2, [r3, #28]
  285              	.LVL18:
-ARM GAS  /tmp/ccl9WTg1.s 			page 15
-
-
  286              		.loc 4 23 65 view .LVU49
  287              	.LBE554:
  288              	.LBE553:
@@ -888,6 +898,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  326 0056 DC62     		str	r4, [r3, #44]
  327 0058 1963     		str	r1, [r3, #48]
  328              	.LVL22:
+ARM GAS  /tmp/cchBlNLE.s 			page 16
+
+
  329              	.LBB563:
  330              	.LBI563:
  331              		.loc 4 23 5 is_stmt 1 view .LVU59
@@ -898,9 +911,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  336 005c 9A64     		str	r2, [r3, #72]
  337              	.LVL23:
  338              		.loc 4 23 65 view .LVU61
-ARM GAS  /tmp/ccl9WTg1.s 			page 16
-
-
  339              	.LBE565:
  340              	.LBE564:
  341              	.LBE563:
@@ -928,12 +938,12 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  361              	.LBE558:
  362              	.LBB569:
  363              	.LBI569:
-  93:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         : rx_channel_(rx_channel), tx_channel_(tx_channel), tx_mtu_(std::min(tx_mtu, sizeof(tx_buf_
- 364              		.loc 5 93 5 is_stmt 1 view .LVU67
+  94:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         : rx_channel_(rx_channel), tx_channel_(tx_channel), tx_mtu_(std::min(tx_mtu, sizeof(tx_buf_
+ 364              		.loc 5 94 5 is_stmt 1 view .LVU67
  365              	.LBB570:
  366              	.LBB571:
-  94:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
- 367              		.loc 5 94 102 is_stmt 0 view .LVU68
+  95:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ 367              		.loc 5 95 102 is_stmt 0 view .LVU68
  368 0066 9B65     		str	r3, [r3, #88]
  369 0068 03F12C04 		add	r4, r3, #44
  370 006c DC65     		str	r4, [r3, #92]
@@ -948,6 +958,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
    5:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // This file is part of the GNU ISO C++ Library.  This library is free
    6:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // software; you can redistribute it and/or modify it under the
    7:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // terms of the GNU General Public License as published by the
+ARM GAS  /tmp/cchBlNLE.s 			page 17
+
+
    8:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // Free Software Foundation; either version 3, or (at your option)
    9:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // any later version.
   10:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
@@ -958,9 +971,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   15:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
   16:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // Under Section 7 of GPL version 3, you are granted additional
   17:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // permissions described in the GCC Runtime Library Exception, version
-ARM GAS  /tmp/ccl9WTg1.s 			page 17
-
-
   18:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // 3.1, as published by the Free Software Foundation.
   19:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
   20:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // You should have received a copy of the GNU General Public License and
@@ -1008,6 +1018,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   62:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <ext/type_traits.h>
   63:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <ext/numeric_traits.h>
   64:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/stl_pair.h>
+ARM GAS  /tmp/cchBlNLE.s 			page 18
+
+
   65:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/stl_iterator_base_types.h>
   66:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/stl_iterator_base_funcs.h>
   67:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/stl_iterator.h>
@@ -1018,9 +1031,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   72:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus >= 201103L
   73:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** # include <type_traits>
   74:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
-ARM GAS  /tmp/ccl9WTg1.s 			page 18
-
-
   75:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #if __cplusplus > 201703L
   76:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** # include <compare>
   77:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif
@@ -1068,6 +1078,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  119:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  typedef typename iterator_traits<_ForwardIterator1>::value_type
  120:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	    _ValueType1;
  121:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  _ValueType1 __tmp = *__a;
+ARM GAS  /tmp/cchBlNLE.s 			page 19
+
+
  122:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  *__a = *__b;
  123:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  *__b = __tmp;
  124:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	}
@@ -1078,9 +1091,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  129:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
  130:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       template<typename _ForwardIterator1, typename _ForwardIterator2>
  131:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	static void
-ARM GAS  /tmp/ccl9WTg1.s 			page 19
-
-
  132:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	iter_swap(_ForwardIterator1 __a, _ForwardIterator2 __b)
  133:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	{
  134:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  swap(*__a, *__b);
@@ -1128,6 +1138,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  176:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	&& __are_same<_ValueType1&, _ReferenceType1>::__value
  177:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	&& __are_same<_ValueType2&, _ReferenceType2>::__value>::
  178:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	iter_swap(__a, __b);
+ARM GAS  /tmp/cchBlNLE.s 			page 20
+
+
  179:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #else
  180:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // _GLIBCXX_RESOLVE_LIB_DEFECTS
  181:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // 187. iter_swap underspecified
@@ -1138,9 +1151,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  186:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /**
  187:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @brief Swap the elements of two sequences.
  188:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @ingroup mutating_algorithms
-ARM GAS  /tmp/ccl9WTg1.s 			page 20
-
-
  189:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __first1  A forward iterator.
  190:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __last1   A forward iterator.
  191:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  @param  __first2  A forward iterator.
@@ -1186,8 +1196,11 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  375              		.loc 6 230 5 is_stmt 1 view .LVU69
  376              		.loc 6 230 5 is_stmt 0 view .LVU70
  377              	.LBE572:
-  94:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
- 378              		.loc 5 94 102 view .LVU71
+  95:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ 378              		.loc 5 95 102 view .LVU71
+ARM GAS  /tmp/cchBlNLE.s 			page 21
+
+
  379 006e 7F24     		movs	r4, #127
  380 0070 1C66     		str	r4, [r3, #96]
  381 0072 C3F86421 		str	r2, [r3, #356]
@@ -1198,9 +1211,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  386              	.LBI573:
   21:fibre-cpp/include/fibre/callback.hpp ****     Callback(std::nullptr_t) : cb_(nullptr), ctx_(nullptr) {}
  387              		.loc 3 21 5 is_stmt 1 view .LVU72
-ARM GAS  /tmp/ccl9WTg1.s 			page 21
-
-
  388              	.LBB574:
  389              	.LBB575:
  390              		.loc 3 21 58 is_stmt 0 view .LVU73
@@ -1248,6 +1258,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   27:fibre-cpp/include/fibre/../../stream_utils.hpp **** 
   28:fibre-cpp/include/fibre/../../stream_utils.hpp ****         // We subtract 1 from the read index because we never want the write
   29:fibre-cpp/include/fibre/../../stream_utils.hpp ****         // pointer to catch up with the read pointer, cause then
+ARM GAS  /tmp/cchBlNLE.s 			page 22
+
+
   30:fibre-cpp/include/fibre/../../stream_utils.hpp ****         // `write_idx_ == read_idx_` could mean both "full" and "empty".
   31:fibre-cpp/include/fibre/../../stream_utils.hpp **** 
   32:fibre-cpp/include/fibre/../../stream_utils.hpp ****         read_idx = (read_idx + I - 1) % I; 
@@ -1258,9 +1271,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   37:fibre-cpp/include/fibre/../../stream_utils.hpp ****             write_idx_ = (write_idx_ + n_copy) % I;
   38:fibre-cpp/include/fibre/../../stream_utils.hpp ****             buf = buf.skip(n_copy);
   39:fibre-cpp/include/fibre/../../stream_utils.hpp ****         }
-ARM GAS  /tmp/ccl9WTg1.s 			page 22
-
-
   40:fibre-cpp/include/fibre/../../stream_utils.hpp **** 
   41:fibre-cpp/include/fibre/../../stream_utils.hpp ****         size_t n_copy = std::min(read_idx - write_idx_, buf.size());
   42:fibre-cpp/include/fibre/../../stream_utils.hpp ****         memcpy(buffer_ + write_idx_, buf.begin(), n_copy);
@@ -1308,6 +1318,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   84:fibre-cpp/include/fibre/../../stream_utils.hpp **** 
   85:fibre-cpp/include/fibre/../../stream_utils.hpp ****     // Both indices are in [0, I)
   86:fibre-cpp/include/fibre/../../stream_utils.hpp ****     // They are equal if the buffer is empty (no valid data).
+ARM GAS  /tmp/cchBlNLE.s 			page 23
+
+
   87:fibre-cpp/include/fibre/../../stream_utils.hpp ****     size_t write_idx_ = 0; // [0, I)
   88:fibre-cpp/include/fibre/../../stream_utils.hpp ****     size_t read_idx_ = 0; // [0, I)
   89:fibre-cpp/include/fibre/../../stream_utils.hpp ****     bool is_active_ = false;
@@ -1318,9 +1331,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   94:fibre-cpp/include/fibre/../../stream_utils.hpp **** 
   95:fibre-cpp/include/fibre/../../stream_utils.hpp **** /**
   96:fibre-cpp/include/fibre/../../stream_utils.hpp ****  * @brief Buffers up to NSlots concurrent async write requests.
-ARM GAS  /tmp/ccl9WTg1.s 			page 23
-
-
   97:fibre-cpp/include/fibre/../../stream_utils.hpp ****  * 
   98:fibre-cpp/include/fibre/../../stream_utils.hpp ****  * This can be used to wrap sinks that can only handle one concurrent write
   99:fibre-cpp/include/fibre/../../stream_utils.hpp ****  * operation at a time but are written to by multiple independent sources.
@@ -1368,6 +1378,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   13:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
   14:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // GNU General Public License for more details.
   15:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ARM GAS  /tmp/cchBlNLE.s 			page 24
+
+
   16:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // Under Section 7 of GPL version 3, you are granted additional
   17:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // permissions described in the GCC Runtime Library Exception, version
   18:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // 3.1, as published by the Free Software Foundation.
@@ -1378,9 +1391,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   23:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** // <http://www.gnu.org/licenses/>.
   24:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
   25:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** /** @file include/tuple
-ARM GAS  /tmp/ccl9WTg1.s 			page 24
-
-
   26:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****  *  This is a Standard C++ Library header.
   27:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****  */
   28:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -1428,6 +1438,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   70:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 			   __is_empty_non_tuple<_Tp>>::type;
   71:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
   72:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<std::size_t _Idx, typename _Head,
+ARM GAS  /tmp/cchBlNLE.s 			page 25
+
+
   73:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	   bool = __empty_not_final<_Head>::value>
   74:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     struct _Head_base;
   75:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -1438,9 +1451,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   80:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Head_base()
   81:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _Head() { }
   82:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
-ARM GAS  /tmp/ccl9WTg1.s 			page 25
-
-
   83:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Head_base(const _Head& __h)
   84:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _Head(__h) { }
   85:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -1488,6 +1498,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  127:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _M_head_impl() { }
  128:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  129:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Head_base(const _Head& __h)
+ARM GAS  /tmp/cchBlNLE.s 			page 26
+
+
  130:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _M_head_impl(__h) { }
  131:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  132:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Head_base(const _Head_base&) = default;
@@ -1498,9 +1511,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _M_head_impl(std::forward<_UHead>(__h)) { }
  138:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  139:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _GLIBCXX20_CONSTEXPR
-ARM GAS  /tmp/ccl9WTg1.s 			page 26
-
-
  140:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _Head_base(allocator_arg_t, __uses_alloc0)
  141:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _M_head_impl() { }
  142:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -1548,6 +1558,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  184:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  185:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   /**
  186:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    * Recursive tuple implementation. Here we store the @c Head element
+ARM GAS  /tmp/cchBlNLE.s 			page 27
+
+
  187:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    * and derive from a @c Tuple_impl containing the remaining elements
  188:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    * (which contains the @c Tail).
  189:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    */
@@ -1558,9 +1571,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  194:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     {
  195:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<std::size_t, typename...> friend class _Tuple_impl;
  196:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
-ARM GAS  /tmp/ccl9WTg1.s 			page 27
-
-
  197:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       typedef _Tuple_impl<_Idx + 1, _Tail...> _Inherited;
  198:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       typedef _Head_base<_Idx, _Head> _Base;
  199:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -1608,6 +1618,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  241:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(_Tuple_impl<_Idx, _UElements...>::_M_tail(__in)),
  242:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _Base(_Tuple_impl<_Idx, _UElements...>::_M_head(__in)) { }
  243:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ARM GAS  /tmp/cchBlNLE.s 			page 28
+
+
  244:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead, typename... _UTails>
  245:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         constexpr _Tuple_impl(_Tuple_impl<_Idx, _UHead, _UTails...>&& __in)
  246:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(std::move
@@ -1618,9 +1631,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  251:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
  252:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
  253:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a)
-ARM GAS  /tmp/ccl9WTg1.s 			page 28
-
-
  254:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a),
  255:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****           _Base(__tag, __use_alloc<_Head>(__a)) { }
  256:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -1668,6 +1678,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  298:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
  299:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
  300:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	            _Tuple_impl<_Idx, _UHead, _UTails...>&& __in)
+ARM GAS  /tmp/cchBlNLE.s 			page 29
+
+
  301:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a, std::move
  302:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		     (_Tuple_impl<_Idx, _UHead, _UTails...>::_M_tail(__in))),
  303:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _Base(__use_alloc<_Head, _Alloc, _UHead>(__a),
@@ -1678,9 +1691,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  308:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
  309:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         void
  310:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         _M_assign(const _Tuple_impl<_Idx, _UElements...>& __in)
-ARM GAS  /tmp/ccl9WTg1.s 			page 29
-
-
  311:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         {
  312:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _M_head(*this) = _Tuple_impl<_Idx, _UElements...>::_M_head(__in);
  313:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _M_tail(*this)._M_assign(
@@ -1728,6 +1738,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  355:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _Base() { }
  356:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  357:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       explicit
+ARM GAS  /tmp/cchBlNLE.s 			page 30
+
+
  358:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Tuple_impl(const _Head& __head)
  359:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _Base(__head) { }
  360:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -1738,9 +1751,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  365:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  366:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Tuple_impl(const _Tuple_impl&) = default;
  367:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
-ARM GAS  /tmp/ccl9WTg1.s 			page 30
-
-
  368:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // _GLIBCXX_RESOLVE_LIB_DEFECTS
  369:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // 2729. Missing SFINAE on std::pair::operator=
  370:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _Tuple_impl& operator=(const _Tuple_impl&) = delete;
@@ -1788,6 +1798,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  412:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	            _Tuple_impl&& __in)
  413:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Base(__use_alloc<_Head, _Alloc, _Head>(__a),
  414:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	        std::forward<_Head>(_M_head(__in))) { }
+ARM GAS  /tmp/cchBlNLE.s 			page 31
+
+
  415:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  416:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _UHead>
  417:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
@@ -1798,9 +1811,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  422:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  423:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _UHead>
  424:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
-ARM GAS  /tmp/ccl9WTg1.s 			page 31
-
-
  425:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
  426:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	            _Tuple_impl<_Idx, _UHead>&& __in)
  427:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Base(__use_alloc<_Head, _Alloc, _UHead>(__a),
@@ -1848,6 +1858,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  469:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // and every Ui is implicitly convertible to Ti.
  470:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename... _UTypes>
  471:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	static constexpr bool __is_implicitly_constructible()
+ARM GAS  /tmp/cchBlNLE.s 			page 32
+
+
  472:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{
  473:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  return __and_<is_constructible<_Types, _UTypes>...,
  474:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 			is_convertible<_UTypes, _Types>...
@@ -1858,9 +1871,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  479:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // True iff each Ti in _Types... can be constructed from Ui in _UTypes...
  480:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // but not every Ui is implicitly convertible to Ti.
  481:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename... _UTypes>
-ARM GAS  /tmp/ccl9WTg1.s 			page 32
-
-
  482:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	static constexpr bool __is_explicitly_constructible()
  483:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{
  484:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  return __and_<is_constructible<_Types, _UTypes>...,
@@ -1908,6 +1918,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  526:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  527:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // Constraint for non-explicit default constructor
  528:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<bool _Dummy>
+ARM GAS  /tmp/cchBlNLE.s 			page 33
+
+
  529:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	using _ImplicitDefaultCtor = __enable_if_t<
  530:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _TCC<_Dummy>::__is_implicitly_default_constructible(),
  531:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  bool>;
@@ -1918,9 +1931,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  536:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _TCC<_Dummy>::__is_explicitly_default_constructible(),
  537:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  bool>;
  538:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
-ARM GAS  /tmp/ccl9WTg1.s 			page 33
-
-
  539:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // Constraint for non-explicit constructors
  540:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<bool _Cond, typename... _Args>
  541:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	using _ImplicitCtor = __enable_if_t<
@@ -1968,6 +1978,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  583:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	static constexpr bool __valid_args()
  584:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ return (sizeof...(_Tail) + 2) == sizeof...(_Elements); }
  585:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ARM GAS  /tmp/cchBlNLE.s 			page 34
+
+
  586:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       /* Constraint for constructors with a tuple<UTypes...> parameter ensures
  587:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****        * that the constructor is only viable when it would not interfere with
  588:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****        * tuple(UTypes&&...) or tuple(const tuple&) or tuple(tuple&&).
@@ -1978,9 +1991,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  593:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****        * and is_same_v<T, U> are all false.
  594:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****        */
  595:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Tuple, typename = tuple,
-ARM GAS  /tmp/ccl9WTg1.s 			page 34
-
-
  596:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       typename = __remove_cvref_t<_Tuple>>
  597:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	struct _UseOtherCtor
  598:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: false_type
@@ -2028,6 +2038,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  126:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _M_head_impl() { }
  442              		.loc 8 126 17 view .LVU83
  443              	.LBB586:
+ARM GAS  /tmp/cchBlNLE.s 			page 35
+
+
  444              	.LBI586:
   20:fibre-cpp/include/fibre/callback.hpp ****     Callback(std::nullptr_t) : cb_(nullptr), ctx_(nullptr) {}
  445              		.loc 3 20 5 view .LVU84
@@ -2038,9 +2051,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  449 0096 1A60     		str	r2, [r3]
  450 0098 5A60     		str	r2, [r3, #4]
  451              	.LVL31:
-ARM GAS  /tmp/ccl9WTg1.s 			page 35
-
-
   20:fibre-cpp/include/fibre/callback.hpp ****     Callback(std::nullptr_t) : cb_(nullptr), ctx_(nullptr) {}
  452              		.loc 3 20 44 view .LVU86
  453              	.LBE587:
@@ -2088,6 +2098,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  489              	.L9:
  490              		.loc 7 104 67 view .LVU96
  491 00a4 0028     		cmp	r0, #0
+ARM GAS  /tmp/cchBlNLE.s 			page 36
+
+
  492 00a6 F5DA     		bge	.L15
  493 00a8 1849     		ldr	r1, .L16+40
  494 00aa 0023     		movs	r3, #0
@@ -2098,9 +2111,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  499              	.LBE578:
  500              	.LBE577:
  501              	.LBE576:
-ARM GAS  /tmp/ccl9WTg1.s 			page 36
-
-
  502              	.LBB593:
  503              	.LBI593:
   12:fibre-cpp/include/fibre/../../stream_utils.hpp **** 
@@ -2148,6 +2158,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  531 00c8 82F80801 		strb	r0, [r2, #264]
  532              	.LVL36:
  533              	.LBB599:
+ARM GAS  /tmp/cchBlNLE.s 			page 37
+
+
  534              	.LBI599:
   12:fibre-cpp/include/fibre/../../stream_utils.hpp **** 
  535              		.loc 7 12 5 is_stmt 1 view .LVU103
@@ -2158,9 +2171,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  539 00cc C2F80C33 		str	r3, [r2, #780]
  540 00d0 C2F81033 		str	r3, [r2, #784]
  541 00d4 82F81433 		strb	r3, [r2, #788]
-ARM GAS  /tmp/ccl9WTg1.s 			page 37
-
-
  542 00d8 C2F81833 		str	r3, [r2, #792]
  543 00dc C2F81C13 		str	r1, [r2, #796]
  544              	.LVL37:
@@ -2172,7 +2182,7 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  549              	.LBE598:
  550              	.LBE597:
  551              	.LBE596:
- 552              		.loc 1 206 1 view .LVU106
+ 552              		.loc 1 215 1 view .LVU106
  553 00e0 70BC     		pop	{r4, r5, r6}
  554              	.LCFI2:
  555              		.cfi_restore 6
@@ -2208,6 +2218,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  586              		.thumb
  587              		.thumb_func
  589              	_ZN5fibre26AsyncStreamSinkMultiplexerILj2EE12cancel_writeEj:
+ARM GAS  /tmp/cchBlNLE.s 			page 38
+
+
  590              		.fnstart
  591              	.LVL38:
  592              	.LFB6286:
@@ -2218,9 +2231,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  109:fibre-cpp/include/fibre/../../stream_utils.hpp ****             if (!__atomic_exchange_n(&slot_in_use, true, __ATOMIC_SEQ_CST)) {
  110:fibre-cpp/include/fibre/../../stream_utils.hpp ****                 slot_buf = buffer;
  111:fibre-cpp/include/fibre/../../stream_utils.hpp ****                 slot_completer = completer;
-ARM GAS  /tmp/ccl9WTg1.s 			page 38
-
-
  112:fibre-cpp/include/fibre/../../stream_utils.hpp **** 
  113:fibre-cpp/include/fibre/../../stream_utils.hpp ****                 if (handle) {
  114:fibre-cpp/include/fibre/../../stream_utils.hpp ****                     *handle = i + 1; // returning a valid handle of 0 is not a good idea
@@ -2268,6 +2278,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  614 0008 8A42     		cmp	r2, r1
  615 000a 1FD0     		beq	.L23
  616              	.LBB603:
+ARM GAS  /tmp/cchBlNLE.s 			page 39
+
+
  135:fibre-cpp/include/fibre/../../stream_utils.hpp ****             // This transfer is the one that the underlying sink is busy with.
  136:fibre-cpp/include/fibre/../../stream_utils.hpp ****             sink_.cancel_write(transfer_handle_);
  137:fibre-cpp/include/fibre/../../stream_utils.hpp ****         } else {
@@ -2278,9 +2291,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  619              	.LVL39:
  620              		.loc 7 139 19 view .LVU112
  621 000e 01EB8101 		add	r1, r1, r1, lsl #2
-ARM GAS  /tmp/ccl9WTg1.s 			page 39
-
-
  622              	.LVL40:
  623              		.loc 7 139 19 view .LVU113
  624 0012 8900     		lsls	r1, r1, #2
@@ -2328,6 +2338,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  648              	.LVL43:
  142:fibre-cpp/include/fibre/../../stream_utils.hpp ****             slot_in_use = false;
  649              		.loc 7 142 25 view .LVU121
+ARM GAS  /tmp/cchBlNLE.s 			page 40
+
+
  650 0022 0023     		movs	r3, #0
  651 0024 1374     		strb	r3, [r2, #16]
  143:fibre-cpp/include/fibre/../../stream_utils.hpp ****             completer.invoke_and_clear({kStreamCancelled, end});
@@ -2338,9 +2351,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  656 0028 8DF81020 		strb	r2, [sp, #16]
  657 002c 0591     		str	r1, [sp, #20]
  658              	.LVL45:
-ARM GAS  /tmp/ccl9WTg1.s 			page 40
-
-
  659              		.loc 7 143 39 view .LVU124
  660 002e 02AA     		add	r2, sp, #8
  661 0030 06A9     		add	r1, sp, #24
@@ -2372,7 +2382,7 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   55:fibre-cpp/include/fibre/callback.hpp ****     operator bool() {
   56:fibre-cpp/include/fibre/callback.hpp ****         return cb_;
   57:fibre-cpp/include/fibre/callback.hpp ****     }
-  58:fibre-cpp/include/fibre/callback.hpp ****     
+  58:fibre-cpp/include/fibre/callback.hpp ****     //!TArgs...：这是一个模板参数包，表示函数接受一组任意数量和类型的参
   59:fibre-cpp/include/fibre/callback.hpp ****     TRet invoke(TArgs ... arg) const {
   60:fibre-cpp/include/fibre/callback.hpp ****         if (cb_) {
   61:fibre-cpp/include/fibre/callback.hpp ****             return (*cb_)(ctx_, arg...);
@@ -2388,6 +2398,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   68:fibre-cpp/include/fibre/callback.hpp ****         auto cb = cb_;
   69:fibre-cpp/include/fibre/callback.hpp ****         ctx_ = nullptr;
  673              		.loc 3 69 14 is_stmt 0 view .LVU128
+ARM GAS  /tmp/cchBlNLE.s 			page 41
+
+
  674 003a 0193     		str	r3, [sp, #4]
   70:fibre-cpp/include/fibre/callback.hpp ****         cb_ = nullptr;
  675              		.loc 3 70 13 view .LVU129
@@ -2398,9 +2411,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   72:fibre-cpp/include/fibre/callback.hpp ****             return (*cb)(ctx, arg...);
  679              		.loc 3 72 25 view .LVU131
  680 0040 D2E90012 		ldrd	r1, r2, [r2]
-ARM GAS  /tmp/ccl9WTg1.s 			page 41
-
-
  681 0044 2846     		mov	r0, r5
  682 0046 A047     		blx	r4
  683              	.LVL49:
@@ -2448,6 +2458,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  720              		.section	.text._ZN5fibre17Stm32UartTxStream11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackI
  721              		.align	1
  722              		.global	_ZN5fibre17Stm32UartTxStream11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11
+ARM GAS  /tmp/cchBlNLE.s 			page 42
+
+
  723              		.syntax unified
  724              		.thumb
  725              		.thumb_func
@@ -2458,9 +2471,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   56:communication/interface_uart.cpp ****     size_t chunk = std::min(buffer.size(), (size_t)UART_TX_BUFFER_SIZE);
  731              		.loc 1 56 118 is_stmt 1 view -0
  732              		.cfi_startproc
-ARM GAS  /tmp/ccl9WTg1.s 			page 42
-
-
  733              		@ args = 4, pretend = 0, frame = 40
  734              		@ frame_needed = 0, uses_anonymous_args = 0
   56:communication/interface_uart.cpp ****     size_t chunk = std::min(buffer.size(), (size_t)UART_TX_BUFFER_SIZE);
@@ -2508,6 +2518,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   42:fibre-cpp/include/fibre/bufptr.hpp ****         }
   43:fibre-cpp/include/fibre/bufptr.hpp ****         begin_ += num;
   44:fibre-cpp/include/fibre/bufptr.hpp ****         return *this;
+ARM GAS  /tmp/cchBlNLE.s 			page 43
+
+
   45:fibre-cpp/include/fibre/bufptr.hpp ****     }
   46:fibre-cpp/include/fibre/bufptr.hpp **** 
   47:fibre-cpp/include/fibre/bufptr.hpp ****     generic_bufptr_t operator++(int) {
@@ -2518,9 +2531,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   52:fibre-cpp/include/fibre/bufptr.hpp **** 
   53:fibre-cpp/include/fibre/bufptr.hpp ****     T& operator*() {
   54:fibre-cpp/include/fibre/bufptr.hpp ****         return *begin_;
-ARM GAS  /tmp/ccl9WTg1.s 			page 43
-
-
   55:fibre-cpp/include/fibre/bufptr.hpp ****     }
   56:fibre-cpp/include/fibre/bufptr.hpp **** 
   57:fibre-cpp/include/fibre/bufptr.hpp ****     generic_bufptr_t take(size_t num) const {
@@ -2568,6 +2578,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  232:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       // concept requirements
  233:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       __glibcxx_function_requires(_LessThanComparableConcept<_Tp>)
  234:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       //return __b < __a ? __b : __a;
+ARM GAS  /tmp/cchBlNLE.s 			page 44
+
+
  235:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       if (__b < __a)
  778              		.loc 6 235 7 is_stmt 0 view .LVU149
  779 0018 8A42     		cmp	r2, r1
@@ -2578,9 +2591,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  782 001c 04AA     		add	r2, sp, #16
  783              	.LVL59:
  784              	.L25:
-ARM GAS  /tmp/ccl9WTg1.s 			page 44
-
-
  785              		.loc 6 237 14 view .LVU151
  786              	.LBE613:
  787              	.LBE612:
@@ -2628,6 +2638,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  816              		.loc 1 66 5 view .LVU164
  817 003e C8B1     		cbz	r0, .L24
   67:communication/interface_uart.cpp ****         tx_end_ = nullptr;
+ARM GAS  /tmp/cchBlNLE.s 			page 45
+
+
  818              		.loc 1 67 9 is_stmt 1 view .LVU165
  819              	.LVL63:
  820              	.LBB615:
@@ -2638,9 +2651,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  824              	.LBB617:
   21:fibre-cpp/include/fibre/callback.hpp ****     Callback(TRet(*callback)(void*, TArgs...), void* ctx) :
  825              		.loc 3 21 58 is_stmt 0 view .LVU167
-ARM GAS  /tmp/ccl9WTg1.s 			page 45
-
-
  826 0040 0023     		movs	r3, #0
  827 0042 0693     		str	r3, [sp, #24]
  828 0044 0793     		str	r3, [sp, #28]
@@ -2688,6 +2698,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  860 006a 1BB1     		cbz	r3, .L24
   61:fibre-cpp/include/fibre/callback.hpp ****         }
  861              		.loc 3 61 22 view .LVU178
+ARM GAS  /tmp/cchBlNLE.s 			page 46
+
+
  862 006c 02AA     		add	r2, sp, #8
  863 006e 06CA     		ldm	r2, {r1, r2}
  864 0070 7068     		ldr	r0, [r6, #4]
@@ -2698,9 +2711,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  868              		.loc 3 61 22 view .LVU179
  869              	.LBE619:
  870              	.LBE618:
-ARM GAS  /tmp/ccl9WTg1.s 			page 46
-
-
   71:communication/interface_uart.cpp **** 
  871              		.loc 1 71 1 view .LVU180
  872 0074 0AB0     		add	sp, sp, #40
@@ -2748,6 +2758,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  912              		.save {r4, lr}
  913              	.LCFI11:
  914              		.cfi_def_cfa_offset 8
+ARM GAS  /tmp/cchBlNLE.s 			page 47
+
+
  915              		.cfi_offset 4, -8
  916              		.cfi_offset 14, -4
  917              		.pad #16
@@ -2758,9 +2771,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   78:communication/interface_uart.cpp ****     tx_end_ = nullptr;
  922              		.loc 1 78 5 is_stmt 1 view .LVU185
   78:communication/interface_uart.cpp ****     tx_end_ = nullptr;
-ARM GAS  /tmp/ccl9WTg1.s 			page 47
-
-
  923              		.loc 1 78 20 is_stmt 0 view .LVU186
  924 0006 0169     		ldr	r1, [r0, #16]
  925              	.LVL70:
@@ -2808,6 +2818,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   70:fibre-cpp/include/fibre/callback.hpp ****         if (cb) {
  956              		.loc 3 70 13 view .LVU198
  957 0024 9A60     		str	r2, [r3, #8]
+ARM GAS  /tmp/cchBlNLE.s 			page 48
+
+
   71:fibre-cpp/include/fibre/callback.hpp ****             return (*cb)(ctx, arg...);
  958              		.loc 3 71 9 view .LVU199
  959 0026 14B1     		cbz	r4, .L31
@@ -2818,9 +2831,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  964              	.L31:
  965              		.loc 3 72 25 view .LVU201
  966              	.LBE622:
-ARM GAS  /tmp/ccl9WTg1.s 			page 48
-
-
  967              	.LBE621:
   81:communication/interface_uart.cpp **** 
  968              		.loc 1 81 1 view .LVU202
@@ -2868,6 +2878,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1008              		.loc 1 98 5 is_stmt 1 view .LVU206
  1009              	.LVL78:
  1010              	.LBB623:
+ARM GAS  /tmp/cchBlNLE.s 			page 49
+
+
  1011              	.LBI623:
   36:fibre-cpp/include/fibre/bufptr.hpp ****         : generic_bufptr_t(other.begin(), other.end()) {}
  1012              		.loc 4 36 5 view .LVU207
@@ -2878,9 +2891,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   76:fibre-cpp/include/fibre/bufptr.hpp ****     }
   77:fibre-cpp/include/fibre/bufptr.hpp **** 
   78:fibre-cpp/include/fibre/bufptr.hpp ****     bool empty() const {
-ARM GAS  /tmp/ccl9WTg1.s 			page 49
-
-
   79:fibre-cpp/include/fibre/bufptr.hpp ****         return size() == 0;
   80:fibre-cpp/include/fibre/bufptr.hpp ****     }
   81:fibre-cpp/include/fibre/bufptr.hpp **** 
@@ -2928,6 +2938,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1048              	.LBB631:
  1049              	.LBB632:
  1050              	.LBI632:
+ARM GAS  /tmp/cchBlNLE.s 			page 50
+
+
   55:fibre-cpp/include/fibre/callback.hpp ****         return cb_;
  1051              		.loc 3 55 5 view .LVU218
  1052              	.LBB633:
@@ -2938,9 +2951,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   56:fibre-cpp/include/fibre/callback.hpp ****     }
  1056              		.loc 3 56 16 view .LVU220
  1057              	.LBE633:
-ARM GAS  /tmp/ccl9WTg1.s 			page 50
-
-
  1058              	.LBE632:
  100:communication/interface_uart.cpp ****         rx_buf_ = {nullptr, nullptr};
  1059              		.loc 1 100 20 view .LVU221
@@ -2988,6 +2998,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1093              	.LBI638:
   74:fibre-cpp/include/fibre/bufptr.hpp ****         return end_ - begin_;
  1094              		.loc 4 74 12 view .LVU230
+ARM GAS  /tmp/cchBlNLE.s 			page 51
+
+
  1095              	.LBB639:
   75:fibre-cpp/include/fibre/bufptr.hpp ****     }
  1096              		.loc 4 75 21 is_stmt 0 view .LVU231
@@ -2998,9 +3011,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1100              	.LBE639:
  1101              	.LBE638:
  102:communication/interface_uart.cpp ****         memcpy(rx_buf.begin(), buffer, chunk);
-ARM GAS  /tmp/ccl9WTg1.s 			page 51
-
-
  1102              		.loc 1 102 52 view .LVU233
  1103 002c 0993     		str	r3, [sp, #36]
  1104              	.LVL89:
@@ -3048,6 +3058,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  104:communication/interface_uart.cpp ****     }
  1137              		.loc 1 104 64 view .LVU245
  1138 0048 3544     		add	r5, r5, r6
+ARM GAS  /tmp/cchBlNLE.s 			page 52
+
+
  104:communication/interface_uart.cpp ****     }
  1139              		.loc 1 104 36 view .LVU246
  1140 004a 0B95     		str	r5, [sp, #44]
@@ -3058,9 +3071,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1144 004e 0CA9     		add	r1, sp, #48
  1145 0050 11E90300 		ldmdb	r1, {r0, r1}
  1146 0054 82E80300 		stm	r2, {r0, r1}
-ARM GAS  /tmp/ccl9WTg1.s 			page 52
-
-
  1147              	.LBB643:
  1148              	.LBI643:
   66:fibre-cpp/include/fibre/callback.hpp ****         void* ctx = ctx_;
@@ -3108,6 +3118,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1184              	.LBB647:
  1185              	.LBB646:
  1186              	.LBB645:
+ARM GAS  /tmp/cchBlNLE.s 			page 53
+
+
  1187              	.LBB642:
  236:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       return __a;
  1188              		.loc 6 236 9 view .LVU257
@@ -3118,9 +3131,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1192 006e E2E7     		b	.L36
  1193              	.LBE642:
  1194              	.LBE645:
-ARM GAS  /tmp/ccl9WTg1.s 			page 53
-
-
  1195              	.LBE646:
  1196              	.LBE647:
  1197              		.cfi_endproc
@@ -3136,13 +3146,13 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1209              		.fnstart
  1210              	.LVL100:
  1211              	.LFB5210:
- 181:communication/interface_uart.cpp ****     huart_ = huart;
- 1212              		.loc 1 181 51 is_stmt 1 view -0
+ 186:communication/interface_uart.cpp ****     //!将串口指针指向huart
+ 1212              		.loc 1 186 51 is_stmt 1 view -0
  1213              		.cfi_startproc
  1214              		@ args = 0, pretend = 0, frame = 24
  1215              		@ frame_needed = 0, uses_anonymous_args = 0
- 181:communication/interface_uart.cpp ****     huart_ = huart;
- 1216              		.loc 1 181 51 is_stmt 0 view .LVU260
+ 186:communication/interface_uart.cpp ****     //!将串口指针指向huart
+ 1216              		.loc 1 186 51 is_stmt 0 view .LVU260
  1217 0000 30B5     		push	{r4, r5, lr}
  1218              		.save {r4, r5, lr}
  1219              	.LCFI18:
@@ -3154,58 +3164,58 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1225 0002 87B0     		sub	sp, sp, #28
  1226              	.LCFI19:
  1227              		.cfi_def_cfa_offset 40
- 182:communication/interface_uart.cpp ****     uart_tx_stream.huart_ = huart;
- 1228              		.loc 1 182 5 is_stmt 1 view .LVU261
- 182:communication/interface_uart.cpp ****     uart_tx_stream.huart_ = huart;
- 1229              		.loc 1 182 12 is_stmt 0 view .LVU262
+ 188:communication/interface_uart.cpp ****     uart_tx_stream.huart_ = huart;
+ 1228              		.loc 1 188 5 is_stmt 1 view .LVU261
+ 188:communication/interface_uart.cpp ****     uart_tx_stream.huart_ = huart;
+ 1229              		.loc 1 188 12 is_stmt 0 view .LVU262
  1230 0004 0D4A     		ldr	r2, .L42
  1231 0006 1060     		str	r0, [r2]
- 183:communication/interface_uart.cpp **** 
- 1232              		.loc 1 183 5 is_stmt 1 view .LVU263
- 183:communication/interface_uart.cpp **** 
- 1233              		.loc 1 183 27 is_stmt 0 view .LVU264
+ 189:communication/interface_uart.cpp **** 
+ 1232              		.loc 1 189 5 is_stmt 1 view .LVU263
+ 189:communication/interface_uart.cpp **** 
+ 1233              		.loc 1 189 27 is_stmt 0 view .LVU264
  1234 0008 0D4A     		ldr	r2, .L42+4
  1235 000a 5060     		str	r0, [r2, #4]
- 188:communication/interface_uart.cpp ****     dma_last_rcv_idx = 0;
- 1236              		.loc 1 188 5 is_stmt 1 view .LVU265
- 188:communication/interface_uart.cpp ****     dma_last_rcv_idx = 0;
- 1237              		.loc 1 188 25 is_stmt 0 view .LVU266
+ 195:communication/interface_uart.cpp ****     //!应该是上一次接收的在缓冲区的索引？
+ 1236              		.loc 1 195 5 is_stmt 1 view .LVU265
+ARM GAS  /tmp/cchBlNLE.s 			page 54
+
+
+ 195:communication/interface_uart.cpp ****     //!应该是上一次接收的在缓冲区的索引？
+ 1237              		.loc 1 195 25 is_stmt 0 view .LVU266
  1238 000c 4022     		movs	r2, #64
  1239 000e 0D49     		ldr	r1, .L42+8
  1240 0010 FFF7FEFF 		bl	HAL_UART_Receive_DMA
  1241              	.LVL101:
- 189:communication/interface_uart.cpp **** 
- 1242              		.loc 1 189 5 is_stmt 1 view .LVU267
- 189:communication/interface_uart.cpp **** 
- 1243              		.loc 1 189 22 is_stmt 0 view .LVU268
-ARM GAS  /tmp/ccl9WTg1.s 			page 54
-
-
+ 197:communication/interface_uart.cpp **** 
+ 1242              		.loc 1 197 5 is_stmt 1 view .LVU267
+ 197:communication/interface_uart.cpp **** 
+ 1243              		.loc 1 197 22 is_stmt 0 view .LVU268
  1244 0014 0025     		movs	r5, #0
  1245 0016 0C4B     		ldr	r3, .L42+12
  1246 0018 1D60     		str	r5, [r3]
- 192:communication/interface_uart.cpp ****     uart_thread = osThreadCreate(osThread(uart_server_thread_def), NULL);
- 1247              		.loc 1 192 5 is_stmt 1 view .LVU269
+ 201:communication/interface_uart.cpp ****     uart_thread = osThreadCreate(osThread(uart_server_thread_def), NULL);
+ 1247              		.loc 1 201 5 is_stmt 1 view .LVU269
  1248 001a 0DF1040C 		add	ip, sp, #4
  1249 001e 0B4C     		ldr	r4, .L42+16
  1250 0020 0FCC     		ldmia	r4!, {r0, r1, r2, r3}
  1251 0022 ACE80F00 		stmia	ip!, {r0, r1, r2, r3}
  1252 0026 2368     		ldr	r3, [r4]
  1253 0028 CCF80030 		str	r3, [ip]
- 193:communication/interface_uart.cpp **** }
- 1254              		.loc 1 193 5 view .LVU270
- 193:communication/interface_uart.cpp **** }
- 1255              		.loc 1 193 33 is_stmt 0 view .LVU271
+ 202:communication/interface_uart.cpp **** }
+ 1254              		.loc 1 202 5 view .LVU270
+ 202:communication/interface_uart.cpp **** }
+ 1255              		.loc 1 202 33 is_stmt 0 view .LVU271
  1256 002c 2946     		mov	r1, r5
  1257 002e 01A8     		add	r0, sp, #4
  1258 0030 FFF7FEFF 		bl	osThreadCreate
  1259              	.LVL102:
- 193:communication/interface_uart.cpp **** }
- 1260              		.loc 1 193 17 view .LVU272
+ 202:communication/interface_uart.cpp **** }
+ 1260              		.loc 1 202 17 view .LVU272
  1261 0034 064B     		ldr	r3, .L42+20
  1262 0036 1860     		str	r0, [r3]
- 194:communication/interface_uart.cpp **** 
- 1263              		.loc 1 194 1 view .LVU273
+ 203:communication/interface_uart.cpp **** 
+ 1263              		.loc 1 203 1 view .LVU273
  1264 0038 07B0     		add	sp, sp, #28
  1265              	.LCFI20:
  1266              		.cfi_def_cfa_offset 12
@@ -3228,37 +3238,37 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1284              		.global	uart_poll
  1285              		.syntax unified
  1286              		.thumb
+ARM GAS  /tmp/cchBlNLE.s 			page 55
+
+
  1287              		.thumb_func
  1289              	uart_poll:
  1290              		.fnstart
  1291              	.LFB5211:
- 196:communication/interface_uart.cpp ****     if (uart_thread) { // the thread is only started if UART is enabled
- 1292              		.loc 1 196 18 is_stmt 1 view -0
+ 205:communication/interface_uart.cpp ****     if (uart_thread) { // the thread is only started if UART is enabled
+ 1292              		.loc 1 205 18 is_stmt 1 view -0
  1293              		.cfi_startproc
  1294              		@ args = 0, pretend = 0, frame = 0
  1295              		@ frame_needed = 0, uses_anonymous_args = 0
  1296 0000 08B5     		push	{r3, lr}
-ARM GAS  /tmp/ccl9WTg1.s 			page 55
-
-
  1297              		.save {r3, lr}
  1298              	.LCFI21:
  1299              		.cfi_def_cfa_offset 8
  1300              		.cfi_offset 3, -8
  1301              		.cfi_offset 14, -4
- 197:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 1, 0);
- 1302              		.loc 1 197 5 view .LVU275
- 197:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 1, 0);
- 1303              		.loc 1 197 9 is_stmt 0 view .LVU276
+ 206:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 1, 0); //!向uart队列中发送 1
+ 1302              		.loc 1 206 5 view .LVU275
+ 206:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 1, 0); //!向uart队列中发送 1
+ 1303              		.loc 1 206 9 is_stmt 0 view .LVU276
  1304 0002 054B     		ldr	r3, .L47
  1305 0004 1B68     		ldr	r3, [r3]
- 197:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 1, 0);
- 1306              		.loc 1 197 5 view .LVU277
+ 206:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 1, 0); //!向uart队列中发送 1
+ 1306              		.loc 1 206 5 view .LVU277
  1307 0006 2BB1     		cbz	r3, .L44
- 198:communication/interface_uart.cpp ****     }
- 1308              		.loc 1 198 9 is_stmt 1 view .LVU278
- 198:communication/interface_uart.cpp ****     }
- 1309              		.loc 1 198 21 is_stmt 0 view .LVU279
+ 207:communication/interface_uart.cpp ****     }
+ 1308              		.loc 1 207 9 is_stmt 1 view .LVU278
+ 207:communication/interface_uart.cpp ****     }
+ 1309              		.loc 1 207 21 is_stmt 0 view .LVU279
  1310 0008 0022     		movs	r2, #0
  1311 000a 0121     		movs	r1, #1
  1312 000c 034B     		ldr	r3, .L47+4
@@ -3266,8 +3276,8 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1314 0010 FFF7FEFF 		bl	osMessagePut
  1315              	.LVL103:
  1316              	.L44:
- 200:communication/interface_uart.cpp **** 
- 1317              		.loc 1 200 1 view .LVU280
+ 209:communication/interface_uart.cpp **** 
+ 1317              		.loc 1 209 1 view .LVU280
  1318 0014 08BD     		pop	{r3, pc}
  1319              	.L48:
  1320 0016 00BF     		.align	2
@@ -3287,52 +3297,52 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1336              		.fnstart
  1337              	.LVL104:
  1338              	.LFB5212:
- 202:communication/interface_uart.cpp ****     if (huart == huart_) {
- 1339              		.loc 1 202 57 is_stmt 1 view -0
+ 211:communication/interface_uart.cpp ****     if (huart == huart_) {
+ARM GAS  /tmp/cchBlNLE.s 			page 56
+
+
+ 1339              		.loc 1 211 57 is_stmt 1 view -0
  1340              		.cfi_startproc
  1341              		@ args = 0, pretend = 0, frame = 0
  1342              		@ frame_needed = 0, uses_anonymous_args = 0
- 202:communication/interface_uart.cpp ****     if (huart == huart_) {
- 1343              		.loc 1 202 57 is_stmt 0 view .LVU282
+ 211:communication/interface_uart.cpp ****     if (huart == huart_) {
+ 1343              		.loc 1 211 57 is_stmt 0 view .LVU282
  1344 0000 08B5     		push	{r3, lr}
  1345              		.save {r3, lr}
  1346              	.LCFI22:
  1347              		.cfi_def_cfa_offset 8
-ARM GAS  /tmp/ccl9WTg1.s 			page 56
-
-
  1348              		.cfi_offset 3, -8
  1349              		.cfi_offset 14, -4
- 203:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 2, 0);
- 1350              		.loc 1 203 5 is_stmt 1 view .LVU283
- 203:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 2, 0);
- 1351              		.loc 1 203 15 is_stmt 0 view .LVU284
+ 212:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 2, 0);
+ 1350              		.loc 1 212 5 is_stmt 1 view .LVU283
+ 212:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 2, 0);
+ 1351              		.loc 1 212 15 is_stmt 0 view .LVU284
  1352 0002 064B     		ldr	r3, .L53
  1353 0004 1B68     		ldr	r3, [r3]
- 203:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 2, 0);
- 1354              		.loc 1 203 5 view .LVU285
+ 212:communication/interface_uart.cpp ****         osMessagePut(uart_event_queue, 2, 0);
+ 1354              		.loc 1 212 5 view .LVU285
  1355 0006 8342     		cmp	r3, r0
  1356 0008 00D0     		beq	.L52
  1357              	.LVL105:
  1358              	.L49:
- 1359              		.loc 1 206 1 view .LVU286
+ 1359              		.loc 1 215 1 view .LVU286
  1360 000a 08BD     		pop	{r3, pc}
  1361              	.LVL106:
  1362              	.L52:
- 204:communication/interface_uart.cpp ****     }
- 1363              		.loc 1 204 9 is_stmt 1 view .LVU287
- 204:communication/interface_uart.cpp ****     }
- 1364              		.loc 1 204 21 is_stmt 0 view .LVU288
+ 213:communication/interface_uart.cpp ****     }
+ 1363              		.loc 1 213 9 is_stmt 1 view .LVU287
+ 213:communication/interface_uart.cpp ****     }
+ 1364              		.loc 1 213 21 is_stmt 0 view .LVU288
  1365 000c 0022     		movs	r2, #0
  1366 000e 0221     		movs	r1, #2
  1367 0010 034B     		ldr	r3, .L53+4
  1368 0012 1868     		ldr	r0, [r3]
  1369              	.LVL107:
- 204:communication/interface_uart.cpp ****     }
- 1370              		.loc 1 204 21 view .LVU289
+ 213:communication/interface_uart.cpp ****     }
+ 1370              		.loc 1 213 21 view .LVU289
  1371 0014 FFF7FEFF 		bl	osMessagePut
  1372              	.LVL108:
- 1373              		.loc 1 206 1 view .LVU290
+ 1373              		.loc 1 215 1 view .LVU290
  1374 0018 F7E7     		b	.L49
  1375              	.L54:
  1376 001a 00BF     		.align	2
@@ -3348,6 +3358,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1387              		.syntax unified
  1388              		.thumb
  1389              		.thumb_func
+ARM GAS  /tmp/cchBlNLE.s 			page 57
+
+
  1391              	_ZN5fibre13make_callbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_c
  1392              		.fnstart
  1393              	.LVL109:
@@ -3358,9 +3371,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   76:fibre-cpp/include/fibre/callback.hpp **** 
   77:fibre-cpp/include/fibre/callback.hpp ****     typedef TRet(*cb_t)(void*, TArgs...);
   78:fibre-cpp/include/fibre/callback.hpp ****     cb_t get_ptr() { return cb_; }
-ARM GAS  /tmp/ccl9WTg1.s 			page 57
-
-
   79:fibre-cpp/include/fibre/callback.hpp ****     void* get_ctx() { return ctx_; }
   80:fibre-cpp/include/fibre/callback.hpp **** 
   81:fibre-cpp/include/fibre/callback.hpp **** private:
@@ -3408,6 +3418,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1402              		.loc 3 104 17 view .LVU292
  1403              	.LBB649:
  1404              	.LBB650:
+ARM GAS  /tmp/cchBlNLE.s 			page 58
+
+
  1405              	.LBI650:
   22:fibre-cpp/include/fibre/callback.hpp ****         cb_(callback), ctx_(ctx) {}
  1406              		.loc 3 22 5 view .LVU293
@@ -3418,9 +3431,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1410 0002 0260     		str	r2, [r0]
  1411 0004 4160     		str	r1, [r0, #4]
  1412              	.LVL110:
-ARM GAS  /tmp/ccl9WTg1.s 			page 58
-
-
   23:fibre-cpp/include/fibre/callback.hpp **** 
  1413              		.loc 3 23 32 view .LVU295
  1414              	.LBE651:
@@ -3468,6 +3478,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1455              		.cfi_def_cfa_offset 88
  1456 0004 0446     		mov	r4, r0
  1457 0006 02A8     		add	r0, sp, #8
+ARM GAS  /tmp/cchBlNLE.s 			page 59
+
+
  1458 0008 80E80600 		stm	r0, {r1, r2}
  1459              	.LVL111:
  105:fibre-cpp/include/fibre/callback.hpp ****             return (((TObj*)obj)->*func)(arg...);
@@ -3478,9 +3491,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1464              	.LBB664:
  1465              	.LBI664:
  105:fibre-cpp/include/fibre/callback.hpp ****             return (((TObj*)obj)->*func)(arg...);
-ARM GAS  /tmp/ccl9WTg1.s 			page 59
-
-
  1466              		.loc 3 105 21 is_stmt 1 view .LVU299
  1467              	.LVL112:
  105:fibre-cpp/include/fibre/callback.hpp ****             return (((TObj*)obj)->*func)(arg...);
@@ -3528,6 +3538,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1499              	.L61:
   78:fibre-cpp/include/fibre/../../stream_utils.hpp ****             maybe_start_async_write();
  1500              		.loc 7 78 37 is_stmt 0 view .LVU311
+ARM GAS  /tmp/cchBlNLE.s 			page 60
+
+
  1501 003c 0B1B     		subs	r3, r1, r4
   78:fibre-cpp/include/fibre/../../stream_utils.hpp ****             maybe_start_async_write();
  1502              		.loc 7 78 48 view .LVU312
@@ -3538,9 +3551,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1506              	.LVL113:
  1507              	.LBB668:
  1508              	.LBI668:
-ARM GAS  /tmp/ccl9WTg1.s 			page 60
-
-
   54:fibre-cpp/include/fibre/../../stream_utils.hpp ****         if (is_active_) {
  1509              		.loc 7 54 10 is_stmt 1 view .LVU314
  1510              	.LBB669:
@@ -3588,6 +3598,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1544              		.cfi_restore_state
  1545              	.LBB681:
  1546              	.LBB680:
+ARM GAS  /tmp/cchBlNLE.s 			page 61
+
+
  1547              	.LBB679:
  1548              	.LBB678:
  1549              	.LBB677:
@@ -3598,9 +3611,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1553 005c 84F84810 		strb	r1, [r4, #72]
   59:fibre-cpp/include/fibre/../../stream_utils.hpp ****         } else if (read_idx_ > write_idx_) {
  1554              		.loc 7 59 13 view .LVU324
-ARM GAS  /tmp/ccl9WTg1.s 			page 61
-
-
  1555 0060 256D     		ldr	r5, [r4, #80]
   59:fibre-cpp/include/fibre/../../stream_utils.hpp ****         } else if (read_idx_ > write_idx_) {
  1556              		.loc 7 59 30 view .LVU325
@@ -3648,6 +3658,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   62:fibre-cpp/include/fibre/../../stream_utils.hpp ****         } else {
  1593              		.loc 7 62 13 view .LVU331
  1594 0090 256D     		ldr	r5, [r4, #80]
+ARM GAS  /tmp/cchBlNLE.s 			page 62
+
+
   62:fibre-cpp/include/fibre/../../stream_utils.hpp ****         } else {
  1595              		.loc 7 62 30 view .LVU332
  1596 0092 2A68     		ldr	r2, [r5]
@@ -3658,9 +3671,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1601              	.LBB673:
  1602              	.LBI673:
   23:fibre-cpp/include/fibre/bufptr.hpp **** 
-ARM GAS  /tmp/ccl9WTg1.s 			page 62
-
-
  1603              		.loc 4 23 5 is_stmt 1 view .LVU333
  1604              	.LBB674:
  1605              	.LBB675:
@@ -3708,6 +3718,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1643              		.thumb
  1644              		.thumb_func
  1646              	_ZL18uart_server_threadPv:
+ARM GAS  /tmp/cchBlNLE.s 			page 63
+
+
  1647              		.fnstart
  1648              	.LVL124:
  1649              	.LFB5209:
@@ -3718,9 +3731,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1653              		@ frame_needed = 0, uses_anonymous_args = 0
  119:communication/interface_uart.cpp ****     (void) ctx;
  1654              		.loc 1 119 44 is_stmt 0 view .LVU340
-ARM GAS  /tmp/ccl9WTg1.s 			page 63
-
-
  1655 0000 F0B5     		push	{r4, r5, r6, r7, lr}
  1656              		.save {r4, r5, r6, r7, lr}
  1657              	.LCFI27:
@@ -3734,22 +3744,22 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1665 0002 93B0     		sub	sp, sp, #76
  1666              	.LCFI28:
  1667              		.cfi_def_cfa_offset 96
- 120:communication/interface_uart.cpp **** 
+ 120:communication/interface_uart.cpp ****     //!odrv.config_.uart0_protocol = ODriveIntf::STREAM_PROTOCOL_TYPE_ASCII_AND_STDOUT
  1668              		.loc 1 120 5 is_stmt 1 view .LVU341
- 122:communication/interface_uart.cpp ****         fibre_over_uart.start({});
+ 122:communication/interface_uart.cpp ****         fibre_over_uart.start({});//!与PC端软件进行通信 这里传入了一个 空的回调 
  1669              		.loc 1 122 5 view .LVU342
- 122:communication/interface_uart.cpp ****         fibre_over_uart.start({});
+ 122:communication/interface_uart.cpp ****         fibre_over_uart.start({});//!与PC端软件进行通信 这里传入了一个 空的回调 
  1670              		.loc 1 122 22 is_stmt 0 view .LVU343
  1671 0004 504B     		ldr	r3, .L87
  1672 0006 93F89A31 		ldrb	r3, [r3, #410]	@ zero_extendqisi2
- 122:communication/interface_uart.cpp ****         fibre_over_uart.start({});
+ 122:communication/interface_uart.cpp ****         fibre_over_uart.start({});//!与PC端软件进行通信 这里传入了一个 空的回调 
  1673              		.loc 1 122 5 view .LVU344
  1674 000a 3BB1     		cbz	r3, .L83
  124:communication/interface_uart.cpp ****             || odrv.config_.uart0_protocol == ODrive::STREAM_PROTOCOL_TYPE_ASCII_AND_STDOUT) {
  1675              		.loc 1 124 12 is_stmt 1 view .LVU345
  1676 000c 012B     		cmp	r3, #1
  1677 000e 01D0     		beq	.L71
- 125:communication/interface_uart.cpp ****         ascii_over_uart.start();
+ 125:communication/interface_uart.cpp ****         ascii_over_uart.start();//!注册了回调函数 on_read_finished ---> complete,只是做�
  1678              		.loc 1 125 13 is_stmt 0 view .LVU346
  1679 0010 032B     		cmp	r3, #3
  1680 0012 26D1     		bne	.L72
@@ -3768,6 +3778,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1690              	.LVL127:
  1691              	.L83:
  123:communication/interface_uart.cpp ****     } else if (odrv.config_.uart0_protocol == ODrive::STREAM_PROTOCOL_TYPE_ASCII
+ARM GAS  /tmp/cchBlNLE.s 			page 64
+
+
  1692              		.loc 1 123 9 is_stmt 1 view .LVU350
  1693              	.LBB702:
  1694              	.LBI702:
@@ -3778,9 +3791,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   20:fibre-cpp/include/fibre/callback.hpp ****     Callback(std::nullptr_t) : cb_(nullptr), ctx_(nullptr) {}
  1698              		.loc 3 20 44 is_stmt 0 view .LVU352
  1699 001c 0693     		str	r3, [sp, #24]
-ARM GAS  /tmp/ccl9WTg1.s 			page 64
-
-
  1700 001e 0793     		str	r3, [sp, #28]
  1701              	.LVL128:
   20:fibre-cpp/include/fibre/callback.hpp ****     Callback(std::nullptr_t) : cb_(nullptr), ctx_(nullptr) {}
@@ -3790,18 +3800,18 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1705              	.LBE702:
  1706              	.LBB705:
  1707              	.LBI705:
- 154:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         : unwrapper_(rx_channel), wrapper_(tx_channel) {}
- 155:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ 155:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         : unwrapper_(rx_channel), wrapper_(tx_channel) {}
  156:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
- 157:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #if FIBRE_ENABLE_CLIENT
- 158:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void start(Callback<void, LegacyObjectClient*, std::shared_ptr<LegacyObject>> on_found_root_obj
- 159:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         inner_protocol_.start(on_found_root_object, on_lost_root_object, on_stopped);
- 160:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     }
- 161:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #else
- 162:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void start(Callback<void, LegacyProtocolPacketBased*, StreamStatus> on_stopped) { inner_protoco
- 1708              		.loc 5 162 10 is_stmt 1 view .LVU354
+ 157:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** 
+ 158:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #if FIBRE_ENABLE_CLIENT
+ 159:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void start(Callback<void, LegacyObjectClient*, std::shared_ptr<LegacyObject>> on_found_root_obj
+ 160:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****         inner_protocol_.start(on_found_root_object, on_lost_root_object, on_stopped);
+ 161:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     }
+ 162:fibre-cpp/include/fibre/../../legacy_protocol.hpp **** #else
+ 163:fibre-cpp/include/fibre/../../legacy_protocol.hpp ****     void start(Callback<void, LegacyProtocolPacketBased*, StreamStatus> on_stopped) { inner_protoco
+ 1708              		.loc 5 163 10 is_stmt 1 view .LVU354
  1709              	.LBB706:
- 1710              		.loc 5 162 87 view .LVU355
+ 1710              		.loc 5 163 87 view .LVU355
  1711              	.LBB707:
  1712              	.LBI707:
   37:fibre-cpp/include/fibre/callback.hpp **** 
@@ -3818,122 +3828,122 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1721              	.LBE709:
  1722              	.LBE708:
  1723              	.LBE707:
- 1724              		.loc 5 162 108 view .LVU359
+ 1724              		.loc 5 163 108 view .LVU359
  1725 0024 08A9     		add	r1, sp, #32
  1726 0026 4A48     		ldr	r0, .L87+8
  1727              	.LVL130:
- 1728              		.loc 5 162 108 view .LVU360
+ 1728              		.loc 5 163 108 view .LVU360
  1729 0028 FFF7FEFF 		bl	_ZN5fibre25LegacyProtocolPacketBased5startENS_8CallbackIvJPS0_NS_12StreamStatusEEEE
  1730              	.LVL131:
- 1731              		.loc 5 162 108 view .LVU361
+ 1731              		.loc 5 163 108 view .LVU361
  1732              	.LBE706:
  1733              	.LBE705:
+ARM GAS  /tmp/cchBlNLE.s 			page 65
+
+
  1734 002c 19E0     		b	.L72
  1735              	.L84:
  1736              	.LBB710:
  1737              	.LBB711:
  1738              	.LBB712:
  1739              	.LBB713:
- 145:communication/interface_uart.cpp ****                     HAL_UART_Receive_DMA(huart_, dma_rx_buffer, sizeof(dma_rx_buffer));
- 1740              		.loc 1 145 21 is_stmt 1 view .LVU362
- 145:communication/interface_uart.cpp ****                     HAL_UART_Receive_DMA(huart_, dma_rx_buffer, sizeof(dma_rx_buffer));
- 1741              		.loc 1 145 42 is_stmt 0 view .LVU363
-ARM GAS  /tmp/ccl9WTg1.s 			page 65
-
-
+ 147:communication/interface_uart.cpp ****                     HAL_UART_Receive_DMA(huart_, dma_rx_buffer, sizeof(dma_rx_buffer));//!64
+ 1740              		.loc 1 147 21 is_stmt 1 view .LVU362
+ 147:communication/interface_uart.cpp ****                     HAL_UART_Receive_DMA(huart_, dma_rx_buffer, sizeof(dma_rx_buffer));//!64
+ 1741              		.loc 1 147 42 is_stmt 0 view .LVU363
  1742 002e FFF7FEFF 		bl	HAL_UART_AbortReceive
  1743              	.LVL132:
- 146:communication/interface_uart.cpp ****                     dma_last_rcv_idx = 0;
- 1744              		.loc 1 146 21 is_stmt 1 view .LVU364
- 146:communication/interface_uart.cpp ****                     dma_last_rcv_idx = 0;
- 1745              		.loc 1 146 41 is_stmt 0 view .LVU365
+ 148:communication/interface_uart.cpp ****                     dma_last_rcv_idx = 0;//!重置索引
+ 1744              		.loc 1 148 21 is_stmt 1 view .LVU364
+ 148:communication/interface_uart.cpp ****                     dma_last_rcv_idx = 0;//!重置索引
+ 1745              		.loc 1 148 41 is_stmt 0 view .LVU365
  1746 0032 4022     		movs	r2, #64
  1747 0034 4749     		ldr	r1, .L87+12
  1748 0036 484B     		ldr	r3, .L87+16
  1749 0038 1868     		ldr	r0, [r3]
  1750 003a FFF7FEFF 		bl	HAL_UART_Receive_DMA
  1751              	.LVL133:
- 147:communication/interface_uart.cpp ****                 }
- 1752              		.loc 1 147 21 is_stmt 1 view .LVU366
- 147:communication/interface_uart.cpp ****                 }
- 1753              		.loc 1 147 38 is_stmt 0 view .LVU367
+ 149:communication/interface_uart.cpp ****                 }
+ 1752              		.loc 1 149 21 is_stmt 1 view .LVU366
+ 149:communication/interface_uart.cpp ****                 }
+ 1753              		.loc 1 149 38 is_stmt 0 view .LVU367
  1754 003e 474B     		ldr	r3, .L87+20
  1755 0040 0022     		movs	r2, #0
  1756 0042 1A60     		str	r2, [r3]
  1757 0044 25E0     		b	.L77
  1758              	.LVL134:
  1759              	.L85:
- 157:communication/interface_uart.cpp ****                             UART_RX_BUFFER_SIZE - dma_last_rcv_idx);
- 1760              		.loc 1 157 21 is_stmt 1 view .LVU368
- 157:communication/interface_uart.cpp ****                             UART_RX_BUFFER_SIZE - dma_last_rcv_idx);
- 1761              		.loc 1 157 47 is_stmt 0 view .LVU369
+ 161:communication/interface_uart.cpp ****                             UART_RX_BUFFER_SIZE - dma_last_rcv_idx);
+ 1760              		.loc 1 161 21 is_stmt 1 view .LVU368
+ 161:communication/interface_uart.cpp ****                             UART_RX_BUFFER_SIZE - dma_last_rcv_idx);
+ 1761              		.loc 1 161 47 is_stmt 0 view .LVU369
  1762 0046 C3F14002 		rsb	r2, r3, #64
  1763 004a 4249     		ldr	r1, .L87+12
  1764 004c 1944     		add	r1, r1, r3
  1765 004e 4448     		ldr	r0, .L87+24
  1766 0050 FFF7FEFF 		bl	_ZN5fibre17Stm32UartRxStream11did_receiveEPhj
  1767              	.LVL135:
- 159:communication/interface_uart.cpp ****                 }
- 1768              		.loc 1 159 21 is_stmt 1 view .LVU370
- 159:communication/interface_uart.cpp ****                 }
- 1769              		.loc 1 159 38 is_stmt 0 view .LVU371
+ 163:communication/interface_uart.cpp ****                 }
+ 1768              		.loc 1 163 21 is_stmt 1 view .LVU370
+ 163:communication/interface_uart.cpp ****                 }
+ 1769              		.loc 1 163 38 is_stmt 0 view .LVU371
  1770 0054 414B     		ldr	r3, .L87+20
  1771 0056 0022     		movs	r2, #0
  1772 0058 1A60     		str	r2, [r3]
  1773 005a 27E0     		b	.L78
  1774              	.LVL136:
  1775              	.L74:
- 159:communication/interface_uart.cpp ****                 }
- 1776              		.loc 1 159 38 view .LVU372
+ 163:communication/interface_uart.cpp ****                 }
+ 1776              		.loc 1 163 38 view .LVU372
  1777              	.LBE713:
- 168:communication/interface_uart.cpp ****                 uart_tx_stream.did_finish();
- 1778              		.loc 1 168 13 is_stmt 1 view .LVU373
- 168:communication/interface_uart.cpp ****                 uart_tx_stream.did_finish();
- 1779              		.loc 1 168 21 view .LVU374
- 169:communication/interface_uart.cpp ****             } break;
- 1780              		.loc 1 169 17 view .LVU375
- 169:communication/interface_uart.cpp ****             } break;
- 1781              		.loc 1 169 42 is_stmt 0 view .LVU376
+ 173:communication/interface_uart.cpp ****                 uart_tx_stream.did_finish();
+ 1778              		.loc 1 173 13 is_stmt 1 view .LVU373
+ARM GAS  /tmp/cchBlNLE.s 			page 66
+
+
+ 173:communication/interface_uart.cpp ****                 uart_tx_stream.did_finish();
+ 1779              		.loc 1 173 21 view .LVU374
+ 174:communication/interface_uart.cpp ****             } break;
+ 1780              		.loc 1 174 17 view .LVU375
+ 174:communication/interface_uart.cpp ****             } break;
+ 1781              		.loc 1 174 42 is_stmt 0 view .LVU376
  1782 005c 4148     		ldr	r0, .L87+28
  1783 005e FFF7FEFF 		bl	_ZN5fibre17Stm32UartTxStream10did_finishEv
  1784              	.LVL137:
  1785              	.L72:
-ARM GAS  /tmp/ccl9WTg1.s 			page 66
-
-
  1786              	.LBE712:
  1787              	.LBE711:
  1788              	.LBE710:
- 129:communication/interface_uart.cpp ****         osEvent event = osMessageGet(uart_event_queue, osWaitForever);
+ 129:communication/interface_uart.cpp ****         //!osMessageQDef(uart_event_queue, 4, uint32_t);
  1789              		.loc 1 129 5 is_stmt 1 view .LVU377
  1790              	.LBB725:
- 130:communication/interface_uart.cpp **** 
- 1791              		.loc 1 130 9 view .LVU378
- 130:communication/interface_uart.cpp **** 
- 1792              		.loc 1 130 69 is_stmt 0 view .LVU379
+ 131:communication/interface_uart.cpp ****         //!osEventMessage：表示从消息队列成功接收到了一条消息。
+ 1791              		.loc 1 131 9 view .LVU378
+ 131:communication/interface_uart.cpp ****         //!osEventMessage：表示从消息队列成功接收到了一条消息。
+ 1792              		.loc 1 131 69 is_stmt 0 view .LVU379
  1793 0062 4FF0FF32 		mov	r2, #-1
  1794 0066 404B     		ldr	r3, .L87+32
  1795 0068 1968     		ldr	r1, [r3]
  1796 006a 03A8     		add	r0, sp, #12
  1797 006c FFF7FEFF 		bl	osMessageGet
  1798              	.LVL138:
- 132:communication/interface_uart.cpp ****             continue;
- 1799              		.loc 1 132 9 is_stmt 1 view .LVU380
- 132:communication/interface_uart.cpp ****             continue;
- 1800              		.loc 1 132 19 is_stmt 0 view .LVU381
+ 133:communication/interface_uart.cpp ****             continue;
+ 1799              		.loc 1 133 9 is_stmt 1 view .LVU380
+ 133:communication/interface_uart.cpp ****             continue;
+ 1800              		.loc 1 133 19 is_stmt 0 view .LVU381
  1801 0070 039B     		ldr	r3, [sp, #12]
- 132:communication/interface_uart.cpp ****             continue;
- 1802              		.loc 1 132 9 view .LVU382
+ 133:communication/interface_uart.cpp ****             continue;
+ 1802              		.loc 1 133 9 view .LVU382
  1803 0072 102B     		cmp	r3, #16
  1804 0074 F5D1     		bne	.L72
- 136:communication/interface_uart.cpp ****             case 1: {
- 1805              		.loc 1 136 9 is_stmt 1 view .LVU383
+ 137:communication/interface_uart.cpp ****             case 1: {
+ 1805              		.loc 1 137 9 is_stmt 1 view .LVU383
  1806              	.LBB724:
- 136:communication/interface_uart.cpp ****             case 1: {
- 1807              		.loc 1 136 29 is_stmt 0 view .LVU384
+ 137:communication/interface_uart.cpp ****             case 1: {
+ 1807              		.loc 1 137 29 is_stmt 0 view .LVU384
  1808 0076 049B     		ldr	r3, [sp, #16]
- 136:communication/interface_uart.cpp ****             case 1: {
- 1809              		.loc 1 136 9 view .LVU385
+ 137:communication/interface_uart.cpp ****             case 1: {
+ 1809              		.loc 1 137 9 view .LVU385
  1810 0078 022B     		cmp	r3, #2
  1811 007a EFD0     		beq	.L74
  1812 007c 032B     		cmp	r3, #3
@@ -3941,105 +3951,105 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1814 0080 012B     		cmp	r3, #1
  1815 0082 EED1     		bne	.L72
  1816              	.LBB723:
- 137:communication/interface_uart.cpp ****                 // This event is triggered by the control loop at 8kHz. This should be
- 1817              		.loc 1 137 13 is_stmt 1 view .LVU386
- 137:communication/interface_uart.cpp ****                 // This event is triggered by the control loop at 8kHz. This should be
- 1818              		.loc 1 137 21 view .LVU387
+ 138:communication/interface_uart.cpp ****                 // This event is triggered by the control loop at 8kHz. This should be
+ 1817              		.loc 1 138 13 is_stmt 1 view .LVU386
+ 138:communication/interface_uart.cpp ****                 // This event is triggered by the control loop at 8kHz. This should be
+ 1818              		.loc 1 138 21 view .LVU387
  1819              	.LBB714:
- 144:communication/interface_uart.cpp ****                     HAL_UART_AbortReceive(huart_);
- 1820              		.loc 1 144 17 view .LVU388
- 144:communication/interface_uart.cpp ****                     HAL_UART_AbortReceive(huart_);
- 1821              		.loc 1 144 29 is_stmt 0 view .LVU389
+ 146:communication/interface_uart.cpp ****                     HAL_UART_AbortReceive(huart_);
+ 1820              		.loc 1 146 17 view .LVU388
+ARM GAS  /tmp/cchBlNLE.s 			page 67
+
+
+ 146:communication/interface_uart.cpp ****                     HAL_UART_AbortReceive(huart_);
+ 1821              		.loc 1 146 29 is_stmt 0 view .LVU389
  1822 0084 344B     		ldr	r3, .L87+16
  1823 0086 1868     		ldr	r0, [r3]
  1824 0088 90F83A30 		ldrb	r3, [r0, #58]	@ zero_extendqisi2
  1825 008c DBB2     		uxtb	r3, r3
- 144:communication/interface_uart.cpp ****                     HAL_UART_AbortReceive(huart_);
- 1826              		.loc 1 144 17 view .LVU390
+ 146:communication/interface_uart.cpp ****                     HAL_UART_AbortReceive(huart_);
+ 1826              		.loc 1 146 17 view .LVU390
  1827 008e 222B     		cmp	r3, #34
  1828 0090 CDD1     		bne	.L84
-ARM GAS  /tmp/ccl9WTg1.s 			page 67
-
-
  1829              	.L77:
- 150:communication/interface_uart.cpp ****                 if (new_rcv_idx > UART_RX_BUFFER_SIZE) { // defensive programming
- 1830              		.loc 1 150 17 is_stmt 1 view .LVU391
- 150:communication/interface_uart.cpp ****                 if (new_rcv_idx > UART_RX_BUFFER_SIZE) { // defensive programming
- 1831              		.loc 1 150 70 is_stmt 0 view .LVU392
+ 153:communication/interface_uart.cpp ****                 if (new_rcv_idx > UART_RX_BUFFER_SIZE) { // defensive programming
+ 1830              		.loc 1 153 17 is_stmt 1 view .LVU391
+ 153:communication/interface_uart.cpp ****                 if (new_rcv_idx > UART_RX_BUFFER_SIZE) { // defensive programming
+ 1831              		.loc 1 153 70 is_stmt 0 view .LVU392
  1832 0092 314B     		ldr	r3, .L87+16
  1833 0094 1B68     		ldr	r3, [r3]
  1834 0096 5B6B     		ldr	r3, [r3, #52]
- 150:communication/interface_uart.cpp ****                 if (new_rcv_idx > UART_RX_BUFFER_SIZE) { // defensive programming
- 1835              		.loc 1 150 78 view .LVU393
+ 153:communication/interface_uart.cpp ****                 if (new_rcv_idx > UART_RX_BUFFER_SIZE) { // defensive programming
+ 1835              		.loc 1 153 78 view .LVU393
  1836 0098 1B68     		ldr	r3, [r3]
- 150:communication/interface_uart.cpp ****                 if (new_rcv_idx > UART_RX_BUFFER_SIZE) { // defensive programming
- 1837              		.loc 1 150 88 view .LVU394
+ 153:communication/interface_uart.cpp ****                 if (new_rcv_idx > UART_RX_BUFFER_SIZE) { // defensive programming
+ 1837              		.loc 1 153 88 view .LVU394
  1838 009a 5C68     		ldr	r4, [r3, #4]
  1839 009c C4F14004 		rsb	r4, r4, #64
  1840              	.LVL139:
- 151:communication/interface_uart.cpp ****                     continue;
- 1841              		.loc 1 151 17 is_stmt 1 view .LVU395
+ 154:communication/interface_uart.cpp ****                     continue;
+ 1841              		.loc 1 154 17 is_stmt 1 view .LVU395
  1842 00a0 402C     		cmp	r4, #64
  1843 00a2 DED8     		bhi	.L72
- 156:communication/interface_uart.cpp ****                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
- 1844              		.loc 1 156 17 view .LVU396
- 156:communication/interface_uart.cpp ****                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
- 1845              		.loc 1 156 33 is_stmt 0 view .LVU397
+ 160:communication/interface_uart.cpp ****                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
+ 1844              		.loc 1 160 17 view .LVU396
+ 160:communication/interface_uart.cpp ****                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
+ 1845              		.loc 1 160 33 is_stmt 0 view .LVU397
  1846 00a4 2D4B     		ldr	r3, .L87+20
  1847 00a6 1B68     		ldr	r3, [r3]
- 156:communication/interface_uart.cpp ****                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
- 1848              		.loc 1 156 17 view .LVU398
+ 160:communication/interface_uart.cpp ****                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
+ 1848              		.loc 1 160 17 view .LVU398
  1849 00a8 A342     		cmp	r3, r4
  1850 00aa CCD8     		bhi	.L85
  1851              	.L78:
- 161:communication/interface_uart.cpp ****                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
- 1852              		.loc 1 161 17 is_stmt 1 view .LVU399
- 161:communication/interface_uart.cpp ****                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
- 1853              		.loc 1 161 33 is_stmt 0 view .LVU400
+ 165:communication/interface_uart.cpp ****                     //!从dma_rx_buffer + dma_last_rcv_idx位置开始接收，接收new_rcv_idx - 
+ 1852              		.loc 1 165 17 is_stmt 1 view .LVU399
+ 165:communication/interface_uart.cpp ****                     //!从dma_rx_buffer + dma_last_rcv_idx位置开始接收，接收new_rcv_idx - 
+ 1853              		.loc 1 165 33 is_stmt 0 view .LVU400
  1854 00ac 2B4B     		ldr	r3, .L87+20
  1855 00ae 1B68     		ldr	r3, [r3]
- 161:communication/interface_uart.cpp ****                     uart_rx_stream.did_receive(dma_rx_buffer + dma_last_rcv_idx,
- 1856              		.loc 1 161 17 view .LVU401
+ 165:communication/interface_uart.cpp ****                     //!从dma_rx_buffer + dma_last_rcv_idx位置开始接收，接收new_rcv_idx - 
+ 1856              		.loc 1 165 17 view .LVU401
  1857 00b0 A342     		cmp	r3, r4
  1858 00b2 D6D2     		bcs	.L72
- 162:communication/interface_uart.cpp ****                             new_rcv_idx - dma_last_rcv_idx);
- 1859              		.loc 1 162 21 is_stmt 1 view .LVU402
- 162:communication/interface_uart.cpp ****                             new_rcv_idx - dma_last_rcv_idx);
- 1860              		.loc 1 162 47 is_stmt 0 view .LVU403
+ 167:communication/interface_uart.cpp ****                             new_rcv_idx - dma_last_rcv_idx);//!这里的回调关系没太搞明白
+ 1859              		.loc 1 167 21 is_stmt 1 view .LVU402
+ 167:communication/interface_uart.cpp ****                             new_rcv_idx - dma_last_rcv_idx);//!这里的回调关系没太搞明白
+ 1860              		.loc 1 167 47 is_stmt 0 view .LVU403
  1861 00b4 E21A     		subs	r2, r4, r3
  1862 00b6 2749     		ldr	r1, .L87+12
+ARM GAS  /tmp/cchBlNLE.s 			page 68
+
+
  1863 00b8 1944     		add	r1, r1, r3
  1864 00ba 2948     		ldr	r0, .L87+24
  1865 00bc FFF7FEFF 		bl	_ZN5fibre17Stm32UartRxStream11did_receiveEPhj
  1866              	.LVL140:
- 164:communication/interface_uart.cpp ****                 }
- 1867              		.loc 1 164 21 is_stmt 1 view .LVU404
- 164:communication/interface_uart.cpp ****                 }
- 1868              		.loc 1 164 38 is_stmt 0 view .LVU405
+ 169:communication/interface_uart.cpp ****                 }
+ 1867              		.loc 1 169 21 is_stmt 1 view .LVU404
+ 169:communication/interface_uart.cpp ****                 }
+ 1868              		.loc 1 169 38 is_stmt 0 view .LVU405
  1869 00c0 264B     		ldr	r3, .L87+20
  1870 00c2 1C60     		str	r4, [r3]
-ARM GAS  /tmp/ccl9WTg1.s 			page 68
-
-
  1871 00c4 CDE7     		b	.L72
  1872              	.LVL141:
  1873              	.L75:
- 164:communication/interface_uart.cpp ****                 }
- 1874              		.loc 1 164 38 view .LVU406
+ 169:communication/interface_uart.cpp ****                 }
+ 1874              		.loc 1 169 38 view .LVU406
  1875              	.LBE714:
- 172:communication/interface_uart.cpp ****                 uart0_stdout_pending = false;
- 1876              		.loc 1 172 13 is_stmt 1 view .LVU407
- 172:communication/interface_uart.cpp ****                 uart0_stdout_pending = false;
- 1877              		.loc 1 172 21 view .LVU408
- 173:communication/interface_uart.cpp ****                 uart0_stdout_sink.maybe_start_async_write();
- 1878              		.loc 1 173 17 view .LVU409
- 173:communication/interface_uart.cpp ****                 uart0_stdout_sink.maybe_start_async_write();
- 1879              		.loc 1 173 38 is_stmt 0 view .LVU410
+ 177:communication/interface_uart.cpp ****                 uart0_stdout_pending = false;
+ 1876              		.loc 1 177 13 is_stmt 1 view .LVU407
+ 177:communication/interface_uart.cpp ****                 uart0_stdout_pending = false;
+ 1877              		.loc 1 177 21 view .LVU408
+ 178:communication/interface_uart.cpp ****                 uart0_stdout_sink.maybe_start_async_write();
+ 1878              		.loc 1 178 17 view .LVU409
+ 178:communication/interface_uart.cpp ****                 uart0_stdout_sink.maybe_start_async_write();
+ 1879              		.loc 1 178 38 is_stmt 0 view .LVU410
  1880 00c6 294B     		ldr	r3, .L87+36
  1881 00c8 0022     		movs	r2, #0
  1882 00ca 1A70     		strb	r2, [r3]
- 174:communication/interface_uart.cpp ****             } break;
- 1883              		.loc 1 174 17 is_stmt 1 view .LVU411
+ 179:communication/interface_uart.cpp ****             } break;
+ 1883              		.loc 1 179 17 is_stmt 1 view .LVU411
  1884              	.LVL142:
  1885              	.LBB715:
  1886              	.LBI715:
@@ -4068,6 +4078,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   60:fibre-cpp/include/fibre/../../stream_utils.hpp ****             is_active_ = true;
  1903              		.loc 7 60 16 view .LVU418
  1904 00e0 9342     		cmp	r3, r2
+ARM GAS  /tmp/cchBlNLE.s 			page 69
+
+
  1905 00e2 BED9     		bls	.L72
   61:fibre-cpp/include/fibre/../../stream_utils.hpp ****             sink_.start_write({buffer_ + read_idx_, buffer_ + I}, &transfer_handle_, MEMBER_CB(this
  1906              		.loc 7 61 24 view .LVU419
@@ -4078,9 +4091,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1910              		.loc 7 62 13 view .LVU420
  1911 00ec 256D     		ldr	r5, [r4, #80]
   62:fibre-cpp/include/fibre/../../stream_utils.hpp ****         } else {
-ARM GAS  /tmp/ccl9WTg1.s 			page 69
-
-
  1912              		.loc 7 62 30 view .LVU421
  1913 00ee 2A68     		ldr	r2, [r5]
  1914 00f0 1768     		ldr	r7, [r2]
@@ -4128,6 +4138,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   58:fibre-cpp/include/fibre/../../stream_utils.hpp ****             sink_.start_write({buffer_ + read_idx_, buffer_ + write_idx_}, &transfer_handle_, MEMBE
  1950              		.loc 7 58 24 view .LVU428
  1951 0116 164C     		ldr	r4, .L87+40
+ARM GAS  /tmp/cchBlNLE.s 			page 70
+
+
  1952 0118 0121     		movs	r1, #1
  1953 011a 84F84810 		strb	r1, [r4, #72]
   59:fibre-cpp/include/fibre/../../stream_utils.hpp ****         } else if (read_idx_ > write_idx_) {
@@ -4138,9 +4151,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  1957 0120 2968     		ldr	r1, [r5]
  1958 0122 0F68     		ldr	r7, [r1]
  1959 0124 2344     		add	r3, r3, r4
-ARM GAS  /tmp/ccl9WTg1.s 			page 70
-
-
  1960 0126 2244     		add	r2, r2, r4
  1961              	.LVL149:
  1962              	.LBB720:
@@ -4188,6 +4198,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2000 0168 00000000 		.word	uart_event_queue
  2001 016c 00000000 		.word	.LANCHOR13
  2002 0170 00000000 		.word	.LANCHOR7
+ARM GAS  /tmp/cchBlNLE.s 			page 71
+
+
  2003              	.LBE716:
  2004              	.LBE715:
  2005              	.LBE723:
@@ -4198,9 +4211,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2010              		.fnend
  2012              		.section	.text._ZN5fibre13make_callbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultE
  2013              		.align	1
-ARM GAS  /tmp/ccl9WTg1.s 			page 71
-
-
  2014              		.weak	_ZN5fibre13make_callbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS
  2015              		.syntax unified
  2016              		.thumb
@@ -4248,6 +4258,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2054              		.cantunwind
  2055              		.fnend
  2057              		.section	.text._ZN5fibre26AsyncStreamSinkMultiplexerILj2EE11start_writeENS_16generic_bufptr_tIKhEE
+ARM GAS  /tmp/cchBlNLE.s 			page 72
+
+
  2058              		.align	1
  2059              		.weak	_ZN5fibre26AsyncStreamSinkMultiplexerILj2EE11start_writeENS_16generic_bufptr_tIKhEEPjNS_8Cal
  2060              		.syntax unified
@@ -4258,9 +4271,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2066              	.LVL155:
  2067              	.LFB6285:
  106:fibre-cpp/include/fibre/../../stream_utils.hpp ****         for (size_t i = 0; i < NSlots; ++i) {
-ARM GAS  /tmp/ccl9WTg1.s 			page 72
-
-
  2068              		.loc 7 106 10 is_stmt 1 view -0
  2069              		.cfi_startproc
  2070              		@ args = 4, pretend = 0, frame = 32
@@ -4308,6 +4318,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2107 0022 2244     		add	r2, r2, r4
  2108              	.LVL159:
  2109              	.LBB732:
+ARM GAS  /tmp/cchBlNLE.s 			page 73
+
+
  2110              	.LBI732:
  625:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	noexcept(__and_<is_nothrow_default_constructible<_Elements>...>::value)
  626:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited() { }
@@ -4318,9 +4331,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  631:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	tuple()
  632:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	noexcept(__and_<is_nothrow_default_constructible<_Elements>...>::value)
  633:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited() { }
-ARM GAS  /tmp/ccl9WTg1.s 			page 73
-
-
  634:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  635:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<bool _NotEmpty = (sizeof...(_Elements) >= 1),
  636:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ImplicitCtor<_NotEmpty, const _Elements&...> = true>
@@ -4368,6 +4378,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  678:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  679:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename... _UElements,
  680:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       bool _Valid = (sizeof...(_Elements) == sizeof...(_UElements))
+ARM GAS  /tmp/cchBlNLE.s 			page 74
+
+
  681:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 			   && !__use_other_ctor<const tuple<_UElements...>&>(),
  682:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ExplicitCtor<_Valid, const _UElements&...> = false>
  683:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	explicit constexpr
@@ -4378,9 +4391,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  688:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  689:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename... _UElements,
  690:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       bool _Valid = (sizeof...(_Elements) == sizeof...(_UElements))
-ARM GAS  /tmp/ccl9WTg1.s 			page 74
-
-
  691:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 			     && !__use_other_ctor<tuple<_UElements...>&&>(),
  692:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ImplicitCtor<_Valid, _UElements...> = true>
  693:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	constexpr
@@ -4428,6 +4438,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  735:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	      _UElements&&... __elements)
  736:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a, std::forward<_UElements>(__elements)...)
  737:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ }
+ARM GAS  /tmp/cchBlNLE.s 			page 75
+
+
  738:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  739:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename... _UElements,
  740:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		 bool _Valid = __valid_args<_UElements...>(),
@@ -4438,9 +4451,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  745:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	      _UElements&&... __elements)
  746:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a, std::forward<_UElements>(__elements)...)
  747:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ }
-ARM GAS  /tmp/ccl9WTg1.s 			page 75
-
-
  748:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  749:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
  750:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
@@ -4488,6 +4498,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  792:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  793:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename... _UElements,
  794:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       bool _Valid = (sizeof...(_Elements) == sizeof...(_UElements))
+ARM GAS  /tmp/cchBlNLE.s 			page 76
+
+
  795:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 			     && !__use_other_ctor<tuple<_UElements...>&&>(),
  796:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ExplicitCtor<_Valid, _UElements...> = false>
  797:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
@@ -4498,9 +4511,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  802:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	             static_cast<_Tuple_impl<0, _UElements...>&&>(__in))
  803:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ }
  804:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
-ARM GAS  /tmp/ccl9WTg1.s 			page 76
-
-
  805:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // tuple assignment
  806:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  807:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _GLIBCXX20_CONSTEXPR
@@ -4548,6 +4558,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  849:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // tuple swap
  850:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _GLIBCXX20_CONSTEXPR
  851:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       void
+ARM GAS  /tmp/cchBlNLE.s 			page 77
+
+
  852:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       swap(tuple& __in)
  853:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       noexcept(__and_<__is_nothrow_swappable<_Elements>...>::value)
  854:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       { _Inherited::_M_swap(__in); }
@@ -4558,9 +4571,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  859:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     tuple(_UTypes...) -> tuple<_UTypes...>;
  860:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<typename _T1, typename _T2>
  861:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     tuple(pair<_T1, _T2>) -> tuple<_T1, _T2>;
-ARM GAS  /tmp/ccl9WTg1.s 			page 77
-
-
  862:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<typename _Alloc, typename... _UTypes>
  863:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     tuple(allocator_arg_t, _Alloc, _UTypes...) -> tuple<_UTypes...>;
  864:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<typename _Alloc, typename _T1, typename _T2>
@@ -4608,6 +4618,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  906:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	    __is_explicitly_default_constructible(),
  907:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  bool>;
  908:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ARM GAS  /tmp/cchBlNLE.s 			page 78
+
+
  909:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<bool _Dummy>
  910:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	using _TCC = _TupleConstraints<_Dummy, _T1, _T2>;
  911:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -4618,9 +4631,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  916:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  bool>;
  917:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  918:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       // Constraint for non-explicit constructors
-ARM GAS  /tmp/ccl9WTg1.s 			page 78
-
-
  919:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<bool _Cond, typename _U1, typename _U2>
  920:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	using _ExplicitCtor = __enable_if_t<
  921:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _TCC<_Cond>::template __is_explicitly_constructible<_U1, _U2>(),
@@ -4668,6 +4678,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  963:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<bool _Dummy = true,
  964:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ExplicitDefaultCtor<_Dummy, _T1, _T2> = false>
  965:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	explicit constexpr
+ARM GAS  /tmp/cchBlNLE.s 			page 79
+
+
  966:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	tuple()
  967:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	noexcept(__nothrow_default_constructible())
  968:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited() { }
@@ -4678,9 +4691,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  973:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	tuple(const _T1& __a1, const _T2& __a2)
  974:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	noexcept(__nothrow_constructible<const _T1&, const _T2&>())
  975:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__a1, __a2) { }
-ARM GAS  /tmp/ccl9WTg1.s 			page 79
-
-
  976:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  977:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<bool _Dummy = true,
  978:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ExplicitCtor<_Dummy, const _T1&, const _T2&> = false>
@@ -4728,6 +4738,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
 1020:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	noexcept(__nothrow_constructible<_U1, _U2>())
 1021:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(static_cast<_Tuple_impl<0, _U1, _U2>&&>(__in)) { }
 1022:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
+ARM GAS  /tmp/cchBlNLE.s 			page 80
+
+
 1023:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _U1, typename _U2,
 1024:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ExplicitCtor<true, _U1, _U2> = false>
 1025:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	explicit constexpr
@@ -4738,9 +4751,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
 1030:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _U1, typename _U2,
 1031:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ImplicitCtor<true, const _U1&, const _U2&> = true>
 1032:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	constexpr
-ARM GAS  /tmp/ccl9WTg1.s 			page 80
-
-
 1033:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	tuple(const pair<_U1, _U2>& __in)
 1034:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	noexcept(__nothrow_constructible<const _U1&, const _U2&>())
 1035:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__in.first, __in.second) { }
@@ -4788,6 +4798,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
 1077:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	explicit
 1078:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
 1079:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	tuple(allocator_arg_t __tag, const _Alloc& __a,
+ARM GAS  /tmp/cchBlNLE.s 			page 81
+
+
 1080:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	      const _T1& __a1, const _T2& __a2)
 1081:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a, __a1, __a2) { }
 1082:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -4798,9 +4811,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
 1087:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a, std::forward<_U1>(__a1),
 1088:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	             std::forward<_U2>(__a2)) { }
 1089:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
-ARM GAS  /tmp/ccl9WTg1.s 			page 81
-
-
 1090:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _U1, typename _U2,
 1091:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ExplicitCtor<true, _U1, _U2> = false>
 1092:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	explicit
@@ -4848,6 +4858,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
 1134:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
 1135:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _U1, typename _U2,
 1136:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ExplicitCtor<true, _U1, _U2> = false>
+ARM GAS  /tmp/cchBlNLE.s 			page 82
+
+
 1137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	explicit
 1138:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
 1139:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	tuple(allocator_arg_t __tag, const _Alloc& __a, tuple<_U1, _U2>&& __in)
@@ -4858,9 +4871,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
 1144:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	       _ImplicitCtor<true, const _U1&, const _U2&> = true>
 1145:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
 1146:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	tuple(allocator_arg_t __tag, const _Alloc& __a,
-ARM GAS  /tmp/ccl9WTg1.s 			page 82
-
-
 1147:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	      const pair<_U1, _U2>& __in)
 1148:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a, __in.first, __in.second) { }
 1149:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -4908,6 +4918,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
 1191:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       noexcept(__nothrow_assignable<_T1, _T2>())
 1192:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       {
 1193:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	this->_M_assign(std::move(__in));
+ARM GAS  /tmp/cchBlNLE.s 			page 83
+
+
 1194:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	return *this;
 1195:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       }
 1196:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -4918,9 +4931,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
 1201:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	noexcept(__nothrow_assignable<const _U1&, const _U2&>())
 1202:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{
 1203:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  this->_M_assign(__in);
-ARM GAS  /tmp/ccl9WTg1.s 			page 83
-
-
 1204:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  return *this;
 1205:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	}
 1206:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -4968,6 +4978,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
 1248:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   /// class tuple_size
 1249:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<typename... _Elements>
 1250:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     struct tuple_size<tuple<_Elements...>>
+ARM GAS  /tmp/cchBlNLE.s 			page 84
+
+
 1251:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     : public integral_constant<std::size_t, sizeof...(_Elements)> { };
 1252:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
 1253:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #if __cplusplus > 201402L
@@ -4978,9 +4991,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
 1258:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   /**
 1259:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    * Recursive case for tuple_element: strip off the first element in
 1260:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    * the tuple and retrieve the (i-1)th element of the remaining tuple.
-ARM GAS  /tmp/ccl9WTg1.s 			page 84
-
-
 1261:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****    */
 1262:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****   template<std::size_t __i, typename _Head, typename... _Tail>
 1263:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****     struct tuple_element<__i, tuple<_Head, _Tail...> >
@@ -5028,6 +5038,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2116              	.LBI734:
  201:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  2117              		.loc 8 201 7 view .LVU449
+ARM GAS  /tmp/cchBlNLE.s 			page 85
+
+
  2118              	.LBB735:
  2119              	.LBI735:
  166:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -5038,9 +5051,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2123 0024 02F11000 		add	r0, r2, #16
  2124              	.LVL160:
  166:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
-ARM GAS  /tmp/ccl9WTg1.s 			page 85
-
-
  2125              		.loc 8 166 54 view .LVU452
  2126              	.LBE736:
  2127              	.LBE735:
@@ -5088,6 +5098,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  109:fibre-cpp/include/fibre/../../stream_utils.hpp ****                 slot_buf = buffer;
  2163              		.loc 7 109 13 view .LVU460
  2164 0046 11B1     		cbz	r1, .L103
+ARM GAS  /tmp/cchBlNLE.s 			page 86
+
+
  2165              	.LBE731:
  107:fibre-cpp/include/fibre/../../stream_utils.hpp ****             auto& [slot_in_use, slot_buf, slot_completer] = slots_[i];
  2166              		.loc 7 107 9 is_stmt 1 discriminator 2 view .LVU461
@@ -5098,9 +5111,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2170 004c E2E7     		b	.L98
  2171              	.L103:
  2172              	.LBB742:
-ARM GAS  /tmp/ccl9WTg1.s 			page 86
-
-
  110:fibre-cpp/include/fibre/../../stream_utils.hpp ****                 slot_completer = completer;
  2173              		.loc 7 110 17 view .LVU463
  2174 004e AE46     		mov	lr, r5
@@ -5148,6 +5158,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2205 007a 06AF     		add	r7, sp, #24
  2206 007c 2146     		mov	r1, r4
  2207 007e 3846     		mov	r0, r7
+ARM GAS  /tmp/cchBlNLE.s 			page 87
+
+
  2208 0080 FFF7FEFF 		bl	_ZN5fibre13make_callbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_1
  2209              	.LVL166:
  120:fibre-cpp/include/fibre/../../stream_utils.hpp ****                 }
@@ -5158,9 +5171,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2214 008e 3046     		mov	r0, r6
  2215 0090 C047     		blx	r8
  2216              	.LVL167:
-ARM GAS  /tmp/ccl9WTg1.s 			page 87
-
-
  123:fibre-cpp/include/fibre/../../stream_utils.hpp ****             }
  2217              		.loc 7 123 17 view .LVU476
  2218 0092 13E0     		b	.L92
@@ -5208,6 +5218,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
   61:fibre-cpp/include/fibre/callback.hpp ****         }
  2251              		.loc 3 61 22 view .LVU486
  2252 00b4 04AA     		add	r2, sp, #16
+ARM GAS  /tmp/cchBlNLE.s 			page 88
+
+
  2253 00b6 06CA     		ldm	r2, {r1, r2}
  2254 00b8 7068     		ldr	r0, [r6, #4]
  2255 00ba 9847     		blx	r3
@@ -5218,9 +5231,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2259              	.LBE744:
  2260              	.LBE743:
  131:fibre-cpp/include/fibre/../../stream_utils.hpp **** 
-ARM GAS  /tmp/ccl9WTg1.s 			page 88
-
-
  2261              		.loc 7 131 5 view .LVU488
  2262 00bc 0AB0     		add	sp, sp, #40
  2263              	.LCFI31:
@@ -5268,6 +5278,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2304              		.loc 3 105 21 is_stmt 0 view .LVU491
  2305 000e 04AB     		add	r3, sp, #16
  2306 0010 03C8     		ldm	r0, {r0, r1}
+ARM GAS  /tmp/cchBlNLE.s 			page 89
+
+
  2307 0012 83E80500 		stm	r3, {r0, r2}
  2308              	.LBB763:
  2309              	.LBI763:
@@ -5278,9 +5291,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2312              		.loc 3 105 21 is_stmt 0 view .LVU493
  2313 0016 0DF1180C 		add	ip, sp, #24
  2314 001a 8CE80500 		stm	ip, {r0, r2}
-ARM GAS  /tmp/ccl9WTg1.s 			page 89
-
-
  2315              	.LBB764:
  2316              	.LBB765:
  2317              	.LBI765:
@@ -5328,6 +5338,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2347              		.loc 3 37 70 view .LVU504
  2348              	.LBE769:
  2349              	.LBE768:
+ARM GAS  /tmp/cchBlNLE.s 			page 90
+
+
  2350              	.LBE767:
  152:fibre-cpp/include/fibre/../../stream_utils.hpp ****         (void) slot_buf;
  153:fibre-cpp/include/fibre/../../stream_utils.hpp ****         auto completer = slot_completer;
@@ -5338,9 +5351,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2354              		.loc 7 154 21 view .LVU506
  2355 003a 0DF1280E 		add	lr, sp, #40
  2356 003e 9CE80300 		ldm	ip, {r0, r1}
-ARM GAS  /tmp/ccl9WTg1.s 			page 90
-
-
  2357              	.LVL177:
  2358              		.loc 7 154 21 view .LVU507
  2359 0042 8EE80500 		stm	lr, {r0, r2}
@@ -5388,6 +5398,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  161:fibre-cpp/include/fibre/../../stream_utils.hpp ****             auto& [slot_in_use, slot_buf, slot_completer] = slots_[i];
  2389              		.loc 7 161 19 is_stmt 0 view .LVU516
  2390 005a 03EB8302 		add	r2, r3, r3, lsl #2
+ARM GAS  /tmp/cchBlNLE.s 			page 91
+
+
  2391 005e 9200     		lsls	r2, r2, #2
  2392 0060 0832     		adds	r2, r2, #8
  2393 0062 2A44     		add	r2, r2, r5
@@ -5398,9 +5411,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2395              		.loc 7 164 13 view .LVU517
  2396 0064 127C     		ldrb	r2, [r2, #16]	@ zero_extendqisi2
  2397              	.LVL182:
-ARM GAS  /tmp/ccl9WTg1.s 			page 91
-
-
  2398              		.loc 7 164 13 view .LVU518
  2399 0066 0AB9     		cbnz	r2, .L112
  2400              	.LBE773:
@@ -5448,6 +5458,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2431              	.LBE775:
  2432              	.LBE766:
  2433              	.LBE765:
+ARM GAS  /tmp/cchBlNLE.s 			page 92
+
+
  2434              	.LBE764:
  2435              	.LBE763:
  105:fibre-cpp/include/fibre/callback.hpp ****             return (((TObj*)obj)->*func)(arg...);
@@ -5458,9 +5471,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2440              		.cfi_def_cfa_offset 24
  2441              		@ sp needed
  2442 0078 BDE8F081 		pop	{r4, r5, r6, r7, r8, pc}
-ARM GAS  /tmp/ccl9WTg1.s 			page 92
-
-
  2443              	.LVL189:
  2444              	.L113:
  2445              	.LCFI35:
@@ -5508,6 +5518,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2481              	.LBE779:
  2482              	.LBE778:
  2483              	.LBE777:
+ARM GAS  /tmp/cchBlNLE.s 			page 93
+
+
  174:fibre-cpp/include/fibre/../../stream_utils.hpp ****             (void) slot_in_use;
  175:fibre-cpp/include/fibre/../../stream_utils.hpp ****             (void) slot_completer;
  176:fibre-cpp/include/fibre/../../stream_utils.hpp ****             sink_.start_write(slot_buf, &transfer_handle_, MEMBER_CB(this, on_write_complete));
@@ -5518,9 +5531,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2488 008e D3F80080 		ldr	r8, [r3]
  2489 0092 0CAF     		add	r7, sp, #48
  2490 0094 2946     		mov	r1, r5
-ARM GAS  /tmp/ccl9WTg1.s 			page 93
-
-
  2491 0096 3846     		mov	r0, r7
  2492 0098 FFF7FEFF 		bl	_ZN5fibre13make_callbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_1
  2493              	.LVL193:
@@ -5552,7 +5562,7 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2520              	_GLOBAL__sub_I_uart_thread:
  2521              		.fnstart
  2522              	.LFB6308:
- 2523              		.loc 1 206 1 is_stmt 1 view -0
+ 2523              		.loc 1 215 1 is_stmt 1 view -0
  2524              		.cfi_startproc
  2525              		@ args = 0, pretend = 0, frame = 0
  2526              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -5561,13 +5571,16 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2529              		.cfi_def_cfa_offset 8
  2530              		.cfi_offset 3, -8
  2531              		.cfi_offset 14, -4
- 2532              		.loc 1 206 1 is_stmt 0 view .LVU543
+ 2532              		.loc 1 215 1 is_stmt 0 view .LVU543
  2533 0002 4FF6FF71 		movw	r1, #65535
  2534 0006 0120     		movs	r0, #1
  2535 0008 FFF7FEFF 		bl	_Z41__static_initialization_and_destruction_0ii
  2536              	.LVL195:
  2537 000c 08BD     		pop	{r3, pc}
  2538              		.cfi_endproc
+ARM GAS  /tmp/cchBlNLE.s 			page 94
+
+
  2539              	.LFE6308:
  2540              		.cantunwind
  2541              		.fnend
@@ -5578,9 +5591,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2547              		.section	.rodata._ZTSN5fibre17AsyncStreamSourceE,"aG",%progbits,_ZTSN5fibre17AsyncStreamSourceE,co
  2548              		.align	2
  2551              	_ZTSN5fibre17AsyncStreamSourceE:
-ARM GAS  /tmp/ccl9WTg1.s 			page 94
-
-
  2552 0000 4E356669 		.ascii	"N5fibre17AsyncStreamSourceE\000"
  2552      62726531 
  2552      37417379 
@@ -5628,6 +5638,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2594 0004 00000000 		.word	_ZTSN5fibre26AsyncStreamSinkMultiplexerILj2EEE
  2595 0008 00000000 		.word	_ZTIN5fibre15AsyncStreamSinkE
  2596              		.weak	_ZTVN5fibre17AsyncStreamSourceE
+ARM GAS  /tmp/cchBlNLE.s 			page 95
+
+
  2597              		.section	.rodata._ZTVN5fibre17AsyncStreamSourceE,"aG",%progbits,_ZTVN5fibre17AsyncStreamSourceE,co
  2598              		.align	2
  2601              	_ZTVN5fibre17AsyncStreamSourceE:
@@ -5638,9 +5651,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2606              		.weak	_ZTVN5fibre15AsyncStreamSinkE
  2607              		.section	.rodata._ZTVN5fibre15AsyncStreamSinkE,"aG",%progbits,_ZTVN5fibre15AsyncStreamSinkE,comdat
  2608              		.align	2
-ARM GAS  /tmp/ccl9WTg1.s 			page 95
-
-
  2611              	_ZTVN5fibre15AsyncStreamSinkE:
  2612 0000 00000000 		.word	0
  2613 0004 00000000 		.word	_ZTIN5fibre15AsyncStreamSinkE
@@ -5688,6 +5698,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2655              		.align	2
  2656              		.set	.LANCHOR10,. + 0
  2659              	_ZL16dma_last_rcv_idx:
+ARM GAS  /tmp/cchBlNLE.s 			page 96
+
+
  2660 0000 00000000 		.space	4
  2661              		.section	.bss._ZL6huart_,"aw",%nobits
  2662              		.align	2
@@ -5698,9 +5711,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2669              		.align	2
  2670              		.set	.LANCHOR8,. + 0
  2673              	ascii_over_uart:
-ARM GAS  /tmp/ccl9WTg1.s 			page 96
-
-
  2674 0000 00000000 		.space	800
  2674      00000000 
  2674      00000000 
@@ -5748,6 +5758,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2714              	uart_tx_multiplexer:
  2715 0000 00000000 		.space	56
  2715      00000000 
+ARM GAS  /tmp/cchBlNLE.s 			page 97
+
+
  2715      00000000 
  2715      00000000 
  2715      00000000 
@@ -5758,9 +5771,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2722 0000 00000000 		.space	20
  2722      00000000 
  2722      00000000 
-ARM GAS  /tmp/ccl9WTg1.s 			page 97
-
-
  2722      00000000 
  2722      00000000 
  2723              		.section	.rodata._ZTIN5fibre17Stm32UartRxStreamE,"a"
@@ -5808,6 +5818,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2769 0008 00000000 		.word	_ZN5fibre17Stm32UartTxStream11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11Wr
  2770 000c 00000000 		.word	_ZN5fibre17Stm32UartTxStream12cancel_writeEj
  2771              		.section	.rodata.stack_size_uart_thread,"a"
+ARM GAS  /tmp/cchBlNLE.s 			page 98
+
+
  2772              		.align	2
  2775              	stack_size_uart_thread:
  2776 0000 00100000 		.word	4096
@@ -5818,9 +5831,6 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2781              		.file 12 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
  2782              		.file 13 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdint.h"
  2783              		.file 14 "ThirdParty/FreeRTOS/Source/include/task.h"
-ARM GAS  /tmp/ccl9WTg1.s 			page 98
-
-
  2784              		.file 15 "ThirdParty/FreeRTOS/Source/include/queue.h"
  2785              		.file 16 "ThirdParty/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
  2786              		.file 17 "ThirdParty/CMSIS/Device/ST/STM32F4xx/Include/stm32f405xx.h"
@@ -5868,6 +5878,9 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2828              		.file 59 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/math.h"
  2829              		.file 60 "./MotorControl/utils.hpp"
  2830              		.file 61 "./freertos_vars.h"
+ARM GAS  /tmp/cchBlNLE.s 			page 99
+
+
  2831              		.file 62 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/math.h"
  2832              		.file 63 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/string.h"
  2833              		.file 64 "./autogen/interfaces.hpp"
@@ -5875,137 +5888,137 @@ ARM GAS  /tmp/ccl9WTg1.s 			page 1
  2835              		.file 66 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/wchar.h"
  2836              		.file 67 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/locale.h"
  2837              		.file 68 "MotorControl/odrive_main.h"
-ARM GAS  /tmp/ccl9WTg1.s 			page 99
+ARM GAS  /tmp/cchBlNLE.s 			page 100
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 interface_uart.cpp
-     /tmp/ccl9WTg1.s:17     .rodata.str1.4:0000000000000000 $d
-     /tmp/ccl9WTg1.s:24     .text._ZN5fibre17Stm32UartTxStream12cancel_writeEj:0000000000000000 $t
-     /tmp/ccl9WTg1.s:30     .text._ZN5fibre17Stm32UartTxStream12cancel_writeEj:0000000000000000 _ZN5fibre17Stm32UartTxStream12cancel_writeEj
+     /tmp/cchBlNLE.s:17     .rodata.str1.4:0000000000000000 $d
+     /tmp/cchBlNLE.s:24     .text._ZN5fibre17Stm32UartTxStream12cancel_writeEj:0000000000000000 $t
+     /tmp/cchBlNLE.s:30     .text._ZN5fibre17Stm32UartTxStream12cancel_writeEj:0000000000000000 _ZN5fibre17Stm32UartTxStream12cancel_writeEj
 .ARM.exidx.text._ZN5fibre17Stm32UartTxStream12cancel_writeEj:0000000000000000 $d
-     /tmp/ccl9WTg1.s:48     .text._ZN5fibre17Stm32UartRxStream10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10ReadResultEEEE:0000000000000000 $t
-     /tmp/ccl9WTg1.s:54     .text._ZN5fibre17Stm32UartRxStream10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10ReadResultEEEE:0000000000000000 _ZN5fibre17Stm32UartRxStream10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10ReadResultEEEE
+     /tmp/cchBlNLE.s:48     .text._ZN5fibre17Stm32UartRxStream10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10ReadResultEEEE:0000000000000000 $t
+     /tmp/cchBlNLE.s:54     .text._ZN5fibre17Stm32UartRxStream10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10ReadResultEEEE:0000000000000000 _ZN5fibre17Stm32UartRxStream10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10ReadResultEEEE
 .ARM.exidx.text._ZN5fibre17Stm32UartRxStream10start_readENS_16generic_bufptr_tIhEEPjNS_8CallbackIvJNS_10ReadResultEEEE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:99     .text._ZN5fibre17Stm32UartRxStream11cancel_readEj:0000000000000000 $t
-     /tmp/ccl9WTg1.s:105    .text._ZN5fibre17Stm32UartRxStream11cancel_readEj:0000000000000000 _ZN5fibre17Stm32UartRxStream11cancel_readEj
+     /tmp/cchBlNLE.s:99     .text._ZN5fibre17Stm32UartRxStream11cancel_readEj:0000000000000000 $t
+     /tmp/cchBlNLE.s:105    .text._ZN5fibre17Stm32UartRxStream11cancel_readEj:0000000000000000 _ZN5fibre17Stm32UartRxStream11cancel_readEj
 .ARM.exidx.text._ZN5fibre17Stm32UartRxStream11cancel_readEj:0000000000000000 $d
-     /tmp/ccl9WTg1.s:122    .text._Z41__static_initialization_and_destruction_0ii:0000000000000000 $t
-     /tmp/ccl9WTg1.s:127    .text._Z41__static_initialization_and_destruction_0ii:0000000000000000 _Z41__static_initialization_and_destruction_0ii
-     /tmp/ccl9WTg1.s:563    .text._Z41__static_initialization_and_destruction_0ii:00000000000000e4 $d
-     /tmp/ccl9WTg1.s:2611   .rodata._ZTVN5fibre15AsyncStreamSinkE:0000000000000000 _ZTVN5fibre15AsyncStreamSinkE
-     /tmp/ccl9WTg1.s:2601   .rodata._ZTVN5fibre17AsyncStreamSourceE:0000000000000000 _ZTVN5fibre17AsyncStreamSourceE
-     /tmp/ccl9WTg1.s:2623   .rodata._ZTVN5fibre26AsyncStreamSinkMultiplexerILj2EEE:0000000000000000 _ZTVN5fibre26AsyncStreamSinkMultiplexerILj2EEE
+     /tmp/cchBlNLE.s:122    .text._Z41__static_initialization_and_destruction_0ii:0000000000000000 $t
+     /tmp/cchBlNLE.s:127    .text._Z41__static_initialization_and_destruction_0ii:0000000000000000 _Z41__static_initialization_and_destruction_0ii
+     /tmp/cchBlNLE.s:563    .text._Z41__static_initialization_and_destruction_0ii:00000000000000e4 $d
+     /tmp/cchBlNLE.s:2611   .rodata._ZTVN5fibre15AsyncStreamSinkE:0000000000000000 _ZTVN5fibre15AsyncStreamSinkE
+     /tmp/cchBlNLE.s:2601   .rodata._ZTVN5fibre17AsyncStreamSourceE:0000000000000000 _ZTVN5fibre17AsyncStreamSourceE
+     /tmp/cchBlNLE.s:2623   .rodata._ZTVN5fibre26AsyncStreamSinkMultiplexerILj2EEE:0000000000000000 _ZTVN5fibre26AsyncStreamSinkMultiplexerILj2EEE
 .ARM.exidx.text._Z41__static_initialization_and_destruction_0ii:0000000000000000 $d
-     /tmp/ccl9WTg1.s:583    .text._ZN5fibre26AsyncStreamSinkMultiplexerILj2EE12cancel_writeEj:0000000000000000 $t
-     /tmp/ccl9WTg1.s:589    .text._ZN5fibre26AsyncStreamSinkMultiplexerILj2EE12cancel_writeEj:0000000000000000 _ZN5fibre26AsyncStreamSinkMultiplexerILj2EE12cancel_writeEj
+     /tmp/cchBlNLE.s:583    .text._ZN5fibre26AsyncStreamSinkMultiplexerILj2EE12cancel_writeEj:0000000000000000 $t
+     /tmp/cchBlNLE.s:589    .text._ZN5fibre26AsyncStreamSinkMultiplexerILj2EE12cancel_writeEj:0000000000000000 _ZN5fibre26AsyncStreamSinkMultiplexerILj2EE12cancel_writeEj
 .ARM.exidx.text._ZN5fibre26AsyncStreamSinkMultiplexerILj2EE12cancel_writeEj:0000000000000000 $d
-     /tmp/ccl9WTg1.s:721    .text._ZN5fibre17Stm32UartTxStream11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 $t
-     /tmp/ccl9WTg1.s:727    .text._ZN5fibre17Stm32UartTxStream11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 _ZN5fibre17Stm32UartTxStream11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE
+     /tmp/cchBlNLE.s:721    .text._ZN5fibre17Stm32UartTxStream11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 $t
+     /tmp/cchBlNLE.s:727    .text._ZN5fibre17Stm32UartTxStream11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 _ZN5fibre17Stm32UartTxStream11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE
 .ARM.exidx.text._ZN5fibre17Stm32UartTxStream11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:896    .text._ZN5fibre17Stm32UartTxStream10did_finishEv:0000000000000000 $t
-     /tmp/ccl9WTg1.s:902    .text._ZN5fibre17Stm32UartTxStream10did_finishEv:0000000000000000 _ZN5fibre17Stm32UartTxStream10did_finishEv
+     /tmp/cchBlNLE.s:896    .text._ZN5fibre17Stm32UartTxStream10did_finishEv:0000000000000000 $t
+     /tmp/cchBlNLE.s:902    .text._ZN5fibre17Stm32UartTxStream10did_finishEv:0000000000000000 _ZN5fibre17Stm32UartTxStream10did_finishEv
 .ARM.exidx.text._ZN5fibre17Stm32UartTxStream10did_finishEv:0000000000000000 $d
-     /tmp/ccl9WTg1.s:980    .text._ZN5fibre17Stm32UartRxStream11did_receiveEPhj:0000000000000000 $t
-     /tmp/ccl9WTg1.s:986    .text._ZN5fibre17Stm32UartRxStream11did_receiveEPhj:0000000000000000 _ZN5fibre17Stm32UartRxStream11did_receiveEPhj
+     /tmp/cchBlNLE.s:980    .text._ZN5fibre17Stm32UartRxStream11did_receiveEPhj:0000000000000000 $t
+     /tmp/cchBlNLE.s:986    .text._ZN5fibre17Stm32UartRxStream11did_receiveEPhj:0000000000000000 _ZN5fibre17Stm32UartRxStream11did_receiveEPhj
 .ARM.exidx.text._ZN5fibre17Stm32UartRxStream11did_receiveEPhj:0000000000000000 $d
-     /tmp/ccl9WTg1.s:1202   .text.start_uart_server:0000000000000000 $t
-     /tmp/ccl9WTg1.s:1208   .text.start_uart_server:0000000000000000 start_uart_server
-     /tmp/ccl9WTg1.s:1272   .text.start_uart_server:000000000000003c $d
+     /tmp/cchBlNLE.s:1202   .text.start_uart_server:0000000000000000 $t
+     /tmp/cchBlNLE.s:1208   .text.start_uart_server:0000000000000000 start_uart_server
+     /tmp/cchBlNLE.s:1272   .text.start_uart_server:000000000000003c $d
 .ARM.exidx.text.start_uart_server:0000000000000000 $d
-     /tmp/ccl9WTg1.s:1283   .text.uart_poll:0000000000000000 $t
-     /tmp/ccl9WTg1.s:1289   .text.uart_poll:0000000000000000 uart_poll
-     /tmp/ccl9WTg1.s:1322   .text.uart_poll:0000000000000018 $d
+     /tmp/cchBlNLE.s:1283   .text.uart_poll:0000000000000000 $t
+     /tmp/cchBlNLE.s:1289   .text.uart_poll:0000000000000000 uart_poll
+     /tmp/cchBlNLE.s:1322   .text.uart_poll:0000000000000018 $d
         .ARM.extab.text.uart_poll:0000000000000000 $d
         .ARM.exidx.text.uart_poll:0000000000000000 $d
-     /tmp/ccl9WTg1.s:1329   .text.HAL_UART_TxCpltCallback:0000000000000000 $t
-     /tmp/ccl9WTg1.s:1335   .text.HAL_UART_TxCpltCallback:0000000000000000 HAL_UART_TxCpltCallback
-     /tmp/ccl9WTg1.s:1378   .text.HAL_UART_TxCpltCallback:000000000000001c $d
+     /tmp/cchBlNLE.s:1329   .text.HAL_UART_TxCpltCallback:0000000000000000 $t
+     /tmp/cchBlNLE.s:1335   .text.HAL_UART_TxCpltCallback:0000000000000000 HAL_UART_TxCpltCallback
+     /tmp/cchBlNLE.s:1378   .text.HAL_UART_TxCpltCallback:000000000000001c $d
 .ARM.extab.text.HAL_UART_TxCpltCallback:0000000000000000 $d
 .ARM.exidx.text.HAL_UART_TxCpltCallback:0000000000000000 $d
-     /tmp/ccl9WTg1.s:1385   .text._ZN5fibre13make_callbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $t
-     /tmp/ccl9WTg1.s:1391   .text._ZN5fibre13make_callbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 _ZN5fibre13make_callbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE
-     /tmp/ccl9WTg1.s:1423   .text._ZN5fibre13make_callbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000008 $d
-     /tmp/ccl9WTg1.s:1436   .text._ZZN5fibre14MemberCallbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEE4withEPS2_ENUlPvS3_E_4_FUNESA_S3_:0000000000000000 _ZZN5fibre14MemberCallbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEE4withEPS2_ENUlPvS3_E_4_FUNESA_S3_
+     /tmp/cchBlNLE.s:1385   .text._ZN5fibre13make_callbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $t
+     /tmp/cchBlNLE.s:1391   .text._ZN5fibre13make_callbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 _ZN5fibre13make_callbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE
+     /tmp/cchBlNLE.s:1423   .text._ZN5fibre13make_callbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000008 $d
+     /tmp/cchBlNLE.s:1436   .text._ZZN5fibre14MemberCallbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEE4withEPS2_ENUlPvS3_E_4_FUNESA_S3_:0000000000000000 _ZZN5fibre14MemberCallbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEE4withEPS2_ENUlPvS3_E_4_FUNESA_S3_
 .ARM.exidx.text._ZN5fibre13make_callbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:1430   .text._ZZN5fibre14MemberCallbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEE4withEPS2_ENUlPvS3_E_4_FUNESA_S3_:0000000000000000 $t
+     /tmp/cchBlNLE.s:1430   .text._ZZN5fibre14MemberCallbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEE4withEPS2_ENUlPvS3_E_4_FUNESA_S3_:0000000000000000 $t
 .ARM.exidx.text._ZZN5fibre14MemberCallbackIMNS_18BufferedStreamSinkILj64EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEE4withEPS2_ENUlPvS3_E_4_FUNESA_S3_:0000000000000000 $d
-     /tmp/ccl9WTg1.s:1641   .text._ZL18uart_server_threadPv:0000000000000000 $t
-     /tmp/ccl9WTg1.s:1646   .text._ZL18uart_server_threadPv:0000000000000000 _ZL18uart_server_threadPv
-     /tmp/ccl9WTg1.s:1992   .text._ZL18uart_server_threadPv:0000000000000148 $d
+     /tmp/cchBlNLE.s:1641   .text._ZL18uart_server_threadPv:0000000000000000 $t
+     /tmp/cchBlNLE.s:1646   .text._ZL18uart_server_threadPv:0000000000000000 _ZL18uart_server_threadPv
+     /tmp/cchBlNLE.s:1992   .text._ZL18uart_server_threadPv:0000000000000148 $d
 .ARM.exidx.text._ZL18uart_server_threadPv:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2013   .text._ZN5fibre13make_callbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $t
-ARM GAS  /tmp/ccl9WTg1.s 			page 100
+     /tmp/cchBlNLE.s:2013   .text._ZN5fibre13make_callbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $t
+ARM GAS  /tmp/cchBlNLE.s 			page 101
 
 
-     /tmp/ccl9WTg1.s:2019   .text._ZN5fibre13make_callbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 _ZN5fibre13make_callbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE
-     /tmp/ccl9WTg1.s:2051   .text._ZN5fibre13make_callbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000008 $d
-     /tmp/ccl9WTg1.s:2279   .text._ZZN5fibre14MemberCallbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEE4withEPS2_ENUlPvS3_E_4_FUNESA_S3_:0000000000000000 _ZZN5fibre14MemberCallbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEE4withEPS2_ENUlPvS3_E_4_FUNESA_S3_
+     /tmp/cchBlNLE.s:2019   .text._ZN5fibre13make_callbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 _ZN5fibre13make_callbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE
+     /tmp/cchBlNLE.s:2051   .text._ZN5fibre13make_callbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000008 $d
+     /tmp/cchBlNLE.s:2279   .text._ZZN5fibre14MemberCallbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEE4withEPS2_ENUlPvS3_E_4_FUNESA_S3_:0000000000000000 _ZZN5fibre14MemberCallbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEE4withEPS2_ENUlPvS3_E_4_FUNESA_S3_
 .ARM.exidx.text._ZN5fibre13make_callbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EENS_15function_traitsIvS2_JS3_EEENS_14MemberCallbackIS5_XadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEEEEENT2_4cb_tEPNT1_4TObjE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2058   .text._ZN5fibre26AsyncStreamSinkMultiplexerILj2EE11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 $t
-     /tmp/ccl9WTg1.s:2064   .text._ZN5fibre26AsyncStreamSinkMultiplexerILj2EE11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 _ZN5fibre26AsyncStreamSinkMultiplexerILj2EE11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE
+     /tmp/cchBlNLE.s:2058   .text._ZN5fibre26AsyncStreamSinkMultiplexerILj2EE11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 $t
+     /tmp/cchBlNLE.s:2064   .text._ZN5fibre26AsyncStreamSinkMultiplexerILj2EE11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 _ZN5fibre26AsyncStreamSinkMultiplexerILj2EE11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE
 .ARM.exidx.text._ZN5fibre26AsyncStreamSinkMultiplexerILj2EE11start_writeENS_16generic_bufptr_tIKhEEPjNS_8CallbackIvJNS_11WriteResultEEEE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2273   .text._ZZN5fibre14MemberCallbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEE4withEPS2_ENUlPvS3_E_4_FUNESA_S3_:0000000000000000 $t
+     /tmp/cchBlNLE.s:2273   .text._ZZN5fibre14MemberCallbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEE4withEPS2_ENUlPvS3_E_4_FUNESA_S3_:0000000000000000 $t
 .ARM.exidx.text._ZZN5fibre14MemberCallbackIMNS_26AsyncStreamSinkMultiplexerILj2EEEFvNS_11WriteResultEEXadL_ZNS2_17on_write_completeES3_EES2_vSt5tupleIJS3_EEE4withEPS2_ENUlPvS3_E_4_FUNESA_S3_:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2515   .text._GLOBAL__sub_I_uart_thread:0000000000000000 $t
-     /tmp/ccl9WTg1.s:2520   .text._GLOBAL__sub_I_uart_thread:0000000000000000 _GLOBAL__sub_I_uart_thread
+     /tmp/cchBlNLE.s:2515   .text._GLOBAL__sub_I_uart_thread:0000000000000000 $t
+     /tmp/cchBlNLE.s:2520   .text._GLOBAL__sub_I_uart_thread:0000000000000000 _GLOBAL__sub_I_uart_thread
 .ARM.exidx.text._GLOBAL__sub_I_uart_thread:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2544   .init_array:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2551   .rodata._ZTSN5fibre17AsyncStreamSourceE:0000000000000000 _ZTSN5fibre17AsyncStreamSourceE
-     /tmp/ccl9WTg1.s:2548   .rodata._ZTSN5fibre17AsyncStreamSourceE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2558   .rodata._ZTIN5fibre17AsyncStreamSourceE:0000000000000000 _ZTIN5fibre17AsyncStreamSourceE
-     /tmp/ccl9WTg1.s:2555   .rodata._ZTIN5fibre17AsyncStreamSourceE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2566   .rodata._ZTSN5fibre15AsyncStreamSinkE:0000000000000000 _ZTSN5fibre15AsyncStreamSinkE
-     /tmp/ccl9WTg1.s:2563   .rodata._ZTSN5fibre15AsyncStreamSinkE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2573   .rodata._ZTIN5fibre15AsyncStreamSinkE:0000000000000000 _ZTIN5fibre15AsyncStreamSinkE
-     /tmp/ccl9WTg1.s:2570   .rodata._ZTIN5fibre15AsyncStreamSinkE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2749   .rodata._ZTSN5fibre17Stm32UartTxStreamE:0000000000000000 _ZTSN5fibre17Stm32UartTxStreamE
-     /tmp/ccl9WTg1.s:2735   .rodata._ZTIN5fibre17Stm32UartTxStreamE:0000000000000000 _ZTIN5fibre17Stm32UartTxStreamE
-     /tmp/ccl9WTg1.s:2743   .rodata._ZTSN5fibre17Stm32UartRxStreamE:0000000000000000 _ZTSN5fibre17Stm32UartRxStreamE
-     /tmp/ccl9WTg1.s:2727   .rodata._ZTIN5fibre17Stm32UartRxStreamE:0000000000000000 _ZTIN5fibre17Stm32UartRxStreamE
-     /tmp/ccl9WTg1.s:2585   .rodata._ZTSN5fibre26AsyncStreamSinkMultiplexerILj2EEE:0000000000000000 _ZTSN5fibre26AsyncStreamSinkMultiplexerILj2EEE
-     /tmp/ccl9WTg1.s:2582   .rodata._ZTSN5fibre26AsyncStreamSinkMultiplexerILj2EEE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2592   .rodata._ZTIN5fibre26AsyncStreamSinkMultiplexerILj2EEE:0000000000000000 _ZTIN5fibre26AsyncStreamSinkMultiplexerILj2EEE
-     /tmp/ccl9WTg1.s:2589   .rodata._ZTIN5fibre26AsyncStreamSinkMultiplexerILj2EEE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2598   .rodata._ZTVN5fibre17AsyncStreamSourceE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2608   .rodata._ZTVN5fibre15AsyncStreamSinkE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2766   .rodata._ZTVN5fibre17Stm32UartTxStreamE:0000000000000000 _ZTVN5fibre17Stm32UartTxStreamE
-     /tmp/ccl9WTg1.s:2756   .rodata._ZTVN5fibre17Stm32UartRxStreamE:0000000000000000 _ZTVN5fibre17Stm32UartRxStreamE
-     /tmp/ccl9WTg1.s:2620   .rodata._ZTVN5fibre26AsyncStreamSinkMultiplexerILj2EEE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2686   .bss.uart0_stdout_pending:0000000000000000 uart0_stdout_pending
-     /tmp/ccl9WTg1.s:2673   .bss.ascii_over_uart:0000000000000000 ascii_over_uart
-     /tmp/ccl9WTg1.s:2693   .bss.uart0_stdout_sink:0000000000000000 uart0_stdout_sink
-     /tmp/ccl9WTg1.s:2714   .bss.uart_tx_multiplexer:0000000000000000 uart_tx_multiplexer
-     /tmp/ccl9WTg1.s:2680   .bss.fibre_over_uart:0000000000000000 fibre_over_uart
-     /tmp/ccl9WTg1.s:2700   .bss.uart_rx_stream:0000000000000000 uart_rx_stream
-     /tmp/ccl9WTg1.s:2721   .bss.uart_tx_stream:0000000000000000 uart_tx_stream
-     /tmp/ccl9WTg1.s:2775   .rodata.stack_size_uart_thread:0000000000000000 stack_size_uart_thread
-     /tmp/ccl9WTg1.s:2707   .bss.uart_thread:0000000000000000 uart_thread
-     /tmp/ccl9WTg1.s:2638   .rodata:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2648   .bss._ZL13dma_rx_buffer:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2652   .bss._ZL13dma_rx_buffer:0000000000000000 _ZL13dma_rx_buffer
-     /tmp/ccl9WTg1.s:2655   .bss._ZL16dma_last_rcv_idx:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2659   .bss._ZL16dma_last_rcv_idx:0000000000000000 _ZL16dma_last_rcv_idx
-     /tmp/ccl9WTg1.s:2662   .bss._ZL6huart_:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2666   .bss._ZL6huart_:0000000000000000 _ZL6huart_
-     /tmp/ccl9WTg1.s:2669   .bss.ascii_over_uart:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2676   .bss.fibre_over_uart:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2687   .bss.uart0_stdout_pending:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2689   .bss.uart0_stdout_sink:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2696   .bss.uart_rx_stream:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2703   .bss.uart_thread:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2710   .bss.uart_tx_multiplexer:0000000000000000 $d
-ARM GAS  /tmp/ccl9WTg1.s 			page 101
+     /tmp/cchBlNLE.s:2544   .init_array:0000000000000000 $d
+     /tmp/cchBlNLE.s:2551   .rodata._ZTSN5fibre17AsyncStreamSourceE:0000000000000000 _ZTSN5fibre17AsyncStreamSourceE
+     /tmp/cchBlNLE.s:2548   .rodata._ZTSN5fibre17AsyncStreamSourceE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2558   .rodata._ZTIN5fibre17AsyncStreamSourceE:0000000000000000 _ZTIN5fibre17AsyncStreamSourceE
+     /tmp/cchBlNLE.s:2555   .rodata._ZTIN5fibre17AsyncStreamSourceE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2566   .rodata._ZTSN5fibre15AsyncStreamSinkE:0000000000000000 _ZTSN5fibre15AsyncStreamSinkE
+     /tmp/cchBlNLE.s:2563   .rodata._ZTSN5fibre15AsyncStreamSinkE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2573   .rodata._ZTIN5fibre15AsyncStreamSinkE:0000000000000000 _ZTIN5fibre15AsyncStreamSinkE
+     /tmp/cchBlNLE.s:2570   .rodata._ZTIN5fibre15AsyncStreamSinkE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2749   .rodata._ZTSN5fibre17Stm32UartTxStreamE:0000000000000000 _ZTSN5fibre17Stm32UartTxStreamE
+     /tmp/cchBlNLE.s:2735   .rodata._ZTIN5fibre17Stm32UartTxStreamE:0000000000000000 _ZTIN5fibre17Stm32UartTxStreamE
+     /tmp/cchBlNLE.s:2743   .rodata._ZTSN5fibre17Stm32UartRxStreamE:0000000000000000 _ZTSN5fibre17Stm32UartRxStreamE
+     /tmp/cchBlNLE.s:2727   .rodata._ZTIN5fibre17Stm32UartRxStreamE:0000000000000000 _ZTIN5fibre17Stm32UartRxStreamE
+     /tmp/cchBlNLE.s:2585   .rodata._ZTSN5fibre26AsyncStreamSinkMultiplexerILj2EEE:0000000000000000 _ZTSN5fibre26AsyncStreamSinkMultiplexerILj2EEE
+     /tmp/cchBlNLE.s:2582   .rodata._ZTSN5fibre26AsyncStreamSinkMultiplexerILj2EEE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2592   .rodata._ZTIN5fibre26AsyncStreamSinkMultiplexerILj2EEE:0000000000000000 _ZTIN5fibre26AsyncStreamSinkMultiplexerILj2EEE
+     /tmp/cchBlNLE.s:2589   .rodata._ZTIN5fibre26AsyncStreamSinkMultiplexerILj2EEE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2598   .rodata._ZTVN5fibre17AsyncStreamSourceE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2608   .rodata._ZTVN5fibre15AsyncStreamSinkE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2766   .rodata._ZTVN5fibre17Stm32UartTxStreamE:0000000000000000 _ZTVN5fibre17Stm32UartTxStreamE
+     /tmp/cchBlNLE.s:2756   .rodata._ZTVN5fibre17Stm32UartRxStreamE:0000000000000000 _ZTVN5fibre17Stm32UartRxStreamE
+     /tmp/cchBlNLE.s:2620   .rodata._ZTVN5fibre26AsyncStreamSinkMultiplexerILj2EEE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2686   .bss.uart0_stdout_pending:0000000000000000 uart0_stdout_pending
+     /tmp/cchBlNLE.s:2673   .bss.ascii_over_uart:0000000000000000 ascii_over_uart
+     /tmp/cchBlNLE.s:2693   .bss.uart0_stdout_sink:0000000000000000 uart0_stdout_sink
+     /tmp/cchBlNLE.s:2714   .bss.uart_tx_multiplexer:0000000000000000 uart_tx_multiplexer
+     /tmp/cchBlNLE.s:2680   .bss.fibre_over_uart:0000000000000000 fibre_over_uart
+     /tmp/cchBlNLE.s:2700   .bss.uart_rx_stream:0000000000000000 uart_rx_stream
+     /tmp/cchBlNLE.s:2721   .bss.uart_tx_stream:0000000000000000 uart_tx_stream
+     /tmp/cchBlNLE.s:2775   .rodata.stack_size_uart_thread:0000000000000000 stack_size_uart_thread
+     /tmp/cchBlNLE.s:2707   .bss.uart_thread:0000000000000000 uart_thread
+     /tmp/cchBlNLE.s:2638   .rodata:0000000000000000 $d
+     /tmp/cchBlNLE.s:2648   .bss._ZL13dma_rx_buffer:0000000000000000 $d
+     /tmp/cchBlNLE.s:2652   .bss._ZL13dma_rx_buffer:0000000000000000 _ZL13dma_rx_buffer
+     /tmp/cchBlNLE.s:2655   .bss._ZL16dma_last_rcv_idx:0000000000000000 $d
+     /tmp/cchBlNLE.s:2659   .bss._ZL16dma_last_rcv_idx:0000000000000000 _ZL16dma_last_rcv_idx
+     /tmp/cchBlNLE.s:2662   .bss._ZL6huart_:0000000000000000 $d
+     /tmp/cchBlNLE.s:2666   .bss._ZL6huart_:0000000000000000 _ZL6huart_
+     /tmp/cchBlNLE.s:2669   .bss.ascii_over_uart:0000000000000000 $d
+     /tmp/cchBlNLE.s:2676   .bss.fibre_over_uart:0000000000000000 $d
+     /tmp/cchBlNLE.s:2687   .bss.uart0_stdout_pending:0000000000000000 $d
+     /tmp/cchBlNLE.s:2689   .bss.uart0_stdout_sink:0000000000000000 $d
+     /tmp/cchBlNLE.s:2696   .bss.uart_rx_stream:0000000000000000 $d
+     /tmp/cchBlNLE.s:2703   .bss.uart_thread:0000000000000000 $d
+     /tmp/cchBlNLE.s:2710   .bss.uart_tx_multiplexer:0000000000000000 $d
+ARM GAS  /tmp/cchBlNLE.s 			page 102
 
 
-     /tmp/ccl9WTg1.s:2717   .bss.uart_tx_stream:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2724   .rodata._ZTIN5fibre17Stm32UartRxStreamE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2732   .rodata._ZTIN5fibre17Stm32UartTxStreamE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2740   .rodata._ZTSN5fibre17Stm32UartRxStreamE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2746   .rodata._ZTSN5fibre17Stm32UartTxStreamE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2752   .rodata._ZTVN5fibre17Stm32UartRxStreamE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2762   .rodata._ZTVN5fibre17Stm32UartTxStreamE:0000000000000000 $d
-     /tmp/ccl9WTg1.s:2772   .rodata.stack_size_uart_thread:0000000000000000 $d
+     /tmp/cchBlNLE.s:2717   .bss.uart_tx_stream:0000000000000000 $d
+     /tmp/cchBlNLE.s:2724   .rodata._ZTIN5fibre17Stm32UartRxStreamE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2732   .rodata._ZTIN5fibre17Stm32UartTxStreamE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2740   .rodata._ZTSN5fibre17Stm32UartRxStreamE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2746   .rodata._ZTSN5fibre17Stm32UartTxStreamE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2752   .rodata._ZTVN5fibre17Stm32UartRxStreamE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2762   .rodata._ZTVN5fibre17Stm32UartTxStreamE:0000000000000000 $d
+     /tmp/cchBlNLE.s:2772   .rodata.stack_size_uart_thread:0000000000000000 $d
 
 UNDEFINED SYMBOLS
 _ZTVN5fibre15PacketUnwrapperE

@@ -365,16 +365,21 @@ bool Motor::do_checks(uint32_t timestamp) {
 
 float Motor::effective_current_lim() {
     // Configured limit
-    float current_lim = config_.current_lim;
+    float current_lim = config_.current_lim;//!人为设置的电流限制
     // Hardware limit
-    if (axis_->motor_.config_.motor_type == Motor::MOTOR_TYPE_GIMBAL) {
+    //!不同电机类型的电流限制不同
+    if (axis_->motor_.config_.motor_type == Motor::MOTOR_TYPE_GIMBAL) {//!云台电机
         current_lim = std::min(current_lim, 0.98f*one_by_sqrt3*vbus_voltage); //gimbal motor is voltage control
-    } else {
+        //!看慧驱动？？？ SVPWM 的调制目标是将六边形的最大内切圆半径等于总线电压的峰值。
+    } else {//!普通电机
         current_lim = std::min(current_lim, axis_->motor_.max_allowed_current_);
     }
 
     // Apply thermistor current limiters
+    //!未看
+    //!根据电机的温度状况动态调整电流限制，防止电机过热 
     current_lim = std::min(current_lim, motor_thermistor_.get_current_limit(config_.current_lim));
+    //!根据驱动电路中的场效应管温度动态调整电流限制，保护硬件
     current_lim = std::min(current_lim, fet_thermistor_.get_current_limit(config_.current_lim));
     effective_current_lim_ = current_lim;
 

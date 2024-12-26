@@ -1,4 +1,4 @@
-ARM GAS  /tmp/cc8ejf7h.s 			page 1
+ARM GAS  /tmp/ccuq3ICT.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
   15:MotorControl/utils.cpp ****         if (alpha >= 0.0f) {
   42              		.loc 1 15 9 view .LVU4
   43 000a B5EEC00A 		vcmpe.f32	s0, #0
-ARM GAS  /tmp/cc8ejf7h.s 			page 2
+ARM GAS  /tmp/ccuq3ICT.s 			page 2
 
 
   44 000e F1EE10FA 		vmrs	APSR_nzcv, FPSCR
@@ -118,7 +118,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
   49:MotorControl/utils.cpp ****             float t2 = two_by_sqrt3 * beta;
   65              		.loc 1 49 13 is_stmt 1 view .LVU14
   66              		.loc 1 49 19 is_stmt 0 view .LVU15
-ARM GAS  /tmp/cc8ejf7h.s 			page 3
+ARM GAS  /tmp/ccuq3ICT.s 			page 3
 
 
   67 002a 9FED717A 		vldr.32	s14, .L47+4
@@ -178,7 +178,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
   58:MotorControl/utils.cpp ****         case 2: {
   59:MotorControl/utils.cpp ****             // Vector on-times
   60:MotorControl/utils.cpp ****             float t2 = alpha + one_by_sqrt3 * beta;
-ARM GAS  /tmp/cc8ejf7h.s 			page 4
+ARM GAS  /tmp/ccuq3ICT.s 			page 4
 
 
   61:MotorControl/utils.cpp ****             float t3 = -alpha + one_by_sqrt3 * beta;
@@ -238,7 +238,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  145              		.loc 1 78 21 is_stmt 0 view .LVU49
  146 0092 37EE800A 		vadd.f32	s0, s15, s0
  147              	.LVL16:
-ARM GAS  /tmp/cc8ejf7h.s 			page 5
+ARM GAS  /tmp/ccuq3ICT.s 			page 5
 
 
  148              		.loc 1 78 21 view .LVU50
@@ -298,7 +298,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  103:MotorControl/utils.cpp ****         } break;
  104:MotorControl/utils.cpp **** 
  105:MotorControl/utils.cpp ****         // sextant v6-v1
-ARM GAS  /tmp/cc8ejf7h.s 			page 6
+ARM GAS  /tmp/ccuq3ICT.s 			page 6
 
 
  106:MotorControl/utils.cpp ****         case 6: {
@@ -358,7 +358,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
   37:MotorControl/utils.cpp ****                 Sextant = 4; //sextant v4-v5
  216              		.loc 1 37 13 is_stmt 1 view .LVU78
   37:MotorControl/utils.cpp ****                 Sextant = 4; //sextant v4-v5
-ARM GAS  /tmp/cc8ejf7h.s 			page 7
+ARM GAS  /tmp/ccuq3ICT.s 			page 7
 
 
  217              		.loc 1 37 30 is_stmt 0 view .LVU79
@@ -418,7 +418,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  255 011c 30EE800A 		vadd.f32	s0, s1, s0
  256              	.LVL32:
   90:MotorControl/utils.cpp ****         } break;
-ARM GAS  /tmp/cc8ejf7h.s 			page 8
+ARM GAS  /tmp/ccuq3ICT.s 			page 8
 
 
  257              		.loc 1 90 21 view .LVU96
@@ -478,7 +478,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  295              	.LVL39:
   66:MotorControl/utils.cpp ****         } break;
  296              		.loc 1 66 21 view .LVU113
-ARM GAS  /tmp/cc8ejf7h.s 			page 9
+ARM GAS  /tmp/ccuq3ICT.s 			page 9
 
 
  297              	.LBE204:
@@ -538,7 +538,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  334              	.LVL43:
  100:MotorControl/utils.cpp ****             tA = tC + t5;
  335              		.loc 1 100 13 is_stmt 1 view .LVU128
-ARM GAS  /tmp/cc8ejf7h.s 			page 10
+ARM GAS  /tmp/ccuq3ICT.s 			page 10
 
 
  100:MotorControl/utils.cpp ****             tA = tC + t5;
@@ -598,7 +598,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  377 01b8 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
  378 01bc 11DB     		blt	.L44
  379              		.loc 1 121 24 discriminator 2 view .LVU144
-ARM GAS  /tmp/cc8ejf7h.s 			page 11
+ARM GAS  /tmp/ccuq3ICT.s 			page 11
 
 
  380 01be F4EEC77A 		vcmpe.f32	s15, s14
@@ -658,7 +658,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
   39:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #include <array>
   40:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #include <bits/uses_allocator.h>
   41:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #include <bits/invoke.h>
-ARM GAS  /tmp/cc8ejf7h.s 			page 12
+ARM GAS  /tmp/ccuq3ICT.s 			page 12
 
 
   42:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** #if __cplusplus > 201703L
@@ -718,7 +718,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
   96:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc>
   97:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Head_base(allocator_arg_t, __uses_alloc1<_Alloc> __a)
   98:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Head(allocator_arg, *__a._M_a) { }
-ARM GAS  /tmp/cc8ejf7h.s 			page 13
+ARM GAS  /tmp/ccuq3ICT.s 			page 13
 
 
   99:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -778,7 +778,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  153:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Head_base(__uses_alloc0, _UHead&& __uhead)
  154:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _M_head_impl(std::forward<_UHead>(__uhead)) { }
  155:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
-ARM GAS  /tmp/cc8ejf7h.s 			page 14
+ARM GAS  /tmp/ccuq3ICT.s 			page 14
 
 
  156:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _Alloc, typename _UHead>
@@ -838,7 +838,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  210:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       _M_tail(const _Tuple_impl& __t) noexcept { return __t; }
  211:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  212:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       constexpr _Tuple_impl()
-ARM GAS  /tmp/cc8ejf7h.s 			page 15
+ARM GAS  /tmp/ccuq3ICT.s 			page 15
 
 
  213:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       : _Inherited(), _Base() { }
@@ -898,7 +898,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  267:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_Tuple_impl(allocator_arg_t __tag, const _Alloc& __a,
  268:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	            _UHead&& __head, _UTail&&... __tail)
  269:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Inherited(__tag, __a, std::forward<_UTail>(__tail)...),
-ARM GAS  /tmp/cc8ejf7h.s 			page 16
+ARM GAS  /tmp/ccuq3ICT.s 			page 16
 
 
  270:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****           _Base(__use_alloc<_Head, _Alloc, _UHead>(__a),
@@ -958,7 +958,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  324:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	  _M_tail(*this)._M_assign(
  325:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	      std::move(_Tuple_impl<_Idx, _UHead, _UTails...>::_M_tail(__in)));
  326:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	}
-ARM GAS  /tmp/cc8ejf7h.s 			page 17
+ARM GAS  /tmp/ccuq3ICT.s 			page 17
 
 
  327:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  381:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead>
  382:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         constexpr _Tuple_impl(_Tuple_impl<_Idx, _UHead>&& __in)
  383:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: _Base(std::forward<_UHead>(_Tuple_impl<_Idx, _UHead>::_M_head(__in)))
-ARM GAS  /tmp/cc8ejf7h.s 			page 18
+ARM GAS  /tmp/ccuq3ICT.s 			page 18
 
 
  384:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ }
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  438:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  439:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       template<typename _UHead>
  440:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	_GLIBCXX20_CONSTEXPR
-ARM GAS  /tmp/cc8ejf7h.s 			page 19
+ARM GAS  /tmp/ccuq3ICT.s 			page 19
 
 
  441:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****         void
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  495:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       static constexpr bool __is_explicitly_default_constructible()
  496:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple ****       {
  497:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	return __and_<is_default_constructible<_Types>...,
-ARM GAS  /tmp/cc8ejf7h.s 			page 20
+ARM GAS  /tmp/ccuq3ICT.s 			page 20
 
 
  498:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 		      __not_<__and_<
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  552:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	static constexpr
  553:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	__enable_if_t<sizeof...(_UElements) == sizeof...(_Elements), bool>
  554:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	__assignable()
-ARM GAS  /tmp/cc8ejf7h.s 			page 21
+ARM GAS  /tmp/ccuq3ICT.s 			page 21
 
 
  555:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ return __and_<is_assignable<_Elements&, _UElements>...>::value; }
@@ -1258,7 +1258,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  609:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	struct _UseOtherCtor<_Tuple, tuple<_Tp>, tuple<_Tp>>
  610:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	: true_type
  611:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 	{ };
-ARM GAS  /tmp/cc8ejf7h.s 			page 22
+ARM GAS  /tmp/ccuq3ICT.s 			page 22
 
 
  612:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
@@ -1318,7 +1318,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
    9:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // any later version.
   10:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
   11:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // This library is distributed in the hope that it will be useful,
-ARM GAS  /tmp/cc8ejf7h.s 			page 23
+ARM GAS  /tmp/ccuq3ICT.s 			page 23
 
 
   12:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** // but WITHOUT ANY WARRANTY; without even the implied warranty of
@@ -1378,7 +1378,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
   66:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    */
   67:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h **** 
   68:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****   /**
-ARM GAS  /tmp/cc8ejf7h.s 			page 24
+ARM GAS  /tmp/ccuq3ICT.s 			page 24
 
 
   69:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/move.h ****    *  @brief  Forward an lvalue.
@@ -1438,7 +1438,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  443              	.LBB221:
  444              	.LBI221:
  445              		.loc 3 76 5 is_stmt 1 view .LVU167
-ARM GAS  /tmp/cc8ejf7h.s 			page 25
+ARM GAS  /tmp/ccuq3ICT.s 			page 25
 
 
  446              		.loc 3 76 5 is_stmt 0 view .LVU168
@@ -1498,7 +1498,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/tuple **** 
  494              		.loc 2 137 42 view .LVU185
  495 01d0 C0ED017A 		vstr.32	s15, [r0, #4]
-ARM GAS  /tmp/cc8ejf7h.s 			page 26
+ARM GAS  /tmp/ccuq3ICT.s 			page 26
 
 
  496              	.LVL51:
@@ -1558,7 +1558,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  543              	.LBE210:
  123:MotorControl/utils.cpp **** }
  544              		.loc 1 123 1 view .LVU201
-ARM GAS  /tmp/cc8ejf7h.s 			page 27
+ARM GAS  /tmp/ccuq3ICT.s 			page 27
 
 
  545 01dc 7047     		bx	lr
@@ -1618,7 +1618,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  594              	.LBI241:
  595              		.file 4 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h"
    1:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** // -*- C++ -*- C library enhancements header.
-ARM GAS  /tmp/cc8ejf7h.s 			page 28
+ARM GAS  /tmp/ccuq3ICT.s 			page 28
 
 
    2:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
@@ -1678,7 +1678,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
   56:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h ****   abs(long __i) { return __builtin_labs(__i); }
   57:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #endif
   58:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** 
-ARM GAS  /tmp/cc8ejf7h.s 			page 29
+ARM GAS  /tmp/ccuq3ICT.s 			page 29
 
 
   59:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/std_abs.h **** #ifdef _GLIBCXX_USE_LONG_LONG
@@ -1738,7 +1738,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
    2:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
    3:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // Copyright (C) 2001-2020 Free Software Foundation, Inc.
    4:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** //
-ARM GAS  /tmp/cc8ejf7h.s 			page 30
+ARM GAS  /tmp/ccuq3ICT.s 			page 30
 
 
    5:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // This file is part of the GNU ISO C++ Library.  This library is free
@@ -1798,7 +1798,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
   59:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/c++config.h>
   60:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/functexcept.h>
   61:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <bits/cpp_type_traits.h>
-ARM GAS  /tmp/cc8ejf7h.s 			page 31
+ARM GAS  /tmp/ccuq3ICT.s 			page 31
 
 
   62:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #include <ext/type_traits.h>
@@ -1858,7 +1858,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  116:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	static void
  117:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	iter_swap(_ForwardIterator1 __a, _ForwardIterator2 __b)
  118:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	{
-ARM GAS  /tmp/cc8ejf7h.s 			page 32
+ARM GAS  /tmp/ccuq3ICT.s 			page 32
 
 
  119:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	  typedef typename iterator_traits<_ForwardIterator1>::value_type
@@ -1918,7 +1918,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  173:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       typedef typename iterator_traits<_ForwardIterator2>::reference
  174:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	_ReferenceType2;
  175:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****       std::__iter_swap<__are_same<_ValueType1, _ValueType2>::__value
-ARM GAS  /tmp/cc8ejf7h.s 			page 33
+ARM GAS  /tmp/ccuq3ICT.s 			page 33
 
 
  176:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 	&& __are_same<_ValueType1&, _ReferenceType1>::__value
@@ -1978,7 +1978,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  230:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     min(const _Tp& __a, const _Tp& __b)
  627              		.loc 5 230 5 view .LVU219
  628              	.LBB246:
-ARM GAS  /tmp/cc8ejf7h.s 			page 34
+ARM GAS  /tmp/ccuq3ICT.s 			page 34
 
 
  231:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     {
@@ -2038,7 +2038,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  652 0030 6B46     		mov	r3, sp
  653              	.L51:
  654              	.LVL63:
-ARM GAS  /tmp/cc8ejf7h.s 			page 35
+ARM GAS  /tmp/ccuq3ICT.s 			page 35
 
 
  655              		.loc 5 261 14 view .LVU227
@@ -2098,7 +2098,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  700 0080 F5EEC00A 		vcmpe.f32	s1, #0
  701 0084 F1EE10FA 		vmrs	APSR_nzcv, FPSCR
  702 0088 0AD4     		bmi	.L64
-ARM GAS  /tmp/cc8ejf7h.s 			page 36
+ARM GAS  /tmp/ccuq3ICT.s 			page 36
 
 
  703              	.L54:
@@ -2158,7 +2158,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  141:MotorControl/utils.cpp ****     // if y < 0 then r := -r
  744              		.loc 1 141 9 is_stmt 1 view .LVU253
  141:MotorControl/utils.cpp ****     // if y < 0 then r := -r
-ARM GAS  /tmp/cc8ejf7h.s 			page 37
+ARM GAS  /tmp/ccuq3ICT.s 			page 37
 
 
  745              		.loc 1 141 11 is_stmt 0 view .LVU254
@@ -2218,7 +2218,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  791              		.save {r4, lr}
  792              	.LCFI3:
  793              		.cfi_def_cfa_offset 8
-ARM GAS  /tmp/cc8ejf7h.s 			page 38
+ARM GAS  /tmp/ccuq3ICT.s 			page 38
 
 
  794              		.cfi_offset 4, -8
@@ -2278,7 +2278,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  158:MotorControl/utils.cpp **** // @brief: Converts a timeout to a deadline based on the current time.
  159:MotorControl/utils.cpp **** uint32_t timeout_to_deadline(uint32_t timeout_ms) {
  845              		.loc 1 159 51 is_stmt 1 view -0
-ARM GAS  /tmp/cc8ejf7h.s 			page 39
+ARM GAS  /tmp/ccuq3ICT.s 			page 39
 
 
  846              		.cfi_startproc
@@ -2338,7 +2338,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  899              	.LVL84:
  900              	.LFB4286:
  163:MotorControl/utils.cpp **** 
-ARM GAS  /tmp/cc8ejf7h.s 			page 40
+ARM GAS  /tmp/ccuq3ICT.s 			page 40
 
 
  164:MotorControl/utils.cpp **** // @brief: Returns a non-zero value if the specified system time (in ms)
@@ -2398,7 +2398,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  946              		.loc 1 174 5 view .LVU289
  175:MotorControl/utils.cpp ****         ms = HAL_GetTick();
  947              		.loc 1 175 9 view .LVU290
-ARM GAS  /tmp/cc8ejf7h.s 			page 41
+ARM GAS  /tmp/ccuq3ICT.s 			page 41
 
 
  948              		.loc 1 175 25 is_stmt 0 view .LVU291
@@ -2458,7 +2458,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  995              		.loc 1 184 1 is_stmt 0 view .LVU301
  996 0000 38B5     		push	{r3, r4, r5, lr}
  997              		.save {r3, r4, r5, lr}
-ARM GAS  /tmp/cc8ejf7h.s 			page 42
+ARM GAS  /tmp/ccuq3ICT.s 			page 42
 
 
  998              	.LCFI7:
@@ -2518,7 +2518,7 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  1043              		.file 6 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/machine/_default_types.h"
  1044              		.file 7 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_stdint.h"
  1045              		.file 8 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/type_traits"
-ARM GAS  /tmp/cc8ejf7h.s 			page 43
+ARM GAS  /tmp/ccuq3ICT.s 			page 43
 
 
  1046              		.file 9 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/debug/debug.h"
@@ -2549,35 +2549,35 @@ ARM GAS  /tmp/cc8ejf7h.s 			page 1
  1071              		.file 34 "ThirdParty/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal.h"
  1072              		.file 35 "ThirdParty/FreeRTOS/Source/CMSIS_RTOS/cmsis_os.h"
  1073              		.file 36 "<built-in>"
-ARM GAS  /tmp/cc8ejf7h.s 			page 44
+ARM GAS  /tmp/ccuq3ICT.s 			page 44
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 utils.cpp
-     /tmp/cc8ejf7h.s:20     .text._Z3SVMff:0000000000000000 $t
-     /tmp/cc8ejf7h.s:26     .text._Z3SVMff:0000000000000000 _Z3SVMff
-     /tmp/cc8ejf7h.s:561    .text._Z3SVMff:00000000000001ec $d
+     /tmp/ccuq3ICT.s:20     .text._Z3SVMff:0000000000000000 $t
+     /tmp/ccuq3ICT.s:26     .text._Z3SVMff:0000000000000000 _Z3SVMff
+     /tmp/ccuq3ICT.s:561    .text._Z3SVMff:00000000000001ec $d
          .ARM.exidx.text._Z3SVMff:0000000000000000 $d
-     /tmp/cc8ejf7h.s:571    .text._Z10fast_atan2ff:0000000000000000 $t
-     /tmp/cc8ejf7h.s:577    .text._Z10fast_atan2ff:0000000000000000 _Z10fast_atan2ff
-     /tmp/cc8ejf7h.s:762    .text._Z10fast_atan2ff:00000000000000b0 $d
+     /tmp/ccuq3ICT.s:571    .text._Z10fast_atan2ff:0000000000000000 $t
+     /tmp/ccuq3ICT.s:577    .text._Z10fast_atan2ff:0000000000000000 _Z10fast_atan2ff
+     /tmp/ccuq3ICT.s:762    .text._Z10fast_atan2ff:00000000000000b0 $d
  .ARM.exidx.text._Z10fast_atan2ff:0000000000000000 $d
-     /tmp/cc8ejf7h.s:775    .text._Z19deadline_to_timeoutm:0000000000000000 $t
-     /tmp/cc8ejf7h.s:781    .text._Z19deadline_to_timeoutm:0000000000000000 _Z19deadline_to_timeoutm
+     /tmp/ccuq3ICT.s:775    .text._Z19deadline_to_timeoutm:0000000000000000 $t
+     /tmp/ccuq3ICT.s:781    .text._Z19deadline_to_timeoutm:0000000000000000 _Z19deadline_to_timeoutm
 .ARM.exidx.text._Z19deadline_to_timeoutm:0000000000000000 $d
-     /tmp/cc8ejf7h.s:835    .text._Z19timeout_to_deadlinem:0000000000000000 $t
-     /tmp/cc8ejf7h.s:841    .text._Z19timeout_to_deadlinem:0000000000000000 _Z19timeout_to_deadlinem
+     /tmp/ccuq3ICT.s:835    .text._Z19timeout_to_deadlinem:0000000000000000 $t
+     /tmp/ccuq3ICT.s:841    .text._Z19timeout_to_deadlinem:0000000000000000 _Z19timeout_to_deadlinem
 .ARM.exidx.text._Z19timeout_to_deadlinem:0000000000000000 $d
-     /tmp/cc8ejf7h.s:891    .text._Z16is_in_the_futurem:0000000000000000 $t
-     /tmp/cc8ejf7h.s:897    .text._Z16is_in_the_futurem:0000000000000000 _Z16is_in_the_futurem
+     /tmp/ccuq3ICT.s:891    .text._Z16is_in_the_futurem:0000000000000000 $t
+     /tmp/ccuq3ICT.s:897    .text._Z16is_in_the_futurem:0000000000000000 _Z16is_in_the_futurem
 .ARM.extab.text._Z16is_in_the_futurem:0000000000000000 $d
 .ARM.exidx.text._Z16is_in_the_futurem:0000000000000000 $d
-     /tmp/cc8ejf7h.s:923    .text._Z6microsv:0000000000000000 $t
-     /tmp/cc8ejf7h.s:929    .text._Z6microsv:0000000000000000 _Z6microsv
-     /tmp/cc8ejf7h.s:975    .text._Z6microsv:0000000000000020 $d
+     /tmp/ccuq3ICT.s:923    .text._Z6microsv:0000000000000000 $t
+     /tmp/ccuq3ICT.s:929    .text._Z6microsv:0000000000000000 _Z6microsv
+     /tmp/ccuq3ICT.s:975    .text._Z6microsv:0000000000000020 $d
        .ARM.exidx.text._Z6microsv:0000000000000000 $d
-     /tmp/cc8ejf7h.s:981    .text._Z8delay_usm:0000000000000000 $t
-     /tmp/cc8ejf7h.s:987    .text._Z8delay_usm:0000000000000000 _Z8delay_usm
+     /tmp/ccuq3ICT.s:981    .text._Z8delay_usm:0000000000000000 $t
+     /tmp/ccuq3ICT.s:987    .text._Z8delay_usm:0000000000000000 _Z8delay_usm
      .ARM.exidx.text._Z8delay_usm:0000000000000000 $d
 
 UNDEFINED SYMBOLS

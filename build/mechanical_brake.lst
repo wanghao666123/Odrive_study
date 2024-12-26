@@ -1,4 +1,4 @@
-ARM GAS  /tmp/cc9Oat76.s 			page 1
+ARM GAS  /tmp/ccHwXHSO.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/cc9Oat76.s 			page 1
   27:MotorControl/odrive_main.h **** typedef struct {
   28:MotorControl/odrive_main.h ****     bool fully_booted;
   29:MotorControl/odrive_main.h ****     uint32_t uptime; // [ms]
-ARM GAS  /tmp/cc9Oat76.s 			page 2
+ARM GAS  /tmp/ccHwXHSO.s 			page 2
 
 
   30:MotorControl/odrive_main.h ****     uint32_t min_heap_space; // FreeRTOS heap [Bytes]
@@ -118,7 +118,7 @@ ARM GAS  /tmp/cc9Oat76.s 			page 1
   84:MotorControl/odrive_main.h ****     float dc_bus_overvoltage_trip_level = 1.07f * HW_VERSION_VOLTAGE;   //<! [V] maximum voltage ab
   85:MotorControl/odrive_main.h ****                                                                         //<! This protects against 
   86:MotorControl/odrive_main.h ****                                                                         //<! the brake power if the
-ARM GAS  /tmp/cc9Oat76.s 			page 3
+ARM GAS  /tmp/ccHwXHSO.s 			page 3
 
 
   87:MotorControl/odrive_main.h ****                                                                         //<! The default is 26V for
@@ -178,7 +178,7 @@ ARM GAS  /tmp/cc9Oat76.s 			page 1
  141:MotorControl/odrive_main.h **** 
  142:MotorControl/odrive_main.h **** // ODrive specific includes
  143:MotorControl/odrive_main.h **** #include <utils.hpp>
-ARM GAS  /tmp/cc9Oat76.s 			page 4
+ARM GAS  /tmp/ccHwXHSO.s 			page 4
 
 
  144:MotorControl/odrive_main.h **** #include <low_level.h>
@@ -238,7 +238,7 @@ ARM GAS  /tmp/cc9Oat76.s 			page 1
   58              	.LVL4:
  167:MotorControl/odrive_main.h ****     return (gpio_num < GPIO_COUNT) ? gpios[gpio_num] : GPIO_COUNT ? gpios[0] : Stm32Gpio::none;
   59              		.loc 1 167 36 view .LVU9
-ARM GAS  /tmp/cc9Oat76.s 			page 5
+ARM GAS  /tmp/ccHwXHSO.s 			page 5
 
 
   60 0018 F8E7     		b	.L2
@@ -298,7 +298,7 @@ ARM GAS  /tmp/cc9Oat76.s 			page 1
    5:MotorControl/mechanical_brake.cpp **** 		get_gpio(config_.gpio_num).write(config_.is_active_low ? 0 : 1);
  111              		.loc 2 5 3 is_stmt 1 view .LVU16
  112              		.loc 2 5 28 is_stmt 0 view .LVU17
-ARM GAS  /tmp/cc9Oat76.s 			page 6
+ARM GAS  /tmp/ccHwXHSO.s 			page 6
 
 
  113 0018 6846     		mov	r0, sp
@@ -358,7 +358,7 @@ ARM GAS  /tmp/cc9Oat76.s 			page 1
  141              	.L10:
  142 0030 FFF7FEFF 		bl	HAL_GPIO_WritePin
  143              	.LVL9:
-ARM GAS  /tmp/cc9Oat76.s 			page 7
+ARM GAS  /tmp/ccHwXHSO.s 			page 7
 
 
  144              	.L6:
@@ -418,7 +418,7 @@ ARM GAS  /tmp/cc9Oat76.s 			page 1
  194              		.loc 2 10 2 view .LVU33
  195              		.loc 2 10 38 is_stmt 0 view .LVU34
  196 0000 8188     		ldrh	r1, [r0, #4]
-ARM GAS  /tmp/cc9Oat76.s 			page 8
+ARM GAS  /tmp/ccHwXHSO.s 			page 8
 
 
  197              		.loc 2 10 46 view .LVU35
@@ -478,7 +478,7 @@ ARM GAS  /tmp/cc9Oat76.s 			page 1
  245 0028 BDF80410 		ldrh	r1, [sp, #4]
  246 002c 33B1     		cbz	r3, .L26
  247 002e 0122     		movs	r2, #1
-ARM GAS  /tmp/cc9Oat76.s 			page 9
+ARM GAS  /tmp/ccHwXHSO.s 			page 9
 
 
  248              	.L24:
@@ -538,7 +538,7 @@ ARM GAS  /tmp/cc9Oat76.s 			page 1
  300 0004 00000000 		.word	_ZTSN10ODriveIntf19MechanicalBrakeIntfE
  301              		.global	_ZTS15MechanicalBrake
  302              		.global	_ZTI15MechanicalBrake
-ARM GAS  /tmp/cc9Oat76.s 			page 10
+ARM GAS  /tmp/ccHwXHSO.s 			page 10
 
 
  303              		.global	_ZTV15MechanicalBrake
@@ -598,7 +598,7 @@ ARM GAS  /tmp/cc9Oat76.s 			page 1
  359              		.file 34 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/predefined_ops.h"
  360              		.file 35 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/stdlib.h"
  361              		.file 36 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/stdlib.h"
-ARM GAS  /tmp/cc9Oat76.s 			page 11
+ARM GAS  /tmp/ccHwXHSO.s 			page 11
 
 
  362              		.file 37 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/math.h"
@@ -614,33 +614,33 @@ ARM GAS  /tmp/cc9Oat76.s 			page 1
  372              		.file 47 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/wchar.h"
  373              		.file 48 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/locale.h"
  374              		.file 49 "<built-in>"
-ARM GAS  /tmp/cc9Oat76.s 			page 12
+ARM GAS  /tmp/ccHwXHSO.s 			page 12
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 mechanical_brake.cpp
-     /tmp/cc9Oat76.s:20     .text._ZL8get_gpioj:0000000000000000 $t
-     /tmp/cc9Oat76.s:25     .text._ZL8get_gpioj:0000000000000000 _ZL8get_gpioj
-     /tmp/cc9Oat76.s:64     .text._ZL8get_gpioj:000000000000001c $d
+     /tmp/ccHwXHSO.s:20     .text._ZL8get_gpioj:0000000000000000 $t
+     /tmp/ccHwXHSO.s:25     .text._ZL8get_gpioj:0000000000000000 _ZL8get_gpioj
+     /tmp/ccHwXHSO.s:64     .text._ZL8get_gpioj:000000000000001c $d
     .ARM.exidx.text._ZL8get_gpioj:0000000000000000 $d
-     /tmp/cc9Oat76.s:71     .text._ZN15MechanicalBrake6engageEv:0000000000000000 $t
-     /tmp/cc9Oat76.s:77     .text._ZN15MechanicalBrake6engageEv:0000000000000000 _ZN15MechanicalBrake6engageEv
-     /tmp/cc9Oat76.s:172    .text._ZN15MechanicalBrake6engageEv:0000000000000040 $d
+     /tmp/ccHwXHSO.s:71     .text._ZN15MechanicalBrake6engageEv:0000000000000000 $t
+     /tmp/ccHwXHSO.s:77     .text._ZN15MechanicalBrake6engageEv:0000000000000000 _ZN15MechanicalBrake6engageEv
+     /tmp/ccHwXHSO.s:172    .text._ZN15MechanicalBrake6engageEv:0000000000000040 $d
 .ARM.exidx.text._ZN15MechanicalBrake6engageEv:0000000000000000 $d
-     /tmp/cc9Oat76.s:180    .text._ZN15MechanicalBrake7releaseEv:0000000000000000 $t
-     /tmp/cc9Oat76.s:186    .text._ZN15MechanicalBrake7releaseEv:0000000000000000 _ZN15MechanicalBrake7releaseEv
-     /tmp/cc9Oat76.s:279    .text._ZN15MechanicalBrake7releaseEv:0000000000000040 $d
+     /tmp/ccHwXHSO.s:180    .text._ZN15MechanicalBrake7releaseEv:0000000000000000 $t
+     /tmp/ccHwXHSO.s:186    .text._ZN15MechanicalBrake7releaseEv:0000000000000000 _ZN15MechanicalBrake7releaseEv
+     /tmp/ccHwXHSO.s:279    .text._ZN15MechanicalBrake7releaseEv:0000000000000040 $d
 .ARM.exidx.text._ZN15MechanicalBrake7releaseEv:0000000000000000 $d
-     /tmp/cc9Oat76.s:291    .rodata._ZTSN10ODriveIntf19MechanicalBrakeIntfE:0000000000000000 _ZTSN10ODriveIntf19MechanicalBrakeIntfE
-     /tmp/cc9Oat76.s:288    .rodata._ZTSN10ODriveIntf19MechanicalBrakeIntfE:0000000000000000 $d
-     /tmp/cc9Oat76.s:298    .rodata._ZTIN10ODriveIntf19MechanicalBrakeIntfE:0000000000000000 _ZTIN10ODriveIntf19MechanicalBrakeIntfE
-     /tmp/cc9Oat76.s:295    .rodata._ZTIN10ODriveIntf19MechanicalBrakeIntfE:0000000000000000 $d
-     /tmp/cc9Oat76.s:316    .rodata._ZTS15MechanicalBrake:0000000000000000 _ZTS15MechanicalBrake
-     /tmp/cc9Oat76.s:308    .rodata._ZTI15MechanicalBrake:0000000000000000 _ZTI15MechanicalBrake
-     /tmp/cc9Oat76.s:322    .rodata._ZTV15MechanicalBrake:0000000000000000 _ZTV15MechanicalBrake
-     /tmp/cc9Oat76.s:305    .rodata._ZTI15MechanicalBrake:0000000000000000 $d
-     /tmp/cc9Oat76.s:313    .rodata._ZTS15MechanicalBrake:0000000000000000 $d
-     /tmp/cc9Oat76.s:319    .rodata._ZTV15MechanicalBrake:0000000000000000 $d
+     /tmp/ccHwXHSO.s:291    .rodata._ZTSN10ODriveIntf19MechanicalBrakeIntfE:0000000000000000 _ZTSN10ODriveIntf19MechanicalBrakeIntfE
+     /tmp/ccHwXHSO.s:288    .rodata._ZTSN10ODriveIntf19MechanicalBrakeIntfE:0000000000000000 $d
+     /tmp/ccHwXHSO.s:298    .rodata._ZTIN10ODriveIntf19MechanicalBrakeIntfE:0000000000000000 _ZTIN10ODriveIntf19MechanicalBrakeIntfE
+     /tmp/ccHwXHSO.s:295    .rodata._ZTIN10ODriveIntf19MechanicalBrakeIntfE:0000000000000000 $d
+     /tmp/ccHwXHSO.s:316    .rodata._ZTS15MechanicalBrake:0000000000000000 _ZTS15MechanicalBrake
+     /tmp/ccHwXHSO.s:308    .rodata._ZTI15MechanicalBrake:0000000000000000 _ZTI15MechanicalBrake
+     /tmp/ccHwXHSO.s:322    .rodata._ZTV15MechanicalBrake:0000000000000000 _ZTV15MechanicalBrake
+     /tmp/ccHwXHSO.s:305    .rodata._ZTI15MechanicalBrake:0000000000000000 $d
+     /tmp/ccHwXHSO.s:313    .rodata._ZTS15MechanicalBrake:0000000000000000 $d
+     /tmp/ccHwXHSO.s:319    .rodata._ZTV15MechanicalBrake:0000000000000000 $d
 
 UNDEFINED SYMBOLS
 gpios

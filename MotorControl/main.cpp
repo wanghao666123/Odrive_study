@@ -363,7 +363,7 @@ void ODrive::sampling_cb() {
  *        must not rely on any interrupts.
  */
 void ODrive::control_loop_cb(uint32_t timestamp) {
-    //!记录上一次更新的时间戳
+    //!记录上一次更新的时间戳 M1
     last_update_timestamp_ = timestamp;
     n_evt_control_loop_++;
 
@@ -378,6 +378,7 @@ void ODrive::control_loop_cb(uint32_t timestamp) {
         // double-setting the value.
         for (auto& axis: axes) {
             //!这些变量都要搞清楚
+            //!reset()会将content_ ---》 0  age_从0---》1
             axis.acim_estimator_.slip_vel_.reset();
             axis.acim_estimator_.stator_phase_vel_.reset();
             axis.acim_estimator_.stator_phase_.reset();
@@ -399,48 +400,52 @@ void ODrive::control_loop_cb(uint32_t timestamp) {
             axis.sensorless_estimator_.vel_estimate_.reset();
         }
 
-        uart_poll();//!向uart队列中发送 1
-        odrv.oscilloscope_.update();//!更新示波器？
+        uart_poll();//!向uart队列中发送 1，触发串口dma接收
+        //!8Khz = 125us，那么这个函数可以采集 125us * 4096 = 0.512s 的数据
+        odrv.oscilloscope_.update();//!数据采集，但是这里好像没有指定采集哪个数据？
     }
-    //!可能通过读取物理传感器的状态来更新当前的限位状态？
+    //!两个开关按键的检测，涉及到防抖动等，可以设定高电平被认为按下还是低电平被认为按下。
     for (auto& axis : axes) {
         MEASURE_TIME(axis.task_times_.endstop_update) {
-            axis.min_endstop_.update();
+            axis.min_endstop_.update();//!min_endstop_：表示最小位置的限位开关,当 min_endstop_ 被触发时，认为电机已“回到家”（即回到物理 0 点）
             axis.max_endstop_.update();
         }
     }
-    //!电机状态检测？
+    //!电机状态检测，包括电机是否正常，电机温度是否正常等
     MEASURE_TIME(task_times_.control_loop_checks) {
         for (auto& axis: axes) {
             // look for errors at axis level and also all subcomponents
-            bool checks_ok = axis.do_checks(timestamp);
+            //!检测电机是否正常
+            bool checks_ok = axis.do_checks(timestamp);//!timestamp = M1
 
             // make sure the watchdog is being fed. 
+            //!自己“定制的”看门狗是否出现没有及时喂狗错误
             bool watchdog_ok = axis.watchdog_check();
-
+            //!如果检测到错误，就将电机关闭 未看
             if (!checks_ok || !watchdog_ok) {
                 axis.motor_.disarm();
             }
         }
     }
-    //!编码器检测？
+    //!编码器检测
     for (auto& axis: axes) {
         // Sub-components should use set_error which will propegate to this error_
         MEASURE_TIME(axis.task_times_.thermistor_update) {
+            //!更新电机温度和mos管的温度
             axis.motor_.fet_thermistor_.update();
             axis.motor_.motor_thermistor_.update();
         }
-
+        //!根据不同旋编类型读出当前的旋编值，然后计算速度，电角度等。 未看
         MEASURE_TIME(axis.task_times_.encoder_update)
             axis.encoder_.update();
     }
 
     // Controller of either axis might use the encoder estimate of the other
     // axis so we process both encoders before we continue.
-
+    //!看慧驱动
     for (auto& axis: axes) {
         MEASURE_TIME(axis.task_times_.sensorless_estimator_update)
-            axis.sensorless_estimator_.update();
+            axis.sensorless_estimator_.update();//!无感控制观测器
 
         MEASURE_TIME(axis.task_times_.controller_update) {
             if (!axis.controller_.update()) { // uses position and velocity from encoder

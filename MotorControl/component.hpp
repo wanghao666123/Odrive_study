@@ -45,6 +45,11 @@ public:
      * initialization value.
      */
     OutputPort(T val) : content_(val) {}
+
+    //!age_：跟踪值的“时间状态”：
+    //!    0：值是最新的。
+    //!    1：值是上一个控制循环的。
+    //!    >1：值已过期
     
     /**
      * @brief Updates the underlying value of this output port.

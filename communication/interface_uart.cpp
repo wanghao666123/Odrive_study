@@ -140,7 +140,7 @@ static void uart_server_thread(void * ctx) {
                 // enough for most applications.
                 // At 1Mbaud/s that corresponds to at most 12.5 bytes which can arrive
                 // during the sleep period.
-
+                //!125bit  1s传输1000000bit，8Khz = 1s 8000次，则 1 次 = 1000000 / 8000 = 125 bit
                 // Check for UART errors and restart receive DMA transfer if required
                 //!HAL_UART_STATE_BUSY_RX 表示 UART 正在接收数据。
                 if (huart_->RxState != HAL_UART_STATE_BUSY_RX) {

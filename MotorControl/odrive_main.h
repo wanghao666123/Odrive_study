@@ -222,12 +222,12 @@ public:
     float& brake_resistor_current_ = ::brake_resistor_current;
 
     SystemStats_t system_stats_;
-
+    //!这里没有指定trigger_src和data_src，是为了用户自己去设置
     // Edit these to suit your capture needs
     Oscilloscope oscilloscope_{
-        nullptr, // trigger_src
-        0.5f, // trigger_threshold
-        nullptr // data_src TODO: change data type
+        nullptr, // trigger_src 触发信号
+        0.5f, // trigger_threshold 触发阈值
+        nullptr // data_src TODO: change data type 采集数据
     };
 
     ODriveCAN can_;

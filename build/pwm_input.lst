@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccT0r2qY.s 			page 1
+ARM GAS  /tmp/ccPYqm0i.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
   27:MotorControl/odrive_main.h **** typedef struct {
   28:MotorControl/odrive_main.h ****     bool fully_booted;
   29:MotorControl/odrive_main.h ****     uint32_t uptime; // [ms]
-ARM GAS  /tmp/ccT0r2qY.s 			page 2
+ARM GAS  /tmp/ccPYqm0i.s 			page 2
 
 
   30:MotorControl/odrive_main.h ****     uint32_t min_heap_space; // FreeRTOS heap [Bytes]
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
   84:MotorControl/odrive_main.h ****     float dc_bus_overvoltage_trip_level = 1.07f * HW_VERSION_VOLTAGE;   //<! [V] maximum voltage ab
   85:MotorControl/odrive_main.h ****                                                                         //<! This protects against 
   86:MotorControl/odrive_main.h ****                                                                         //<! the brake power if the
-ARM GAS  /tmp/ccT0r2qY.s 			page 3
+ARM GAS  /tmp/ccPYqm0i.s 			page 3
 
 
   87:MotorControl/odrive_main.h ****                                                                         //<! The default is 26V for
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
  141:MotorControl/odrive_main.h **** 
  142:MotorControl/odrive_main.h **** // ODrive specific includes
  143:MotorControl/odrive_main.h **** #include <utils.hpp>
-ARM GAS  /tmp/ccT0r2qY.s 			page 4
+ARM GAS  /tmp/ccPYqm0i.s 			page 4
 
 
  144:MotorControl/odrive_main.h **** #include <low_level.h>
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
   58              	.LVL4:
  167:MotorControl/odrive_main.h ****     return (gpio_num < GPIO_COUNT) ? gpios[gpio_num] : GPIO_COUNT ? gpios[0] : Stm32Gpio::none;
   59              		.loc 1 167 36 view .LVU9
-ARM GAS  /tmp/ccT0r2qY.s 			page 5
+ARM GAS  /tmp/ccPYqm0i.s 			page 5
 
 
   60 0018 F8E7     		b	.L2
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
  108 000c 0593     		str	r3, [sp, #20]
    9:MotorControl/pwm_input.cpp ****     sConfigIC.ICPrescaler = TIM_ICPSC_DIV1;
  109              		.loc 2 9 5 is_stmt 1 view .LVU17
-ARM GAS  /tmp/ccT0r2qY.s 			page 6
+ARM GAS  /tmp/ccPYqm0i.s 			page 6
 
 
  110              		.loc 2 9 27 is_stmt 0 view .LVU18
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
  156 004a 3246     		mov	r2, r6
  157 004c 04A9     		add	r1, sp, #16
  158 004e 2868     		ldr	r0, [r5]
-ARM GAS  /tmp/ccT0r2qY.s 			page 7
+ARM GAS  /tmp/ccPYqm0i.s 			page 7
 
 
  159 0050 FFF7FEFF 		bl	HAL_TIM_IC_ConfigChannel
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
  199              		.loc 2 33 52 is_stmt 1 view -0
  200              		.cfi_startproc
  201              		@ args = 0, pretend = 0, frame = 0
-ARM GAS  /tmp/ccT0r2qY.s 			page 8
+ARM GAS  /tmp/ccPYqm0i.s 			page 8
 
 
  202              		@ frame_needed = 0, uses_anonymous_args = 0
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
  247 002c DFED136A 		vldr.32	s13, .L19+12
  248 0030 87EEA67A 		vdiv.f32	s14, s15, s13
  249              	.LVL20:
-ARM GAS  /tmp/ccT0r2qY.s 			page 9
+ARM GAS  /tmp/ccPYqm0i.s 			page 9
 
 
   42:MotorControl/pwm_input.cpp ****     float value = odrv.config_.pwm_mappings[channel].min +
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
  300              		.thumb_func
  302              	_ZN8PwmInput10on_captureEim:
  303              		.fnstart
-ARM GAS  /tmp/ccT0r2qY.s 			page 10
+ARM GAS  /tmp/ccPYqm0i.s 			page 10
 
 
  304              	.LVL26:
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
   10:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
   11:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // This library is distributed in the hope that it will be useful,
   12:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // but WITHOUT ANY WARRANTY; without even the implied warranty of
-ARM GAS  /tmp/ccT0r2qY.s 			page 11
+ARM GAS  /tmp/ccPYqm0i.s 			page 11
 
 
   13:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** // MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
   67:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****      typedef true_type _Is_swappable;
   68:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****      typedef true_type _Is_nothrow_swappable;
   69:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
-ARM GAS  /tmp/ccT0r2qY.s 			page 12
+ARM GAS  /tmp/ccPYqm0i.s 			page 12
 
 
   70:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****      static constexpr _Tp&
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
  124:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       // Iterators.
  125:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR iterator
  126:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       begin() noexcept
-ARM GAS  /tmp/ccT0r2qY.s 			page 13
+ARM GAS  /tmp/ccPYqm0i.s 			page 13
 
 
  127:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       { return iterator(data()); }
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
  181:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       empty() const noexcept { return size() == 0; }
  182:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array **** 
  183:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       // Element access.
-ARM GAS  /tmp/ccT0r2qY.s 			page 14
+ARM GAS  /tmp/ccPYqm0i.s 			page 14
 
 
  184:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/array ****       _GLIBCXX17_CONSTEXPR reference
@@ -838,7 +838,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
   60:MotorControl/pwm_input.cpp ****         return;
   61:MotorControl/pwm_input.cpp ****     bool current_pin_state = gpio.read();
  372              		.loc 2 61 5 is_stmt 1 view .LVU85
-ARM GAS  /tmp/ccT0r2qY.s 			page 15
+ARM GAS  /tmp/ccPYqm0i.s 			page 15
 
 
  373              	.LBB17:
@@ -898,7 +898,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
   68:MotorControl/pwm_input.cpp **** 
   69:MotorControl/pwm_input.cpp ****     last_timestamp[channel] = timestamp;
  403              		.loc 2 69 5 is_stmt 1 view .LVU97
-ARM GAS  /tmp/ccT0r2qY.s 			page 16
+ARM GAS  /tmp/ccPYqm0i.s 			page 16
 
 
  404              		.loc 2 69 29 is_stmt 0 view .LVU98
@@ -958,7 +958,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
  452              		.cfi_def_cfa_offset 0
  453              		.cfi_restore 4
  454              		.cfi_restore 5
-ARM GAS  /tmp/ccT0r2qY.s 			page 17
+ARM GAS  /tmp/ccPYqm0i.s 			page 17
 
 
  455              		.cfi_restore 6
@@ -1018,7 +1018,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
  503              		.loc 2 79 8 is_stmt 0 view .LVU116
  504 0010 2368     		ldr	r3, [r4]
  505 0012 1B68     		ldr	r3, [r3]
-ARM GAS  /tmp/ccT0r2qY.s 			page 18
+ARM GAS  /tmp/ccPYqm0i.s 			page 18
 
 
  506 0014 1A69     		ldr	r2, [r3, #16]
@@ -1078,7 +1078,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
   77:MotorControl/pwm_input.cpp ****     }
  543              		.loc 2 77 19 view .LVU130
  544 0042 0021     		movs	r1, #0
-ARM GAS  /tmp/ccT0r2qY.s 			page 19
+ARM GAS  /tmp/ccPYqm0i.s 			page 19
 
 
  545 0044 FFF7FEFF 		bl	_ZN8PwmInput10on_captureEim
@@ -1138,7 +1138,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
  585 0076 6FF01002 		mvn	r2, #16
  586 007a 1A61     		str	r2, [r3, #16]
   89:MotorControl/pwm_input.cpp ****     }
-ARM GAS  /tmp/ccT0r2qY.s 			page 20
+ARM GAS  /tmp/ccPYqm0i.s 			page 20
 
 
  587              		.loc 2 89 9 view .LVU145
@@ -1198,7 +1198,7 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
  641              		.file 10 "/opt/gcc-arm-none-eabi/lib/gcc/arm-none-eabi/10.3.1/include/stdarg.h"
  642              		.file 11 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/_types.h"
  643              		.file 12 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/reent.h"
-ARM GAS  /tmp/ccT0r2qY.s 			page 21
+ARM GAS  /tmp/ccPYqm0i.s 			page 21
 
 
  644              		.file 13 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/sys/lock.h"
@@ -1241,38 +1241,38 @@ ARM GAS  /tmp/ccT0r2qY.s 			page 1
  681              		.file 50 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/wchar.h"
  682              		.file 51 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/locale.h"
  683              		.file 52 "<built-in>"
-ARM GAS  /tmp/ccT0r2qY.s 			page 22
+ARM GAS  /tmp/ccPYqm0i.s 			page 22
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 pwm_input.cpp
-     /tmp/ccT0r2qY.s:20     .text._ZL8get_gpioj:0000000000000000 $t
-     /tmp/ccT0r2qY.s:25     .text._ZL8get_gpioj:0000000000000000 _ZL8get_gpioj
-     /tmp/ccT0r2qY.s:64     .text._ZL8get_gpioj:000000000000001c $d
+     /tmp/ccPYqm0i.s:20     .text._ZL8get_gpioj:0000000000000000 $t
+     /tmp/ccPYqm0i.s:25     .text._ZL8get_gpioj:0000000000000000 _ZL8get_gpioj
+     /tmp/ccPYqm0i.s:64     .text._ZL8get_gpioj:000000000000001c $d
     .ARM.exidx.text._ZL8get_gpioj:0000000000000000 $d
-     /tmp/ccT0r2qY.s:71     .text._ZN8PwmInput4initEv:0000000000000000 $t
-     /tmp/ccT0r2qY.s:77     .text._ZN8PwmInput4initEv:0000000000000000 _ZN8PwmInput4initEv
-     /tmp/ccT0r2qY.s:182    .text._ZN8PwmInput4initEv:0000000000000064 $d
+     /tmp/ccPYqm0i.s:71     .text._ZN8PwmInput4initEv:0000000000000000 $t
+     /tmp/ccPYqm0i.s:77     .text._ZN8PwmInput4initEv:0000000000000000 _ZN8PwmInput4initEv
+     /tmp/ccPYqm0i.s:182    .text._ZN8PwmInput4initEv:0000000000000064 $d
 .ARM.exidx.text._ZN8PwmInput4initEv:0000000000000000 $d
-     /tmp/ccT0r2qY.s:189    .text._Z12handle_pulseim:0000000000000000 $t
-     /tmp/ccT0r2qY.s:195    .text._Z12handle_pulseim:0000000000000000 _Z12handle_pulseim
-     /tmp/ccT0r2qY.s:286    .text._Z12handle_pulseim:0000000000000070 $d
+     /tmp/ccPYqm0i.s:189    .text._Z12handle_pulseim:0000000000000000 $t
+     /tmp/ccPYqm0i.s:195    .text._Z12handle_pulseim:0000000000000000 _Z12handle_pulseim
+     /tmp/ccPYqm0i.s:286    .text._Z12handle_pulseim:0000000000000070 $d
 .ARM.extab.text._Z12handle_pulseim:0000000000000000 $d
 .ARM.exidx.text._Z12handle_pulseim:0000000000000000 $d
-     /tmp/ccT0r2qY.s:296    .text._ZN8PwmInput10on_captureEim:0000000000000000 $t
-     /tmp/ccT0r2qY.s:302    .text._ZN8PwmInput10on_captureEim:0000000000000000 _ZN8PwmInput10on_captureEim
-     /tmp/ccT0r2qY.s:462    .text._ZN8PwmInput10on_captureEim:0000000000000064 $d
+     /tmp/ccPYqm0i.s:296    .text._ZN8PwmInput10on_captureEim:0000000000000000 $t
+     /tmp/ccPYqm0i.s:302    .text._ZN8PwmInput10on_captureEim:0000000000000000 _ZN8PwmInput10on_captureEim
+     /tmp/ccPYqm0i.s:462    .text._ZN8PwmInput10on_captureEim:0000000000000064 $d
 .ARM.exidx.text._ZN8PwmInput10on_captureEim:0000000000000000 $d
-     /tmp/ccT0r2qY.s:470    .text._ZN8PwmInput10on_captureEv:0000000000000000 $t
-     /tmp/ccT0r2qY.s:476    .text._ZN8PwmInput10on_captureEv:0000000000000000 _ZN8PwmInput10on_captureEv
+     /tmp/ccPYqm0i.s:470    .text._ZN8PwmInput10on_captureEv:0000000000000000 $t
+     /tmp/ccPYqm0i.s:476    .text._ZN8PwmInput10on_captureEv:0000000000000000 _ZN8PwmInput10on_captureEv
 .ARM.exidx.text._ZN8PwmInput10on_captureEv:0000000000000000 $d
-     /tmp/ccT0r2qY.s:606    .rodata:0000000000000000 $d
-     /tmp/ccT0r2qY.s:614    .bss._ZZN8PwmInput10on_captureEimE14last_pin_state:0000000000000000 $d
-     /tmp/ccT0r2qY.s:618    .bss._ZZN8PwmInput10on_captureEimE14last_pin_state:0000000000000000 _ZZN8PwmInput10on_captureEimE14last_pin_state
-     /tmp/ccT0r2qY.s:621    .bss._ZZN8PwmInput10on_captureEimE14last_timestamp:0000000000000000 $d
-     /tmp/ccT0r2qY.s:625    .bss._ZZN8PwmInput10on_captureEimE14last_timestamp:0000000000000000 _ZZN8PwmInput10on_captureEimE14last_timestamp
-     /tmp/ccT0r2qY.s:628    .bss._ZZN8PwmInput10on_captureEimE17last_sample_valid:0000000000000000 $d
-     /tmp/ccT0r2qY.s:632    .bss._ZZN8PwmInput10on_captureEimE17last_sample_valid:0000000000000000 _ZZN8PwmInput10on_captureEimE17last_sample_valid
+     /tmp/ccPYqm0i.s:606    .rodata:0000000000000000 $d
+     /tmp/ccPYqm0i.s:614    .bss._ZZN8PwmInput10on_captureEimE14last_pin_state:0000000000000000 $d
+     /tmp/ccPYqm0i.s:618    .bss._ZZN8PwmInput10on_captureEimE14last_pin_state:0000000000000000 _ZZN8PwmInput10on_captureEimE14last_pin_state
+     /tmp/ccPYqm0i.s:621    .bss._ZZN8PwmInput10on_captureEimE14last_timestamp:0000000000000000 $d
+     /tmp/ccPYqm0i.s:625    .bss._ZZN8PwmInput10on_captureEimE14last_timestamp:0000000000000000 _ZZN8PwmInput10on_captureEimE14last_timestamp
+     /tmp/ccPYqm0i.s:628    .bss._ZZN8PwmInput10on_captureEimE17last_sample_valid:0000000000000000 $d
+     /tmp/ccPYqm0i.s:632    .bss._ZZN8PwmInput10on_captureEimE17last_sample_valid:0000000000000000 _ZZN8PwmInput10on_captureEimE17last_sample_valid
 
 UNDEFINED SYMBOLS
 gpios

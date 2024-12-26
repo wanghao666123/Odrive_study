@@ -149,16 +149,19 @@ void Axis::set_step_dir_active(bool active) {
 // Returns true if everything is ok.
 bool Axis::do_checks(uint32_t timestamp) {
     // Sub-components should use set_error which will propegate to this error_
+    //!根据用户设置的电流限制和电机类型，还根据电机和MOS的温度计算电机的实际电流限制
     motor_.effective_current_lim();
+    //!Drv8301控制方面,电机温度和mos温度方面的检测
     motor_.do_checks(timestamp);
 
     // Check for endstop presses
+    //!检测min_endstop和max_endstop 的开关状态是否合理
     if (min_endstop_.config_.enabled && min_endstop_.rose() && !(current_state_ == AXIS_STATE_HOMING)) {
         error_ |= ERROR_MIN_ENDSTOP_PRESSED;
     } else if (max_endstop_.config_.enabled && max_endstop_.rose() && !(current_state_ == AXIS_STATE_HOMING)) {
         error_ |= ERROR_MAX_ENDSTOP_PRESSED;
     }
-
+    //!更新error_状态
     return check_for_errors();
 }
 
@@ -172,6 +175,7 @@ bool Axis::watchdog_check() {
     if (!config_.enable_watchdog) return true;
 
     // explicit check here to ensure that we don't underflow back to UINT32_MAX
+    //!自己“定制的”看门狗是否出现没有及时喂狗错误
     if (watchdog_current_value_ > 0) {
         watchdog_current_value_--;
         return true;

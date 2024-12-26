@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccke7w4O.s 			page 1
+ARM GAS  /tmp/cce3R4pj.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccke7w4O.s 			page 1
   47              		.loc 1 9 11 is_stmt 0 discriminator 4 view .LVU6
   48 000a D0ED057A 		vldr.32	s15, [r0, #20]
   49              	.LVL2:
-ARM GAS  /tmp/ccke7w4O.s 			page 2
+ARM GAS  /tmp/cce3R4pj.s 			page 2
 
 
   10:MotorControl/oscilloscope.cpp ****     float sample_data = data_src_ ? **data_src_ : 0.0f;
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccke7w4O.s 			page 1
   94 0052 93F82130 		ldrb	r3, [r3, #33]	@ zero_extendqisi2
   95              		.loc 1 19 5 view .LVU25
   96 0056 EBB1     		cbz	r3, .L15
-ARM GAS  /tmp/ccke7w4O.s 			page 3
+ARM GAS  /tmp/cce3R4pj.s 			page 3
 
 
   20:MotorControl/oscilloscope.cpp ****         if (pos_ < OSCILLOSCOPE_SIZE) {
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccke7w4O.s 			page 1
   23:MotorControl/oscilloscope.cpp ****             capturing_ = false;
  139              		.loc 1 23 18 is_stmt 0 view .LVU38
  140 0086 00F58040 		add	r0, r0, #16384
-ARM GAS  /tmp/ccke7w4O.s 			page 4
+ARM GAS  /tmp/cce3R4pj.s 			page 4
 
 
  141              	.LVL8:
@@ -231,14 +231,14 @@ ARM GAS  /tmp/ccke7w4O.s 			page 1
  186              		.file 23 "./autogen/interfaces.hpp"
  187              		.file 24 "MotorControl/oscilloscope.hpp"
  188              		.file 25 "<built-in>"
-ARM GAS  /tmp/ccke7w4O.s 			page 5
+ARM GAS  /tmp/cce3R4pj.s 			page 5
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 oscilloscope.cpp
-     /tmp/ccke7w4O.s:20     .text._ZN12Oscilloscope6updateEv:0000000000000000 $t
-     /tmp/ccke7w4O.s:26     .text._ZN12Oscilloscope6updateEv:0000000000000000 _ZN12Oscilloscope6updateEv
-     /tmp/ccke7w4O.s:157    .text._ZN12Oscilloscope6updateEv:0000000000000098 $d
+     /tmp/cce3R4pj.s:20     .text._ZN12Oscilloscope6updateEv:0000000000000000 $t
+     /tmp/cce3R4pj.s:26     .text._ZN12Oscilloscope6updateEv:0000000000000000 _ZN12Oscilloscope6updateEv
+     /tmp/cce3R4pj.s:157    .text._ZN12Oscilloscope6updateEv:0000000000000098 $d
 .ARM.exidx.text._ZN12Oscilloscope6updateEv:0000000000000000 $d
 
 NO UNDEFINED SYMBOLS

@@ -1,4 +1,4 @@
-ARM GAS  /tmp/ccTwkOyK.s 			page 1
+ARM GAS  /tmp/cc6JfiQr.s 			page 1
 
 
    1              		.cpu cortex-m4
@@ -58,7 +58,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
   27:MotorControl/odrive_main.h **** typedef struct {
   28:MotorControl/odrive_main.h ****     bool fully_booted;
   29:MotorControl/odrive_main.h ****     uint32_t uptime; // [ms]
-ARM GAS  /tmp/ccTwkOyK.s 			page 2
+ARM GAS  /tmp/cc6JfiQr.s 			page 2
 
 
   30:MotorControl/odrive_main.h ****     uint32_t min_heap_space; // FreeRTOS heap [Bytes]
@@ -118,7 +118,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
   84:MotorControl/odrive_main.h ****     float dc_bus_overvoltage_trip_level = 1.07f * HW_VERSION_VOLTAGE;   //<! [V] maximum voltage ab
   85:MotorControl/odrive_main.h ****                                                                         //<! This protects against 
   86:MotorControl/odrive_main.h ****                                                                         //<! the brake power if the
-ARM GAS  /tmp/ccTwkOyK.s 			page 3
+ARM GAS  /tmp/cc6JfiQr.s 			page 3
 
 
   87:MotorControl/odrive_main.h ****                                                                         //<! The default is 26V for
@@ -178,7 +178,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
  141:MotorControl/odrive_main.h **** 
  142:MotorControl/odrive_main.h **** // ODrive specific includes
  143:MotorControl/odrive_main.h **** #include <utils.hpp>
-ARM GAS  /tmp/ccTwkOyK.s 			page 4
+ARM GAS  /tmp/cc6JfiQr.s 			page 4
 
 
  144:MotorControl/odrive_main.h **** #include <low_level.h>
@@ -238,7 +238,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
   58              	.LVL4:
  167:MotorControl/odrive_main.h ****     return (gpio_num < GPIO_COUNT) ? gpios[gpio_num] : GPIO_COUNT ? gpios[0] : Stm32Gpio::none;
   59              		.loc 1 167 36 view .LVU9
-ARM GAS  /tmp/ccTwkOyK.s 			page 5
+ARM GAS  /tmp/cc6JfiQr.s 			page 5
 
 
   60 0018 F8E7     		b	.L2
@@ -298,7 +298,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
   10:MotorControl/timer.hpp **** 
   11:MotorControl/timer.hpp ****     void setIncrement(const T increment) {
   12:MotorControl/timer.hpp ****         increment_ = increment;
-ARM GAS  /tmp/ccTwkOyK.s 			page 6
+ARM GAS  /tmp/cc6JfiQr.s 			page 6
 
 
   13:MotorControl/timer.hpp ****     }
@@ -358,7 +358,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
   22:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
   23:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** // <http://www.gnu.org/licenses/>.
   24:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
-ARM GAS  /tmp/ccTwkOyK.s 			page 7
+ARM GAS  /tmp/cc6JfiQr.s 			page 7
 
 
   25:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** /*
@@ -418,7 +418,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
   79:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** namespace std _GLIBCXX_VISIBILITY(default)
   80:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** {
   81:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** _GLIBCXX_BEGIN_NAMESPACE_VERSION
-ARM GAS  /tmp/ccTwkOyK.s 			page 8
+ARM GAS  /tmp/cc6JfiQr.s 			page 8
 
 
   82:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
@@ -478,7 +478,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
  136:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****     };
  137:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** #endif // C++03
  138:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h **** 
-ARM GAS  /tmp/ccTwkOyK.s 			page 9
+ARM GAS  /tmp/cc6JfiQr.s 			page 9
 
 
  139:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****   /**
@@ -538,7 +538,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
  193:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *
  194:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  Swaps each element in the range @p [first1,last1) with the
  195:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  corresponding element in the range @p [first2,(last1-first1)).
-ARM GAS  /tmp/ccTwkOyK.s 			page 10
+ARM GAS  /tmp/cc6JfiQr.s 			page 10
 
 
  196:/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/bits/stl_algobase.h ****    *  The ranges must not overlap.
@@ -598,7 +598,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
  133              		.loc 4 237 14 view .LVU24
  134              	.LBE35:
  135              	.LBE34:
-ARM GAS  /tmp/ccTwkOyK.s 			page 11
+ARM GAS  /tmp/cc6JfiQr.s 			page 11
 
 
  136              		.loc 3 26 20 view .LVU25
@@ -658,7 +658,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
   16:./Drivers/STM32/stm32_gpio.hpp ****      * @brief Configures the GPIO with the specified parameters.
   17:./Drivers/STM32/stm32_gpio.hpp ****      * 
   18:./Drivers/STM32/stm32_gpio.hpp ****      * This can be done regardless of the current state of the GPIO.
-ARM GAS  /tmp/ccTwkOyK.s 			page 12
+ARM GAS  /tmp/cc6JfiQr.s 			page 12
 
 
   19:./Drivers/STM32/stm32_gpio.hpp ****      * 
@@ -718,7 +718,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
  203 005e E361     		str	r3, [r4, #28]	@ float
  204              	.LVL13:
  205              	.L11:
-ARM GAS  /tmp/ccTwkOyK.s 			page 13
+ARM GAS  /tmp/cc6JfiQr.s 			page 13
 
 
  206              		.loc 3 30 16 view .LVU51
@@ -778,7 +778,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
  251              		.loc 2 19 24 is_stmt 0 view .LVU66
  252 0082 0023     		movs	r3, #0
  253 0084 2375     		strb	r3, [r4, #20]
-ARM GAS  /tmp/ccTwkOyK.s 			page 14
+ARM GAS  /tmp/cc6JfiQr.s 			page 14
 
 
  254              	.LVL17:
@@ -838,7 +838,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
  301              		.loc 2 25 5 view .LVU77
  302 0006 73B1     		cbz	r3, .L19
   26:MotorControl/endstop.cpp ****         debounceTimer_.start();
-ARM GAS  /tmp/ccTwkOyK.s 			page 15
+ARM GAS  /tmp/cc6JfiQr.s 			page 15
 
 
  303              		.loc 2 26 9 is_stmt 1 view .LVU78
@@ -898,7 +898,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
  344              	.LBI52:
   19:MotorControl/timer.hpp ****         running_ = false;
  345              		.loc 3 19 10 view .LVU91
-ARM GAS  /tmp/ccTwkOyK.s 			page 16
+ARM GAS  /tmp/cc6JfiQr.s 			page 16
 
 
  346              	.LBB53:
@@ -958,7 +958,7 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
  399              		.file 40 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/string.h"
  400              		.file 41 "fibre-cpp/include/fibre/cpp_utils.hpp"
  401              		.file 42 "fibre-cpp/include/fibre/callback.hpp"
-ARM GAS  /tmp/ccTwkOyK.s 			page 17
+ARM GAS  /tmp/cc6JfiQr.s 			page 17
 
 
  402              		.file 43 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/c++/10.3.1/pstl/execution_defs.h"
@@ -968,21 +968,21 @@ ARM GAS  /tmp/ccTwkOyK.s 			page 1
  406              		.file 47 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/wchar.h"
  407              		.file 48 "/opt/gcc-arm-none-eabi/arm-none-eabi/include/locale.h"
  408              		.file 49 "<built-in>"
-ARM GAS  /tmp/ccTwkOyK.s 			page 18
+ARM GAS  /tmp/cc6JfiQr.s 			page 18
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 endstop.cpp
-     /tmp/ccTwkOyK.s:20     .text._ZL8get_gpioj:0000000000000000 $t
-     /tmp/ccTwkOyK.s:25     .text._ZL8get_gpioj:0000000000000000 _ZL8get_gpioj
-     /tmp/ccTwkOyK.s:64     .text._ZL8get_gpioj:000000000000001c $d
+     /tmp/cc6JfiQr.s:20     .text._ZL8get_gpioj:0000000000000000 $t
+     /tmp/cc6JfiQr.s:25     .text._ZL8get_gpioj:0000000000000000 _ZL8get_gpioj
+     /tmp/cc6JfiQr.s:64     .text._ZL8get_gpioj:000000000000001c $d
     .ARM.exidx.text._ZL8get_gpioj:0000000000000000 $d
-     /tmp/ccTwkOyK.s:71     .text._ZN7Endstop6updateEv:0000000000000000 $t
-     /tmp/ccTwkOyK.s:77     .text._ZN7Endstop6updateEv:0000000000000000 _ZN7Endstop6updateEv
+     /tmp/cc6JfiQr.s:71     .text._ZN7Endstop6updateEv:0000000000000000 $t
+     /tmp/cc6JfiQr.s:77     .text._ZN7Endstop6updateEv:0000000000000000 _ZN7Endstop6updateEv
 .ARM.exidx.text._ZN7Endstop6updateEv:0000000000000000 $d
-     /tmp/ccTwkOyK.s:271    .text._ZN7Endstop12apply_configEv:0000000000000000 $t
-     /tmp/ccTwkOyK.s:277    .text._ZN7Endstop12apply_configEv:0000000000000000 _ZN7Endstop12apply_configEv
-     /tmp/ccTwkOyK.s:355    .text._ZN7Endstop12apply_configEv:0000000000000030 $d
+     /tmp/cc6JfiQr.s:271    .text._ZN7Endstop12apply_configEv:0000000000000000 $t
+     /tmp/cc6JfiQr.s:277    .text._ZN7Endstop12apply_configEv:0000000000000000 _ZN7Endstop12apply_configEv
+     /tmp/cc6JfiQr.s:355    .text._ZN7Endstop12apply_configEv:0000000000000030 $d
 .ARM.exidx.text._ZN7Endstop12apply_configEv:0000000000000000 $d
 
 UNDEFINED SYMBOLS

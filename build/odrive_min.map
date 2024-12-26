@@ -23517,7 +23517,7 @@ LOAD /opt/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/h
  .debug_ranges  0x0000000000010db0      0x2c0 build/__legacy_protocol.o
  .debug_ranges  0x0000000000011070       0x20 build/startup_stm32f405xx.o
 
-.debug_line     0x0000000000000000    0x70f37
+.debug_line     0x0000000000000000    0x70f45
  .debug_line    0x0000000000000000      0x512 build/stm32f4xx_hal.o
  .debug_line    0x0000000000000512      0xf4a build/stm32f4xx_hal_adc.o
  .debug_line    0x000000000000145c      0xc09 build/stm32f4xx_hal_adc_ex.o
@@ -23571,36 +23571,36 @@ LOAD /opt/gcc-arm-none-eabi/bin/../lib/gcc/arm-none-eabi/10.3.1/thumb/v7e-m+fp/h
  .debug_line    0x00000000000223e4       0x33 build/FreeRTOS-openocd.o
  .debug_line    0x0000000000022417       0x2a build/version.o
  .debug_line    0x0000000000022441      0xa66 build/__drv8301.o
- .debug_line    0x0000000000022ea7     0x1be9 build/__board.o
- .debug_line    0x0000000000024a90      0x9ff build/__utils.o
- .debug_line    0x000000000002548f     0x1083 build/__low_level.o
- .debug_line    0x0000000000026512     0x395a build/__axis.o
- .debug_line    0x0000000000029e6c     0x2e97 build/__motor.o
- .debug_line    0x000000000002cd03      0xaa5 build/__thermistor.o
- .debug_line    0x000000000002d7a8     0x383f build/__encoder.o
- .debug_line    0x0000000000030fe7      0x70b build/__endstop.o
- .debug_line    0x00000000000316f2      0xd30 build/__acim_estimator.o
- .debug_line    0x0000000000032422      0x6c0 build/__mechanical_brake.o
- .debug_line    0x0000000000032ae2     0x2262 build/__controller.o
- .debug_line    0x0000000000034d44     0x1656 build/__foc.o
- .debug_line    0x000000000003639a      0xacc build/__open_loop_controller.o
- .debug_line    0x0000000000036e66      0x470 build/__oscilloscope.o
- .debug_line    0x00000000000372d6      0xada build/__sensorless_estimator.o
- .debug_line    0x0000000000037db0      0x856 build/__trapTraj.o
- .debug_line    0x0000000000038606      0x824 build/__pwm_input.o
- .debug_line    0x0000000000038e2a     0x4268 build/__main.o
- .debug_line    0x000000000003d092      0x67b build/__stm32_gpio.o
- .debug_line    0x000000000003d70d      0x901 build/__stm32_spi_arbiter.o
- .debug_line    0x000000000003e00e     0x25e0 build/__can_simple.o
- .debug_line    0x00000000000405ee     0x135e build/__odrive_can.o
- .debug_line    0x000000000004194c    0x21dc9 build/__communication.o
- .debug_line    0x0000000000063715     0x9993 build/__ascii_protocol.o
- .debug_line    0x000000000006d0a8     0x10b8 build/__interface_uart.o
- .debug_line    0x000000000006e160     0x1261 build/__interface_usb.o
- .debug_line    0x000000000006f3c1      0x162 build/__interface_i2c.o
- .debug_line    0x000000000006f523     0x1868 build/__legacy_protocol.o
- .debug_line    0x0000000000070d8b       0x7e build/startup_stm32f405xx.o
- .debug_line    0x0000000000070e09      0x12e ./ThirdParty/CMSIS/Lib/GCC/libarm_cortexM4lf_math.a(arm_common_tables.o)
+ .debug_line    0x0000000000022ea7     0x1bef build/__board.o
+ .debug_line    0x0000000000024a96      0x9ff build/__utils.o
+ .debug_line    0x0000000000025495     0x1083 build/__low_level.o
+ .debug_line    0x0000000000026518     0x395a build/__axis.o
+ .debug_line    0x0000000000029e72     0x2e9b build/__motor.o
+ .debug_line    0x000000000002cd0d      0xaa5 build/__thermistor.o
+ .debug_line    0x000000000002d7b2     0x383f build/__encoder.o
+ .debug_line    0x0000000000030ff1      0x70b build/__endstop.o
+ .debug_line    0x00000000000316fc      0xd30 build/__acim_estimator.o
+ .debug_line    0x000000000003242c      0x6c0 build/__mechanical_brake.o
+ .debug_line    0x0000000000032aec     0x2262 build/__controller.o
+ .debug_line    0x0000000000034d4e     0x1656 build/__foc.o
+ .debug_line    0x00000000000363a4      0xacc build/__open_loop_controller.o
+ .debug_line    0x0000000000036e70      0x470 build/__oscilloscope.o
+ .debug_line    0x00000000000372e0      0xada build/__sensorless_estimator.o
+ .debug_line    0x0000000000037dba      0x856 build/__trapTraj.o
+ .debug_line    0x0000000000038610      0x824 build/__pwm_input.o
+ .debug_line    0x0000000000038e34     0x426a build/__main.o
+ .debug_line    0x000000000003d09e      0x67b build/__stm32_gpio.o
+ .debug_line    0x000000000003d719      0x901 build/__stm32_spi_arbiter.o
+ .debug_line    0x000000000003e01a     0x25e0 build/__can_simple.o
+ .debug_line    0x00000000000405fa     0x135e build/__odrive_can.o
+ .debug_line    0x0000000000041958    0x21dca build/__communication.o
+ .debug_line    0x0000000000063722     0x9993 build/__ascii_protocol.o
+ .debug_line    0x000000000006d0b5     0x10b8 build/__interface_uart.o
+ .debug_line    0x000000000006e16d     0x1261 build/__interface_usb.o
+ .debug_line    0x000000000006f3ce      0x162 build/__interface_i2c.o
+ .debug_line    0x000000000006f530     0x1869 build/__legacy_protocol.o
+ .debug_line    0x0000000000070d99       0x7e build/startup_stm32f405xx.o
+ .debug_line    0x0000000000070e17      0x12e ./ThirdParty/CMSIS/Lib/GCC/libarm_cortexM4lf_math.a(arm_common_tables.o)
 
 .debug_str      0x0000000000000000    0xc469c
  .debug_str     0x0000000000000000      0xa4e build/stm32f4xx_hal.o
