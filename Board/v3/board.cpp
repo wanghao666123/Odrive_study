@@ -510,6 +510,7 @@ void TIM8_UP_TIM13_IRQHandler(void) {
     //!清除 TIM8 的更新中断标志 (TIM_IT_UPDATE)
     // Entry into this function happens at 21-23 clock cycles after the timer
     // update event.
+    //!确保系统能处理下一个定时器中断事件
     __HAL_TIM_CLEAR_IT(&htim8, TIM_IT_UPDATE);
 
     // If the corresponding timer is counting up, we just sampled in SVM vector 0, i.e. real current
@@ -540,6 +541,8 @@ void TIM8_UP_TIM13_IRQHandler(void) {
         // Tentatively reset all PWM outputs to 50% duty cycles. If the control
         // loop handler finishes in time then these values will be overridden
         // before they go into effect.
+        //!暂定 50% 占空比的设置是为了确保在没有计算结果的情况下，PWM 输出不为 0 或其他极端值，避免系统处于不安全的状态。
+        //!在控制循环开始时，如果还未进行新的计算，这个初始设置会使 PWM 输出保持在一个中间状态（50% 占空比）
         TIM1->CCR1 =
         TIM1->CCR2 =
         TIM1->CCR3 =

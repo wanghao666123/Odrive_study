@@ -497,7 +497,7 @@ void Encoder::sample_now() {
         case MODE_SPI_ABS_RLS:
         case MODE_SPI_ABS_MA732://!通过spi总线读出对应的位置值 绝对式编码器
         {
-            abs_spi_start_transaction();
+            abs_spi_start_transaction();//!未看
             // Do nothing
         } break;
 
@@ -508,6 +508,7 @@ void Encoder::sample_now() {
 
     // Sample all GPIO digital input data registers, used for HALL sensors for example.
     //!static const constexpr GPIO_TypeDef* ports_to_sample[] = { GPIOA, GPIOB, GPIOC };
+    //!获取某些IO口的电平值，是整个IO口（比如：GPIOA、GPIOB等）全部读出先！
     for (size_t i = 0; i < sizeof(ports_to_sample) / sizeof(ports_to_sample[0]); ++i) {
         port_samples_[i] = ports_to_sample[i]->IDR; //!读取输入数据寄存器
     }
